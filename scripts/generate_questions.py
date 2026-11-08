@@ -21,36 +21,20 @@ topics = [
     {"category": "차세대 첨단 기술", "subject": "어드밴스드 패키징", "guide": "HBM, TSV, 하이브리드 본딩, 칩렛 등 차세대 패키징"}
 ]
 
-q_path = "data/questions.json"
-t_path = "data/theories.json"
 draft_q_path = "data/draft_questions.json"
 draft_i_path = "data/draft_interviews.json"
-
-existing_questions = []
-existing_theories = []
-
-if os.path.exists(q_path):
-    with open(q_path, "r", encoding="utf-8") as f:
-        existing_questions = json.load(f)
-if os.path.exists(t_path):
-    with open(t_path, "r", encoding="utf-8") as f:
-        existing_theories = json.load(f)
 
 selected = random.choice(topics)
 sel_category = selected["category"]
 sel_subject = selected["subject"]
 sel_guide = selected["guide"]
 
-used_theory_titles = [t.get("title", "") for t in existing_theories if t.get("subject") == sel_subject]
-used_title_str = ", ".join(used_theory_titles[:30]) if used_theory_titles else "없음"
-
-# 1. 객관식 시험 문제 생성 프롬프트 (전공 이론 암기 및 긍정형 중심)
+# 1. 객관식 시험 (긍정형, 개념 원리 중심)
 PROMPT_QUIZ = f"""
-당신은 반도체 공정 전공 교수이자 출제위원입니다. 대분류 '{sel_category}', 세부 주제 '{sel_subject}'에 대한 **필수 전공 지식과 이론적 암기**를 검증할 객관식 문제 정확히 3개를 생성해 주세요.
+당신은 반도체 공정 전공 교수입니다. 대분류 '{sel_category}', 세부 주제 '{sel_subject}'에 대한 필수 전공 이론 암기를 검증할 객관식 3개를 생성해 주세요.
 [출제 규칙]:
-1. "다음 중 틀린 것은?" 같은 부정형 질문 절대 금지. 핵심 개념을 묻는 긍정형 질문으로 작성.
-2. 난이도는 순서대로 "초급", "중급", "고급"으로 1개씩 부여.
-3. 보기 4개 중 오답도 헷갈리기 쉬운 전공 용어로 구성.
+1. "다음 중 틀린 것은?" 같은 부정형 질문 절대 금지. 핵심 개념의 정의와 원리를 묻는 긍정형 질문으로 작성.
+2. 난이도는 "초급", "중급", "고급"으로 1개씩. 보기 중 오답도 헷갈리는 전공 용어로 구성.
 
 반드시 아래 JSON 배열 형식으로만 응답하세요.
 [
@@ -62,17 +46,17 @@ PROMPT_QUIZ = f"""
     "question": "전공 이론 및 개념을 묻는 긍정형 지문",
     "options": ["보기1", "보기2", "보기3", "보기4"],
     "answer": 0,
-    "explanation": "상세한 이론적 메커니즘 해설"
+    "explanation": "이론적 메커니즘과 오답 해설"
   }}
 ]
 """
 
-# 2. 면접 대비 문제 생성 프롬프트 (실무 상황 및 두괄식 답변 스크립트 중심)
+# 2. 실무 면접 (상황형, 트러블슈팅, 두괄식 답변)
 PROMPT_INTERVIEW = f"""
-당신은 반도체 대기업의 공정 기술 수석 면접관입니다. 대분류 '{sel_category}', 세부 주제 '{sel_subject}'와 관련하여, 지원자의 **실무 응용력과 트러블슈팅 역량**을 검증할 면접 질문 정확히 2개를 생성해 주세요.
+당신은 반도체 대기업의 공정 수석 면접관입니다. 대분류 '{sel_category}', 세부 주제 '{sel_subject}'와 관련해 지원자의 실무/트러블슈팅 역량을 검증할 면접 문항 2개를 생성해 주세요.
 [출제 규칙]:
-1. 팹 내에서 발생할 수 있는 구체적인 불량, 수율 저하, 또는 공정 최적화 상황을 시나리오형으로 출제.
-2. 해설은 실제 임원 면접에서 명쾌하게 답변할 수 있는 두괄식 스크립트 형태로 작성.
+1. 팹 내 불량, 수율 저하 등을 가정하는 시나리오(상황형) 질문으로 구성.
+2. 실제 임원 면접에서 답변할 수 있는 '모범 두괄식 스크립트'를 포함.
 
 반드시 아래 JSON 배열 형식으로만 응답하세요.
 [
@@ -82,7 +66,7 @@ PROMPT_INTERVIEW = f"""
     "topic": "{sel_subject}",
     "difficulty": "중급",
     "question": "실무 면접 상황형 질문 지문",
-    "key_points": ["반드시 들어가야 할 핵심 키워드1", "핵심 키워드2"],
+    "key_points": ["키워드1", "키워드2"],
     "interview_answer": "모범 두괄식 면접 답변 스크립트"
   }}
 ]
@@ -97,7 +81,7 @@ def generate_contents():
     )
     new_questions = json.loads(res_q.choices[0].message.content.replace("```json", "").replace("```", "").strip())
     
-    # 면접 문항 생성
+    # 면접 생성
     res_i = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[{"role": "system", "content": "You strictly output a valid JSON array."}, {"role": "user", "content": PROMPT_INTERVIEW}],
@@ -105,7 +89,6 @@ def generate_contents():
     )
     new_interviews = json.loads(res_i.choices[0].message.content.replace("```json", "").replace("```", "").strip())
 
-    # 시험 문제 대기소 저장
     existing_draft_q = []
     if os.path.exists(draft_q_path):
         with open(draft_q_path, "r", encoding="utf-8") as f:
@@ -114,7 +97,6 @@ def generate_contents():
     with open(draft_q_path, "w", encoding="utf-8") as f:
         json.dump(new_questions + existing_draft_q, f, ensure_ascii=False, indent=2)
 
-    # 면접 문제 대기소 저장
     existing_draft_i = []
     if os.path.exists(draft_i_path):
         with open(draft_i_path, "r", encoding="utf-8") as f:
@@ -123,7 +105,7 @@ def generate_contents():
     with open(draft_i_path, "w", encoding="utf-8") as f:
         json.dump(new_interviews + existing_draft_i, f, ensure_ascii=False, indent=2)
 
-    print(f"시험 문제 {len(new_questions)}개, 면접 문제 {len(new_interviews)}개 대기소 저장 완료!")
+    print(f"시험 {len(new_questions)}개, 면접 {len(new_interviews)}개 대기소 저장 완료!")
 
 if __name__ == "__main__":
     generate_contents()
