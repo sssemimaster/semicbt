@@ -15,7 +15,6 @@
 
   <main class="flex-1 max-w-2xl w-full mx-auto p-4 flex flex-col justify-center py-8">
     
-    <!-- [화면 1] 메인 로비 -->
     <div id="view-lobby" class="w-full flex flex-col space-y-4">
       <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 text-center mb-4">
         <h2 class="text-2xl font-bold text-slate-800 mb-2">반도체 취업 마스터</h2>
@@ -23,21 +22,17 @@
       </div>
       <div class="grid grid-cols-2 gap-4">
         <button onclick="navTo('view-learning', {level: 'home'})" class="bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-800 p-6 rounded-2xl flex flex-col items-center justify-center transition shadow-sm">
-          <span class="text-3xl mb-2">📖</span>
-          <span class="font-bold text-sm">이론 백과사전</span>
+          <span class="text-3xl mb-2">📖</span><span class="font-bold text-sm">이론 백과사전</span>
         </button>
         <button onclick="navTo('view-note')" class="bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-800 p-6 rounded-2xl flex flex-col items-center justify-center transition shadow-sm">
-          <span class="text-3xl mb-2">⭐</span>
-          <span class="font-bold text-sm">오답 / 북마크</span>
+          <span class="text-3xl mb-2">⭐</span><span class="font-bold text-sm">오답 / 북마크</span>
         </button>
       </div>
       <button onclick="navTo('view-setup')" class="w-full bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 text-indigo-800 p-6 rounded-2xl flex flex-col items-center justify-center transition shadow-sm">
-        <span class="text-3xl mb-2">📝</span>
-        <span class="font-bold text-lg">실전 모의고사 (CBT)</span>
+        <span class="text-3xl mb-2">📝</span><span class="font-bold text-lg">실전 모의고사 (CBT)</span>
       </button>
     </div>
 
-    <!-- [화면 2] 시험 설정 -->
     <div id="view-setup" class="hidden w-full flex flex-col">
       <button onclick="goBack()" class="text-slate-400 hover:text-slate-600 font-bold text-sm mb-3 transition w-fit outline-none">⬅️ 뒤로</button>
       <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
@@ -72,7 +67,7 @@
       </div>
     </div>
 
-    <!-- [화면 3] 문제 풀이 영역 -->
+    <!-- 문제 풀이 영역 -->
     <div id="view-quiz" class="hidden w-full flex flex-col">
       <button onclick="goBack()" class="text-slate-400 hover:text-slate-600 font-bold text-sm mb-3 transition w-fit outline-none">⬅️ 뒤로</button>
       <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
@@ -93,16 +88,27 @@
             <span class="text-3xl mb-2">🤔</span><span>스스로 답변을 생각해본 뒤 클릭하세요</span>
           </button>
         </div>
+        
+        <!-- 해설 및 제보 버튼 박스 -->
         <div id="explanationBox" class="mt-6 p-4 bg-slate-50 border border-slate-200 rounded-xl hidden">
           <div id="resultStatus" class="font-bold text-sm mb-2"></div>
           <div id="keywordTags" class="mb-3 hidden"></div>
-          <p id="explanationText" class="text-sm text-slate-600 leading-relaxed"></p>
-          <button id="nextBtn" onclick="nextQuestion()" class="mt-4 w-full bg-indigo-600 text-white py-2.5 rounded-lg text-sm font-semibold hover:bg-indigo-700 transition">다음 문제</button>
+          <p id="explanationText" class="text-sm text-slate-600 leading-relaxed mb-4"></p>
+          
+          <!-- ✨ 오류 제보 및 다음 문제 버튼 -->
+          <div class="flex gap-2">
+            <button onclick="reportError()" class="w-1/3 bg-rose-50 text-rose-600 border border-rose-200 py-2.5 rounded-lg text-sm font-semibold hover:bg-rose-100 transition">
+              🚨 오류 제보
+            </button>
+            <button id="nextBtn" onclick="nextQuestion()" class="w-2/3 bg-indigo-600 text-white py-2.5 rounded-lg text-sm font-semibold hover:bg-indigo-700 transition">
+              다음 문제
+            </button>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- [화면 4] 이론 백과사전 + 검색 UI -->
+    <!-- 이론 백과사전 -->
     <div id="view-learning" class="hidden w-full flex flex-col">
       <button onclick="goBack()" class="text-slate-400 hover:text-slate-600 font-bold text-sm mb-3 transition w-fit outline-none">⬅️ 뒤로</button>
       <div class="mb-4 relative">
@@ -112,7 +118,7 @@
       <div id="learningContainer" class="grid grid-cols-1 gap-4"></div>
     </div>
 
-    <!-- [화면 5] 오답노트 -->
+    <!-- 오답노트 -->
     <div id="view-note" class="hidden w-full flex flex-col">
       <button onclick="goBack()" class="text-slate-400 hover:text-slate-600 font-bold text-sm mb-3 transition w-fit outline-none">⬅️ 뒤로</button>
       <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-4 text-center">
@@ -121,25 +127,27 @@
       <div id="noteContainer" class="space-y-4"></div>
     </div>
 
-    <!-- [화면 6] 결과 -->
+    <!-- 결과 -->
     <div id="view-result" class="hidden w-full flex flex-col">
       <button onclick="goBack()" class="text-slate-400 hover:text-slate-600 font-bold text-sm mb-3 transition w-fit outline-none">⬅️ 홈으로</button>
       <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 text-center">
         <h2 class="text-2xl font-bold text-slate-800 mb-2">모의고사 완료!</h2>
         <div class="flex justify-center items-center my-6">
           <div class="w-32 h-32 rounded-full border-8 border-indigo-500 flex flex-col items-center justify-center">
-            <span id="scoreText" class="text-3xl font-black text-indigo-600">80</span>
-            <span class="text-sm text-slate-500 font-bold">% 정답률</span>
+            <span id="scoreText" class="text-3xl font-black text-indigo-600">80</span><span class="text-sm text-slate-500 font-bold">% 정답률</span>
           </div>
         </div>
         <p id="scoreDetail" class="text-base text-slate-600 font-medium mb-6">결과 내역</p>
         <button onclick="navTo('view-lobby')" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-3.5 rounded-xl transition shadow-md">메인 로비로 돌아가기</button>
       </div>
     </div>
-
   </main>
 
   <script>
+    // ✨ 본인의 깃허브 아이디와 저장소 이름으로 변경해주세요!
+    const GITHUB_USERNAME = "본인아이디";
+    const GITHUB_REPO = "저장소이름";
+
     let allQuizData = [];    
     let allTheories = [];    
     let filteredQuiz = [];   
@@ -148,7 +156,6 @@
     let correctCount = 0;
     let starredIds = JSON.parse(localStorage.getItem('semiCbtStarred')) || [];
 
-    // ✨ 완벽한 정렬을 위한 절대 규칙 목차 (이 목차에 맞춰 무조건 고정 배열됩니다)
     const FIXED_CATEGORIES = ["반도체 기초 이론", "반도체 8대 공정", "차세대 첨단 기술"];
     const FIXED_SUBJECTS = [
       "반도체 물리", "트랜지스터 소자", "메모리 반도체",
@@ -158,7 +165,6 @@
       "차세대 소자 기술", "어드밴스드 패키징"
     ];
 
-    // 라우팅 상태 관리 변수
     let currentViewId = 'view-lobby';
     let learnState = { level: 'home', category: '', subject: '', theoryId: '' };
 
@@ -191,24 +197,16 @@
           subject: t.subject || (t.path && t.path.length > 1 ? t.path[1] : "일반")
         }));
 
-        // 앱이 처음 켜질 때 방문 기록(History) 1개 강제 생성
         history.replaceState({ viewId: 'view-lobby', learnState: learnState }, "");
       } catch (error) { console.error("데이터 로드 실패:", error); }
     }
 
-    /* ==========================================
-       ✨ 핵심: 스마트폰 브라우저 백버튼 완벽 연동 라우터
-       ========================================== */
     function navTo(viewId, newLearnState = null) {
-      if (newLearnState) {
-        learnState = { ...learnState, ...newLearnState };
-      }
-      // 주소창 방문 기록에 현재 상태를 살짝 밀어넣음
+      if (newLearnState) learnState = { ...learnState, ...newLearnState };
       history.pushState({ viewId: viewId, learnState: JSON.parse(JSON.stringify(learnState)) }, "");
       applyState(viewId, learnState);
     }
 
-    // 스마트폰 자체 뒤로 가기(스와이프)를 감지하는 이벤트 리스너
     window.addEventListener('popstate', (e) => {
       if (e.state) {
         learnState = e.state.learnState;
@@ -218,19 +216,15 @@
       }
     });
 
-    // 화면의 회색 뒤로 가기 버튼을 눌렀을 때
     function goBack() {
       if (currentViewId === 'view-learning' && document.getElementById('theorySearchInput').value.trim() !== '') {
-        // 검색 중일 때 뒤로 가면 검색만 취소함 (주소 기록 안건드림)
         document.getElementById('theorySearchInput').value = '';
         applyState('view-learning', learnState);
       } else {
-        // 평소에는 브라우저 진짜 '뒤로 가기' 명령을 내려서 popstate가 작동하게 만듦
         history.back();
       }
     }
 
-    // 실제 화면을 그리고 전환하는 함수
     function applyState(viewId, state) {
       ['view-lobby', 'view-setup', 'view-quiz', 'view-learning', 'view-note', 'view-result'].forEach(id => {
         document.getElementById(id).classList.add('hidden');
@@ -251,31 +245,22 @@
       }
     }
 
-    /* ==========================================
-       이론 백과사전 엔진 (강제 정렬 Sort 적용)
-       ========================================== */
+    /* 이론 백과사전 렌더링 함수들 */
     function renderHomeDOM() {
       renderBreadcrumb();
       const container = document.getElementById('learningContainer');
       container.className = "grid grid-cols-1 sm:grid-cols-2 gap-4"; 
       container.innerHTML = '';
-
-      // ✨ 최근 추가된 항목이 맨 위로 올라가는 것을 방지 (지정된 배열 목차 순서대로 강제 정렬)
       const categories = [...new Set(allTheories.map(t => t.category))].sort((a, b) => {
-        let idxA = FIXED_CATEGORIES.indexOf(a);
-        let idxB = FIXED_CATEGORIES.indexOf(b);
+        let idxA = FIXED_CATEGORIES.indexOf(a); let idxB = FIXED_CATEGORIES.indexOf(b);
         return (idxA === -1 ? 999 : idxA) - (idxB === -1 ? 999 : idxB);
       });
-
       categories.forEach(cat => {
         const btn = document.createElement('button');
         btn.className = "bg-white border border-slate-200 hover:border-emerald-500 hover:shadow-md p-6 rounded-2xl text-left transition flex justify-between items-center group";
         btn.onclick = () => navTo('view-learning', { level: 'category', category: cat });
         const count = allTheories.filter(t => t.category === cat).length;
-        btn.innerHTML = `
-          <div><h3 class="text-lg font-bold text-slate-800">${cat}</h3><span class="text-xs text-slate-400 mt-1 block">총 ${count}개의 문서</span></div>
-          <span class="text-slate-300 group-hover:text-emerald-500 text-xl font-bold">➔</span>
-        `;
+        btn.innerHTML = `<div><h3 class="text-lg font-bold text-slate-800">${cat}</h3><span class="text-xs text-slate-400 mt-1 block">총 ${count}개의 문서</span></div><span class="text-slate-300 group-hover:text-emerald-500 text-xl font-bold">➔</span>`;
         container.appendChild(btn);
       });
     }
@@ -285,16 +270,11 @@
       const container = document.getElementById('learningContainer');
       container.className = "grid grid-cols-1 sm:grid-cols-2 gap-4";
       container.innerHTML = '';
-
       const filtered = allTheories.filter(t => t.category === category);
-      
-      // ✨ 2단계 과목명도 절대 순서대로 강제 정렬
       const subjects = [...new Set(filtered.map(t => t.subject))].sort((a, b) => {
-        let idxA = FIXED_SUBJECTS.indexOf(a);
-        let idxB = FIXED_SUBJECTS.indexOf(b);
+        let idxA = FIXED_SUBJECTS.indexOf(a); let idxB = FIXED_SUBJECTS.indexOf(b);
         return (idxA === -1 ? 999 : idxA) - (idxB === -1 ? 999 : idxB);
       });
-
       subjects.forEach(sub => {
         const btn = document.createElement('button');
         btn.className = "bg-white border border-slate-200 hover:border-emerald-50 p-5 rounded-2xl text-left transition";
@@ -310,7 +290,6 @@
       const container = document.getElementById('learningContainer');
       container.className = "flex flex-col space-y-3"; 
       container.innerHTML = '';
-
       const filtered = allTheories.filter(t => t.category === category && t.subject === subject);
       filtered.forEach(t => renderTitleCard(t, container));
     }
@@ -319,15 +298,7 @@
       const btn = document.createElement('button');
       btn.className = "bg-white border border-slate-200 hover:border-emerald-400 p-5 rounded-xl text-left transition flex items-start w-full";
       btn.onclick = () => navTo('view-learning', { level: 'detail', theoryId: t.id });
-      btn.innerHTML = `
-        <span class="text-xl mr-3">📄</span>
-        <div>
-          <h3 class="text-slate-800 font-bold leading-snug">${t.title}</h3>
-          <div class="mt-2 flex flex-wrap gap-1">
-            ${(t.tags || []).map(tag => `<span class="bg-slate-100 text-slate-500 text-[10px] px-1.5 py-0.5 rounded font-medium">#${tag}</span>`).join('')}
-          </div>
-        </div>
-      `;
+      btn.innerHTML = `<span class="text-xl mr-3">📄</span><div><h3 class="text-slate-800 font-bold leading-snug">${t.title}</h3><div class="mt-2 flex flex-wrap gap-1">${(t.tags || []).map(tag => `<span class="bg-slate-100 text-slate-500 text-[10px] px-1.5 py-0.5 rounded font-medium">#${tag}</span>`).join('')}</div></div>`;
       container.appendChild(btn);
     }
 
@@ -336,17 +307,11 @@
       const container = document.getElementById('learningContainer');
       container.className = "flex flex-col space-y-4";
       container.innerHTML = '';
-      
       const card = document.createElement('div');
       card.className = "bg-white rounded-2xl shadow-sm border border-slate-200 p-6";
       const formattedContent = t.content.replace(/\n/g, '<br>');
       const tagsHtml = (t.tags || []).map(tag => `<span class="inline-block bg-slate-100 text-slate-500 text-xs px-2 py-1 rounded-md mr-1 mb-2">#${tag}</span>`).join('');
-      
-      card.innerHTML = `
-        <h2 class="text-xl font-black text-slate-900 mb-4 leading-snug">${t.title}</h2>
-        <div class="mb-5 border-b border-slate-100 pb-3">${tagsHtml}</div>
-        <p class="text-sm text-slate-700 leading-relaxed">${formattedContent}</p>
-      `;
+      card.innerHTML = `<h2 class="text-xl font-black text-slate-900 mb-4 leading-snug">${t.title}</h2><div class="mb-5 border-b border-slate-100 pb-3">${tagsHtml}</div><p class="text-sm text-slate-700 leading-relaxed">${formattedContent}</p>`;
       container.appendChild(card);
     }
 
@@ -354,67 +319,33 @@
       const bc = document.getElementById('breadcrumbContainer');
       bc.classList.remove('hidden');
       bc.innerHTML = `<button onclick="navTo('view-learning', {level:'home'})" class="text-emerald-700 hover:text-emerald-900 font-bold text-sm px-2">📖 홈</button>`;
-      
-      if (learnState.level !== 'home') {
-        bc.innerHTML += `<span class="text-emerald-300 font-bold">❯</span><button onclick="navTo('view-learning', {level:'category', category: '${learnState.category}'})" class="text-emerald-900 font-bold text-sm px-2 hover:underline">${learnState.category}</button>`;
-      }
-      if (learnState.level === 'subject' || learnState.level === 'detail') {
-        bc.innerHTML += `<span class="text-emerald-300 font-bold">❯</span><button onclick="navTo('view-learning', {level:'subject', category: '${learnState.category}', subject: '${learnState.subject}'})" class="text-emerald-900 font-bold text-sm px-2 hover:underline">${learnState.subject}</button>`;
-      }
+      if (learnState.level !== 'home') bc.innerHTML += `<span class="text-emerald-300 font-bold">❯</span><button onclick="navTo('view-learning', {level:'category', category: '${learnState.category}'})" class="text-emerald-900 font-bold text-sm px-2 hover:underline">${learnState.category}</button>`;
+      if (learnState.level === 'subject' || learnState.level === 'detail') bc.innerHTML += `<span class="text-emerald-300 font-bold">❯</span><button onclick="navTo('view-learning', {level:'subject', category: '${learnState.category}', subject: '${learnState.subject}'})" class="text-emerald-900 font-bold text-sm px-2 hover:underline">${learnState.subject}</button>`;
     }
 
     function handleTheorySearch() {
       const query = document.getElementById('theorySearchInput').value.trim().toLowerCase();
-      if (!query) {
-        applyState('view-learning', learnState);
-        return;
-      }
-      
+      if (!query) { applyState('view-learning', learnState); return; }
       document.getElementById('breadcrumbContainer').classList.add('hidden');
       const container = document.getElementById('learningContainer');
-      container.className = "flex flex-col space-y-3"; 
-      container.innerHTML = '';
-      
-      const results = allTheories.filter(t => 
-        t.title.toLowerCase().includes(query) || 
-        t.content.toLowerCase().includes(query) || 
-        (t.tags && t.tags.some(tag => tag.toLowerCase().includes(query)))
-      );
-      
-      if (results.length === 0) {
-        container.innerHTML = `<div class="bg-white border border-slate-200 rounded-xl p-6 text-center text-slate-500 text-sm">검색 결과가 없습니다.</div>`;
-        return;
-      }
+      container.className = "flex flex-col space-y-3"; container.innerHTML = '';
+      const results = allTheories.filter(t => t.title.toLowerCase().includes(query) || t.content.toLowerCase().includes(query) || (t.tags && t.tags.some(tag => tag.toLowerCase().includes(query))));
+      if (results.length === 0) { container.innerHTML = `<div class="bg-white border border-slate-200 rounded-xl p-6 text-center text-slate-500 text-sm">검색 결과가 없습니다.</div>`; return; }
       results.forEach(t => renderTitleCard(t, container));
     }
 
-    /* ==========================================
-       모의고사 및 오답노트 로직
-       ========================================== */
+    /* 오답노트 렌더링 */
     function renderNoteDOM() {
       const container = document.getElementById('noteContainer');
       container.innerHTML = '';
       const savedQuestions = allQuizData.filter(q => starredIds.includes(q.id));
       if (savedQuestions.length === 0) {
-        container.innerHTML = `<div class="bg-white p-6 rounded-2xl text-center text-slate-500 border border-slate-200">저장된 문제가 없습니다.</div>`;
-        return;
+        container.innerHTML = `<div class="bg-white p-6 rounded-2xl text-center text-slate-500 border border-slate-200">저장된 문제가 없습니다.</div>`; return;
       }
       savedQuestions.forEach(q => {
         const card = document.createElement('div');
         card.className = "bg-white rounded-2xl shadow-sm border border-slate-200 p-5";
-        card.innerHTML = `
-          <div class="flex justify-between items-start mb-3">
-            <span class="bg-amber-100 text-amber-700 text-xs font-bold px-2 py-1 rounded">${q.category || '통합'}</span>
-            <button onclick="removeNote('${q.id}')" class="text-xs text-slate-400 hover:text-rose-500 font-bold underline">삭제</button>
-          </div>
-          <h3 class="text-base font-bold text-slate-900 mb-4">${q.question}</h3>
-          <button onclick="toggleNoteAnswer('${q.id}')" id="btn-${q.id}" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-600 text-sm font-bold py-2 rounded-lg transition mb-2">정답 및 해설 보기 ⬇️</button>
-          <div id="ans-${q.id}" class="hidden bg-slate-50 p-4 rounded-lg border border-slate-200 mt-3 transition-all">
-            <span class="text-sm font-bold text-emerald-600 mb-2 block">정답: ${q.options[q.answer]}</span>
-            <p class="text-sm text-slate-600 mb-4">${q.explanation}</p>
-            <div class="border-t border-slate-200 pt-3 mt-2"><span class="text-xs font-bold text-indigo-700 mb-1 block">🗣️ 면접 핵심 스크립트</span><p class="text-sm text-slate-800 font-medium">"${q.interview_answer || q.explanation}"</p></div>
-          </div>
-        `;
+        card.innerHTML = `<div class="flex justify-between items-start mb-3"><span class="bg-amber-100 text-amber-700 text-xs font-bold px-2 py-1 rounded">${q.category || '통합'}</span><button onclick="removeNote('${q.id}')" class="text-xs text-slate-400 hover:text-rose-500 font-bold underline">삭제</button></div><h3 class="text-base font-bold text-slate-900 mb-4">${q.question}</h3><button onclick="toggleNoteAnswer('${q.id}')" id="btn-${q.id}" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-600 text-sm font-bold py-2 rounded-lg transition mb-2">정답 및 해설 보기 ⬇️</button><div id="ans-${q.id}" class="hidden bg-slate-50 p-4 rounded-lg border border-slate-200 mt-3 transition-all"><span class="text-sm font-bold text-emerald-600 mb-2 block">정답: ${q.options[q.answer]}</span><p class="text-sm text-slate-600 mb-4">${q.explanation}</p><div class="border-t border-slate-200 pt-3 mt-2"><span class="text-xs font-bold text-indigo-700 mb-1 block">🗣️ 면접 핵심 스크립트</span><p class="text-sm text-slate-800 font-medium">"${q.interview_answer || q.explanation}"</p></div></div>`;
         container.appendChild(card);
       });
     }
@@ -422,13 +353,8 @@
     function toggleNoteAnswer(id) {
       const ansDiv = document.getElementById(`ans-${id}`);
       const btn = document.getElementById(`btn-${id}`);
-      if (ansDiv.classList.contains('hidden')) {
-        ansDiv.classList.remove('hidden');
-        btn.innerHTML = "해설 닫기 ⬆️";
-      } else {
-        ansDiv.classList.add('hidden');
-        btn.innerHTML = "정답 및 해설 보기 ⬇️";
-      }
+      if (ansDiv.classList.contains('hidden')) { ansDiv.classList.remove('hidden'); btn.innerHTML = "해설 닫기 ⬆️"; } 
+      else { ansDiv.classList.add('hidden'); btn.innerHTML = "정답 및 해설 보기 ⬇️"; }
     }
 
     function removeNote(id) {
@@ -437,6 +363,7 @@
       renderNoteDOM(); 
     }
 
+    /* 퀴즈 로직 */
     function startQuiz() {
       const selectedSubject = document.getElementById('select-subject').value;
       const selectedDifficulty = document.getElementById('select-difficulty').value;
@@ -448,19 +375,13 @@
         return matchSubj && matchDiff;
       });
 
-      if (filteredQuiz.length === 0) {
-        alert(`선택하신 조건에 맞는 문제가 없습니다.\n(현재 로드된 전체 문제 수: ${allQuizData.length}개)`);
-        return;
-      }
+      if (filteredQuiz.length === 0) { alert(`선택하신 조건에 맞는 문제가 없습니다.\n(현재 로드된 전체 문제 수: ${allQuizData.length}개)`); return; }
       
       filteredQuiz = filteredQuiz.sort(() => Math.random() - 0.5);
-      if (selectedCount !== "ALL") {
-        filteredQuiz = filteredQuiz.slice(0, parseInt(selectedCount));
-      }
+      if (selectedCount !== "ALL") filteredQuiz = filteredQuiz.slice(0, parseInt(selectedCount));
+      
       currentIndex = 0; correctCount = 0; isFlashcardMode = false;
       document.getElementById('modeToggleBtn').innerText = "🔄 면접 모드";
-      
-      // 모의고사 뷰로 강제 전환 후 문제 렌더링
       navTo('view-quiz');
     }
 
@@ -484,25 +405,22 @@
     }
 
     function renderQuestion() {
-      if(!filteredQuiz || filteredQuiz.length === 0) return; // 뒤로가기 등으로 인한 방어코드
+      if(!filteredQuiz || filteredQuiz.length === 0) return;
       const q = filteredQuiz[currentIndex];
       document.getElementById('categoryBadge').innerText = `${q.category || '통합'} (${q.difficulty || '중급'})`;
       document.getElementById('progressText').innerText = `문제 ${currentIndex + 1} / ${filteredQuiz.length}`;
       document.getElementById('questionTitle').innerText = q.question;
       const starBtn = document.getElementById('starBtn');
-      if (starredIds.includes(q.id)) {
-        starBtn.innerText = "★"; starBtn.className = "text-3xl text-amber-400 hover:text-amber-500 transition ml-3 -mt-1 outline-none";
-      } else {
-        starBtn.innerText = "☆"; starBtn.className = "text-3xl text-slate-200 hover:text-amber-400 transition ml-3 -mt-1 outline-none";
-      }
+      if (starredIds.includes(q.id)) { starBtn.innerText = "★"; starBtn.className = "text-3xl text-amber-400 hover:text-amber-500 transition ml-3 -mt-1 outline-none"; } 
+      else { starBtn.innerText = "☆"; starBtn.className = "text-3xl text-slate-200 hover:text-amber-400 transition ml-3 -mt-1 outline-none"; }
+      
       const optContainer = document.getElementById('optionsContainer');
       const flashContainer = document.getElementById('flashcardContainer');
       const expBox = document.getElementById('explanationBox');
       optContainer.innerHTML = ''; expBox.classList.add('hidden'); document.getElementById('keywordTags').classList.add('hidden');
       
       if (isFlashcardMode) {
-        optContainer.classList.add('hidden'); flashContainer.classList.remove('hidden');
-        document.getElementById('revealBtn').classList.remove('hidden');
+        optContainer.classList.add('hidden'); flashContainer.classList.remove('hidden'); document.getElementById('revealBtn').classList.remove('hidden');
       } else {
         flashContainer.classList.add('hidden'); optContainer.classList.remove('hidden');
         q.options.forEach((opt, idx) => {
@@ -517,43 +435,36 @@
 
     function revealFlashcard() {
       const q = filteredQuiz[currentIndex];
-      const box = document.getElementById('explanationBox');
-      const status = document.getElementById('resultStatus');
-      const text = document.getElementById('explanationText');
-      const keywordBox = document.getElementById('keywordTags');
       document.getElementById('revealBtn').classList.add('hidden');
-      status.className = "font-bold text-sm mb-2 text-indigo-700"; status.innerText = "🗣️ 면접관이 기대한 핵심 답변";
-      text.innerHTML = q.interview_answer ? `<span class="text-slate-800 font-medium">" ${q.interview_answer} "</span>` : q.explanation;
-      if (q.flashcard_keywords?.length) {
-        keywordBox.classList.remove('hidden');
-        keywordBox.innerHTML = q.flashcard_keywords.map(kw => `<span class="inline-block bg-indigo-100 text-indigo-700 text-xs font-bold px-2 py-1 rounded mr-2 mb-2">#${kw}</span>`).join('');
-      } else { keywordBox.classList.add('hidden'); }
-      box.classList.remove('hidden'); updateNextButton();
+      document.getElementById('resultStatus').className = "font-bold text-sm mb-2 text-indigo-700"; 
+      document.getElementById('resultStatus').innerText = "🗣️ 면접관이 기대한 핵심 답변";
+      document.getElementById('explanationText').innerHTML = q.interview_answer ? `<span class="text-slate-800 font-medium">" ${q.interview_answer} "</span>` : q.explanation;
+      document.getElementById('explanationBox').classList.remove('hidden');
+      updateNextButton();
     }
 
     function checkAnswer(selectedIndex) {
       const q = filteredQuiz[currentIndex];
-      const box = document.getElementById('explanationBox');
-      const status = document.getElementById('resultStatus');
-      const text = document.getElementById('explanationText');
       Array.from(document.getElementById('optionsContainer').children).forEach(btn => btn.disabled = true);
-      box.classList.remove('hidden'); document.getElementById('keywordTags').classList.add('hidden');
+      document.getElementById('explanationBox').classList.remove('hidden');
+      const status = document.getElementById('resultStatus');
       if (selectedIndex === q.answer) {
         correctCount++; status.className = "font-bold text-sm mb-1 text-emerald-600"; status.innerText = "⭕ 정답입니다!";
       } else {
         status.className = "font-bold text-sm mb-1 text-rose-600"; status.innerText = `❌ 오답입니다. (정답: ${q.answer + 1}번)`;
       }
-      text.innerText = q.explanation; updateNextButton();
+      document.getElementById('explanationText').innerText = q.explanation;
+      updateNextButton();
     }
 
     function updateNextButton() {
       const nextBtn = document.getElementById('nextBtn');
       if (currentIndex === filteredQuiz.length - 1) {
         nextBtn.innerText = "시험 종료 및 결과 보기";
-        nextBtn.className = "mt-4 w-full bg-slate-800 text-white py-2.5 rounded-lg text-sm font-semibold hover:bg-slate-900 transition";
+        nextBtn.className = "w-2/3 bg-slate-800 text-white py-2.5 rounded-lg text-sm font-semibold hover:bg-slate-900 transition";
       } else {
         nextBtn.innerText = "다음 문제";
-        nextBtn.className = "mt-4 w-full bg-indigo-600 text-white py-2.5 rounded-lg text-sm font-semibold hover:bg-indigo-700 transition";
+        nextBtn.className = "w-2/3 bg-indigo-600 text-white py-2.5 rounded-lg text-sm font-semibold hover:bg-indigo-700 transition";
       }
     }
 
@@ -562,10 +473,21 @@
         currentIndex++; renderQuestion();
       } else {
         navTo('view-result');
-        const score = Math.round((correctCount / filteredQuiz.length) * 100);
-        document.getElementById('scoreText').innerText = score;
+        document.getElementById('scoreText').innerText = Math.round((correctCount / filteredQuiz.length) * 100);
         document.getElementById('scoreDetail').innerText = `총 ${filteredQuiz.length}문제 중 ${correctCount}문제를 맞혔습니다.`;
       }
+    }
+
+    // ✨ 유저 오류 제보 기능 (GitHub Issue 생성 창으로 자동 연결)
+    function reportError() {
+      if(!filteredQuiz || filteredQuiz.length === 0) return;
+      const q = filteredQuiz[currentIndex];
+      
+      const issueTitle = encodeURIComponent(`[문제 오류 제보] ID: ${q.id}`);
+      const issueBody = encodeURIComponent(`### 🚨 오류가 발생한 문제 정보\n- **문제 ID**: ${q.id}\n- **카테고리**: ${q.category} > ${q.topic}\n- **문제 내용**: ${q.question}\n\n---\n### 💬 오류 내용을 적어주세요 (오타, 정답 틀림, 해설 부실 등)\n- `);
+      
+      const issueUrl = `https://github.com/${GITHUB_USERNAME}/${GITHUB_REPO}/issues/new?title=${issueTitle}&body=${issueBody}`;
+      window.open(issueUrl, '_blank');
     }
 
     initApp();
