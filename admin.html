@@ -5,14 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SemiCBT - 관리자 검수 시스템</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- ✨ Supabase 연동 라이브러리 -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="bg-slate-100 text-slate-800 antialiased min-h-screen">
 
   <header class="bg-slate-900 text-white p-4 shadow-md flex justify-between items-center">
-    <h1 class="text-xl font-bold">🛠️ 문제 검수 및 제보 관리 (Admin)</h1>
-    <div class="text-xs text-slate-400">남은 대기 문제: <span id="draftCount" class="font-bold text-rose-400">0</span>개</div>
+    <h1 class="text-xl font-bold">🛠️ 시험/면접 문항 통합 검수소 (Admin)</h1>
+    <div class="text-xs text-slate-400">
+      시험 대기: <span id="draftQCount" class="font-bold text-rose-400">0</span>개 | 
+      면접 대기: <span id="draftICount" class="font-bold text-amber-400">0</span>개
+    </div>
   </header>
 
   <main class="max-w-2xl w-full mx-auto p-4 py-8">
@@ -24,78 +26,82 @@
       <button onclick="checkAdmin()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3.5 rounded-xl font-bold transition shadow-md">1차 인증하기</button>
     </div>
 
-    <!-- 2차 보안 (GitHub 토큰) -->
+    <!-- 2차 보안 -->
     <div id="authSection" class="hidden bg-white p-6 rounded-2xl shadow-sm border border-slate-200 mb-6 mt-10 text-center">
       <h2 class="text-xl font-bold mb-4">2차 보안: GitHub 토큰 검증</h2>
-      <input type="password" id="ghToken" placeholder="ghp_ 로 시작하는 깃허브 토큰 입력..." class="w-full bg-slate-50 border border-slate-200 p-4 rounded-xl mb-4 text-center tracking-wide outline-none focus:border-indigo-500">
-      <button onclick="loadAdminData()" class="w-full bg-slate-800 hover:bg-slate-900 text-white py-3.5 rounded-xl font-bold transition shadow-md">서버리스 대시보드 입장</button>
+      <input type="password" id="ghToken" placeholder="ghp_ 토큰 입력..." class="w-full bg-slate-50 border border-slate-200 p-4 rounded-xl mb-4 text-center tracking-wide outline-none focus:border-indigo-500">
+      <button onclick="loadAdminData()" class="w-full bg-slate-800 hover:bg-slate-900 text-white py-3.5 rounded-xl font-bold transition shadow-md">대시보드 입장</button>
     </div>
 
     <div id="dashboardSection" class="hidden space-y-6">
       
-      <!-- 🚨 실시간 유저 제보함 (DB 연동) -->
+      <!-- 탭 선택 버튼 -->
+      <div class="flex bg-white p-1 rounded-2xl border border-slate-200 shadow-sm">
+        <button onclick="switchTab('quiz')" id="tabQuizBtn" class="flex-1 py-3 font-bold text-sm rounded-xl bg-indigo-600 text-white transition">📝 시험 문제 검수</button>
+        <button onclick="switchTab('interview')" id="tabInterviewBtn" class="flex-1 py-3 font-bold text-sm rounded-xl text-slate-500 transition">🗣️ 면접 문항 검수</button>
+      </div>
+
+      <!-- 실시간 제보함 -->
       <div class="bg-white rounded-2xl shadow-sm border border-rose-200 p-6">
         <h2 class="text-xl font-bold text-rose-600 mb-4 flex justify-between items-center">
           <span>🚨 실시간 유저 오류 제보함</span>
-          <button onclick="loadReports()" class="text-xs bg-rose-50 text-rose-600 px-3 py-1 rounded-md font-semibold hover:bg-rose-100">새로고침</button>
+          <button onclick="loadReports()" class="text-xs bg-rose-50 text-rose-600 px-3 py-1 rounded-md font-semibold">새로고침</button>
         </h2>
-        <div id="reportsList" class="space-y-3">
-          <p class="text-sm text-slate-500 text-center py-4">불러오는 중...</p>
-        </div>
+        <div id="reportsList" class="space-y-3"><p class="text-sm text-slate-500 text-center py-2">불러오는 중...</p></div>
       </div>
 
-      <!-- 신규 생성 문제 검수 화면 -->
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-        <h2 class="text-xl font-bold text-slate-800 mb-4">📝 신규 생성 문제 검수소</h2>
-        <div id="reviewContainer">
-          <div class="mb-4">
-            <span id="catBadge" class="bg-indigo-100 text-indigo-700 text-xs font-semibold px-2.5 py-1 rounded">과목</span>
+      <!-- 시험 문제 검수 영역 -->
+      <div id="reviewQuizContainer" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+        <h2 class="text-xl font-bold text-slate-800 mb-4">📝 객관식 시험 문제 검수</h2>
+        <div id="qBox">
+          <div class="mb-4"><span id="qCatBadge" class="bg-indigo-100 text-indigo-700 text-xs font-semibold px-2.5 py-1 rounded">과목</span></div>
+          <h2 id="qTitle" class="text-lg font-bold text-slate-900 mb-6 leading-snug">지문</h2>
+          <div id="qOptContainer" class="space-y-3"></div>
+          <div id="qExpBox" class="mt-6 p-4 bg-slate-50 border border-slate-200 rounded-xl hidden">
+            <div id="qResStatus" class="font-bold text-sm mb-2"></div>
+            <p id="qExpText" class="text-sm text-slate-600"></p>
           </div>
-          <h2 id="qTitle" class="text-lg font-bold text-slate-900 mb-6 leading-snug">문제 지문</h2>
-          <div id="optContainer" class="space-y-3"></div>
-          <div id="expBox" class="mt-6 p-4 bg-slate-50 border border-slate-200 rounded-xl hidden">
-            <div id="resStatus" class="font-bold text-sm mb-2"></div>
-            <p id="expText" class="text-sm text-slate-600 mb-3"></p>
-            <div class="border-t pt-2"><span class="text-xs font-bold text-indigo-700">🗣️ 면접 스크립트:</span>
-            <p id="ivText" class="text-sm font-medium mt-1"></p></div>
-          </div>
-          
           <div class="grid grid-cols-2 gap-4 mt-6">
-            <button onclick="rejectQuestion()" class="bg-rose-100 hover:bg-rose-200 text-rose-700 font-bold py-4 rounded-xl border border-rose-200 transition">🗑️ 쓰레기통 (폐기)</button>
-            <button onclick="approveQuestion()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 rounded-xl shadow-md transition">✅ 사이트 정식 등재</button>
+            <button onclick="rejectContent('quiz')" class="bg-rose-100 hover:bg-rose-200 text-rose-700 font-bold py-4 rounded-xl border">🗑️ 폐기</button>
+            <button onclick="approveQuiz()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 rounded-xl shadow-md">✅ 시험 문제 등재</button>
           </div>
         </div>
       </div>
 
-      <!-- 수동 원복 -->
-      <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-        <h2 class="font-bold mb-2">🔧 수동 문제 원복</h2>
-        <div class="flex gap-2">
-          <input type="text" id="liveQId" placeholder="문제 ID (예: AUTO-12345)" class="flex-1 bg-slate-50 border p-3 rounded-lg text-sm outline-none focus:border-slate-500">
-          <button onclick="handleManualRevert()" class="bg-slate-600 hover:bg-slate-700 text-white px-4 py-3 rounded-lg font-bold text-sm">대기소로 원복</button>
+      <!-- 면접 문항 검수 영역 (초기 숨김) -->
+      <div id="reviewInterviewContainer" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 hidden">
+        <h2 class="text-xl font-bold text-slate-800 mb-4">🗣️ 면접 시나리오 문항 검수</h2>
+        <div id="iBox">
+          <div class="mb-4"><span id="iCatBadge" class="bg-amber-100 text-amber-700 text-xs font-semibold px-2.5 py-1 rounded">과목</span></div>
+          <h2 id="iTitle" class="text-lg font-bold text-slate-900 mb-4 leading-snug">면접 질문</h2>
+          <div class="p-4 bg-slate-50 border rounded-xl mb-4">
+            <span class="text-xs font-bold text-indigo-700 block mb-1">🗣️ 모범 두괄식 답변 스크립트:</span>
+            <p id="iAnsText" class="text-sm text-slate-700 leading-relaxed"></p>
+          </div>
+          <div class="grid grid-cols-2 gap-4 mt-6">
+            <button onclick="rejectContent('interview')" class="bg-rose-100 hover:bg-rose-200 text-rose-700 font-bold py-4 rounded-xl border">🗑️ 폐기</button>
+            <button onclick="approveInterview()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 rounded-xl shadow-md">✅ 면접 문항 등재</button>
+          </div>
         </div>
       </div>
+
     </div>
   </main>
 
   <script>
-    // ==========================================
-    // 🔴 [필수입력] 깃허브 및 Supabase 정보
-    // ==========================================
     const REPO_OWNER = "sssemimaster"; 
     const REPO_NAME = "semicbt";
-    
-    // DB 정보 입력
-    const SUPABASE_URL = "https://hyqsrajudsymexxuekfb.supabase.co"; 
-    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh5cXNyYWp1ZHN5bWV4eHVla2ZiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQxMzA0MDEsImV4cCI6MjEwOTcwNjQwMX0.6OPx9ClxjCnIfGcCFwYhgbWICcpgBI1cvx1QcAyVvIY"; 
-    
+    const SUPABASE_URL = "본인의_SUPABASE_URL_입력"; 
+    const SUPABASE_KEY = "본인의_SUPABASE_KEY_입력"; 
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
     const ADMIN_HASH = "a0fb59cbf3a0f758247bd19c2907df0c50bc718e91328ca82095a64f1bcb42da";
 
     let token = "";
-    let drafts = [];
-    let currentDraftIndex = 0;
+    let draftQuizzes = [];
+    let draftInterviews = [];
+    let currentQuizIndex = 0;
+    let currentInterviewIndex = 0;
+    let activeTab = 'quiz';
 
     async function sha256(message) {
       const msgBuffer = new TextEncoder().encode(message);
@@ -105,195 +111,190 @@
 
     async function checkAdmin() {
       const inputPin = document.getElementById('adminPin').value;
-      const hashedInput = await sha256(inputPin);
-      if (hashedInput === ADMIN_HASH) {
+      if (await sha256(inputPin) === ADMIN_HASH) {
         document.getElementById('loginSection').classList.add('hidden');
         document.getElementById('authSection').classList.remove('hidden');
-      } else { alert("비밀번호가 틀렸습니다."); document.getElementById('adminPin').value = ""; }
+      } else { alert("비밀번호 틀림"); document.getElementById('adminPin').value = ""; }
     }
 
-    // 🚀 통합 로드 (대기 문제 + 제보 리스트 동시 호출)
     async function loadAdminData() {
       token = document.getElementById('ghToken').value.trim();
-      if(!token.startsWith("ghp_")) return alert("유효한 GitHub 토큰이 아닙니다.");
+      if(!token.startsWith("ghp_")) return alert("유효한 토큰이 아닙니다.");
       
       try {
-        // 1. GitHub에서 대기소 문제 가져오기
-        const fileData = await fetchGitHubFile("data/draft_questions.json");
-        drafts = JSON.parse(fileData.content);
-        
-        // 2. 화면 전환
+        // 시험 대기소 로드
+        const qFile = await fetchGitHubFile("data/draft_questions.json");
+        draftQuizzes = JSON.parse(qFile.content);
+        document.getElementById('draftQCount').innerText = draftQuizzes.length;
+
+        // 면접 대기소 로드 (파일이 없으면 빈 배열 처리)
+        try {
+          const iFile = await fetchGitHubFile("data/draft_interviews.json");
+          draftInterviews = JSON.parse(iFile.content);
+        } catch(e) { draftInterviews = []; }
+        document.getElementById('draftICount').innerText = draftInterviews.length;
+
         document.getElementById('authSection').classList.add('hidden');
         document.getElementById('dashboardSection').classList.remove('hidden');
-        
-        // 3. 렌더링
-        if(drafts.length > 0) renderAdminQuestion();
-        else document.getElementById('reviewContainer').innerHTML = "<p class='text-center py-6 text-slate-500 font-bold'>현재 검수 대기 중인 문제가 없습니다.</p>";
-        
-        // 4. Supabase에서 유저 제보 불러오기
+
+        if(draftQuizzes.length > 0) renderQuizReview();
+        if(draftInterviews.length > 0) renderInterviewReview();
         loadReports();
-      } catch (e) {
-        alert("인증 실패! 깃허브 토큰 권한을 확인하세요."); console.error(e);
-      }
+      } catch (e) { alert("데이터 로드 실패"); console.error(e); }
     }
 
-    // ==========================================
-    // ✨ Supabase 제보함 컨트롤 로직
-    // ==========================================
-    async function loadReports() {
-      const listContainer = document.getElementById('reportsList');
-      listContainer.innerHTML = '<p class="text-sm text-slate-500 text-center py-4">로딩 중...</p>';
-      
-      try {
-        // pending 상태인 제보만 시간 역순(최신순)으로 가져오기
-        const { data, error } = await supabaseClient
-          .from('error_reports')
-          .select('*')
-          .eq('status', 'pending')
-          .order('created_at', { ascending: false });
-
-        if(error) throw error;
-
-        if(data.length === 0) {
-          listContainer.innerHTML = '<p class="text-sm text-emerald-600 font-bold text-center py-4">🎉 현재 접수된 미처리 오류 제보가 없습니다!</p>';
-          return;
-        }
-
-        // 제보 리스트 UI 그리기
-        listContainer.innerHTML = '';
-        data.forEach(report => {
-          const date = new Date(report.created_at).toLocaleString('ko-KR');
-          const div = document.createElement('div');
-          div.className = "bg-rose-50 border border-rose-100 p-4 rounded-xl flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center";
-          div.innerHTML = `
-            <div class="flex-1">
-              <div class="flex items-center gap-2 mb-1">
-                <span class="bg-rose-200 text-rose-800 text-[10px] font-bold px-2 py-0.5 rounded">ID: ${report.question_id}</span>
-                <span class="text-xs text-slate-400">${date}</span>
-              </div>
-              <p class="text-sm text-slate-800 font-medium">${report.content}</p>
-            </div>
-            <div class="flex gap-2 w-full sm:w-auto mt-2 sm:mt-0">
-              <button onclick="resolveReport(${report.id}, '${report.question_id}', 'dismiss')" class="flex-1 sm:flex-none bg-white border border-slate-200 text-slate-600 text-xs px-4 py-2 rounded-lg hover:bg-slate-100 font-bold">무시</button>
-              <button onclick="resolveReport(${report.id}, '${report.question_id}', 'revert')" class="flex-1 sm:flex-none bg-rose-600 text-white text-xs px-4 py-2 rounded-lg hover:bg-rose-700 font-bold shadow-sm whitespace-nowrap">즉시 원복하기</button>
-            </div>
-          `;
-          listContainer.appendChild(div);
-        });
-      } catch(e) {
-        listContainer.innerHTML = '<p class="text-sm text-rose-600 text-center py-4">DB에서 제보를 불러오지 못했습니다.</p>';
-        console.error(e);
-      }
-    }
-
-    // 제보 처리 (무시 또는 원복 후 DB 상태값 변경)
-    async function resolveReport(reportId, questionId, action) {
-      if(action === 'revert') {
-        if(!confirm(`[${questionId}] 문제를 정말로 사이트에서 내리고 대기소로 원복하시겠습니까?`)) return;
-        const success = await moveLiveToDraft(questionId); // 실제 깃허브 API 호출
-        if(!success) return; // 깃허브 작업 실패 시 DB 변경 안함
+    function switchTab(tab) {
+      activeTab = tab;
+      if(tab === 'quiz') {
+        document.getElementById('tabQuizBtn').className = "flex-1 py-3 font-bold text-sm rounded-xl bg-indigo-600 text-white transition";
+        document.getElementById('tabInterviewBtn').className = "flex-1 py-3 font-bold text-sm rounded-xl text-slate-500 transition";
+        document.getElementById('reviewQuizContainer').classList.remove('hidden');
+        document.getElementById('reviewInterviewContainer').classList.add('hidden');
       } else {
-        if(!confirm("이 제보를 무시(처리 완료)하시겠습니까?")) return;
-      }
-
-      // 깃허브 처리가 끝났으므로 DB의 status를 'resolved'로 업데이트하여 화면에서 지움
-      try {
-        await supabaseClient.from('error_reports').update({ status: 'resolved' }).eq('id', reportId);
-        alert("✅ 제보 처리가 완료되었습니다.");
-        loadReports(); // 리스트 새로고침
-      } catch(e) {
-        console.error("DB 업데이트 실패:", e);
+        document.getElementById('tabInterviewBtn').className = "flex-1 py-3 font-bold text-sm rounded-xl bg-indigo-600 text-white transition";
+        document.getElementById('tabQuizBtn').className = "flex-1 py-3 font-bold text-sm rounded-xl text-slate-500 transition";
+        document.getElementById('reviewInterviewContainer').classList.remove('hidden');
+        document.getElementById('reviewQuizContainer').classList.add('hidden');
       }
     }
 
-    // --- (이하 기존 깃허브 파일 제어 로직 동일) ---
-    function renderAdminQuestion() {
-      if(drafts.length === 0) return;
-      document.getElementById('draftCount').innerText = drafts.length - currentDraftIndex;
-      const q = drafts[currentDraftIndex];
-      document.getElementById('catBadge').innerText = `${q.category} > ${q.topic} (${q.difficulty})`;
+    // --- 시험 문제 렌더링 및 승인 ---
+    function renderQuizReview() {
+      if(draftQuizzes.length === 0) {
+        document.getElementById('qBox').innerHTML = "<p class='text-center py-6 text-slate-500 font-bold'>대기 중인 시험 문제가 없습니다.</p>";
+        return;
+      }
+      const q = draftQuizzes[currentQuizIndex];
+      document.getElementById('qCatBadge').innerText = `${q.category} > ${q.topic} (${q.difficulty})`;
       document.getElementById('qTitle').innerText = q.question;
-      const optContainer = document.getElementById('optContainer'); optContainer.innerHTML = '';
-      document.getElementById('expBox').classList.add('hidden');
+      const optContainer = document.getElementById('qOptContainer'); optContainer.innerHTML = '';
+      document.getElementById('qExpBox').classList.add('hidden');
+      
       q.options.forEach((opt, idx) => {
-        const btn = document.createElement('button'); btn.className = "w-full text-left p-4 rounded-xl border border-slate-200 hover:bg-indigo-50 font-medium text-sm flex items-center transition"; btn.innerHTML = `<span class="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-xs mr-3 text-slate-500 font-bold">${idx + 1}</span> <span>${opt}</span>`; btn.onclick = () => showAnswer(idx, q); optContainer.appendChild(btn);
+        const btn = document.createElement('button');
+        btn.className = "w-full text-left p-4 rounded-xl border border-slate-200 hover:bg-indigo-50 font-medium text-sm flex items-center";
+        btn.innerHTML = `<span class="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-xs mr-3 font-bold">${idx + 1}</span> <span>${opt}</span>`;
+        btn.onclick = () => {
+          document.getElementById('qExpBox').classList.remove('hidden');
+          const res = document.getElementById('qResStatus');
+          if(idx === q.answer) { res.className = "font-bold text-sm mb-1 text-emerald-600"; res.innerText = "⭕ 정답입니다!"; }
+          else { res.className = "font-bold text-sm mb-1 text-rose-600"; res.innerText = `❌ 오답 (정답: ${q.answer + 1}번)`; }
+          document.getElementById('qExpText').innerText = q.explanation;
+        };
+        optContainer.appendChild(btn);
       });
     }
 
-    function showAnswer(selectedIdx, q) {
-      const box = document.getElementById('expBox'); const status = document.getElementById('resStatus'); box.classList.remove('hidden');
-      if (selectedIdx === q.answer) { status.innerHTML = "⭕ 정답을 맞혔습니다!"; status.className = "font-bold text-sm mb-2 text-emerald-600"; } 
-      else { status.innerHTML = `❌ 틀렸습니다. (실제 정답: ${q.answer + 1}번)`; status.className = "font-bold text-sm mb-2 text-rose-600"; }
-      document.getElementById('expText').innerText = q.explanation; document.getElementById('ivText').innerText = q.interview_answer || "없음";
-    }
-
-    async function approveQuestion() {
-      const q = drafts[currentDraftIndex]; if(!confirm("정식으로 반영하시겠습니까?")) return;
+    async function approveQuiz() {
+      const q = draftQuizzes[currentQuizIndex];
+      if(!confirm("이 시험 문제를 정식 등재하시겠습니까?")) return;
       try {
-        const liveFile = await fetchGitHubFile("data/questions.json"); let liveData = JSON.parse(liveFile.content); liveData.unshift(q);
-        await updateGitHubFile("data/questions.json", liveFile.sha, JSON.stringify(liveData, null, 2), `Approve question ${q.id}`);
-        await removeCurrentDraft(); alert("✅ 성공적으로 등재되었습니다!"); nextDraft();
-      } catch(e) { alert("등재 중 오류가 발생했습니다."); console.error(e); }
-    }
-
-    async function rejectQuestion() {
-      if(!confirm("폐기하시겠습니까?")) return;
-      try { await removeCurrentDraft(); alert("🗑️ 문제가 폐기되었습니다."); nextDraft(); } catch(e) { alert("오류 발생"); }
-    }
-
-    async function removeCurrentDraft() {
-      const draftFile = await fetchGitHubFile("data/draft_questions.json"); let draftData = JSON.parse(draftFile.content); draftData.splice(currentDraftIndex, 1); 
-      await updateGitHubFile("data/draft_questions.json", draftFile.sha, JSON.stringify(draftData, null, 2), "Remove processed draft");
-    }
-
-    function nextDraft() {
-      if(currentDraftIndex < drafts.length - 1) { drafts.splice(currentDraftIndex, 1); renderAdminQuestion(); } 
-      else { document.getElementById('reviewContainer').innerHTML = `<h2 class="text-xl font-bold text-slate-700 text-center py-6">🎉 모든 검수가 끝났습니다!</h2>`; document.getElementById('draftCount').innerText = "0"; }
-    }
-
-    async function handleManualRevert() {
-      const targetId = document.getElementById('liveQId').value.trim();
-      if(!targetId) return alert("문제 ID를 입력하세요.");
-      if(await moveLiveToDraft(targetId)) {
-        alert("🚨 성공적으로 라이브에서 내리고 대기소로 원복했습니다.");
-        document.getElementById('liveQId').value = "";
-      }
-    }
-
-    // 깃허브 API를 이용해 문제를 쪼개서 옮기는 핵심 함수
-    async function moveLiveToDraft(targetId) {
-      try {
-        const liveFile = await fetchGitHubFile("data/questions.json");
-        let liveData = JSON.parse(liveFile.content);
-        const targetQIndex = liveData.findIndex(q => q.id === targetId);
+        const live = await fetchGitHubFile("data/questions.json");
+        let data = JSON.parse(live.content); data.unshift(q);
+        await updateGitHubFile("data/questions.json", live.sha, JSON.stringify(data, null, 2), `Approve quiz ${q.id}`);
         
-        if(targetQIndex === -1) { alert("서버에서 해당 ID의 문제를 찾을 수 없습니다."); return false; }
-        
-        const targetQ = liveData.splice(targetQIndex, 1)[0]; 
+        draftQuizzes.splice(currentQuizIndex, 1);
         const draftFile = await fetchGitHubFile("data/draft_questions.json");
-        let draftData = JSON.parse(draftFile.content);
-        draftData.unshift(targetQ); 
+        await updateGitHubFile("data/draft_questions.json", draftFile.sha, JSON.stringify(draftQuizzes, null, 2), "Remove draft quiz");
         
-        await updateGitHubFile("data/questions.json", liveFile.sha, JSON.stringify(liveData, null, 2), `Revert ${targetId} to draft`);
-        await updateGitHubFile("data/draft_questions.json", draftFile.sha, JSON.stringify(draftData, null, 2), `Move ${targetId} to draft`);
-        return true;
-      } catch (e) {
-        alert("파일 이동 중 오류가 발생했습니다."); console.error(e); return false;
-      }
+        alert("✅ 시험 문제 등재 완료!");
+        document.getElementById('draftQCount').innerText = draftQuizzes.length;
+        renderQuizReview();
+      } catch(e) { alert("등재 실패"); }
     }
 
-    // --- GitHub 통신 유틸리티 ---
+    // --- 면접 문항 렌더링 및 승인 ---
+    function renderInterviewReview() {
+      if(draftInterviews.length === 0) {
+        document.getElementById('iBox').innerHTML = "<p class='text-center py-6 text-slate-500 font-bold'>대기 중인 면접 문항이 없습니다.</p>";
+        return;
+      }
+      const i = draftInterviews[currentInterviewIndex];
+      document.getElementById('iCatBadge').innerText = `${i.category} > ${i.topic}`;
+      document.getElementById('iTitle').innerText = i.question;
+      document.getElementById('iAnsText').innerText = i.interview_answer;
+    }
+
+    async function approveInterview() {
+      const i = draftInterviews[currentInterviewIndex];
+      if(!confirm("이 면접 문항을 정식 등재하시겠습니까?")) return;
+      try {
+        // 면접 데이터 본섭 파일(interviews.json)에 등재
+        let live;
+        try { live = await fetchGitHubFile("data/interviews.json"); } 
+        catch(e) { live = { sha: null, content: "[]" }; } // 파일 없으면 생성
+        
+        let data = JSON.parse(live.content); data.unshift(i);
+        
+        if(live.sha) {
+          await updateGitHubFile("data/interviews.json", live.sha, JSON.stringify(data, null, 2), `Approve interview ${i.id}`);
+        } else {
+          // 첫 생성인 경우
+          const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
+          await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/data/interviews.json`, {
+            method: "PUT", headers: { "Authorization": `token ${token}`, "Content-Type": "application/json" },
+            body: JSON.stringify({ message: "Create interviews.json", content: encoded })
+          });
+        }
+        
+        draftInterviews.splice(currentInterviewIndex, 1);
+        const draftFile = await fetchGitHubFile("data/draft_interviews.json");
+        await updateGitHubFile("data/draft_interviews.json", draftFile.sha, JSON.stringify(draftInterviews, null, 2), "Remove draft interview");
+        
+        alert("✅ 면접 문항 등재 완료!");
+        document.getElementById('draftICount').innerText = draftInterviews.length;
+        renderInterviewReview();
+      } catch(e) { alert("등재 실패"); console.error(e); }
+    }
+
+    async function rejectContent(type) {
+      if(!confirm("폐기하시겠습니까?")) return;
+      if(type === 'quiz') {
+        draftQuizzes.splice(currentQuizIndex, 1);
+        const f = await fetchGitHubFile("data/draft_questions.json");
+        await updateGitHubFile("data/draft_questions.json", f.sha, JSON.stringify(draftQuizzes, null, 2), "Reject quiz");
+        document.getElementById('draftQCount').innerText = draftQuizzes.length;
+        renderQuizReview();
+      } else {
+        draftInterviews.splice(currentInterviewIndex, 1);
+        const f = await fetchGitHubFile("data/draft_interviews.json");
+        await updateGitHubFile("data/draft_interviews.json", f.sha, JSON.stringify(draftInterviews, null, 2), "Reject interview");
+        document.getElementById('draftICount').innerText = draftInterviews.length;
+        renderInterviewReview();
+      }
+      alert("🗑️ 폐기되었습니다.");
+    }
+
+    // 제보함 로드
+    async function loadReports() {
+      const list = document.getElementById('reportsList');
+      const { data } = await supabaseClient.from('error_reports').select('*').eq('status', 'pending').order('created_at', { ascending: false });
+      if(!data || data.length === 0) { list.innerHTML = '<p class="text-xs text-emerald-600 font-bold text-center py-2">미처리 제보 없음</p>'; return; }
+      list.innerHTML = '';
+      data.forEach(r => {
+        const div = document.createElement('div');
+        div.className = "bg-rose-50 p-3 rounded-xl flex justify-between items-center text-sm";
+        div.innerHTML = `<div><span class="font-bold text-rose-800">[ID: ${r.question_id}]</span> ${r.content}</div><button onclick="resolveReport(${r.id})" class="bg-rose-600 text-white px-3 py-1 rounded text-xs font-bold">확인</button>`;
+        list.appendChild(div);
+      });
+    }
+
+    async function resolveReport(id) {
+      await supabaseClient.from('error_reports').update({ status: 'resolved' }).eq('id', id);
+      loadReports();
+    }
+
     async function fetchGitHubFile(path) {
       const res = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`, { headers: { "Authorization": `token ${token}` } });
       const data = await res.json(); if(data.message) throw new Error(data.message);
-      const decoded = decodeURIComponent(escape(atob(data.content))); return { sha: data.sha, content: decoded };
+      return { sha: data.sha, content: decodeURIComponent(escape(atob(data.content))) };
     }
 
-    async function updateGitHubFile(path, sha, newContentString, commitMsg) {
-      const encoded = btoa(unescape(encodeURIComponent(newContentString)));
+    async function updateGitHubFile(path, sha, contentStr, msg) {
+      const encoded = btoa(unescape(encodeURIComponent(contentStr)));
       const res = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`, {
         method: "PUT", headers: { "Authorization": `token ${token}`, "Content-Type": "application/json" },
-        body: JSON.stringify({ message: commitMsg, content: encoded, sha: sha })
+        body: JSON.stringify({ message: msg, content: encoded, sha: sha })
       });
       if(!res.ok) throw new Error("업데이트 실패");
     }
