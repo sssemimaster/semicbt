@@ -1,5 +1,105 @@
 [
   {
+    "id": "AUTO-80001",
+    "category": "반도체 8대 공정",
+    "topic": "6. 금속 배선 공정 (Metallization) 내부 세부 토픽",
+    "difficulty": "중급",
+    "question": "금속 배선 공정에서 주로 사용되는 금속 물질은 무엇인가요?",
+    "options": [
+      "구리",
+      "알루미늄",
+      "금",
+      "니켈"
+    ],
+    "answer": 1,
+    "explanation": "알루미늄이 전통적으로 반도체 소자의 금속 배선에 사용되며, 구리는 전도성이 더 높아 최근에 많이 사용되고 있습니다.",
+    "flashcard_keywords": [
+      "구리",
+      "알루미늄"
+    ],
+    "interview_answer": "금속 배선 공정에서 알루미늄은 전통적으로 사용되며, 구리도 최근에 많이 활용되고 있습니다. 각각의 장단점이 있으므로 상황에 맞게 선택해야 합니다."
+  },
+  {
+    "id": "AUTO-80002",
+    "category": "반도체 8대 공정",
+    "topic": "6. 금속 배선 공정 (Metallization) 내부 세부 토픽",
+    "difficulty": "중급",
+    "question": "금속 배선 공정에서 사용하는 전자빔 리소그래피의 주 목적은 무엇인가요?",
+    "options": [
+      "패턴 형성",
+      "금속 증착",
+      "세정",
+      "식각"
+    ],
+    "answer": 0,
+    "explanation": "전자빔 리소그래피는 매우 정밀한 패턴을 형성하는 데 사용되며, 이는 후속 금속 증착 공정에 필수적입니다.",
+    "flashcard_keywords": [
+      "전자빔 리소그래피",
+      "패턴 형성"
+    ],
+    "interview_answer": "전자빔 리소그래피의 주 목적은 정밀한 패턴 형성입니다. 이는 나중의 금속 증착 공정의 정확성을 보장합니다."
+  },
+  {
+    "id": "AUTO-80003",
+    "category": "반도체 8대 공정",
+    "topic": "6. 금속 배선 공정 (Metallization) 내부 세부 토픽",
+    "difficulty": "중급",
+    "question": "금속 배선 공정에서 'CVD'는 무엇을 의미하나요?",
+    "options": [
+      "Chemical Vapor Deposition",
+      "Conductive Vapor Deposition",
+      "Copper Vapor Deposition",
+      "Capacitance Vapor Deposition"
+    ],
+    "answer": 0,
+    "explanation": "CVD는 화학 기상 증착을 의미하며, 다양한 물질을 기판 위에 증착하는 데 사용되는 공정입니다.",
+    "flashcard_keywords": [
+      "CVD",
+      "화학 기상 증착"
+    ],
+    "interview_answer": "CVD는 Chemical Vapor Deposition의 약자로, 화학적 방법으로 기판 위에 물질을 증착하는 공정입니다. 반도체 제조에서 매우 중요한 역할을 합니다."
+  },
+  {
+    "id": "AUTO-80004",
+    "category": "반도체 8대 공정",
+    "topic": "6. 금속 배선 공정 (Metallization) 내부 세부 토픽",
+    "difficulty": "중급",
+    "question": "금속 배선 공정에서 식각(Etching)의 주요 역할은 무엇인가요?",
+    "options": [
+      "금속 증착",
+      "패턴 제거",
+      "패턴 형성",
+      "물질 증착"
+    ],
+    "answer": 1,
+    "explanation": "식각 공정은 기판에서 원하지 않는 금속을 제거하여 원하는 패턴을 형성하는 데 필수적입니다.",
+    "flashcard_keywords": [
+      "식각",
+      "패턴 제거"
+    ],
+    "interview_answer": "식각의 주요 역할은 기판에서 원하지 않는 금속을 제거하여 원하는 패턴을 형성하는 것입니다. 이는 금속 배선의 정확성을 높이는 데 필수적입니다."
+  },
+  {
+    "id": "AUTO-80005",
+    "category": "반도체 8대 공정",
+    "topic": "6. 금속 배선 공정 (Metallization) 내부 세부 토픽",
+    "difficulty": "중급",
+    "question": "금속 배선 공정에서 사용되는 'PVD' 기술은 무엇을 의미하나요?",
+    "options": [
+      "Physical Vapor Deposition",
+      "Plastic Vapor Deposition",
+      "Phase Vapor Deposition",
+      "Pressure Vapor Deposition"
+    ],
+    "answer": 0,
+    "explanation": "PVD는 물리적 기상 증착을 의미하며, 금속을 기판에 증착하는 데 널리 사용되는 기술입니다.",
+    "flashcard_keywords": [
+      "PVD",
+      "물리적 기상 증착"
+    ],
+    "interview_answer": "PVD는 Physical Vapor Deposition의 약자로, 물리적 방법으로 금속을 기판에 증착하는 기술입니다. 이는 매우 정밀한 금속 배선 형성을 가능하게 합니다."
+  },
+  {
     "id": "AUTO-74065",
     "category": "반도체 8대 공정",
     "topic": "4. 식각 공정 (Etching) 내부 세부 토픽",
