@@ -22,7 +22,6 @@ topics = [
     {"category": "차세대 첨단 기술", "subject": "어드밴스드 패키징", "guide": "HBM, TSV, 하이브리드 본딩, 칩렛 등 차세대 패키징"}
 ]
 
-# 1. 파일에서 기존 데이터 먼저 읽어오기
 q_path = "data/questions.json"
 t_path = "data/theories.json"
 
@@ -36,26 +35,32 @@ if os.path.exists(t_path):
     with open(t_path, "r", encoding="utf-8") as f:
         existing_theories = json.load(f)
 
-# 랜덤 과목 선정
 selected = random.choice(topics)
 sel_category = selected["category"]
 sel_subject = selected["subject"]
 sel_guide = selected["guide"]
 
-# ✨ 2. 현재 선택된 과목에서 '이미 존재하는' 글 제목과 문제 토픽 추출 (중복 회피용)
-used_theory_titles = [t.get("title", "") for t in existing_theories if t.get("subject") == sel_subject]
-used_theory_str = ", ".join(used_theory_titles[:30]) if used_theory_titles else "없음 (처음 작성됨)"
+# ✨ 1. 기존 이론의 '제목'과 '핵심 태그'를 모두 수집 (내용 중복 원천 차단)
+used_theory_titles = []
+used_theory_tags = []
+for t in existing_theories:
+    if t.get("subject") == sel_subject:
+        used_theory_titles.append(t.get("title", ""))
+        used_theory_tags.extend(t.get("tags", []))
 
+used_title_str = ", ".join(used_theory_titles[:30]) if used_theory_titles else "없음"
+used_tag_str = ", ".join(list(set(used_theory_tags))[:50]) if used_theory_tags else "없음"
+
+# ✨ 2. 문제 토픽 중복 수집
 used_question_topics = list(set([q.get("topic", "") for q in existing_questions if q.get("category") == sel_category]))
-used_question_str = ", ".join(used_question_topics[:30]) if used_question_topics else "없음 (처음 출제됨)"
+used_question_str = ", ".join(used_question_topics[:30]) if used_question_topics else "없음"
 
-# 3. 프롬프트에 '중복 금지(Blacklist)' 명시
 PROMPT_QUIZ = f"""
 당신은 반도체 기업의 직무 면접관입니다. 대분류 '{sel_category}', 세부 주제 '{sel_subject}'에 대한 객관식 문제를 5개 생성해 주세요.
 [출제 지침]: {sel_guide}
 
-🚨 [중복 출제 절대 금지]: 아래 목록은 이전에 이미 출제된 토픽들입니다. 이 토픽들은 무조건 피하고, 전혀 다른 새로운 개념이나 더 깊은 심화 원리, 새로운 장비/소재 등을 다루는 문제를 만드세요.
-- 이미 출제된 토픽들: {used_question_str}
+🚨 [중복 출제 절대 금지]: 아래는 이미 출제된 토픽들입니다. 이를 무조건 피하고 완전히 새로운 개념이나 장비, 원리를 다루는 문제를 만드세요.
+- 기존 출제 토픽: {used_question_str}
 
 반드시 아래 형식을 가진 JSON 배열(Array)로만 응답하세요. (마크다운 생략)
 [
@@ -79,8 +84,10 @@ PROMPT_THEORY = f"""
 대분류 '{sel_category}', 중분류 '{sel_subject}'에 속하는 구체적인 심화 기술을 하나 선정하여 새로운 백과사전 글을 작성해 주세요.
 [작성 지침]: {sel_guide} 
 
-🚨 [중복 작성 절대 금지]: 아래 목록은 우리 백과사전에 이미 존재하는 글 제목들입니다. 이 제목들과 겹치는 내용은 절대 작성하지 말고, 완전히 새로운 세부 공정, 새로운 트러블슈팅, 새로운 원리 등을 다루는 글을 작성하세요.
-- 이미 존재하는 글 제목들: {used_theory_str}
+🚨 [내용 중복 절대 금지 - 매우 중요]: 아래는 우리 백과사전에 이미 존재하는 글의 제목과 다루어진 핵심 키워드(태그)들입니다. 
+- 기존 작성된 제목들: {used_title_str}
+- 기존 다루어진 핵심 키워드들: {used_tag_str}
+이 키워드들과 겹치는 내용(비슷한 원리, 중복되는 설명)은 절대 다시 다루지 마세요. 이 키워드들을 완벽히 빗겨나가서, 완전히 새로운 세부 공정, 설비 구조, 또는 다른 관점의 실무 트러블슈팅을 다루는 글을 작성해야 합니다.
 
 반드시 아래 형식을 가진 JSON 배열(Array)로만 응답하세요. (마크다운 생략)
 [
@@ -90,42 +97,39 @@ PROMPT_THEORY = f"""
     "subject": "{sel_subject}",
     "title": "선정한 완전히 새로운 심화 기술 제목",
     "content": "선정한 기술에 대해 3~4문단으로 깊이 있고 풍부하게 설명할 것. 문단 바꿈은 \\n\\n 으로 명확히 구분할 것.",
-    "tags": ["키워드1", "키워드2", "키워드3"]
+    "tags": ["새로운키워드1", "새로운키워드2", "새로운키워드3"]
   }}
 ]
 """
 
 def generate_contents():
-    # 퀴즈 생성
     res_q = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": "You strictly output a valid JSON array."},
             {"role": "user", "content": PROMPT_QUIZ}
         ],
-        temperature=0.8 # 더 다양한 주제를 찾도록 온도 살짝 상향
+        temperature=0.8 
     )
     new_questions = json.loads(res_q.choices[0].message.content.replace("```json", "").replace("```", "").strip())
     
-    # 이론 생성
     res_t = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": "You strictly output a valid JSON array."},
             {"role": "user", "content": PROMPT_THEORY}
         ],
-        temperature=0.9 # 창의적으로 안 겹치는 글을 쓰도록 온도 상향
+        temperature=0.9 
     )
     new_theories = json.loads(res_t.choices[0].message.content.replace("```json", "").replace("```", "").strip())
 
-    # 데이터 누적 업데이트
     with open(q_path, "w", encoding="utf-8") as f:
         json.dump(new_questions + existing_questions, f, ensure_ascii=False, indent=2)
         
     with open(t_path, "w", encoding="utf-8") as f:
         json.dump(new_theories + existing_theories, f, ensure_ascii=False, indent=2)
 
-    print(f"새로운 문제 {len(new_questions)}개, 심화 이론 {len(new_theories)}개 생성 완료 (중복 회피 적용)!")
+    print(f"새로운 문제 {len(new_questions)}개, 심화 이론 {len(new_theories)}개 생성 완료 (완벽 중복 회피)!")
 
 if __name__ == "__main__":
     generate_contents()
