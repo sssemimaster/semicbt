@@ -36,6 +36,6 @@ jobs:
       run: |
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-        # 문제 파일과 이론 파일을 모두 추가하도록 변경
-        git add data/questions.json data/theories.json
+        # draft 파일도 강제로 커밋에 포함시킴
+        git add data/questions.json data/theories.json data/draft_questions.json
         git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-generated new questions and theories" && git push)
