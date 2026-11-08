@@ -82,17 +82,16 @@
     // ==========================================
     // 🔴 [필수입력] 깃허브 및 Supabase 정보
     // ==========================================
-    const REPO_OWNER = "본인아이디"; 
-    const REPO_NAME = "저장소이름";
+    const REPO_OWNER = "sssemimaster"; 
+    const REPO_NAME = "semicbt";
     
     // DB 정보 입력
-    const SUPABASE_URL = "본인의_SUPABASE_URL_입력"; 
-    const SUPABASE_KEY = "본인의_SUPABASE_KEY_입력"; 
+    const SUPABASE_URL = "https://hyqsrajudsymexxuekfb.supabase.co"; 
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh5cXNyYWp1ZHN5bWV4eHVla2ZiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQxMzA0MDEsImV4cCI6MjEwOTcwNjQwMX0.6OPx9ClxjCnIfGcCFwYhgbWICcpgBI1cvx1QcAyVvIY"; 
     
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // 기본 비밀번호 '2026'의 해시값
-    const ADMIN_HASH = "e8b8c56cc6b3e7bc2cf91fbf62a5b6ce3ed2fb738374d9e0303b41d40132b35a";
+    const ADMIN_HASH = "a0fb59cbf3a0f758247bd19c2907df0c50bc718e91328ca82095a64f1bcb42da";
 
     let token = "";
     let drafts = [];
