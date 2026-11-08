@@ -5,7 +5,6 @@ from openai import OpenAI
 
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
-# 절대 깨지지 않는 1단계, 2단계 고정 틀 및 지침
 topics = [
     {"category": "반도체 기초 이론", "subject": "반도체 물리", "guide": "N형/P형, 에너지 밴드, 캐리어 등 기초 물리 위주"},
     {"category": "반도체 기초 이론", "subject": "트랜지스터 소자", "guide": "MOSFET, 채널, 누설 전류 등 소자 원리 위주"},
@@ -40,7 +39,6 @@ sel_category = selected["category"]
 sel_subject = selected["subject"]
 sel_guide = selected["guide"]
 
-# ✨ 1. 기존 이론의 '제목'과 '핵심 태그'를 모두 수집 (내용 중복 원천 차단)
 used_theory_titles = []
 used_theory_tags = []
 for t in existing_theories:
@@ -51,24 +49,26 @@ for t in existing_theories:
 used_title_str = ", ".join(used_theory_titles[:30]) if used_theory_titles else "없음"
 used_tag_str = ", ".join(list(set(used_theory_tags))[:50]) if used_theory_tags else "없음"
 
-# ✨ 2. 문제 토픽 중복 수집
 used_question_topics = list(set([q.get("topic", "") for q in existing_questions if q.get("category") == sel_category]))
 used_question_str = ", ".join(used_question_topics[:30]) if used_question_topics else "없음"
 
 PROMPT_QUIZ = f"""
-당신은 반도체 기업의 직무 면접관입니다. 대분류 '{sel_category}', 세부 주제 '{sel_subject}'에 대한 객관식 문제를 5개 생성해 주세요.
+당신은 반도체 기업의 깐깐한 직무 면접관입니다. 대분류 '{sel_category}', 세부 주제 '{sel_subject}'에 대한 고품질 객관식 문제를 정확히 3개 생성해 주세요.
 [출제 지침]: {sel_guide}
 
-🚨 [중복 출제 절대 금지]: 아래는 이미 출제된 토픽들입니다. 이를 무조건 피하고 완전히 새로운 개념이나 장비, 원리를 다루는 문제를 만드세요.
-- 기존 출제 토픽: {used_question_str}
+🚨 [품질 및 난이도 요구사항]
+1. 문제 3개의 난이도는 각각 "초급", "중급", "고급"으로 하나씩 구성하세요.
+2. 정답을 쉽게 유추할 수 없도록 보기(Options)의 매력도(함정)를 높이세요.
+3. 해설(explanation)은 '왜 다른 보기가 오답인지'까지 포함하여 논리적이고 상세하게 작성하세요.
+4. 최근 출제된 토픽들({used_question_str})과 비슷한 개념을 묻더라도, 선지(Options) 구성과 문제에서 묻는 핵심 요구 지식은 반드시 다른 관점으로 비틀어서 출제해야 합니다. 똑같은 문제를 재탕하지 마세요.
 
-반드시 아래 형식을 가진 JSON 배열(Array)로만 응답하세요. (마크다운 생략)
+반드시 아래 형식을 가진 JSON 배열(Array)로만 응답하세요.
 [
   {{
     "id": "AUTO-{random.randint(10000,99999)}",
     "category": "{sel_category}",
     "topic": "{sel_subject} 내부 세부 토픽",
-    "difficulty": "중급",
+    "difficulty": "초급", 
     "question": "문제 지문",
     "options": ["보기1", "보기2", "보기3", "보기4"],
     "answer": 0,
@@ -84,20 +84,20 @@ PROMPT_THEORY = f"""
 대분류 '{sel_category}', 중분류 '{sel_subject}'에 속하는 구체적인 심화 기술을 하나 선정하여 새로운 백과사전 글을 작성해 주세요.
 [작성 지침]: {sel_guide} 
 
-🚨 [내용 중복 절대 금지 - 매우 중요]: 아래는 우리 백과사전에 이미 존재하는 글의 제목과 다루어진 핵심 키워드(태그)들입니다. 
-- 기존 작성된 제목들: {used_title_str}
-- 기존 다루어진 핵심 키워드들: {used_tag_str}
-이 키워드들과 겹치는 내용(비슷한 원리, 중복되는 설명)은 절대 다시 다루지 마세요. 이 키워드들을 완벽히 빗겨나가서, 완전히 새로운 세부 공정, 설비 구조, 또는 다른 관점의 실무 트러블슈팅을 다루는 글을 작성해야 합니다.
+🚨 [내용 중복 절대 금지]: 아래는 우리 백과사전에 이미 존재하는 글의 제목과 핵심 키워드(태그)들입니다. 
+- 기존 제목들: {used_title_str}
+- 기존 키워드들: {used_tag_str}
+이 키워드들과 겹치는 내용(비슷한 원리, 중복되는 설명)은 피해서 완전히 새로운 세부 기술을 다루는 글을 작성하세요.
 
-반드시 아래 형식을 가진 JSON 배열(Array)로만 응답하세요. (마크다운 생략)
+반드시 아래 형식을 가진 JSON 배열(Array)로만 응답하세요. 
 [
   {{
     "id": "AUTO-T-{random.randint(100000,999999)}",
     "category": "{sel_category}",
     "subject": "{sel_subject}",
-    "title": "선정한 완전히 새로운 심화 기술 제목",
+    "title": "선정한 완전히 새로운 기술 제목",
     "content": "선정한 기술에 대해 3~4문단으로 깊이 있고 풍부하게 설명할 것. 문단 바꿈은 \\n\\n 으로 명확히 구분할 것.",
-    "tags": ["새로운키워드1", "새로운키워드2", "새로운키워드3"]
+    "tags": ["새로운키워드1", "새로운키워드2"]
   }}
 ]
 """
@@ -105,31 +105,34 @@ PROMPT_THEORY = f"""
 def generate_contents():
     res_q = client.chat.completions.create(
         model="gpt-4o-mini",
-        messages=[
-            {"role": "system", "content": "You strictly output a valid JSON array."},
-            {"role": "user", "content": PROMPT_QUIZ}
-        ],
+        messages=[{"role": "system", "content": "You strictly output a valid JSON array."}, {"role": "user", "content": PROMPT_QUIZ}],
         temperature=0.8 
     )
     new_questions = json.loads(res_q.choices[0].message.content.replace("```json", "").replace("```", "").strip())
     
     res_t = client.chat.completions.create(
         model="gpt-4o-mini",
-        messages=[
-            {"role": "system", "content": "You strictly output a valid JSON array."},
-            {"role": "user", "content": PROMPT_THEORY}
-        ],
+        messages=[{"role": "system", "content": "You strictly output a valid JSON array."}, {"role": "user", "content": PROMPT_THEORY}],
         temperature=0.9 
     )
     new_theories = json.loads(res_t.choices[0].message.content.replace("```json", "").replace("```", "").strip())
 
-    with open(q_path, "w", encoding="utf-8") as f:
-        json.dump(new_questions + existing_questions, f, ensure_ascii=False, indent=2)
+    # ✨ 수정: 만든 문제는 questions.json이 아닌 draft_questions.json 에 저장 (검수 대기)
+    draft_q_path = "data/draft_questions.json"
+    existing_draft_q = []
+    if os.path.exists(draft_q_path):
+        with open(draft_q_path, "r", encoding="utf-8") as f:
+            try: existing_draft_q = json.load(f)
+            except: pass
+            
+    with open(draft_q_path, "w", encoding="utf-8") as f:
+        json.dump(new_questions + existing_draft_q, f, ensure_ascii=False, indent=2)
         
+    # 이론은 바로 theories.json에 업데이트
     with open(t_path, "w", encoding="utf-8") as f:
         json.dump(new_theories + existing_theories, f, ensure_ascii=False, indent=2)
 
-    print(f"새로운 문제 {len(new_questions)}개, 심화 이론 {len(new_theories)}개 생성 완료 (완벽 중복 회피)!")
+    print(f"새로운 문제 {len(new_questions)}개(대기소 저장), 심화 이론 {len(new_theories)}개 생성 완료!")
 
 if __name__ == "__main__":
     generate_contents()
