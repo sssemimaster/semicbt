@@ -9,8 +9,8 @@
 <body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col">
 
   <header class="bg-indigo-900 text-white p-4 shadow-md flex justify-between items-center relative z-10">
-    <h1 class="text-xl font-bold tracking-tight cursor-pointer" onclick="changeView('view-lobby')">⚡ SemiCBT</h1>
-    <button class="bg-indigo-700 hover:bg-indigo-600 text-xs px-3 py-1.5 rounded-lg transition" onclick="changeView('view-lobby')">🏠 홈으로</button>
+    <h1 class="text-xl font-bold tracking-tight cursor-pointer" onclick="navTo('view-lobby')">⚡ SemiCBT</h1>
+    <button class="bg-indigo-700 hover:bg-indigo-600 text-xs px-3 py-1.5 rounded-lg transition" onclick="navTo('view-lobby')">🏠 홈으로</button>
   </header>
 
   <main class="flex-1 max-w-2xl w-full mx-auto p-4 flex flex-col justify-center py-8">
@@ -22,16 +22,16 @@
         <p class="text-slate-500 text-sm">원하는 학습 모드를 선택하세요.</p>
       </div>
       <div class="grid grid-cols-2 gap-4">
-        <button onclick="startLearning()" class="bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-800 p-6 rounded-2xl flex flex-col items-center justify-center transition shadow-sm">
+        <button onclick="navTo('view-learning', {level: 'home'})" class="bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-800 p-6 rounded-2xl flex flex-col items-center justify-center transition shadow-sm">
           <span class="text-3xl mb-2">📖</span>
           <span class="font-bold text-sm">이론 백과사전</span>
         </button>
-        <button onclick="openNote()" class="bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-800 p-6 rounded-2xl flex flex-col items-center justify-center transition shadow-sm">
+        <button onclick="navTo('view-note')" class="bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-800 p-6 rounded-2xl flex flex-col items-center justify-center transition shadow-sm">
           <span class="text-3xl mb-2">⭐</span>
           <span class="font-bold text-sm">오답 / 북마크</span>
         </button>
       </div>
-      <button onclick="changeView('view-setup')" class="w-full bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 text-indigo-800 p-6 rounded-2xl flex flex-col items-center justify-center transition shadow-sm">
+      <button onclick="navTo('view-setup')" class="w-full bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 text-indigo-800 p-6 rounded-2xl flex flex-col items-center justify-center transition shadow-sm">
         <span class="text-3xl mb-2">📝</span>
         <span class="font-bold text-lg">실전 모의고사 (CBT)</span>
       </button>
@@ -102,16 +102,13 @@
       </div>
     </div>
 
-    <!-- ✨ [화면 4] 깔끔하고 견고해진 2단계 이론 백과사전 -->
+    <!-- [화면 4] 이론 백과사전 + 검색 UI -->
     <div id="view-learning" class="hidden w-full flex flex-col">
       <button onclick="goBack()" class="text-slate-400 hover:text-slate-600 font-bold text-sm mb-3 transition w-fit outline-none">⬅️ 뒤로</button>
-      
       <div class="mb-4 relative">
         <input type="text" id="theorySearchInput" onkeyup="handleTheorySearch()" placeholder="🔍 키워드, 기술명, 공정 검색..." class="w-full bg-white border border-slate-200 text-slate-700 rounded-xl p-4 shadow-sm outline-none focus:border-emerald-500 transition font-medium">
       </div>
-      
       <div id="breadcrumbContainer" class="bg-emerald-50 rounded-xl border border-emerald-200 p-3 mb-4 flex flex-wrap items-center shadow-sm gap-y-2"></div>
-      
       <div id="learningContainer" class="grid grid-cols-1 gap-4"></div>
     </div>
 
@@ -136,7 +133,7 @@
           </div>
         </div>
         <p id="scoreDetail" class="text-base text-slate-600 font-medium mb-6">결과 내역</p>
-        <button onclick="changeView('view-lobby')" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-3.5 rounded-xl transition shadow-md">메인 로비로 돌아가기</button>
+        <button onclick="navTo('view-lobby')" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-3.5 rounded-xl transition shadow-md">메인 로비로 돌아가기</button>
       </div>
     </div>
 
@@ -151,9 +148,19 @@
     let correctCount = 0;
     let starredIds = JSON.parse(localStorage.getItem('semiCbtStarred')) || [];
 
-    // ✨ 확고한 2단계 상태 관리
+    // ✨ 완벽한 정렬을 위한 절대 규칙 목차 (이 목차에 맞춰 무조건 고정 배열됩니다)
+    const FIXED_CATEGORIES = ["반도체 기초 이론", "반도체 8대 공정", "차세대 첨단 기술"];
+    const FIXED_SUBJECTS = [
+      "반도체 물리", "트랜지스터 소자", "메모리 반도체",
+      "1. 웨이퍼 제조 공정", "2. 산화 공정 (Oxidation)", "3. 포토 공정 (Photo)",
+      "4. 식각 공정 (Etching)", "5. 박막 증착 공정 (Deposition)", "6. 금속 배선 공정 (Metallization)",
+      "7. EDS 공정 (Testing)", "8. 패키징 공정 (Packaging)",
+      "차세대 소자 기술", "어드밴스드 패키징"
+    ];
+
+    // 라우팅 상태 관리 변수
     let currentViewId = 'view-lobby';
-    let learnState = { level: 'category', category: '', subject: '' };
+    let learnState = { level: 'home', category: '', subject: '', theoryId: '' };
 
     async function initApp() {
       try {
@@ -177,67 +184,93 @@
         allQuizData = await quizRes.json();
         const rawTheories = await theoryRes.json();
         
-        // 과거 AI가 만든 이상한 path 데이터들을 모두 category, subject 포맷으로 억지로 평탄화
         allTheories = rawTheories.map((t, idx) => ({
           ...t,
           id: t.id || "T-" + idx,
           category: t.category || (t.path ? t.path[0] : "기타"),
           subject: t.subject || (t.path && t.path.length > 1 ? t.path[1] : "일반")
         }));
+
+        // 앱이 처음 켜질 때 방문 기록(History) 1개 강제 생성
+        history.replaceState({ viewId: 'view-lobby', learnState: learnState }, "");
       } catch (error) { console.error("데이터 로드 실패:", error); }
     }
 
-    function changeView(viewId) {
+    /* ==========================================
+       ✨ 핵심: 스마트폰 브라우저 백버튼 완벽 연동 라우터
+       ========================================== */
+    function navTo(viewId, newLearnState = null) {
+      if (newLearnState) {
+        learnState = { ...learnState, ...newLearnState };
+      }
+      // 주소창 방문 기록에 현재 상태를 살짝 밀어넣음
+      history.pushState({ viewId: viewId, learnState: JSON.parse(JSON.stringify(learnState)) }, "");
+      applyState(viewId, learnState);
+    }
+
+    // 스마트폰 자체 뒤로 가기(스와이프)를 감지하는 이벤트 리스너
+    window.addEventListener('popstate', (e) => {
+      if (e.state) {
+        learnState = e.state.learnState;
+        applyState(e.state.viewId, learnState);
+      } else {
+        applyState('view-lobby', { level: 'home' });
+      }
+    });
+
+    // 화면의 회색 뒤로 가기 버튼을 눌렀을 때
+    function goBack() {
+      if (currentViewId === 'view-learning' && document.getElementById('theorySearchInput').value.trim() !== '') {
+        // 검색 중일 때 뒤로 가면 검색만 취소함 (주소 기록 안건드림)
+        document.getElementById('theorySearchInput').value = '';
+        applyState('view-learning', learnState);
+      } else {
+        // 평소에는 브라우저 진짜 '뒤로 가기' 명령을 내려서 popstate가 작동하게 만듦
+        history.back();
+      }
+    }
+
+    // 실제 화면을 그리고 전환하는 함수
+    function applyState(viewId, state) {
       ['view-lobby', 'view-setup', 'view-quiz', 'view-learning', 'view-note', 'view-result'].forEach(id => {
         document.getElementById(id).classList.add('hidden');
       });
       document.getElementById(viewId).classList.remove('hidden');
       currentViewId = viewId;
-    }
 
-    // ✨ 명확하고 꼬이지 않는 지능형 뒤로가기
-    function goBack() {
-      if (currentViewId === 'view-setup' || currentViewId === 'view-note' || currentViewId === 'view-result') {
-        changeView('view-lobby');
-      } else if (currentViewId === 'view-quiz') {
-        if (confirm("시험을 중단하고 설정 화면으로 돌아가시겠습니까?")) {
-          changeView('view-setup');
-        }
-      } else if (currentViewId === 'view-learning') {
-        if (document.getElementById('theorySearchInput').value.trim() !== '') {
-          document.getElementById('theorySearchInput').value = '';
-          renderCurrentLearnState();
-        } else if (learnState.level === 'detail') {
-          renderTitles(learnState.category, learnState.subject);
-        } else if (learnState.level === 'subject') {
-          renderSubjects(learnState.category);
-        } else if (learnState.level === 'category') {
-          startLearning();
-        } else {
-          changeView('view-lobby');
-        }
+      if (viewId === 'view-learning') {
+        document.getElementById('theorySearchInput').value = '';
+        if (state.level === 'home') renderHomeDOM();
+        else if (state.level === 'category') renderSubjectsDOM(state.category);
+        else if (state.level === 'subject') renderTitlesDOM(state.category, state.subject);
+        else if (state.level === 'detail') renderDetailDOM(state.theoryId);
+      } else if (viewId === 'view-note') {
+        renderNoteDOM();
+      } else if (viewId === 'view-quiz') {
+        renderQuestion();
       }
     }
 
     /* ==========================================
-       이론 백과사전 엔진 (확고한 2단계 + 글목록)
+       이론 백과사전 엔진 (강제 정렬 Sort 적용)
        ========================================== */
-    function startLearning() {
-      changeView('view-learning');
-      document.getElementById('theorySearchInput').value = ''; 
-      learnState = { level: 'home', category: '', subject: '' };
+    function renderHomeDOM() {
       renderBreadcrumb();
-      
       const container = document.getElementById('learningContainer');
       container.className = "grid grid-cols-1 sm:grid-cols-2 gap-4"; 
       container.innerHTML = '';
 
-      const categories = [...new Set(allTheories.map(t => t.category))];
+      // ✨ 최근 추가된 항목이 맨 위로 올라가는 것을 방지 (지정된 배열 목차 순서대로 강제 정렬)
+      const categories = [...new Set(allTheories.map(t => t.category))].sort((a, b) => {
+        let idxA = FIXED_CATEGORIES.indexOf(a);
+        let idxB = FIXED_CATEGORIES.indexOf(b);
+        return (idxA === -1 ? 999 : idxA) - (idxB === -1 ? 999 : idxB);
+      });
 
       categories.forEach(cat => {
         const btn = document.createElement('button');
         btn.className = "bg-white border border-slate-200 hover:border-emerald-500 hover:shadow-md p-6 rounded-2xl text-left transition flex justify-between items-center group";
-        btn.onclick = () => renderSubjects(cat);
+        btn.onclick = () => navTo('view-learning', { level: 'category', category: cat });
         const count = allTheories.filter(t => t.category === cat).length;
         btn.innerHTML = `
           <div><h3 class="text-lg font-bold text-slate-800">${cat}</h3><span class="text-xs text-slate-400 mt-1 block">총 ${count}개의 문서</span></div>
@@ -247,41 +280,32 @@
       });
     }
 
-    function renderBreadcrumb() {
-      const bc = document.getElementById('breadcrumbContainer');
-      bc.classList.remove('hidden');
-      bc.innerHTML = `<button onclick="startLearning()" class="text-emerald-700 hover:text-emerald-900 font-bold text-sm px-2">📖 홈</button>`;
-      
-      if (learnState.level !== 'home') {
-        bc.innerHTML += `<span class="text-emerald-300 font-bold">❯</span><button onclick="renderSubjects('${learnState.category}')" class="text-emerald-900 font-bold text-sm px-2 hover:underline">${learnState.category}</button>`;
-      }
-      if (learnState.level === 'title' || learnState.level === 'detail') {
-        bc.innerHTML += `<span class="text-emerald-300 font-bold">❯</span><button onclick="renderTitles('${learnState.category}', '${learnState.subject}')" class="text-emerald-900 font-bold text-sm px-2 hover:underline">${learnState.subject}</button>`;
-      }
-    }
-
-    function renderSubjects(category) {
-      learnState = { level: 'category', category: category, subject: '' };
+    function renderSubjectsDOM(category) {
       renderBreadcrumb();
       const container = document.getElementById('learningContainer');
       container.className = "grid grid-cols-1 sm:grid-cols-2 gap-4";
       container.innerHTML = '';
 
       const filtered = allTheories.filter(t => t.category === category);
-      const subjects = [...new Set(filtered.map(t => t.subject))];
+      
+      // ✨ 2단계 과목명도 절대 순서대로 강제 정렬
+      const subjects = [...new Set(filtered.map(t => t.subject))].sort((a, b) => {
+        let idxA = FIXED_SUBJECTS.indexOf(a);
+        let idxB = FIXED_SUBJECTS.indexOf(b);
+        return (idxA === -1 ? 999 : idxA) - (idxB === -1 ? 999 : idxB);
+      });
 
       subjects.forEach(sub => {
         const btn = document.createElement('button');
         btn.className = "bg-white border border-slate-200 hover:border-emerald-50 p-5 rounded-2xl text-left transition";
-        btn.onclick = () => renderTitles(category, sub);
+        btn.onclick = () => navTo('view-learning', { level: 'subject', category: category, subject: sub });
         const count = filtered.filter(t => t.subject === sub).length;
         btn.innerHTML = `<h3 class="text-base font-bold text-emerald-800">${sub}</h3><span class="text-xs text-slate-500 block mt-1">세부 문서 ${count}개 보기</span>`;
         container.appendChild(btn);
       });
     }
 
-    function renderTitles(category, subject) {
-      learnState = { level: 'subject', category: category, subject: subject };
+    function renderTitlesDOM(category, subject) {
       renderBreadcrumb();
       const container = document.getElementById('learningContainer');
       container.className = "flex flex-col space-y-3"; 
@@ -294,7 +318,7 @@
     function renderTitleCard(t, container) {
       const btn = document.createElement('button');
       btn.className = "bg-white border border-slate-200 hover:border-emerald-400 p-5 rounded-xl text-left transition flex items-start w-full";
-      btn.onclick = () => renderDetail(t.id);
+      btn.onclick = () => navTo('view-learning', { level: 'detail', theoryId: t.id });
       btn.innerHTML = `
         <span class="text-xl mr-3">📄</span>
         <div>
@@ -307,9 +331,7 @@
       container.appendChild(btn);
     }
 
-    function renderDetail(theoryId) {
-      const prevLevel = learnState.level; // 진입 전 상태 저장
-      learnState.level = 'detail';
+    function renderDetailDOM(theoryId) {
       const t = allTheories.find(x => x.id === theoryId);
       const container = document.getElementById('learningContainer');
       container.className = "flex flex-col space-y-4";
@@ -328,16 +350,23 @@
       container.appendChild(card);
     }
 
-    function renderCurrentLearnState() {
-      if (learnState.level === 'detail' || learnState.level === 'subject') renderTitles(learnState.category, learnState.subject);
-      else if (learnState.level === 'category') renderSubjects(learnState.category);
-      else startLearning();
+    function renderBreadcrumb() {
+      const bc = document.getElementById('breadcrumbContainer');
+      bc.classList.remove('hidden');
+      bc.innerHTML = `<button onclick="navTo('view-learning', {level:'home'})" class="text-emerald-700 hover:text-emerald-900 font-bold text-sm px-2">📖 홈</button>`;
+      
+      if (learnState.level !== 'home') {
+        bc.innerHTML += `<span class="text-emerald-300 font-bold">❯</span><button onclick="navTo('view-learning', {level:'category', category: '${learnState.category}'})" class="text-emerald-900 font-bold text-sm px-2 hover:underline">${learnState.category}</button>`;
+      }
+      if (learnState.level === 'subject' || learnState.level === 'detail') {
+        bc.innerHTML += `<span class="text-emerald-300 font-bold">❯</span><button onclick="navTo('view-learning', {level:'subject', category: '${learnState.category}', subject: '${learnState.subject}'})" class="text-emerald-900 font-bold text-sm px-2 hover:underline">${learnState.subject}</button>`;
+      }
     }
 
     function handleTheorySearch() {
       const query = document.getElementById('theorySearchInput').value.trim().toLowerCase();
       if (!query) {
-        renderCurrentLearnState();
+        applyState('view-learning', learnState);
         return;
       }
       
@@ -360,10 +389,9 @@
     }
 
     /* ==========================================
-       모의고사 및 오답노트 로직 (그대로 유지)
+       모의고사 및 오답노트 로직
        ========================================== */
-    function openNote() {
-      changeView('view-note');
+    function renderNoteDOM() {
       const container = document.getElementById('noteContainer');
       container.innerHTML = '';
       const savedQuestions = allQuizData.filter(q => starredIds.includes(q.id));
@@ -406,7 +434,7 @@
     function removeNote(id) {
       starredIds = starredIds.filter(savedId => savedId !== id);
       localStorage.setItem('semiCbtStarred', JSON.stringify(starredIds));
-      openNote(); 
+      renderNoteDOM(); 
     }
 
     function startQuiz() {
@@ -431,8 +459,9 @@
       }
       currentIndex = 0; correctCount = 0; isFlashcardMode = false;
       document.getElementById('modeToggleBtn').innerText = "🔄 면접 모드";
-      changeView('view-quiz');
-      renderQuestion();
+      
+      // 모의고사 뷰로 강제 전환 후 문제 렌더링
+      navTo('view-quiz');
     }
 
     function toggleMode() {
@@ -455,6 +484,7 @@
     }
 
     function renderQuestion() {
+      if(!filteredQuiz || filteredQuiz.length === 0) return; // 뒤로가기 등으로 인한 방어코드
       const q = filteredQuiz[currentIndex];
       document.getElementById('categoryBadge').innerText = `${q.category || '통합'} (${q.difficulty || '중급'})`;
       document.getElementById('progressText').innerText = `문제 ${currentIndex + 1} / ${filteredQuiz.length}`;
@@ -531,7 +561,7 @@
       if (currentIndex < filteredQuiz.length - 1) {
         currentIndex++; renderQuestion();
       } else {
-        changeView('view-result');
+        navTo('view-result');
         const score = Math.round((correctCount / filteredQuiz.length) * 100);
         document.getElementById('scoreText').innerText = score;
         document.getElementById('scoreDetail').innerText = `총 ${filteredQuiz.length}문제 중 ${correctCount}문제를 맞혔습니다.`;
