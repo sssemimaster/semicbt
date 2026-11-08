@@ -8,7 +8,6 @@
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col">
 
-  <!-- 헤더 -->
   <header class="bg-indigo-900 text-white p-4 shadow-md flex justify-between items-center relative z-10">
     <h1 class="text-xl font-bold tracking-tight cursor-pointer" onclick="changeView('view-lobby')">⚡ SemiCBT</h1>
     <button class="bg-indigo-700 hover:bg-indigo-600 text-xs px-3 py-1.5 rounded-lg transition" onclick="changeView('view-lobby')">🏠 홈으로</button>
@@ -103,9 +102,8 @@
       </div>
     </div>
 
-    <!-- ✨ [화면 4] 무한 뎁스 백과사전 + 검색 UI -->
+    <!-- ✨ [화면 4] 깔끔하고 견고해진 2단계 이론 백과사전 -->
     <div id="view-learning" class="hidden w-full flex flex-col">
-      <!-- ⬅️ 뒤로 버튼을 외부로 따로 빼서 독립적으로 배치 (레이아웃 틀어짐 방지) -->
       <button onclick="goBack()" class="text-slate-400 hover:text-slate-600 font-bold text-sm mb-3 transition w-fit outline-none">⬅️ 뒤로</button>
       
       <div class="mb-4 relative">
@@ -153,10 +151,9 @@
     let correctCount = 0;
     let starredIds = JSON.parse(localStorage.getItem('semiCbtStarred')) || [];
 
-    // 상태 관리 변수 (지능형 뒤로가기를 위해 현재 위치 추적)
-    let currentPath = []; 
+    // ✨ 확고한 2단계 상태 관리
     let currentViewId = 'view-lobby';
-    let isDetailView = false; 
+    let learnState = { level: 'category', category: '', subject: '' };
 
     async function initApp() {
       try {
@@ -180,13 +177,13 @@
         allQuizData = await quizRes.json();
         const rawTheories = await theoryRes.json();
         
-        allTheories = rawTheories.map((t, idx) => {
-          let mergedPath = t.path;
-          if (!mergedPath) {
-            mergedPath = [t.category || "기타", t.subject || "일반"];
-          }
-          return { ...t, id: "T-" + idx, path: mergedPath };
-        });
+        // 과거 AI가 만든 이상한 path 데이터들을 모두 category, subject 포맷으로 억지로 평탄화
+        allTheories = rawTheories.map((t, idx) => ({
+          ...t,
+          id: t.id || "T-" + idx,
+          category: t.category || (t.path ? t.path[0] : "기타"),
+          subject: t.subject || (t.path && t.path.length > 1 ? t.path[1] : "일반")
+        }));
       } catch (error) { console.error("데이터 로드 실패:", error); }
     }
 
@@ -195,12 +192,10 @@
         document.getElementById(id).classList.add('hidden');
       });
       document.getElementById(viewId).classList.remove('hidden');
-      
       currentViewId = viewId;
-      isDetailView = false; 
     }
 
-    // 지능형 전역 뒤로가기 로직
+    // ✨ 명확하고 꼬이지 않는 지능형 뒤로가기
     function goBack() {
       if (currentViewId === 'view-setup' || currentViewId === 'view-note' || currentViewId === 'view-result') {
         changeView('view-lobby');
@@ -211,70 +206,89 @@
       } else if (currentViewId === 'view-learning') {
         if (document.getElementById('theorySearchInput').value.trim() !== '') {
           document.getElementById('theorySearchInput').value = '';
-          renderDirectory(currentPath);
-        } else if (isDetailView) {
-          renderDirectory(currentPath); 
-        } else if (currentPath.length > 0) {
-          renderDirectory(currentPath.slice(0, -1)); 
+          renderCurrentLearnState();
+        } else if (learnState.level === 'detail') {
+          renderTitles(learnState.category, learnState.subject);
+        } else if (learnState.level === 'subject') {
+          renderSubjects(learnState.category);
+        } else if (learnState.level === 'category') {
+          startLearning();
         } else {
-          changeView('view-lobby'); 
+          changeView('view-lobby');
         }
       }
     }
 
     /* ==========================================
-       이론 백과사전 엔진 (무한 뎁스)
+       이론 백과사전 엔진 (확고한 2단계 + 글목록)
        ========================================== */
     function startLearning() {
       changeView('view-learning');
       document.getElementById('theorySearchInput').value = ''; 
-      renderDirectory([]); 
+      learnState = { level: 'home', category: '', subject: '' };
+      renderBreadcrumb();
+      
+      const container = document.getElementById('learningContainer');
+      container.className = "grid grid-cols-1 sm:grid-cols-2 gap-4"; 
+      container.innerHTML = '';
+
+      const categories = [...new Set(allTheories.map(t => t.category))];
+
+      categories.forEach(cat => {
+        const btn = document.createElement('button');
+        btn.className = "bg-white border border-slate-200 hover:border-emerald-500 hover:shadow-md p-6 rounded-2xl text-left transition flex justify-between items-center group";
+        btn.onclick = () => renderSubjects(cat);
+        const count = allTheories.filter(t => t.category === cat).length;
+        btn.innerHTML = `
+          <div><h3 class="text-lg font-bold text-slate-800">${cat}</h3><span class="text-xs text-slate-400 mt-1 block">총 ${count}개의 문서</span></div>
+          <span class="text-slate-300 group-hover:text-emerald-500 text-xl font-bold">➔</span>
+        `;
+        container.appendChild(btn);
+      });
     }
 
     function renderBreadcrumb() {
       const bc = document.getElementById('breadcrumbContainer');
       bc.classList.remove('hidden');
-      bc.innerHTML = `<button onclick="renderDirectory([])" class="text-emerald-700 hover:text-emerald-900 font-bold text-sm px-2">📖 홈</button>`;
+      bc.innerHTML = `<button onclick="startLearning()" class="text-emerald-700 hover:text-emerald-900 font-bold text-sm px-2">📖 홈</button>`;
       
-      currentPath.forEach((folder, idx) => {
-        bc.innerHTML += `<span class="text-emerald-300 font-bold">❯</span>`;
-        const pathSoFar = JSON.stringify(currentPath.slice(0, idx + 1));
-        bc.innerHTML += `<button onclick='renderDirectory(${pathSoFar})' class="text-emerald-900 font-bold text-sm px-2 hover:underline">${folder}</button>`;
+      if (learnState.level !== 'home') {
+        bc.innerHTML += `<span class="text-emerald-300 font-bold">❯</span><button onclick="renderSubjects('${learnState.category}')" class="text-emerald-900 font-bold text-sm px-2 hover:underline">${learnState.category}</button>`;
+      }
+      if (learnState.level === 'title' || learnState.level === 'detail') {
+        bc.innerHTML += `<span class="text-emerald-300 font-bold">❯</span><button onclick="renderTitles('${learnState.category}', '${learnState.subject}')" class="text-emerald-900 font-bold text-sm px-2 hover:underline">${learnState.subject}</button>`;
+      }
+    }
+
+    function renderSubjects(category) {
+      learnState = { level: 'category', category: category, subject: '' };
+      renderBreadcrumb();
+      const container = document.getElementById('learningContainer');
+      container.className = "grid grid-cols-1 sm:grid-cols-2 gap-4";
+      container.innerHTML = '';
+
+      const filtered = allTheories.filter(t => t.category === category);
+      const subjects = [...new Set(filtered.map(t => t.subject))];
+
+      subjects.forEach(sub => {
+        const btn = document.createElement('button');
+        btn.className = "bg-white border border-slate-200 hover:border-emerald-50 p-5 rounded-2xl text-left transition";
+        btn.onclick = () => renderTitles(category, sub);
+        const count = filtered.filter(t => t.subject === sub).length;
+        btn.innerHTML = `<h3 class="text-base font-bold text-emerald-800">${sub}</h3><span class="text-xs text-slate-500 block mt-1">세부 문서 ${count}개 보기</span>`;
+        container.appendChild(btn);
       });
     }
 
-    function renderDirectory(pathArray) {
-      currentPath = pathArray;
-      isDetailView = false;
+    function renderTitles(category, subject) {
+      learnState = { level: 'subject', category: category, subject: subject };
       renderBreadcrumb();
-      
       const container = document.getElementById('learningContainer');
+      container.className = "flex flex-col space-y-3"; 
       container.innerHTML = '';
-      
-      const matchingTheories = allTheories.filter(t => {
-        for(let i = 0; i < currentPath.length; i++) {
-          if (t.path[i] !== currentPath[i]) return false;
-        }
-        return true;
-      });
-      
-      const depth = currentPath.length;
-      const subFolders = [...new Set(matchingTheories.map(t => t.path[depth]).filter(Boolean))];
-      
-      if (subFolders.length > 0) {
-        container.className = "grid grid-cols-1 sm:grid-cols-2 gap-4";
-        subFolders.forEach(folder => {
-          const btn = document.createElement('button');
-          btn.className = "bg-white border border-slate-200 hover:border-emerald-500 hover:shadow-md p-5 rounded-2xl text-left transition flex justify-between items-center group";
-          const nextPath = JSON.stringify([...currentPath, folder]);
-          btn.onclick = () => renderDirectory(JSON.parse(nextPath));
-          btn.innerHTML = `<h3 class="text-base font-bold text-slate-800">${folder}</h3><span class="text-slate-300 group-hover:text-emerald-500 text-xl font-bold">➔</span>`;
-          container.appendChild(btn);
-        });
-      } else {
-        container.className = "flex flex-col space-y-3"; 
-        matchingTheories.forEach(t => renderTitleCard(t, container));
-      }
+
+      const filtered = allTheories.filter(t => t.category === category && t.subject === subject);
+      filtered.forEach(t => renderTitleCard(t, container));
     }
 
     function renderTitleCard(t, container) {
@@ -294,7 +308,8 @@
     }
 
     function renderDetail(theoryId) {
-      isDetailView = true;
+      const prevLevel = learnState.level; // 진입 전 상태 저장
+      learnState.level = 'detail';
       const t = allTheories.find(x => x.id === theoryId);
       const container = document.getElementById('learningContainer');
       container.className = "flex flex-col space-y-4";
@@ -313,14 +328,19 @@
       container.appendChild(card);
     }
 
+    function renderCurrentLearnState() {
+      if (learnState.level === 'detail' || learnState.level === 'subject') renderTitles(learnState.category, learnState.subject);
+      else if (learnState.level === 'category') renderSubjects(learnState.category);
+      else startLearning();
+    }
+
     function handleTheorySearch() {
       const query = document.getElementById('theorySearchInput').value.trim().toLowerCase();
       if (!query) {
-        renderDirectory(currentPath);
+        renderCurrentLearnState();
         return;
       }
       
-      isDetailView = false;
       document.getElementById('breadcrumbContainer').classList.add('hidden');
       const container = document.getElementById('learningContainer');
       container.className = "flex flex-col space-y-3"; 
@@ -329,8 +349,7 @@
       const results = allTheories.filter(t => 
         t.title.toLowerCase().includes(query) || 
         t.content.toLowerCase().includes(query) || 
-        (t.tags && t.tags.some(tag => tag.toLowerCase().includes(query))) ||
-        (t.path && t.path.some(p => p.toLowerCase().includes(query)))
+        (t.tags && t.tags.some(tag => tag.toLowerCase().includes(query)))
       );
       
       if (results.length === 0) {
@@ -341,7 +360,7 @@
     }
 
     /* ==========================================
-       모의고사 및 오답노트 로직
+       모의고사 및 오답노트 로직 (그대로 유지)
        ========================================== */
     function openNote() {
       changeView('view-note');
