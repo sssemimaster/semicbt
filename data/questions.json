@@ -1,5 +1,105 @@
 [
   {
+    "id": "AUTO-74637",
+    "category": "반도체 8대 공정",
+    "topic": "증착 및 금속 배선 공정 (CVD, ALD 등)",
+    "difficulty": "중급",
+    "question": "CVD(화학 기상 증착) 공정에서 주로 사용되는 원료가스는 무엇인가?",
+    "options": [
+      "SiH4",
+      "N2",
+      "Ar",
+      "O2"
+    ],
+    "answer": 0,
+    "explanation": "CVD 공정에서는 실리콘을 증착하기 위해 주로 실란(SiH4) 가스를 사용합니다.",
+    "flashcard_keywords": [
+      "CVD",
+      "SiH4"
+    ],
+    "interview_answer": "CVD 공정에서는 SiH4가 중요한 역할을 합니다. 이는 실리콘 층을 형성하는 데 필수적인 원료가스입니다."
+  },
+  {
+    "id": "AUTO-74638",
+    "category": "반도체 8대 공정",
+    "topic": "증착 및 금속 배선 공정 (CVD, ALD 등)",
+    "difficulty": "중급",
+    "question": "ALD(원자층 증착) 공정의 주요 장점은 무엇인가?",
+    "options": [
+      "빠른 증착 속도",
+      "정확한 두께 제어",
+      "저비용",
+      "높은 온도에서 작동"
+    ],
+    "answer": 1,
+    "explanation": "ALD는 원자 단위로 증착되기 때문에 매우 정밀한 두께 제어가 가능합니다.",
+    "flashcard_keywords": [
+      "ALD",
+      "두께 제어"
+    ],
+    "interview_answer": "ALD의 주요 장점은 정확한 두께 제어입니다. 이는 나노 스케일의 정밀한 기판 형성이 가능합니다."
+  },
+  {
+    "id": "AUTO-74639",
+    "category": "반도체 8대 공정",
+    "topic": "증착 및 금속 배선 공정 (CVD, ALD 등)",
+    "difficulty": "중급",
+    "question": "금속 배선 공정에서 일반적으로 사용되는 금속은 무엇인가?",
+    "options": [
+      "Copper",
+      "Aluminum",
+      "Gold",
+      "Silver"
+    ],
+    "answer": 0,
+    "explanation": "구리(Copper)는 낮은 저항성과 높은 전기 전도성 덕분에 금속 배선에 널리 사용됩니다.",
+    "flashcard_keywords": [
+      "금속 배선",
+      "구리"
+    ],
+    "interview_answer": "금속 배선 공정에서는 구리가 주로 사용됩니다. 이는 전기 전도성이 뛰어나고 비용 효율적인 소재입니다."
+  },
+  {
+    "id": "AUTO-74640",
+    "category": "반도체 8대 공정",
+    "topic": "증착 및 금속 배선 공정 (CVD, ALD 등)",
+    "difficulty": "중급",
+    "question": "CVD 공정에서 증착되는 물질의 특성은 무엇인가?",
+    "options": [
+      "비교적 두꺼운 층",
+      "고르게 분포된 층",
+      "불균일한 층",
+      "고온에서만 가능"
+    ],
+    "answer": 1,
+    "explanation": "CVD 공정은 고르게 분포된 물질 층을 생성할 수 있는 특성이 있습니다.",
+    "flashcard_keywords": [
+      "CVD",
+      "특성"
+    ],
+    "interview_answer": "CVD 공정의 특성 중 하나는 고르게 분포된 물질 층을 생성할 수 있다는 점입니다. 이는 반도체 소자의 성능에 큰 영향을 줍니다."
+  },
+  {
+    "id": "AUTO-74641",
+    "category": "반도체 8대 공정",
+    "topic": "증착 및 금속 배선 공정 (CVD, ALD 등)",
+    "difficulty": "중급",
+    "question": "ALD 공정에서 사용되는 주기적인 공정 방식은 무엇인가?",
+    "options": [
+      "화학적 반응",
+      "물리적 흡착",
+      "열적 증착",
+      "전기적 증착"
+    ],
+    "answer": 0,
+    "explanation": "ALD 공정은 화학적 반응을 통해 원자층을 형성하는 방식입니다.",
+    "flashcard_keywords": [
+      "ALD",
+      "공정 방식"
+    ],
+    "interview_answer": "ALD 공정에서는 화학적 반응이 핵심입니다. 이 과정을 통해 원자층을 정밀하게 증착할 수 있습니다."
+  },
+  {
     "id": "AUTO-001",
     "category": "반도체 8대 공정",
     "topic": "포토 및 식각 공정 (미세화 트렌드)",
