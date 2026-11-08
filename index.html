@@ -6,7 +6,7 @@
   <title>SemiCBT - 반도체 직무 전공 AI 플랫폼</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col">
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col relative">
 
   <header class="bg-indigo-900 text-white p-4 shadow-md flex justify-between items-center relative z-10">
     <h1 class="text-xl font-bold tracking-tight cursor-pointer" onclick="navTo('view-lobby')">⚡ SemiCBT</h1>
@@ -89,15 +89,14 @@
           </button>
         </div>
         
-        <!-- 해설 및 제보 버튼 박스 -->
+        <!-- 해설 및 팝업 오픈 버튼 -->
         <div id="explanationBox" class="mt-6 p-4 bg-slate-50 border border-slate-200 rounded-xl hidden">
           <div id="resultStatus" class="font-bold text-sm mb-2"></div>
           <div id="keywordTags" class="mb-3 hidden"></div>
           <p id="explanationText" class="text-sm text-slate-600 leading-relaxed mb-4"></p>
           
-          <!-- ✨ 오류 제보 및 다음 문제 버튼 -->
           <div class="flex gap-2">
-            <button onclick="reportError()" class="w-1/3 bg-rose-50 text-rose-600 border border-rose-200 py-2.5 rounded-lg text-sm font-semibold hover:bg-rose-100 transition">
+            <button onclick="openReportModal()" class="w-1/3 bg-rose-50 text-rose-600 border border-rose-200 py-2.5 rounded-lg text-sm font-semibold hover:bg-rose-100 transition">
               🚨 오류 제보
             </button>
             <button id="nextBtn" onclick="nextQuestion()" class="w-2/3 bg-indigo-600 text-white py-2.5 rounded-lg text-sm font-semibold hover:bg-indigo-700 transition">
@@ -141,12 +140,26 @@
         <button onclick="navTo('view-lobby')" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-3.5 rounded-xl transition shadow-md">메인 로비로 돌아가기</button>
       </div>
     </div>
+
   </main>
 
+  <!-- ✨ 사이트 내부 오류 제보 팝업창 (Modal) -->
+  <div id="reportModal" class="fixed inset-0 bg-slate-900/60 hidden items-center justify-center z-50 px-4">
+    <div class="bg-white rounded-2xl p-6 w-full max-w-sm shadow-xl relative transform transition-all">
+      <h3 class="text-lg font-bold text-slate-900 mb-2">🚨 문제 오류 제보</h3>
+      <p class="text-xs text-slate-500 mb-4">어떤 부분이 잘못되었나요? 상세히 적어주시면 즉시 관리자 채널에 전달됩니다.</p>
+      <textarea id="reportContent" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 text-sm h-32 outline-none focus:border-rose-500 mb-4 resize-none" placeholder="예: 정답이 3번이 아니라 4번 같습니다. / 문제 지문에 오타가 있습니다."></textarea>
+      <div class="flex gap-2">
+        <button onclick="closeReportModal()" class="w-1/2 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-3 rounded-xl transition text-sm">취소</button>
+        <button onclick="submitReport()" class="w-1/2 bg-rose-600 hover:bg-rose-700 text-white font-bold py-3 rounded-xl transition text-sm">제출하기</button>
+      </div>
+    </div>
+  </div>
+
   <script>
-    // ✨ 본인의 깃허브 아이디와 저장소 이름으로 변경해주세요!
-    const GITHUB_USERNAME = "본인아이디";
-    const GITHUB_REPO = "저장소이름";
+    // 🚨 필수: 404 에러를 막으려면 아래 두 줄을 반드시 본인 정보로 변경해야 합니다!
+    const GITHUB_USERNAME = "sssemimaster";
+    const GITHUB_REPO = "semicbt";
 
     let allQuizData = [];    
     let allTheories = [];    
@@ -478,16 +491,35 @@
       }
     }
 
-    // ✨ 유저 오류 제보 기능 (GitHub Issue 생성 창으로 자동 연결)
-    function reportError() {
+    // ✨ 모달 제어 로직
+    function openReportModal() {
       if(!filteredQuiz || filteredQuiz.length === 0) return;
+      document.getElementById('reportModal').classList.replace('hidden', 'flex');
+      document.getElementById('reportContent').value = '';
+    }
+
+    function closeReportModal() {
+      document.getElementById('reportModal').classList.replace('flex', 'hidden');
+    }
+
+    function submitReport() {
+      const content = document.getElementById('reportContent').value.trim();
+      if(!content) return alert("오류 내용을 입력해주세요.");
+
+      if(GITHUB_USERNAME === "sssemimaster") {
+        alert("🚨 에러: 소스코드 하단의 GITHUB_USERNAME과 REPO를 본인 깃허브 정보로 변경해야 제출이 완료됩니다!");
+        return;
+      }
+
       const q = filteredQuiz[currentIndex];
-      
       const issueTitle = encodeURIComponent(`[문제 오류 제보] ID: ${q.id}`);
-      const issueBody = encodeURIComponent(`### 🚨 오류가 발생한 문제 정보\n- **문제 ID**: ${q.id}\n- **카테고리**: ${q.category} > ${q.topic}\n- **문제 내용**: ${q.question}\n\n---\n### 💬 오류 내용을 적어주세요 (오타, 정답 틀림, 해설 부실 등)\n- `);
-      
+      const issueBody = encodeURIComponent(`### 🚨 오류가 발생한 문제 정보\n- **문제 ID**: ${q.id}\n- **카테고리**: ${q.category} > ${q.topic}\n- **문제 내용**: ${q.question}\n\n---\n### 💬 유저 제보 내용\n${content}`);
+
       const issueUrl = `https://github.com/${GITHUB_USERNAME}/${GITHUB_REPO}/issues/new?title=${issueTitle}&body=${issueBody}`;
+      
+      // 모달창 닫기 및 깃허브 이슈 창 띄우기
       window.open(issueUrl, '_blank');
+      closeReportModal();
     }
 
     initApp();
