@@ -29,9 +29,12 @@ sel_category = selected["category"]
 sel_subject = selected["subject"]
 sel_guide = selected["guide"]
 
-# 1. 객관식 시험 (긍정형, 개념 원리 중심)
+# ✨ 면접 난이도 3개 중 랜덤 2개 추출
+chosen_diffs = random.sample(["초급", "중급", "고급"], 2)
+
+# 1. 객관식 시험 생성
 PROMPT_QUIZ = f"""
-당신은 반도체 공정 전공 교수입니다. 대분류 '{sel_category}', 세부 주제 '{sel_subject}'에 대한 필수 전공 이론 암기를 검증할 객관식 3개를 생성해 주세요.
+당신은 반도체 공정 전공 교수입니다. 대분류 '{sel_category}', 세부 주제 '{sel_subject}'에 대한 필수 전공 이론 암기를 검증할 객관식 문제 3개를 생성해 주세요.
 [출제 규칙]:
 1. "다음 중 틀린 것은?" 같은 부정형 질문 절대 금지. 핵심 개념의 정의와 원리를 묻는 긍정형 질문으로 작성.
 2. 난이도는 "초급", "중급", "고급"으로 1개씩. 보기 중 오답도 헷갈리는 전공 용어로 구성.
@@ -51,20 +54,30 @@ PROMPT_QUIZ = f"""
 ]
 """
 
-# 2. 실무 면접 (상황형, 트러블슈팅, 두괄식 답변)
+# 2. 실무 면접 생성 (랜덤 난이도 적용)
 PROMPT_INTERVIEW = f"""
 당신은 반도체 대기업의 공정 수석 면접관입니다. 대분류 '{sel_category}', 세부 주제 '{sel_subject}'와 관련해 지원자의 실무/트러블슈팅 역량을 검증할 면접 문항 2개를 생성해 주세요.
 [출제 규칙]:
 1. 팹 내 불량, 수율 저하 등을 가정하는 시나리오(상황형) 질문으로 구성.
 2. 실제 임원 면접에서 답변할 수 있는 '모범 두괄식 스크립트'를 포함.
+3. 문제의 난이도는 1번 문항은 '{chosen_diffs[0]}', 2번 문항은 '{chosen_diffs[1]}' 수준으로 맞춰주세요.
 
-반드시 아래 JSON 배열 형식으로만 응답하세요.
+반드시 아래 JSON 배열 형식으로만 응답하세요. (마크다운 생략)
 [
   {{
     "id": "INT-{random.randint(10000,99999)}",
     "category": "{sel_category}",
     "topic": "{sel_subject}",
-    "difficulty": "중급",
+    "difficulty": "{chosen_diffs[0]}",
+    "question": "실무 면접 상황형 질문 지문",
+    "key_points": ["키워드1", "키워드2"],
+    "interview_answer": "모범 두괄식 면접 답변 스크립트"
+  }},
+  {{
+    "id": "INT-{random.randint(10000,99999)}",
+    "category": "{sel_category}",
+    "topic": "{sel_subject}",
+    "difficulty": "{chosen_diffs[1]}",
     "question": "실무 면접 상황형 질문 지문",
     "key_points": ["키워드1", "키워드2"],
     "interview_answer": "모범 두괄식 면접 답변 스크립트"
@@ -105,7 +118,7 @@ def generate_contents():
     with open(draft_i_path, "w", encoding="utf-8") as f:
         json.dump(new_interviews + existing_draft_i, f, ensure_ascii=False, indent=2)
 
-    print(f"시험 {len(new_questions)}개, 면접 {len(new_interviews)}개 대기소 저장 완료!")
+    print(f"시험 {len(new_questions)}개, 면접 {len(new_interviews)}개 대기소 저장 완료! (면접 난이도: {chosen_diffs[0]}, {chosen_diffs[1]})")
 
 if __name__ == "__main__":
     generate_contents()
