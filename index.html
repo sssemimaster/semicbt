@@ -8,7 +8,7 @@
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col">
 
-  <!-- 헤더 (어색했던 뒤로가기 버튼 삭제) -->
+  <!-- 헤더 -->
   <header class="bg-indigo-900 text-white p-4 shadow-md flex justify-between items-center relative z-10">
     <h1 class="text-xl font-bold tracking-tight cursor-pointer" onclick="changeView('view-lobby')">⚡ SemiCBT</h1>
     <button class="bg-indigo-700 hover:bg-indigo-600 text-xs px-3 py-1.5 rounded-lg transition" onclick="changeView('view-lobby')">🏠 홈으로</button>
@@ -39,95 +39,98 @@
     </div>
 
     <!-- [화면 2] 시험 설정 -->
-    <div id="view-setup" class="hidden w-full bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-      <button onclick="goBack()" class="text-slate-400 hover:text-slate-600 font-bold text-sm mb-6 transition flex items-center w-fit outline-none">⬅️ 뒤로</button>
-      <h2 class="text-xl font-bold text-slate-800 mb-6">모의고사 설정</h2>
-      <div class="mb-4">
-        <label class="block text-sm font-semibold text-slate-700 mb-2">과목 선택</label>
-        <select id="select-subject" class="w-full bg-slate-50 border border-slate-200 text-slate-700 rounded-lg p-3 outline-none focus:border-indigo-500">
-          <option value="ALL">✨ 전체 과목 통합</option>
-          <option value="반도체 기초 이론">반도체 기초 이론</option>
-          <option value="반도체 8대 공정">반도체 8대 공정</option>
-          <option value="차세대 첨단 기술">차세대 첨단 기술</option>
-        </select>
+    <div id="view-setup" class="hidden w-full flex flex-col">
+      <button onclick="goBack()" class="text-slate-400 hover:text-slate-600 font-bold text-sm mb-3 transition w-fit outline-none">⬅️ 뒤로</button>
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+        <h2 class="text-xl font-bold text-slate-800 mb-6">모의고사 설정</h2>
+        <div class="mb-4">
+          <label class="block text-sm font-semibold text-slate-700 mb-2">과목 선택</label>
+          <select id="select-subject" class="w-full bg-slate-50 border border-slate-200 text-slate-700 rounded-lg p-3 outline-none focus:border-indigo-500">
+            <option value="ALL">✨ 전체 과목 통합</option>
+            <option value="반도체 기초 이론">반도체 기초 이론</option>
+            <option value="반도체 8대 공정">반도체 8대 공정</option>
+            <option value="차세대 첨단 기술">차세대 첨단 기술</option>
+          </select>
+        </div>
+        <div class="mb-4">
+          <label class="block text-sm font-semibold text-slate-700 mb-2">난이도 선택</label>
+          <select id="select-difficulty" class="w-full bg-slate-50 border border-slate-200 text-slate-700 rounded-lg p-3 outline-none focus:border-indigo-500">
+            <option value="ALL">✨ 전체 난이도</option>
+            <option value="초급">초급</option>
+            <option value="중급">중급</option>
+            <option value="고급">고급</option>
+          </select>
+        </div>
+        <div class="mb-8">
+          <label class="block text-sm font-semibold text-slate-700 mb-2">문제 수 선택</label>
+          <select id="select-count" class="w-full bg-slate-50 border border-slate-200 text-slate-700 rounded-lg p-3 outline-none focus:border-indigo-500">
+            <option value="ALL">최대 (모두 풀기)</option>
+            <option value="5">5문제</option>
+            <option value="10">10문제</option>
+          </select>
+        </div>
+        <button onclick="startQuiz()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 rounded-xl transition shadow-md">시험 시작하기</button>
       </div>
-      <div class="mb-4">
-        <label class="block text-sm font-semibold text-slate-700 mb-2">난이도 선택</label>
-        <select id="select-difficulty" class="w-full bg-slate-50 border border-slate-200 text-slate-700 rounded-lg p-3 outline-none focus:border-indigo-500">
-          <option value="ALL">✨ 전체 난이도</option>
-          <option value="초급">초급</option>
-          <option value="중급">중급</option>
-          <option value="고급">고급</option>
-        </select>
-      </div>
-      <div class="mb-8">
-        <label class="block text-sm font-semibold text-slate-700 mb-2">문제 수 선택</label>
-        <select id="select-count" class="w-full bg-slate-50 border border-slate-200 text-slate-700 rounded-lg p-3 outline-none focus:border-indigo-500">
-          <option value="ALL">최대 (모두 풀기)</option>
-          <option value="5">5문제</option>
-          <option value="10">10문제</option>
-        </select>
-      </div>
-      <button onclick="startQuiz()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 rounded-xl transition shadow-md">시험 시작하기</button>
     </div>
 
     <!-- [화면 3] 문제 풀이 영역 -->
-    <div id="view-quiz" class="hidden w-full bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-      <div class="flex justify-between items-center mb-4">
-        <div class="flex items-center">
-          <button onclick="goBack()" class="text-slate-400 hover:text-slate-600 font-bold text-sm mr-3 transition outline-none">⬅️ 뒤로</button>
-          <span id="categoryBadge" class="bg-indigo-100 text-indigo-700 text-xs font-semibold px-2.5 py-1 rounded mr-2">과목명</span>
-          <span id="progressText" class="text-xs text-slate-400 font-medium">1 / 10</span>
+    <div id="view-quiz" class="hidden w-full flex flex-col">
+      <button onclick="goBack()" class="text-slate-400 hover:text-slate-600 font-bold text-sm mb-3 transition w-fit outline-none">⬅️ 뒤로</button>
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+        <div class="flex justify-between items-center mb-4">
+          <div>
+            <span id="categoryBadge" class="bg-indigo-100 text-indigo-700 text-xs font-semibold px-2.5 py-1 rounded mr-2">과목명</span>
+            <span id="progressText" class="text-xs text-slate-400 font-medium">1 / 10</span>
+          </div>
+          <button onclick="toggleMode()" id="modeToggleBtn" class="bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-bold px-3 py-1.5 rounded-lg transition border border-slate-200">🔄 면접 모드</button>
         </div>
-        <button onclick="toggleMode()" id="modeToggleBtn" class="bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-bold px-3 py-1.5 rounded-lg transition border border-slate-200">🔄 면접 모드</button>
-      </div>
-      <div class="flex justify-between items-start mb-6">
-        <h2 id="questionTitle" class="text-lg font-bold text-slate-900 leading-snug flex-1">문제 지문</h2>
-        <button onclick="toggleStar()" id="starBtn" class="text-3xl text-slate-200 hover:text-amber-400 transition ml-3 -mt-1 outline-none">☆</button>
-      </div>
-      <div id="optionsContainer" class="space-y-3"></div>
-      <div id="flashcardContainer" class="hidden">
-        <button id="revealBtn" onclick="revealFlashcard()" class="w-full bg-indigo-50 hover:bg-indigo-100 border-2 border-dashed border-indigo-300 text-indigo-700 font-bold py-12 rounded-xl transition flex flex-col items-center justify-center">
-          <span class="text-3xl mb-2">🤔</span><span>스스로 답변을 생각해본 뒤 클릭하세요</span>
-        </button>
-      </div>
-      <div id="explanationBox" class="mt-6 p-4 bg-slate-50 border border-slate-200 rounded-xl hidden">
-        <div id="resultStatus" class="font-bold text-sm mb-2"></div>
-        <div id="keywordTags" class="mb-3 hidden"></div>
-        <p id="explanationText" class="text-sm text-slate-600 leading-relaxed"></p>
-        <button id="nextBtn" onclick="nextQuestion()" class="mt-4 w-full bg-indigo-600 text-white py-2.5 rounded-lg text-sm font-semibold hover:bg-indigo-700 transition">다음 문제</button>
+        <div class="flex justify-between items-start mb-6">
+          <h2 id="questionTitle" class="text-lg font-bold text-slate-900 leading-snug flex-1">문제 지문</h2>
+          <button onclick="toggleStar()" id="starBtn" class="text-3xl text-slate-200 hover:text-amber-400 transition ml-3 -mt-1 outline-none">☆</button>
+        </div>
+        <div id="optionsContainer" class="space-y-3"></div>
+        <div id="flashcardContainer" class="hidden">
+          <button id="revealBtn" onclick="revealFlashcard()" class="w-full bg-indigo-50 hover:bg-indigo-100 border-2 border-dashed border-indigo-300 text-indigo-700 font-bold py-12 rounded-xl transition flex flex-col items-center justify-center">
+            <span class="text-3xl mb-2">🤔</span><span>스스로 답변을 생각해본 뒤 클릭하세요</span>
+          </button>
+        </div>
+        <div id="explanationBox" class="mt-6 p-4 bg-slate-50 border border-slate-200 rounded-xl hidden">
+          <div id="resultStatus" class="font-bold text-sm mb-2"></div>
+          <div id="keywordTags" class="mb-3 hidden"></div>
+          <p id="explanationText" class="text-sm text-slate-600 leading-relaxed"></p>
+          <button id="nextBtn" onclick="nextQuestion()" class="mt-4 w-full bg-indigo-600 text-white py-2.5 rounded-lg text-sm font-semibold hover:bg-indigo-700 transition">다음 문제</button>
+        </div>
       </div>
     </div>
 
     <!-- ✨ [화면 4] 무한 뎁스 백과사전 + 검색 UI -->
     <div id="view-learning" class="hidden w-full flex flex-col">
+      <!-- ⬅️ 뒤로 버튼을 외부로 따로 빼서 독립적으로 배치 (레이아웃 틀어짐 방지) -->
+      <button onclick="goBack()" class="text-slate-400 hover:text-slate-600 font-bold text-sm mb-3 transition w-fit outline-none">⬅️ 뒤로</button>
+      
       <div class="mb-4 relative">
         <input type="text" id="theorySearchInput" onkeyup="handleTheorySearch()" placeholder="🔍 키워드, 기술명, 공정 검색..." class="w-full bg-white border border-slate-200 text-slate-700 rounded-xl p-4 shadow-sm outline-none focus:border-emerald-500 transition font-medium">
       </div>
       
-      <!-- 폴더 표시창(브레드크럼)과 그 왼쪽에 박스 없는 회색 뒤로가기 버튼 배치 -->
-      <div class="flex items-center mb-4">
-        <button onclick="goBack()" class="text-slate-400 hover:text-slate-600 font-bold text-sm mr-3 transition flex-shrink-0 outline-none">⬅️ 뒤로</button>
-        <div id="breadcrumbContainer" class="bg-emerald-50 rounded-xl border border-emerald-200 p-3 flex-1 flex flex-wrap items-center shadow-sm gap-y-2"></div>
-      </div>
+      <div id="breadcrumbContainer" class="bg-emerald-50 rounded-xl border border-emerald-200 p-3 mb-4 flex flex-wrap items-center shadow-sm gap-y-2"></div>
       
       <div id="learningContainer" class="grid grid-cols-1 gap-4"></div>
     </div>
 
     <!-- [화면 5] 오답노트 -->
     <div id="view-note" class="hidden w-full flex flex-col">
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-4 text-center relative">
-        <button onclick="goBack()" class="absolute left-6 top-6 text-slate-400 hover:text-slate-600 font-bold text-sm transition outline-none">⬅️ 뒤로</button>
-        <h2 class="text-xl font-bold text-slate-800 mt-2">⭐ 나의 오답 / 북마크 노트</h2>
+      <button onclick="goBack()" class="text-slate-400 hover:text-slate-600 font-bold text-sm mb-3 transition w-fit outline-none">⬅️ 뒤로</button>
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-4 text-center">
+        <h2 class="text-xl font-bold text-slate-800">⭐ 나의 오답 / 북마크 노트</h2>
       </div>
       <div id="noteContainer" class="space-y-4"></div>
     </div>
 
     <!-- [화면 6] 결과 -->
-    <div id="view-result" class="hidden w-full flex flex-col space-y-4">
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 text-center relative">
-        <button onclick="goBack()" class="absolute left-6 top-6 text-slate-400 hover:text-slate-600 font-bold text-sm transition outline-none">⬅️ 홈으로</button>
-        <h2 class="text-2xl font-bold text-slate-800 mb-2 mt-2">모의고사 완료!</h2>
+    <div id="view-result" class="hidden w-full flex flex-col">
+      <button onclick="goBack()" class="text-slate-400 hover:text-slate-600 font-bold text-sm mb-3 transition w-fit outline-none">⬅️ 홈으로</button>
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 text-center">
+        <h2 class="text-2xl font-bold text-slate-800 mb-2">모의고사 완료!</h2>
         <div class="flex justify-center items-center my-6">
           <div class="w-32 h-32 rounded-full border-8 border-indigo-500 flex flex-col items-center justify-center">
             <span id="scoreText" class="text-3xl font-black text-indigo-600">80</span>
@@ -197,7 +200,7 @@
       isDetailView = false; 
     }
 
-    // ✨ 지능형 전역 뒤로가기 로직
+    // 지능형 전역 뒤로가기 로직
     function goBack() {
       if (currentViewId === 'view-setup' || currentViewId === 'view-note' || currentViewId === 'view-result') {
         changeView('view-lobby');
