@@ -15,17 +15,27 @@
 
   <main class="max-w-2xl w-full mx-auto p-4 py-8">
     
-    <!-- ✨ 완벽히 안전한 인증부: 코드에 저장되지 않는 GitHub 토큰만 요구 -->
-    <div id="authSection" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 mb-6 mt-10 text-center">
-      <h2 class="text-xl font-bold mb-4">관리자 권한 확인</h2>
-      <p class="text-sm text-slate-500 mb-6">발급받은 GitHub API 토큰을 입력하세요.</p>
-      <input type="password" id="ghToken" placeholder="ghp_ 로 시작하는 토큰 입력..." class="w-full bg-slate-50 border border-slate-200 p-4 rounded-xl mb-4 text-center tracking-wide outline-none focus:border-indigo-500">
-      <button onclick="loadDrafts()" class="w-full bg-slate-800 hover:bg-slate-900 text-white py-3.5 rounded-xl font-bold transition shadow-md">
-        안전하게 입장하기
+    <!-- 🔒 1차 방어막: 암호화된 비밀번호 인증 -->
+    <div id="loginSection" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 mb-6 text-center mt-10">
+      <h2 class="text-xl font-bold mb-4">1차 보안: 관리자 비밀번호</h2>
+      <p class="text-sm text-slate-500 mb-6">인가된 관리자만 접근할 수 있습니다.</p>
+      <input type="password" id="adminPin" placeholder="비밀번호 입력" class="w-full bg-slate-50 border border-slate-200 p-4 rounded-xl mb-4 text-center text-xl tracking-[0.5em] outline-none focus:border-indigo-500">
+      <button onclick="checkAdmin()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3.5 rounded-xl font-bold transition shadow-md">
+        1차 인증하기
       </button>
     </div>
 
-    <!-- 검수용 실제 화면 렌더러 (인증 성공 시에만 표시) -->
+    <!-- 🔒 2차 방어막: 깃허브 토큰 인증 (비밀번호 통과 후 노출) -->
+    <div id="authSection" class="hidden bg-white p-6 rounded-2xl shadow-sm border border-slate-200 mb-6 mt-10 text-center">
+      <h2 class="text-xl font-bold mb-4">2차 보안: GitHub 토큰 검증</h2>
+      <p class="text-sm text-slate-500 mb-6">파일 접근 권한이 있는 ghp_ 토큰을 입력하세요.</p>
+      <input type="password" id="ghToken" placeholder="ghp_ 로 시작하는 토큰 입력..." class="w-full bg-slate-50 border border-slate-200 p-4 rounded-xl mb-4 text-center tracking-wide outline-none focus:border-indigo-500">
+      <button onclick="loadDrafts()" class="w-full bg-slate-800 hover:bg-slate-900 text-white py-3.5 rounded-xl font-bold transition shadow-md">
+        서버리스 검수소 입장
+      </button>
+    </div>
+
+    <!-- 검수 화면 -->
     <div id="reviewSection" class="hidden">
       <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-6">
         <div class="mb-4">
@@ -47,12 +57,12 @@
       </div>
     </div>
     
-    <!-- 제보받은 문제 강제 원복 시스템 -->
+    <!-- 라이브 문제 원복 -->
     <div id="manageSection" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 mt-6 hidden">
       <h2 class="font-bold mb-2">🚨 라이브 문제 원복 (제보받은 문제 수정용)</h2>
-      <p class="text-xs text-slate-500 mb-3">유저가 오류를 제보한 경우, 해당 문제 ID를 입력하면 라이브 서버에서 문제를 내리고 대기소(Draft)로 옮깁니다.</p>
+      <p class="text-xs text-slate-500 mb-3">해당 문제 ID를 입력하면 라이브 서버에서 내리고 대기소(Draft)로 옮깁니다.</p>
       <div class="flex gap-2">
-        <input type="text" id="liveQId" placeholder="문제 ID 입력 (예: AUTO-12345)" class="flex-1 bg-slate-50 border p-3 rounded-lg text-sm outline-none focus:border-rose-500">
+        <input type="text" id="liveQId" placeholder="문제 ID (예: AUTO-12345)" class="flex-1 bg-slate-50 border p-3 rounded-lg text-sm outline-none focus:border-rose-500">
         <button onclick="moveLiveToDraft()" class="bg-rose-600 hover:bg-rose-700 text-white px-4 py-3 rounded-lg font-bold text-sm whitespace-nowrap">대기소로 원복</button>
       </div>
     </div>
@@ -61,14 +71,39 @@
 
   <script>
     // 🔴 중요: 본인의 저장소 정보로 변경하세요!
-    const REPO_OWNER = "sssemimaster"; 
-    const REPO_NAME = "semicbt";
+    const REPO_OWNER = "본인아이디"; 
+    const REPO_NAME = "저장소이름";
+
+    // ✨ SHA-256으로 단방향 암호화된 비밀번호 해시값 (현재 기본 비밀번호는 '2026'입니다)
+    const ADMIN_HASH = "e8b8c56cc6b3e7bc2cf91fbf62a5b6ce3ed2fb738374d9e0303b41d40132b35a";
 
     let token = "";
     let drafts = [];
     let currentDraftIndex = 0;
 
-    // ✨ 서버리스 인증 로직: 토큰으로 파일 접근을 시도하여 성공하면 통과
+    // ✨ 단방향 해시 암호화 생성 함수 (Web Crypto API)
+    async function sha256(message) {
+      const msgBuffer = new TextEncoder().encode(message);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    // 1차: 암호화된 비밀번호 검증
+    async function checkAdmin() {
+      const inputPin = document.getElementById('adminPin').value;
+      const hashedInput = await sha256(inputPin);
+
+      if (hashedInput === ADMIN_HASH) {
+        document.getElementById('loginSection').classList.add('hidden');
+        document.getElementById('authSection').classList.remove('hidden');
+      } else {
+        alert("비밀번호가 틀렸습니다.");
+        document.getElementById('adminPin').value = "";
+      }
+    }
+
+    // 2차: 깃허브 토큰 검증 및 파일 호출
     async function loadDrafts() {
       token = document.getElementById('ghToken').value.trim();
       if(!token.startsWith("ghp_")) return alert("유효한 GitHub 토큰(ghp_...) 형식이 아닙니다.");
@@ -77,7 +112,6 @@
         const fileData = await fetchGitHubFile("data/draft_questions.json");
         drafts = JSON.parse(fileData.content);
         
-        // 인증 통과 및 UI 전환
         document.getElementById('authSection').classList.add('hidden');
         document.getElementById('reviewSection').classList.remove('hidden');
         document.getElementById('manageSection').classList.remove('hidden');
@@ -89,11 +123,12 @@
         
         renderAdminQuestion();
       } catch (e) {
-        alert("인증 실패! 토큰이 만료되었거나 권한이 없습니다.");
+        alert("2차 인증 실패! 토큰이 만료되었거나 저장소 접근 권한이 없습니다.");
         console.error(e);
       }
     }
 
+    // --- 이후 기능 동작 로직 ---
     function renderAdminQuestion() {
       if(drafts.length === 0) return;
       document.getElementById('draftCount').innerText = drafts.length - currentDraftIndex;
@@ -132,7 +167,6 @@
     async function approveQuestion() {
       const q = drafts[currentDraftIndex];
       if(!confirm("이 문제를 사이트에 정식으로 반영하시겠습니까?")) return;
-      
       try {
         const liveFile = await fetchGitHubFile("data/questions.json");
         let liveData = JSON.parse(liveFile.content);
