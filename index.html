@@ -8,17 +8,10 @@
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col">
 
-  <!-- ✨ 상단 헤더에 전역 '뒤로 가기' 버튼 추가 -->
+  <!-- 헤더 (어색했던 뒤로가기 버튼 삭제) -->
   <header class="bg-indigo-900 text-white p-4 shadow-md flex justify-between items-center relative z-10">
     <h1 class="text-xl font-bold tracking-tight cursor-pointer" onclick="changeView('view-lobby')">⚡ SemiCBT</h1>
-    <div class="flex space-x-2">
-      <button id="headerBackBtn" onclick="goBack()" class="hidden bg-indigo-800 hover:bg-indigo-700 border border-indigo-700 text-xs px-3 py-1.5 rounded-lg transition font-bold">
-        ⬅️ 뒤로
-      </button>
-      <button class="bg-indigo-700 hover:bg-indigo-600 text-xs px-3 py-1.5 rounded-lg transition" onclick="changeView('view-lobby')">
-        🏠 홈
-      </button>
-    </div>
+    <button class="bg-indigo-700 hover:bg-indigo-600 text-xs px-3 py-1.5 rounded-lg transition" onclick="changeView('view-lobby')">🏠 홈으로</button>
   </header>
 
   <main class="flex-1 max-w-2xl w-full mx-auto p-4 flex flex-col justify-center py-8">
@@ -47,6 +40,7 @@
 
     <!-- [화면 2] 시험 설정 -->
     <div id="view-setup" class="hidden w-full bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+      <button onclick="goBack()" class="text-slate-400 hover:text-slate-600 font-bold text-sm mb-6 transition flex items-center w-fit outline-none">⬅️ 뒤로</button>
       <h2 class="text-xl font-bold text-slate-800 mb-6">모의고사 설정</h2>
       <div class="mb-4">
         <label class="block text-sm font-semibold text-slate-700 mb-2">과목 선택</label>
@@ -80,7 +74,8 @@
     <!-- [화면 3] 문제 풀이 영역 -->
     <div id="view-quiz" class="hidden w-full bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
       <div class="flex justify-between items-center mb-4">
-        <div>
+        <div class="flex items-center">
+          <button onclick="goBack()" class="text-slate-400 hover:text-slate-600 font-bold text-sm mr-3 transition outline-none">⬅️ 뒤로</button>
           <span id="categoryBadge" class="bg-indigo-100 text-indigo-700 text-xs font-semibold px-2.5 py-1 rounded mr-2">과목명</span>
           <span id="progressText" class="text-xs text-slate-400 font-medium">1 / 10</span>
         </div>
@@ -104,27 +99,35 @@
       </div>
     </div>
 
-    <!-- [화면 4] 무한 뎁스 백과사전 + 검색 UI -->
+    <!-- ✨ [화면 4] 무한 뎁스 백과사전 + 검색 UI -->
     <div id="view-learning" class="hidden w-full flex flex-col">
       <div class="mb-4 relative">
         <input type="text" id="theorySearchInput" onkeyup="handleTheorySearch()" placeholder="🔍 키워드, 기술명, 공정 검색..." class="w-full bg-white border border-slate-200 text-slate-700 rounded-xl p-4 shadow-sm outline-none focus:border-emerald-500 transition font-medium">
       </div>
-      <div id="breadcrumbContainer" class="bg-emerald-50 rounded-xl border border-emerald-200 p-3 mb-4 flex flex-wrap items-center shadow-sm gap-y-2"></div>
+      
+      <!-- 폴더 표시창(브레드크럼)과 그 왼쪽에 박스 없는 회색 뒤로가기 버튼 배치 -->
+      <div class="flex items-center mb-4">
+        <button onclick="goBack()" class="text-slate-400 hover:text-slate-600 font-bold text-sm mr-3 transition flex-shrink-0 outline-none">⬅️ 뒤로</button>
+        <div id="breadcrumbContainer" class="bg-emerald-50 rounded-xl border border-emerald-200 p-3 flex-1 flex flex-wrap items-center shadow-sm gap-y-2"></div>
+      </div>
+      
       <div id="learningContainer" class="grid grid-cols-1 gap-4"></div>
     </div>
 
     <!-- [화면 5] 오답노트 -->
     <div id="view-note" class="hidden w-full flex flex-col">
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-4 text-center">
-        <h2 class="text-xl font-bold text-slate-800">⭐ 나의 오답 / 북마크 노트</h2>
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-4 text-center relative">
+        <button onclick="goBack()" class="absolute left-6 top-6 text-slate-400 hover:text-slate-600 font-bold text-sm transition outline-none">⬅️ 뒤로</button>
+        <h2 class="text-xl font-bold text-slate-800 mt-2">⭐ 나의 오답 / 북마크 노트</h2>
       </div>
       <div id="noteContainer" class="space-y-4"></div>
     </div>
 
     <!-- [화면 6] 결과 -->
     <div id="view-result" class="hidden w-full flex flex-col space-y-4">
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 text-center">
-        <h2 class="text-2xl font-bold text-slate-800 mb-2">모의고사 완료!</h2>
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 text-center relative">
+        <button onclick="goBack()" class="absolute left-6 top-6 text-slate-400 hover:text-slate-600 font-bold text-sm transition outline-none">⬅️ 홈으로</button>
+        <h2 class="text-2xl font-bold text-slate-800 mb-2 mt-2">모의고사 완료!</h2>
         <div class="flex justify-center items-center my-6">
           <div class="w-32 h-32 rounded-full border-8 border-indigo-500 flex flex-col items-center justify-center">
             <span id="scoreText" class="text-3xl font-black text-indigo-600">80</span>
@@ -150,7 +153,7 @@
     // 상태 관리 변수 (지능형 뒤로가기를 위해 현재 위치 추적)
     let currentPath = []; 
     let currentViewId = 'view-lobby';
-    let isDetailView = false; // 백과사전에서 문서를 열어본 상태인지 확인
+    let isDetailView = false; 
 
     async function initApp() {
       try {
@@ -184,7 +187,6 @@
       } catch (error) { console.error("데이터 로드 실패:", error); }
     }
 
-    // ✨ 화면 전환 시 뒤로가기 버튼 숨김/표시 처리
     function changeView(viewId) {
       ['view-lobby', 'view-setup', 'view-quiz', 'view-learning', 'view-note', 'view-result'].forEach(id => {
         document.getElementById(id).classList.add('hidden');
@@ -193,41 +195,25 @@
       
       currentViewId = viewId;
       isDetailView = false; 
-
-      // 로비에서는 뒤로가기 버튼 숨김
-      if (viewId === 'view-lobby') {
-        document.getElementById('headerBackBtn').classList.add('hidden');
-      } else {
-        document.getElementById('headerBackBtn').classList.remove('hidden');
-      }
     }
 
     // ✨ 지능형 전역 뒤로가기 로직
     function goBack() {
-      if (currentViewId === 'view-setup') {
-        changeView('view-lobby');
-      } else if (currentViewId === 'view-note') {
-        changeView('view-lobby');
-      } else if (currentViewId === 'view-result') {
+      if (currentViewId === 'view-setup' || currentViewId === 'view-note' || currentViewId === 'view-result') {
         changeView('view-lobby');
       } else if (currentViewId === 'view-quiz') {
         if (confirm("시험을 중단하고 설정 화면으로 돌아가시겠습니까?")) {
           changeView('view-setup');
         }
       } else if (currentViewId === 'view-learning') {
-        // 백과사전 내부 라우팅 처리
         if (document.getElementById('theorySearchInput').value.trim() !== '') {
-          // 검색 중이었으면 검색어 초기화 후 현재 폴더로 복귀
           document.getElementById('theorySearchInput').value = '';
           renderDirectory(currentPath);
         } else if (isDetailView) {
-          // 문서 읽는 중이었으면 상위 폴더로
           renderDirectory(currentPath); 
         } else if (currentPath.length > 0) {
-          // 하위 폴더에 있었으면 상위 폴더로 한 칸 이동
           renderDirectory(currentPath.slice(0, -1)); 
         } else {
-          // 백과사전 홈 최상단이었으면 로비로
           changeView('view-lobby'); 
         }
       }
@@ -256,7 +242,7 @@
 
     function renderDirectory(pathArray) {
       currentPath = pathArray;
-      isDetailView = false; // 폴더 뷰 상태 기록
+      isDetailView = false;
       renderBreadcrumb();
       
       const container = document.getElementById('learningContainer');
@@ -305,7 +291,7 @@
     }
 
     function renderDetail(theoryId) {
-      isDetailView = true; // 문서 상세 뷰 상태 기록
+      isDetailView = true;
       const t = allTheories.find(x => x.id === theoryId);
       const container = document.getElementById('learningContainer');
       container.className = "flex flex-col space-y-4";
