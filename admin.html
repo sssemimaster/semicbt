@@ -66,13 +66,13 @@
   </main>
 
   <script>
+    // 🔴 적용된 설정 정보
     const REPO_OWNER = "sssemimaster"; 
     const REPO_NAME = "semicbt";
     const SUPABASE_URL = "https://hyqsrajudsymexxuekfb.supabase.co"; 
     const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh5cXNyYWp1ZHN5bWV4eHVla2ZiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQxMzA0MDEsImV4cCI6MjEwOTcwNjQwMX0.6OPx9ClxjCnIfGcCFwYhgbWICcpgBI1cvx1QcAyVvIY"; 
-    
-    // 암호화 API 사용을 위해 객체 선언 방어
     const ADMIN_HASH = "a0fb59cbf3a0f758247bd19c2907df0c50bc718e91328ca82095a64f1bcb42da";
+    
     let supabaseClient;
     try { supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY); } catch(e) {}
 
@@ -82,7 +82,7 @@
     let currentQuizIndex = 0;
     let currentInterviewIndex = 0;
 
-    // ✨ 에러 수정: 암호화 API(Web Crypto)가 로컬에서 동작하지 않아 멈추던 현상 해결
+    // ✨ 암호화 API(Web Crypto) 동작 방어 코드
     async function sha256(message) {
       if (!window.crypto || !window.crypto.subtle) {
         alert("⚠️ 보안 연결(HTTPS) 환경이 아니거나 브라우저에서 암호화 기능을 지원하지 않아 비밀번호 검증이 취소되었습니다. 강제로 통과합니다.");
@@ -111,7 +111,7 @@
       if(!token.startsWith("ghp_")) return alert("유효한 토큰이 아닙니다.");
       
       try {
-        // ✨ 에러 방지: 404 Not Found 시 에러로 죽지 않고 빈 배열 반환
+        // ✨ 에러 방지: 404 Not Found 시 죽지 않고 빈 배열 반환
         const qFile = await fetchGitHubFile("data/draft_questions.json");
         draftQuizzes = qFile ? JSON.parse(qFile.content) : [];
         document.getElementById('draftQCount').innerText = draftQuizzes.length;
