@@ -78,6 +78,7 @@ PROMPT_INTERVIEW = f"""
   }}
 ]
 """
+[
   {{
     "id": "INT-{random.randint(10000,99999)}",
     "category": "{sel_category}",
