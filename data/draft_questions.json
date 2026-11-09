@@ -1,5 +1,50 @@
 [
   {
+    "id": "Q-001",
+    "category": "반도체 8대 공정",
+    "topic": "6. 금속 배선 공정 (Metallization)",
+    "difficulty": "초급",
+    "question": "금속 배선 공정에서 주로 사용되는 금속은 무엇인가?",
+    "options": [
+      "구리(Cu)",
+      "알루미늄(Al)",
+      "실리콘(Si)",
+      "금(Au)"
+    ],
+    "answer": 1,
+    "explanation": "금속 배선 공정에서는 주로 구리와 알루미늄이 사용되며, 알루미늄이 전통적으로 널리 사용되었습니다. 금은 보통 특수한 용도로만 사용되고, 실리콘은 반도체 재료입니다."
+  },
+  {
+    "id": "Q-002",
+    "category": "반도체 8대 공정",
+    "topic": "6. 금속 배선 공정 (Metallization)",
+    "difficulty": "중급",
+    "question": "금속 배선 공정에서 PVD(Physical Vapor Deposition) 방법의 주된 원리는 무엇인가?",
+    "options": [
+      "고체 상태에서의 융해",
+      "기체 상태에서의 증발",
+      "액체 상태에서의 증발",
+      "기체 상태에서의 응축"
+    ],
+    "answer": 1,
+    "explanation": "PVD는 기체 상태에서 금속을 증발시켜 기판에 침착하는 방식으로, 고체 금속을 진공 환경에서 기화하여 기판에 도포하는 원리입니다."
+  },
+  {
+    "id": "Q-003",
+    "category": "반도체 8대 공정",
+    "topic": "6. 금속 배선 공정 (Metallization)",
+    "difficulty": "고급",
+    "question": "금속 배선 공정에서 사용하는 CMP(Chemical Mechanical Polishing) 공정의 주된 목적은 무엇인가?",
+    "options": [
+      "전기 전도성을 높이기 위함",
+      "불순물 제거를 위한 것",
+      "금속 원자 재배치를 위한 것",
+      "표면을 균일하게 평탄화하기 위함"
+    ],
+    "answer": 3,
+    "explanation": "CMP는 금속 배선의 표면을 균일하게 평탄화하여 후속 공정의 정확성을 높이는 것이 주된 목적입니다. 금속 원자 재배치나 전기 전도성 향상은 CMP의 직접적인 목적이 아닙니다."
+  },
+  {
     "id": "Q-30011",
     "category": "반도체 8대 공정",
     "topic": "5. 박막 증착 공정 (Deposition)",
