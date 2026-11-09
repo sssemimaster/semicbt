@@ -29,12 +29,9 @@ sel_category = selected["category"]
 sel_subject = selected["subject"]
 sel_guide = selected["guide"]
 
-# ✨ 면접 난이도 3개 중 랜덤 2개 추출
-chosen_diffs = random.sample(["초급", "중급", "고급"], 2)
-
-# 1. 객관식 시험 생성
+# 1. 객관식 시험 (긍정형, 개념 원리 중심)
 PROMPT_QUIZ = f"""
-당신은 반도체 공정 전공 교수입니다. 대분류 '{sel_category}', 세부 주제 '{sel_subject}'에 대한 필수 전공 이론 암기를 검증할 객관식 문제 3개를 생성해 주세요.
+당신은 반도체 공정 전공 교수입니다. 대분류 '{sel_category}', 세부 주제 '{sel_subject}'에 대한 필수 전공 이론 암기를 검증할 객관식 3개를 생성해 주세요.
 [출제 규칙]:
 1. "다음 중 틀린 것은?" 같은 부정형 질문 절대 금지. 핵심 개념의 정의와 원리를 묻는 긍정형 질문으로 작성.
 2. 난이도는 "초급", "중급", "고급"으로 1개씩. 보기 중 오답도 헷갈리는 전공 용어로 구성.
@@ -57,7 +54,6 @@ PROMPT_QUIZ = f"""
 # 2. 실무 면접 (구체적 상황, 특정 물질, 이론 기반 트러블슈팅)
 PROMPT_INTERVIEW = f"""
 당신은 반도체 대기업의 깐깐한 실무진 면접관입니다. 대분류 '{sel_category}', 세부 주제 '{sel_subject}'와 관련하여, 지원자의 **전공 이론 기반 실무 트러블슈팅 능력**을 검증할 아주 구체적인 면접 질문 2개를 생성해 주세요.
-
 [출제 규칙 - 매우 중요]:
 1. "수율이 떨어지면 어떻게 할 것인가?" 같은 포괄적이고 뻔한 질문은 절대 금지합니다.
 2. 질문 지문에는 반드시 **[특정 공정 단계], [사용 중인 구체적 물질이나 가스], [발생한 구체적인 물리적/화학적 결함 상황]**이 명확하게 제시되어야 합니다.
@@ -65,19 +61,7 @@ PROMPT_INTERVIEW = f"""
 3. 지원자가 단순 경험이 아니라, '전공 이론과 메커니즘'을 바탕으로 논리적인 엔지니어링 조치를 답변할 수밖에 없도록 질문을 뾰족하게 깎으세요.
 4. 해설(interview_answer)은 실제 면접에서 답변할 수 있는 '모범 두괄식 스크립트'로 작성하되, 파라미터 조절의 이론적 근거가 탄탄하게 포함되어야 합니다.
 
-반드시 아래 JSON 배열 형식으로만 응답하세요. (마크다운 생략)
-[
-  {{
-    "id": "INT-{random.randint(10000,99999)}",
-    "category": "{sel_category}",
-    "topic": "{sel_subject}",
-    "difficulty": "고급",
-    "question": "구체적인 물질/상황/이론이 포함된 핀포인트 실무 면접 질문",
-    "key_points": ["반드시 포함해야 할 전공 핵심 키워드1", "키워드2"],
-    "interview_answer": "전공 이론과 원리에 근거한 두괄식 모범 답변 스크립트"
-  }}
-]
-"""
+반드시 아래 JSON 배열 형식으로만 응답하세요.
 [
   {{
     "id": "INT-{random.randint(10000,99999)}",
@@ -100,6 +84,12 @@ def generate_contents():
     )
     new_questions = json.loads(res_q.choices[0].message.content.replace("```json", "").replace("```", "").strip())
     
+    # 🚀 정답 위치 강제 랜덤화 (Shuffle)
+    for q in new_questions:
+        correct_text = q["options"][q["answer"]]
+        random.shuffle(q["options"])
+        q["answer"] = q["options"].index(correct_text)
+
     # 면접 생성
     res_i = client.chat.completions.create(
         model="gpt-4o-mini",
@@ -108,6 +98,7 @@ def generate_contents():
     )
     new_interviews = json.loads(res_i.choices[0].message.content.replace("```json", "").replace("```", "").strip())
 
+    # 시험 대기소 저장
     existing_draft_q = []
     if os.path.exists(draft_q_path):
         with open(draft_q_path, "r", encoding="utf-8") as f:
@@ -116,6 +107,7 @@ def generate_contents():
     with open(draft_q_path, "w", encoding="utf-8") as f:
         json.dump(new_questions + existing_draft_q, f, ensure_ascii=False, indent=2)
 
+    # 면접 대기소 저장
     existing_draft_i = []
     if os.path.exists(draft_i_path):
         with open(draft_i_path, "r", encoding="utf-8") as f:
@@ -124,7 +116,7 @@ def generate_contents():
     with open(draft_i_path, "w", encoding="utf-8") as f:
         json.dump(new_interviews + existing_draft_i, f, ensure_ascii=False, indent=2)
 
-    print(f"시험 {len(new_questions)}개, 면접 {len(new_interviews)}개 대기소 저장 완료! (면접 난이도: {chosen_diffs[0]}, {chosen_diffs[1]})")
+    print(f"시험 문제 {len(new_questions)}개, 면접 문제 {len(new_interviews)}개 대기소 저장 완료!")
 
 if __name__ == "__main__":
     generate_contents()
