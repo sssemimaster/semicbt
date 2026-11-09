@@ -1,20 +1,5 @@
 [
   {
-    "id": "Q-003",
-    "category": "차세대 첨단 기술",
-    "topic": "차세대 소자 기술",
-    "difficulty": "고급",
-    "question": "Quantum Dot의 주요 응용 분야는 무엇인가?",
-    "options": [
-      "광전자 소자",
-      "고온 초전도체",
-      "고체 전해질",
-      "리튬 이온 배터리"
-    ],
-    "answer": 0,
-    "explanation": "Quantum Dot은 주로 광전자 소자에 사용되며, 나머지 옵션들은 Quantum Dot의 직접적인 응용 분야가 아니다."
-  },
-  {
     "id": "Q-001",
     "category": "차세대 첨단 기술",
     "topic": "차세대 소자 기술",
