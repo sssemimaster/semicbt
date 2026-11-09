@@ -1,20 +1,5 @@
 [
   {
-    "id": "Q-002",
-    "category": "반도체 8대 공정",
-    "topic": "6. 금속 배선 공정 (Metallization)",
-    "difficulty": "중급",
-    "question": "금속 배선 공정에서 'CVD'는 무엇을 의미하는가?",
-    "options": [
-      "초음파 세척(Ultrasonic Cleaning)",
-      "화학 기상 증착(Chemical Vapor Deposition)",
-      "전기화학적 에칭(Electrochemical Etching)",
-      "물리적 기상 증착(Physical Vapor Deposition)"
-    ],
-    "answer": 1,
-    "explanation": "'CVD'는 화학 기상 증착(Chemical Vapor Deposition)의 약자로, 금속 배선에 주로 사용되는 증착 방법이다. 전기화학적 에칭(Electrochemical Etching)과 물리적 기상 증착(Physical Vapor Deposition)은 다른 공정이다."
-  },
-  {
     "id": "Q-003",
     "category": "반도체 8대 공정",
     "topic": "6. 금속 배선 공정 (Metallization)",
