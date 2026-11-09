@@ -1,6 +1,51 @@
 [
   {
     "id": "Q-001",
+    "category": "반도체 8대 공정",
+    "topic": "6. 금속 배선 공정 (Metallization)",
+    "difficulty": "초급",
+    "question": "금속 배선 공정에서 주로 사용되는 금속은 무엇인가?",
+    "options": [
+      "금(Au)",
+      "알루미늄(Al)",
+      "망간(Mn)",
+      "구리(Cu)"
+    ],
+    "answer": 1,
+    "explanation": "금속 배선 공정에서는 주로 알루미늄(Al)이 사용되며, 구리(Cu)도 최근에 많이 사용되고 있다. 그러나 망간(Mn)과 같은 금속은 일반적으로 사용되지 않는다."
+  },
+  {
+    "id": "Q-002",
+    "category": "반도체 8대 공정",
+    "topic": "6. 금속 배선 공정 (Metallization)",
+    "difficulty": "중급",
+    "question": "금속 배선 공정에서 'CVD'는 무엇을 의미하는가?",
+    "options": [
+      "초음파 세척(Ultrasonic Cleaning)",
+      "화학 기상 증착(Chemical Vapor Deposition)",
+      "전기화학적 에칭(Electrochemical Etching)",
+      "물리적 기상 증착(Physical Vapor Deposition)"
+    ],
+    "answer": 1,
+    "explanation": "'CVD'는 화학 기상 증착(Chemical Vapor Deposition)의 약자로, 금속 배선에 주로 사용되는 증착 방법이다. 전기화학적 에칭(Electrochemical Etching)과 물리적 기상 증착(Physical Vapor Deposition)은 다른 공정이다."
+  },
+  {
+    "id": "Q-003",
+    "category": "반도체 8대 공정",
+    "topic": "6. 금속 배선 공정 (Metallization)",
+    "difficulty": "고급",
+    "question": "금속 배선 공정에서 '종횡비'란 무엇을 의미하는가?",
+    "options": [
+      "전기 저항(Electrical Resistance)",
+      "열 전도율(Thermal Conductivity)",
+      "화학적 안정성(Chemical Stability)",
+      "형상 비율(Aspect Ratio)"
+    ],
+    "answer": 3,
+    "explanation": "'종횡비'는 형상 비율(Aspect Ratio)을 의미하며, 주로 금속 배선의 폭과 두께의 비율을 나타낸다. 이는 공정의 성능 및 신뢰성에 중요한 요소다."
+  },
+  {
+    "id": "Q-001",
     "category": "반도체 기초 이론",
     "topic": "트랜지스터 소자",
     "difficulty": "초급",
