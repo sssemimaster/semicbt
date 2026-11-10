@@ -25,15 +25,28 @@ target_keyword = random.choice(selected["keywords"])
 def clean_json_string(raw_str):
     cleaned = raw_str.replace("```json", "").replace("```", "").strip()
     cleaned = re.sub(r',\s*([\]}])', r'\1', cleaned)
+    cleaned = re.sub(r'\\(?!["\\/bfnrtu])', r'\\\\', cleaned)
     return cleaned
+
+def save_draft(path, new_data):
+    existing = []
+    if os.path.exists(path):
+        with open(path, "r", encoding="utf-8") as f:
+            try: 
+                content = f.read().strip()
+                if content: existing = json.loads(content)
+            except: pass
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(new_data + existing, f, ensure_ascii=False, indent=2)
 
 def generate_unified_content():
     print(f"[{target_keyword}] 기반 통합 콘텐츠 생성 시작...")
-    
+    theory_content = ""
+
+    # ----------------------------------------------------
+    # 1. 📖 이론 백과사전 생성 및 저장
+    # ----------------------------------------------------
     try:
-        # ----------------------------------------------------
-        # 1. 📖 이론 백과사전 생성
-        # ----------------------------------------------------
         msg_theory = [
             {"role": "system", "content": "You strictly output a valid JSON array. JSON 에러 방지를 위해 수식의 역슬래시는 반드시 두 개(\\\\) 작성하세요."},
             {"role": "user", "content": f"""
@@ -59,10 +72,17 @@ def generate_unified_content():
         res_t = client.chat.completions.create(model="gpt-4o-mini", messages=msg_theory, temperature=0.7)
         theory_json = json.loads(clean_json_string(res_t.choices[0].message.content))
         theory_content = theory_json[0]['content']
+        
+        save_draft(draft_t_path, theory_json)
+        print("✅ 1/3 이론 백과사전 생성 및 저장 성공!")
+    except Exception as e:
+        print(f"⚠️ 이론 생성 실패 (이후 단계 취소됨): {e}")
+        return # 이론 생성을 실패하면 문제도 만들 수 없으므로 종료
 
-        # ----------------------------------------------------
-        # 2. 📝 이론 기반 객관식 생성
-        # ----------------------------------------------------
+    # ----------------------------------------------------
+    # 2. 📝 이론 기반 객관식 생성 및 저장
+    # ----------------------------------------------------
+    try:
         msg_quiz = [
             {"role": "system", "content": "You strictly output a valid JSON array. 수식의 역슬래시는 반드시 두 개(\\\\) 작성하세요."},
             {"role": "user", "content": f"""
@@ -89,10 +109,16 @@ def generate_unified_content():
             correct_text = q["options"][q["answer"]]
             random.shuffle(q["options"])
             q["answer"] = q["options"].index(correct_text)
+            
+        save_draft(draft_q_path, quiz_json)
+        print("✅ 2/3 이론 연계 객관식 생성 및 저장 성공!")
+    except Exception as e:
+        print(f"⚠️ 객관식 생성 실패 (건너뜀): {e}")
 
-        # ----------------------------------------------------
-        # 3. 🗣️ 이론 기반 면접 생성
-        # ----------------------------------------------------
+    # ----------------------------------------------------
+    # 3. 🗣️ 이론 기반 면접 생성 및 저장
+    # ----------------------------------------------------
+    try:
         msg_int = [
             {"role": "system", "content": "You strictly output a valid JSON array. 수식의 역슬래시는 반드시 두 개(\\\\) 작성하세요."},
             {"role": "user", "content": f"""
@@ -114,26 +140,11 @@ def generate_unified_content():
         ]
         res_i = client.chat.completions.create(model="gpt-4o-mini", messages=msg_int, temperature=0.7)
         interview_json = json.loads(clean_json_string(res_i.choices[0].message.content))
-
-        # ----------------------------------------------------
-        # 4. 안전한 파일 저장
-        # ----------------------------------------------------
-        def save_draft(path, new_data):
-            existing = []
-            if os.path.exists(path):
-                with open(path, "r", encoding="utf-8") as f:
-                    try: existing = json.load(f)
-                    except: pass
-            with open(path, "w", encoding="utf-8") as f:
-                json.dump(new_data + existing, f, ensure_ascii=False, indent=2)
-
-        save_draft(draft_t_path, theory_json)
-        save_draft(draft_q_path, quiz_json)
+        
         save_draft(draft_i_path, interview_json)
-        print(f"✅ 통합 생성 완료! (이론 1, 퀴즈 3, 면접 2)")
-
+        print("✅ 3/3 이론 연계 실무 면접 생성 및 저장 성공!")
     except Exception as e:
-        print(f"⚠️ 콘텐츠 생성 중 파싱 에러 발생 (건너뜀): {e}")
+        print(f"⚠️ 면접 생성 실패 (건너뜀): {e}")
 
 if __name__ == "__main__":
     generate_unified_content()
