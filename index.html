@@ -185,7 +185,7 @@
         if(qRes && qRes.ok) allQuizData = await qRes.json(); if(iRes && iRes.ok) allInterviewData = await iRes.json();
         if(tRes && tRes.ok) {
           const raw = await tRes.json();
-          allTheories = raw.map((t, idx) => ({ ...t, id: t.id || "T-" + idx, category: t.category || "기타", subject: t.subject || "일반" }));
+          allTheories = raw.filter(t => !String(t.content || '').includes('채워질 예정')).map((t, idx) => ({ ...t, id: t.id || "T-" + idx, category: t.category || "기타", subject: t.subject || "일반" }));
         }
         applyState('view-lobby', learnState);
       } catch (e) {}
@@ -247,11 +247,20 @@
       container.appendChild(btn);
     }
 
+        // 수식($...$, $$...$$)을 marked가 건드리지 못하게 잠시 빼 두었다가 되돌림
+    function stashMath(md) {
+      const stash = [];
+      const hold = (m) => { stash.push(m); return `@@MATH${stash.length - 1}@@`; };
+      const text = String(md || '').replace(/\$\$[\s\S]+?\$\$/g, hold).replace(/\$[^$\n]+?\$/g, hold);
+      const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      return { text, restore: (html) => html.replace(/@@MATH(\d+)@@/g, (_, i) => esc(stash[Number(i)])) };
+    }
+    
     function renderDetailDOM(theoryId) {
       const t = allTheories.find(x => x.id === theoryId);
       const container = document.getElementById('learningContainer'); container.className = "flex flex-col space-y-4"; container.innerHTML = '';
       const card = document.createElement('div'); card.className = "bg-white dark:bg-[#1a1d20] rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden";
-      let rawMarkdown = t.content;
+      const math = stashMath(t.content); let rawMarkdown = math.text;
       rawMarkdown = rawMarkdown.replace(/>\s*💡\s*(.*?)(?=\n\n|\n###|$)/gs, (match, p1) => `<div class="custom-highlight-box">${marked.parseInline(p1.trim())}</div>\n\n`);
       rawMarkdown = rawMarkdown.replace(/###\s*\[(.*?)\]\s*(.*)/g, (match, badgeText, titleText) => `<div class="custom-badge-heading"><span class="custom-badge">${badgeText}</span>${titleText}</div>`);
       
@@ -259,7 +268,7 @@
         <div class="p-6 md:p-8">
           <h2 class="text-2xl font-black text-slate-900 dark:text-white mb-4 leading-tight">${t.title}</h2>
           <div class="custom-table-container prose prose-slate dark:prose-invert max-w-none text-sm md:text-base leading-relaxed dark:text-slate-300">
-            ${marked.parse(rawMarkdown)}
+            ${math.restore(marked.parse(rawMarkdown))}
           </div>
         </div>
         <div class="bg-slate-50 dark:bg-[#1a231c] p-6 border-t border-slate-200 dark:border-[#2d4a36]">
