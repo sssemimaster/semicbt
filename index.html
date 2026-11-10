@@ -195,7 +195,13 @@
     let starredIds = JSON.parse(localStorage.getItem('semiCbtStarred')) || [];
     
     const FIXED_CATEGORIES = ["반도체 기초 이론", "반도체 8대 공정", "차세대 첨단 기술", "기타"];
-    const FIXED_SUBJECTS = ["반도체 물리", "트랜지스터 소자", "메모리 반도체", "1. 웨이퍼 제조 공정", "2. 산화 공정 (Oxidation)", "3. 포토 공정 (Photo)", "4. 식각 공정 (Etching)", "5. 박막 증착 공정 (Deposition)", "6. 금속 배선 공정 (Metallization)", "7. EDS 공정 (Testing)", "8. 패키징 공정 (Packaging)", "차세대 소자 기술", "어드밴스드 패키징", "일반"];
+    // 📁 백과사전 폴더 구조 (문서가 없어도 항상 보임 / 새 이론은 category·subject 가 일치하는 폴더에 들어감)
+    const CATEGORY_TREE = {
+      "반도체 기초 이론": ["반도체 물리", "트랜지스터 소자", "메모리 반도체"],
+      "반도체 8대 공정": ["1. 웨이퍼 제조 공정", "2. 산화 공정 (Oxidation)", "3. 포토 공정 (Photo)", "4. 식각 공정 (Etching)", "5. 박막 증착 공정 (Deposition)", "6. 금속 배선 공정 (Metallization)", "7. EDS 공정 (Testing)", "8. 패키징 공정 (Packaging)"],
+      "차세대 첨단 기술": ["차세대 소자 기술", "어드밴스드 패키징"]
+    };
+    const FIXED_SUBJECTS = Object.values(CATEGORY_TREE).flat().concat(["일반"]);
     
     let currentViewId = 'view-lobby'; let learnState = { level: 'home', category: '', subject: '', theoryId: '' };
 
@@ -233,7 +239,7 @@
     // 📖 백과사전 뷰 (max-w-2xl 사이즈에 맞춘 레이아웃)
     function renderHomeDOM() {
       renderBreadcrumb(); const container = document.getElementById('learningContainer'); container.className = "grid grid-cols-1 sm:grid-cols-2 gap-4"; container.innerHTML = '';
-      const activeCats = FIXED_CATEGORIES.filter(cat => allTheories.some(t => t.category === cat));
+      const activeCats = FIXED_CATEGORIES.filter(cat => CATEGORY_TREE[cat] || allTheories.some(t => t.category === cat));
       activeCats.forEach(cat => {
         const btn = document.createElement('button');
         btn.className = "group bg-white dark:bg-[#1a1d20] border border-slate-200 dark:border-slate-800 hover:border-emerald-400 dark:hover:border-[#84cc9c] hover:shadow-md p-5 rounded-2xl text-left transition flex items-center gap-4 shadow-sm";
@@ -245,7 +251,8 @@
 
     function renderSubjectsDOM(category) {
       renderBreadcrumb(); const container = document.getElementById('learningContainer'); container.className = "grid grid-cols-1 sm:grid-cols-2 gap-4"; container.innerHTML = '';
-      const activeSubs = FIXED_SUBJECTS.filter(sub => allTheories.some(t => t.category === category && t.subject === sub));
+      const extra = [...new Set(allTheories.filter(t => t.category === category).map(t => t.subject))].filter(sub => !(CATEGORY_TREE[category] || []).includes(sub));
+      const activeSubs = (CATEGORY_TREE[category] || []).concat(extra);
       activeSubs.forEach(sub => {
         const btn = document.createElement('button');
         btn.className = "group bg-white dark:bg-[#1a1d20] border border-slate-200 dark:border-slate-800 hover:border-emerald-400 dark:hover:border-[#84cc9c] hover:shadow-md p-5 rounded-2xl text-left transition flex items-center gap-4 shadow-sm";
@@ -257,7 +264,9 @@
 
     function renderTitlesDOM(category, subject) {
       renderBreadcrumb(); const container = document.getElementById('learningContainer'); container.className = "flex flex-col space-y-3"; container.innerHTML = '';
-      allTheories.filter(t => t.category === category && t.subject === subject).forEach(t => renderTitleCard(t, container));
+      const list = allTheories.filter(t => t.category === category && t.subject === subject);
+      if (list.length === 0) container.innerHTML = `<div class="bg-white dark:bg-[#1a1d20] border border-dashed border-slate-300 dark:border-slate-700 p-8 text-center text-slate-400 rounded-xl text-sm">아직 등록된 이론이 없습니다.<br>곧 업데이트될 예정이에요.</div>`;
+      list.forEach(t => renderTitleCard(t, container));
     }
 
     function renderTitleCard(t, container) {
@@ -296,7 +305,7 @@
         </div>
         <div class="bg-slate-50 dark:bg-[#1a231c] p-6 border-t border-slate-200 dark:border-[#2d4a36]">
           <button onclick="startMiniQuiz('${t.title}')" class="w-full bg-indigo-600 dark:bg-[#84cc9c] hover:bg-indigo-700 dark:hover:bg-[#6ab382] text-white dark:text-[#111315] font-black text-base py-4 rounded-xl shadow-md transition flex items-center justify-center gap-2">
-            <span class="text-xl">🧩</span> 실전 기출 풀기 ➔
+            <span class="text-xl">🧩</span> 실전 문제 풀기 ➔
           </button>
         </div>
       `;
@@ -306,7 +315,7 @@
 
     function startMiniQuiz(keyword) {
       filteredSession = allQuizData.filter(q => q.category.includes(keyword) || q.topic.includes(keyword) || q.question.includes(keyword));
-      if (filteredSession.length === 0) return alert("현재 등록된 관련된 기출문제가 없습니다.");
+      if (filteredSession.length === 0) return alert("현재 등록된 관련 문제가 없습니다.");
       filteredSession = filteredSession.sort(() => Math.random() - 0.5).slice(0, 3);
       currentIndex = 0; correctCount = 0; currentMode = 'quiz'; navTo('view-quiz'); renderQuiz();
     }
