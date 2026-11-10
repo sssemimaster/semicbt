@@ -13,8 +13,17 @@ THEORY_MODEL = "gpt-4o-mini"
 topics = [
     {"category": "반도체 기초 이론", "subject": "반도체 물리", "keywords": ["에너지 밴드", "페르미 준위", "캐리어 농도", "PN 접합", "유효 질량"]},
     {"category": "반도체 기초 이론", "subject": "트랜지스터 소자", "keywords": ["MOSFET", "채널 길이 변조", "단채널 효과 (SCE)", "누설 전류", "문턱 전압"]},
+    {"category": "반도체 기초 이론", "subject": "메모리 반도체", "keywords": ["DRAM 동작 원리", "NAND 플래시 구조", "SRAM 셀 구조", "리프레시 동작"]},
+    {"category": "반도체 8대 공정", "subject": "1. 웨이퍼 제조 공정", "keywords": ["초크랄스키 공정", "웨이퍼 연마(CMP)", "에피택시 성장", "실리콘 잉곳"]},
+    {"category": "반도체 8대 공정", "subject": "2. 산화 공정 (Oxidation)", "keywords": ["건식 산화", "습식 산화", "Deal-Grove 모델", "게이트 산화막"]},
+    {"category": "반도체 8대 공정", "subject": "3. 포토 공정 (Photo)", "keywords": ["노광 공정", "포토레지스트", "해상도와 초점 심도", "EUV 리소그래피"]},
     {"category": "반도체 8대 공정", "subject": "4. 식각 공정 (Etching)", "keywords": ["건식 식각", "플라즈마 식각", "식각 선택비", "Bowing 현상"]},
-    {"category": "반도체 8대 공정", "subject": "5. 박막 증착 공정 (Deposition)", "keywords": ["CVD 공정", "ALD 공정", "PVD 공정", "단차 피복성"]}
+    {"category": "반도체 8대 공정", "subject": "5. 박막 증착 공정 (Deposition)", "keywords": ["CVD 공정", "ALD 공정", "PVD 공정", "단차 피복성"]},
+    {"category": "반도체 8대 공정", "subject": "6. 금속 배선 공정 (Metallization)", "keywords": ["구리 다마신 공정", "전자 이동(Electromigration)", "배리어 메탈", "RC 지연"]},
+    {"category": "반도체 8대 공정", "subject": "7. EDS 공정 (Testing)", "keywords": ["EDS 테스트 흐름", "번인 테스트", "수율(Yield)", "리페어와 리던던시"]},
+    {"category": "반도체 8대 공정", "subject": "8. 패키징 공정 (Packaging)", "keywords": ["와이어 본딩", "플립칩 패키지", "몰딩 공정", "패키지 열 방출"]},
+    {"category": "차세대 첨단 기술", "subject": "차세대 소자 기술", "keywords": ["FinFET 구조", "GAA 나노시트", "High-k/Metal Gate", "BSPDN 후면 전력"]},
+    {"category": "차세대 첨단 기술", "subject": "어드밴스드 패키징", "keywords": ["HBM 구조", "TSV 공정", "2.5D 인터포저", "하이브리드 본딩"]}
 ]
 
 draft_t_path = "data/draft_theories.json"
