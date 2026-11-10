@@ -3,7 +3,7 @@ name: Auto Content Generator (OpenAI)
 on:
   schedule:
     # 6시간마다 (UTC 기준). 더 자주/덜 자주 돌리고 싶으면 이 줄만 바꾸세요.
-    - cron: '0 */6 * * *'
+      - cron: '*/30 * * * *'
   workflow_dispatch:
 
 # 같은 워크플로가 동시에 두 개 돌지 않도록 한 줄로 세움
