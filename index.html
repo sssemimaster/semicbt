@@ -361,8 +361,54 @@
       if(starredIds.includes(id)) { starredIds = starredIds.filter(x=>x!==id); s.innerText="☆"; s.className="text-3xl text-slate-300 dark:text-slate-600"; } else { starredIds.push(id); s.innerText="★"; s.className="text-3xl text-amber-400"; }
       localStorage.setItem('semiCbtStarred', JSON.stringify(starredIds));
     }
-    function openReportModal() { document.getElementById('reportModal').classList.replace('hidden', 'flex'); }
-    function closeReportModal() { document.getElementById('reportModal').classList.replace('flex', 'hidden'); }
+    // ===== 🚨 오류 제보 =====
+    let reportTarget = null;
+    function setReportMsg(text, kind) {
+      const el = document.getElementById('reportMsg');
+      el.textContent = text;
+      el.className = 'text-xs mt-2 min-h-[1rem] ' + (kind === 'err' ? 'text-rose-500' : kind === 'ok' ? 'text-emerald-500' : 'text-slate-400');
+    }
+    function openReportModal() {
+      const item = filteredSession[currentIndex];
+      if (!item) return;
+      reportTarget = { id: String(item.id || ''), text: String(item.question || '').slice(0, 120) };
+      const short = reportTarget.text.length > 40 ? reportTarget.text.slice(0, 40) + '…' : reportTarget.text;
+      document.getElementById('reportTarget').textContent = `대상: ${reportTarget.id} · ${short}`;
+      document.getElementById('reportContent').value = '';
+      document.getElementById('reportSubmitBtn').disabled = false;
+      setReportMsg('', '');
+      const m = document.getElementById('reportModal'); m.classList.remove('hidden'); m.classList.add('flex');
+      setTimeout(() => document.getElementById('reportContent').focus(), 50);
+    }
+    function closeReportModal() {
+      const m = document.getElementById('reportModal'); m.classList.remove('flex'); m.classList.add('hidden');
+    }
+    async function submitReport() {
+      if (!reportTarget) return;
+      const content = document.getElementById('reportContent').value.trim();
+      if (content.length < 5) return setReportMsg('5자 이상 적어 주세요.', 'err');
+      let last = 0; try { last = Number(localStorage.getItem('semiCbtLastReport') || 0); } catch (e) {}
+      if (Date.now() - last < 15000) return setReportMsg('잠시 후 다시 제보해 주세요.', 'err');
+      if (!supabaseClient) return setReportMsg('서버 연결에 실패했습니다. 새로고침 후 다시 시도해 주세요.', 'err');
+
+      const btn = document.getElementById('reportSubmitBtn');
+      btn.disabled = true; setReportMsg('전송 중...', 'info');
+      const { error } = await supabaseClient.from('error_reports').insert({
+        question_id: reportTarget.id,
+        question_text: reportTarget.text,
+        content: content,
+        status: 'pending'
+      });
+      if (error) {
+        console.error('제보 실패:', error);
+        btn.disabled = false;
+        return setReportMsg('전송 실패: ' + (error.message || '알 수 없는 오류'), 'err');
+      }
+      try { localStorage.setItem('semiCbtLastReport', String(Date.now())); } catch (e) {}
+      setReportMsg('✅ 제보가 접수되었습니다. 감사합니다!', 'ok');
+      setTimeout(closeReportModal, 1200);
+    }
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeReportModal(); });
     initApp();
   </script>
 </body>
