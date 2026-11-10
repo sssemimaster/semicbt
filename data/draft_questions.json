@@ -1,5 +1,95 @@
 [
   {
+    "id": "Q-001",
+    "category": "반도체 8대 공정",
+    "topic": "6. 금속 배선 공정 (Metallization)",
+    "difficulty": "초급",
+    "question": "금속 배선 공정에서 주로 사용되는 금속의 종류는 무엇인가?",
+    "options": [
+      "금(Au)",
+      "철(Fe)",
+      "알루미늄(Al)",
+      "구리(Cu)"
+    ],
+    "answer": 2,
+    "explanation": "금속 배선 공정에서는 주로 알루미늄(Al)이 사용되며, 구리(Cu)도 사용되지만 주로 후속 공정에서 활용된다."
+  },
+  {
+    "id": "Q-002",
+    "category": "반도체 8대 공정",
+    "topic": "6. 금속 배선 공정 (Metallization)",
+    "difficulty": "중급",
+    "question": "금속 배선 공정에서 사용되는 스퍼터링(Sputtering) 방법의 주된 원리는 무엇인가?",
+    "options": [
+      "화학적 기상 증착",
+      "열적 전도",
+      "물리적 증착",
+      "고온 복합 반응"
+    ],
+    "answer": 2,
+    "explanation": "스퍼터링은 물리적 증착(PVD) 방법으로, 고에너지 입자가 타겟 금속에서 원자를 제거해 기판에 증착하는 원리이다."
+  },
+  {
+    "id": "Q-003",
+    "category": "반도체 8대 공정",
+    "topic": "6. 금속 배선 공정 (Metallization)",
+    "difficulty": "고급",
+    "question": "금속 배선 공정에서 접합 저항을 줄이기 위해 사용하는 방법은 무엇인가?",
+    "options": [
+      "전기적 특성 테스트(Electrical Testing)",
+      "산화막 제거(Removal of Oxide)",
+      "표면 처리(Surface Treatment)",
+      "열처리(Annealing)"
+    ],
+    "answer": 3,
+    "explanation": "열처리(Annealing)는 금속의 결함을 감소시켜 접합 저항을 줄이는 데 중요한 역할을 한다."
+  },
+  {
+    "id": "Q-62162",
+    "category": "반도체 기초 이론",
+    "topic": "트랜지스터 소자",
+    "difficulty": "초급",
+    "question": "트랜지스터의 기본 작동 원리는 무엇인가요?",
+    "options": [
+      "전압 변환",
+      "신호 차단",
+      "전류 증폭",
+      "저항 조절"
+    ],
+    "answer": 2,
+    "explanation": "트랜지스터는 입력 전류를 증폭하여 출력 전류를 생성하는 소자입니다. 전압 변환은 주로 다른 소자에서 이루어지며, 저항 조절과 신호 차단은 트랜지스터의 부가적인 기능일 뿐입니다."
+  },
+  {
+    "id": "Q-62163",
+    "category": "반도체 기초 이론",
+    "topic": "트랜지스터 소자",
+    "difficulty": "중급",
+    "question": "NPN 트랜지스터의 작동 시 전류의 흐름 방향은 어떻게 되는가?",
+    "options": [
+      "Emitter -> Base -> Collector",
+      "Collector -> Base -> Emitter",
+      "Emitter -> Collector -> Base",
+      "Base -> Collector -> Emitter"
+    ],
+    "answer": 0,
+    "explanation": "NPN 트랜지스터에서는 전류가 Emitter에서 Base를 지나 Collector로 흐릅니다. 다른 선택지는 NPN의 전류 흐름 방향과 맞지 않습니다."
+  },
+  {
+    "id": "Q-62164",
+    "category": "반도체 기초 이론",
+    "topic": "트랜지스터 소자",
+    "difficulty": "고급",
+    "question": "MOSFET의 작동 원리에서 주요한 전계 효과는 무엇인가요?",
+    "options": [
+      "전류 주입",
+      "전하 분리",
+      "전압 제어",
+      "광전 효과"
+    ],
+    "answer": 2,
+    "explanation": "MOSFET는 전압에 의해 전계를 형성하여 채널을 조절하는 전계 효과 소자입니다. 전하 분리와 전류 주입은 다른 소자에서 관찰되는 현상이며, 광전 효과는 광학적 원리를 기반으로 합니다."
+  },
+  {
     "id": "Q-42131",
     "category": "반도체 기초 이론",
     "topic": "반도체 물리",
