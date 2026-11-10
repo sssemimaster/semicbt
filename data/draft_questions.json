@@ -1,1 +1,47 @@
-[]
+[
+  {
+    "id": "Q-001",
+    "category": "반도체 8대 공정",
+    "topic": "Bowing 현상",
+    "difficulty": "중급",
+    "question": "Bowing 현상이 발생하는 주요 원인 중 하나는 무엇인가요?",
+    "options": [
+      "온도 변화 없음",
+      "균일한 막 두께",
+      "식각 속도의 일정함",
+      "압력 분포의 불균형"
+    ],
+    "answer": 3,
+    "explanation": "Bowing 현상은 압력 분포의 불균형과 온도 변화에 의해 발생할 수 있습니다."
+  },
+  {
+    "id": "Q-002",
+    "category": "반도체 8대 공정",
+    "topic": "Bowing 현상",
+    "difficulty": "중급",
+    "question": "Bowing 현상을 수학적으로 모델링할 때 사용하는 변형 응력의 식에서 어떤 변수를 포함하나요?",
+    "options": [
+      "압력",
+      "시간",
+      "온도",
+      "영률"
+    ],
+    "answer": 3,
+    "explanation": "변형 응력 $\\sigma$는 영률 $E$, 변형률 $\\epsilon$, 포아송 비 $u$를 포함한 식으로 표현됩니다."
+  },
+  {
+    "id": "Q-003",
+    "category": "반도체 8대 공정",
+    "topic": "Bowing 현상",
+    "difficulty": "중급",
+    "question": "Bowing 현상이 반도체 제조 공정에 미치는 영향은 무엇인가요?",
+    "options": [
+      "생산 속도 증가",
+      "제품 비용 절감",
+      "공정 안정성 향상",
+      "제품 품질 저하"
+    ],
+    "answer": 3,
+    "explanation": "Bowing 현상은 웨이퍼의 변형으로 인해 최종 제품 품질에 중대한 영향을 미칩니다."
+  }
+]
