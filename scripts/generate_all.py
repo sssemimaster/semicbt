@@ -22,13 +22,9 @@ sel_cat = selected["category"]
 sel_sub = selected["subject"]
 target_keyword = random.choice(selected["keywords"])
 
-# 🚨 LaTeX 역슬래시(\) 및 잘못된 JSON 이스케이프 자동 교정 함수
 def clean_json_string(raw_str):
     cleaned = raw_str.replace("```json", "").replace("```", "").strip()
-    # 후행 쉼표 삭제
     cleaned = re.sub(r',\s*([\]}])', r'\1', cleaned)
-    # JSON 내에서 유효하지 않은 역슬래시(\)를 이중 역슬래시(\\)로 교정하여 Invalid \escape 방지
-    cleaned = re.sub(r'\\(?!["\\/bfnrtu])', r'\\\\', cleaned)
     return cleaned
 
 def generate_unified_content():
@@ -39,13 +35,14 @@ def generate_unified_content():
         # 1. 📖 이론 백과사전 생성
         # ----------------------------------------------------
         msg_theory = [
-            {"role": "system", "content": "You strictly output a valid JSON array. 수식은 반드시 LaTeX 문법을 사용하며 인라인은 $...$, 블록은 $$...$$로 감싸세요. 문자열 내 역슬래시는 반드시 \\\\ 형태로 이스케이프하세요."},
+            {"role": "system", "content": "You strictly output a valid JSON array. JSON 에러 방지를 위해 수식의 역슬래시는 반드시 두 개(\\\\) 작성하세요."},
             {"role": "user", "content": f"""
 '{target_keyword}'에 대한 깊이 있는 이론 해설서를 작성하세요.
-- 전체 글은 이론 중심 서사로 이어져야 합니다.
-- 중간에 `> 💡 [실무 코멘트] ...` 같은 인라인 팁을 1~2개 섞어주세요.
-- 소제목은 `### [원리] ...` 형태로 작성하세요.
-- JSON 배열로 응답하고, 내부 큰따옴표는 반드시 이스케이프(\\")하세요.
+- 전체 글은 이론 중심 서사로 끊기지 않고 충분한 분량으로 끝까지 작성되어야 합니다.
+- 중간에 `> 💡 [실무 코멘트] ...` 또는 `> 💡 [면접 팁] ...` 등 다양한 인라인 팁을 1~2개 섞어주세요.
+- 소제목은 문단 내용에 맞게 `### [핵심 개념] ...`, `### [메커니즘] ...`, `### [장단점] ...` 등 뱃지 이름을 다채롭게 변경하세요. (모두 [원리]로 통일하지 마세요)
+- 수식 기호(LaTeX) 사용 시 백슬래시는 반드시 두 개를 쓰세요. (예: \\\\frac, \\\\sigma, \\\\epsilon, \\\\int)
+- JSON 내부 큰따옴표는 이스케이프(\\") 하세요.
 
 [
   {{
@@ -67,9 +64,9 @@ def generate_unified_content():
         # 2. 📝 이론 기반 객관식 생성
         # ----------------------------------------------------
         msg_quiz = [
-            {"role": "system", "content": "You strictly output a valid JSON array. 수식은 $ 또는 $$ 로 감싸고, 역슬래시는 \\\\ 로 출력하세요."},
+            {"role": "system", "content": "You strictly output a valid JSON array. 수식의 역슬래시는 반드시 두 개(\\\\) 작성하세요."},
             {"role": "user", "content": f"""
-다음 이론 내용만을 바탕으로, 이론 이해도를 검증하는 긍정형 객관식 기출문제 3개를 만들어주세요. 부정형("아닌 것은?") 질문은 절대 금지합니다:
+다음 이론 내용만을 바탕으로, 이론 이해도를 검증하는 긍정형 객관식 기출문제 3개를 만들어주세요. 부정형("아닌 것은?") 질문은 금지합니다:
 {theory_content}
 
 [
@@ -97,7 +94,7 @@ def generate_unified_content():
         # 3. 🗣️ 이론 기반 면접 생성
         # ----------------------------------------------------
         msg_int = [
-            {"role": "system", "content": "You strictly output a valid JSON array."},
+            {"role": "system", "content": "You strictly output a valid JSON array. 수식의 역슬래시는 반드시 두 개(\\\\) 작성하세요."},
             {"role": "user", "content": f"""
 다음 이론을 바탕으로 실무 적용 역량을 묻는 날카로운 면접 질문 2개를 만드세요:
 {theory_content}
