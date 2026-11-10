@@ -2,12 +2,19 @@ name: Auto Content Generator (OpenAI)
 
 on:
   schedule:
-    - cron: '*/30 * * * *'
+    # 6시간마다 (UTC 기준). 더 자주/덜 자주 돌리고 싶으면 이 줄만 바꾸세요.
+    - cron: '0 */6 * * *'
   workflow_dispatch:
+
+# 같은 워크플로가 동시에 두 개 돌지 않도록 한 줄로 세움
+concurrency:
+  group: auto-content-generator
+  cancel-in-progress: false
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     permissions:
       contents: write
 
@@ -27,7 +34,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install openai
 
-    # ✨ 통합된 파이썬 스크립트 실행 (이론 -> 퀴즈 -> 면접 연쇄 생성)
+    # 이론 -> 퀴즈 -> 면접 연쇄 생성 (검수 대기가 쌓여 있으면 스크립트가 알아서 건너뜀)
     - name: Run Unified Generator
       env:
         OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
@@ -38,4 +45,19 @@ jobs:
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
         git add data/questions.json data/draft_questions.json data/interviews.json data/draft_interviews.json data/theories.json data/draft_theories.json
-        git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-generated Unified Contents" && git push)
+        if git diff --staged --quiet; then
+          echo "변경 사항 없음 - 커밋 생략"
+          exit 0
+        fi
+        git commit -m "Auto-generated Unified Contents"
+        # 관리자 페이지에서 같은 시간에 승인/삭제해 원격이 앞서 있어도 재시도
+        for i in 1 2 3; do
+          if git pull --rebase && git push; then
+            exit 0
+          fi
+          echo "push 실패 ($i/3), 5초 후 재시도"
+          git rebase --abort 2>/dev/null || true
+          sleep 5
+        done
+        echo "::error::3번 시도했지만 push에 실패했습니다 (관리자 승인과 충돌했을 가능성)"
+        exit 1
