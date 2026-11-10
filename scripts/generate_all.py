@@ -2,6 +2,7 @@ import os
 import json
 import random
 import re
+import uuid
 from openai import OpenAI
 
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
@@ -20,10 +21,44 @@ draft_t_path = "data/draft_theories.json"
 draft_q_path = "data/draft_questions.json"
 draft_i_path = "data/draft_interviews.json"
 
-selected = random.choice(topics)
-sel_cat = selected["category"]
-sel_sub = selected["subject"]
-target_keyword = random.choice(selected["keywords"])
+MAX_PENDING_DRAFTS = 10  # 검수 대기 이론이 이 개수 이상이면 생성을 건너뜀 (API 비용 낭비 방지)
+
+
+def new_id(prefix):
+    """충돌 가능성이 거의 없는 고유 ID (예: Q-3fa9c1d2)"""
+    return f"{prefix}-{uuid.uuid4().hex[:8]}"
+
+
+def load_json_list(path):
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        return data if isinstance(data, list) else []
+    except (FileNotFoundError, json.JSONDecodeError):
+        return []
+
+
+def pick_topic():
+    """이미 등재됐거나 검수 대기 중인 키워드는 제외하고 고른다. 남은 키워드가 없으면 None."""
+    used = {
+        re.sub(r"\s+", "", str(t.get("title", "")))
+        for p in ("data/theories.json", draft_t_path)
+        for t in load_json_list(p)
+        if isinstance(t, dict)
+    }
+    pool = [
+        (t, kw) for t in topics for kw in t["keywords"]
+        if re.sub(r"\s+", "", kw) not in used
+    ]
+    return random.choice(pool) if pool else None
+
+
+_picked = pick_topic()
+if _picked:
+    selected, target_keyword = _picked
+    sel_cat, sel_sub = selected["category"], selected["subject"]
+else:
+    selected = target_keyword = sel_cat = sel_sub = None
 
 
 def clean_json_string(raw_str):
@@ -214,6 +249,14 @@ def generate_theory():
 
 
 def generate_unified_content():
+    if target_keyword is None:
+        print("✅ topics의 모든 키워드가 이미 등재/대기 중입니다. 새 키워드를 추가해 주세요. (API 호출 없이 종료)")
+        return
+    pending = len(load_json_list(draft_t_path))
+    if pending >= MAX_PENDING_DRAFTS:
+        print(f"⏸️ 검수 대기 이론이 {pending}개 쌓여 있어 이번 실행은 건너뜁니다. (API 호출 없이 종료)")
+        return
+
     print(f"[{target_keyword}] 기반 통합 콘텐츠 생성 시작...")
     theory_content = ""
 
@@ -223,7 +266,7 @@ def generate_unified_content():
     try:
         theory_content = generate_theory()
         theory_json = [{
-            "id": f"TH-{random.randint(10000, 99999)}",
+            "id": new_id("TH"),
             "category": sel_cat,
             "subject": sel_sub,
             "title": target_keyword,
@@ -264,6 +307,7 @@ def generate_unified_content():
         res_q = client.chat.completions.create(model="gpt-4o-mini", messages=msg_quiz, temperature=0.7)
         quiz_json = json.loads(clean_json_string(res_q.choices[0].message.content))
         for q in quiz_json:
+            q["id"] = new_id("Q")  # AI가 만든 ID는 신뢰하지 않고 항상 새로 부여
             correct_text = q["options"][q["answer"]]
             random.shuffle(q["options"])
             q["answer"] = q["options"].index(correct_text)
@@ -298,6 +342,8 @@ def generate_unified_content():
         ]
         res_i = client.chat.completions.create(model="gpt-4o-mini", messages=msg_int, temperature=0.7)
         interview_json = json.loads(clean_json_string(res_i.choices[0].message.content))
+        for i in interview_json:
+            i["id"] = new_id("INT")
 
         save_draft(draft_i_path, interview_json)
         print("✅ 3/3 이론 연계 실무 면접 생성 및 저장 성공!")
