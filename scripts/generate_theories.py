@@ -1,79 +1,139 @@
 import os
 import json
 import random
+import re
 from openai import OpenAI
 
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
 topics = [
-    {"category": "반도체 기초 이론", "subject": "반도체 물리", "keywords": ["에너지 밴드", "페르미 준위", "캐리어 농도", "PN 접합"]},
-    {"category": "반도체 기초 이론", "subject": "트랜지스터 소자", "keywords": ["MOSFET", "채널 길이 변조", "단채널 효과", "누설 전류"]},
-    {"category": "반도체 8대 공정", "subject": "4. 식각 공정 (Etching)", "keywords": ["건식 식각", "플라즈마 식각", "식각 선택비", "Bowing 현상"]},
-    {"category": "반도체 8대 공정", "subject": "5. 박막 증착 공정", "keywords": ["CVD 공정", "ALD 공정", "PVD 공정", "단차 피복성"]}
+    {"category": "반도체 기초 이론", "subject": "반도체 물리", "guide": "N형/P형, 에너지 밴드, 캐리어 등 기초 물리 위주"},
+    {"category": "반도체 기초 이론", "subject": "트랜지스터 소자", "guide": "MOSFET, 채널, 누설 전류 등 소자 원리 위주"},
+    {"category": "반도체 기초 이론", "subject": "메모리 반도체", "guide": "DRAM, NAND 플래시의 구조 및 동작 원리"},
+    {"category": "반도체 8대 공정", "subject": "1. 웨이퍼 제조 공정", "guide": "초크랄스키법, 잉곳, 슬라이싱, 폴리싱 등 웨이퍼 자체 제조"},
+    {"category": "반도체 8대 공정", "subject": "2. 산화 공정 (Oxidation)", "guide": "건식/습식 산화, 산화막의 절연 역할"},
+    {"category": "반도체 8대 공정", "subject": "3. 포토 공정 (Photo)", "guide": "EUV, PR, 노광 원리, 해상도 등 포토 공정 전용"},
+    {"category": "반도체 8대 공정", "subject": "4. 식각 공정 (Etching)", "guide": "건식/습식 식각, 플라즈마, 비등방성/선택비 등 식각 공정 전용"},
+    {"category": "반도체 8대 공정", "subject": "5. 박막 증착 공정 (Deposition)", "guide": "CVD, ALD, PVD 등 증착 원리와 단차 피복성"},
+    {"category": "반도체 8대 공정", "subject": "6. 금속 배선 공정 (Metallization)", "guide": "구리 다마신 공정, 장벽 금속, 배선 저항(RC 지연) 등 배선 전용"},
+    {"category": "반도체 8대 공정", "subject": "7. EDS 공정 (Testing)", "guide": "웨이퍼 테스트, 수율, 프로브 카드 등 테스트 전용"},
+    {"category": "반도체 8대 공정", "subject": "8. 패키징 공정 (Packaging)", "guide": "플립칩, 와이어본딩, 다이싱 등"},
+    {"category": "차세대 첨단 기술", "subject": "차세대 소자 기술", "guide": "FinFET, GAA(MBCFET), 2D 소자 등"},
+    {"category": "차세대 첨단 기술", "subject": "어드밴스드 패키징", "guide": "HBM, TSV, 하이브리드 본딩, 칩렛 등 차세대 패키징"}
 ]
 
-draft_t_path = "data/draft_theories.json"
+draft_q_path = "data/draft_questions.json"
+draft_i_path = "data/draft_interviews.json"
 
 selected = random.choice(topics)
 sel_category = selected["category"]
 sel_subject = selected["subject"]
-target_keyword = random.choice(selected["keywords"])
+sel_guide = selected["guide"]
 
-def generate_deep_theory():
-    print(f"[{target_keyword}] 3단계 이론 중심(인라인 코멘트) 데이터 생성 시작...")
-    
-    # [STEP 1] 처음부터 끝까지 끊기지 않는 '이론 중심' 서사 구축
-    msg1 = [
-        {"role": "system", "content": "당신은 반도체 공정 전공 1타 강사입니다."},
-        {"role": "user", "content": f"'{target_keyword}'에 대해 서론-본론-결론이 있는 완벽한 '이론 위주'의 전공 지식 해설서를 작성하세요. 단편적인 요약이 아니라, 처음부터 끝까지 이론적 흐름과 메커니즘이 끊기지 않고 자연스럽게 이어지도록 깊이 있게 서술하세요."}
-    ]
-    res1 = client.chat.completions.create(model="gpt-4o-mini", messages=msg1, temperature=0.7).choices[0].message.content
+# 1. 객관식 시험 (긍정형, 개념 원리 중심)
+PROMPT_QUIZ = f"""
+당신은 반도체 공정 전공 교수입니다. 대분류 '{sel_category}', 세부 주제 '{sel_subject}'에 대한 필수 전공 이론 암기를 검증할 객관식 3개를 생성해 주세요.
+[출제 규칙]:
+1. "다음 중 틀린 것은?" 같은 부정형 질문 절대 금지. 핵심 개념의 정의와 원리를 묻는 긍정형 질문으로 작성.
+2. 난이도는 "초급", "중급", "고급"으로 1개씩. 보기 중 오답도 헷갈리는 전공 용어로 구성.
+3. 텍스트 내부에 큰따옴표(") 사용 시 반드시 이스케이프(\\") 처리하고, JSON 배열 마지막에 쉼표(,)를 절대 넣지 마세요.
 
-    # [STEP 2] 이론 흐름 중간중간에 코멘트(실무/면접 팁) 자연스럽게 삽입
-    msg2 = msg1 + [
-        {"role": "assistant", "content": res1},
-        {"role": "user", "content": "훌륭합니다. 이제 이 전체적인 이론적 흐름을 그대로 유지하면서, 관련된 핵심 이론 설명이 끝나는 부분 바로 밑에 코멘트 형식으로 '실무 트러블슈팅'이나 '면접 꿀팁'을 삽입해 주세요.\n\n코멘트는 글 마지막에 따로 모아두지 말고, 반드시 본문 중간중간 적절한 위치에 `> 💡 [면접 코멘트] ...` 또는 `> 💡 [실무 코멘트] ...` 형식을 사용해 배치하세요. 필요한 경우 헷갈리는 개념 비교 표(Table)도 본문 중간에 추가하세요."}
-    ]
-    res2 = client.chat.completions.create(model="gpt-4o-mini", messages=msg2, temperature=0.7).choices[0].message.content
-
-    # [STEP 3] 최종 UI 포맷팅 및 제목 길이 강제 제한
-    msg3 = msg2 + [
-        {"role": "assistant", "content": res2},
-        {"role": "user", "content": f"""
-지금까지의 내용을 모두 종합하여, 최종 요약 노트를 아래의 엄격한 규칙과 JSON 구조로 반환해 주세요.
-
-[작성 규칙]:
-1. 전체 글은 처음부터 끝까지 '이론'이 중심이 되어 자연스럽게 읽혀야 합니다.
-2. 중간중간 들어간 코멘트 박스는 반드시 `> 💡 [실무 코멘트] ...` 형태를 그대로 유지하세요.
-3. 소제목은 `### [원리] CVD의 메커니즘` 처럼 대괄호 뱃지 형태를 포함하세요.
-
-반드시 아래 JSON 배열 형식으로만 응답하세요. 제목(title)은 수식어나 문장 없이 '{target_keyword}' 처럼 짧은 핵심 명사형으로만 작성하세요. (예: CVD 공정, 단채널 효과)
+반드시 아래 JSON 배열 형식으로만 응답하세요.
 [
   {{
-    "id": "TH-{random.randint(10000,99999)}",
+    "id": "Q-{random.randint(10000,99999)}",
     "category": "{sel_category}",
-    "subject": "{sel_subject}",
-    "title": "{target_keyword}",
-    "tags": ["{target_keyword.replace(' ', '')}", "전공이론"],
-    "content": "이론 중심의 흐름과 중간 인라인 코멘트가 완벽히 결합된 마크다운 텍스트 전문"
+    "topic": "{sel_subject}",
+    "difficulty": "초급",
+    "question": "전공 이론 및 개념을 묻는 긍정형 지문",
+    "options": ["보기1", "보기2", "보기3", "보기4"],
+    "answer": 0,
+    "explanation": "이론적 메커니즘과 오답 해설"
   }}
 ]
-"""}
-    ]
-    res3 = client.chat.completions.create(model="gpt-4o-mini", messages=msg3, temperature=0.7)
+"""
+
+# 2. 실무 면접 (구체적 상황, 특정 물질, 이론 기반 트러블슈팅)
+PROMPT_INTERVIEW = f"""
+당신은 반도체 대기업의 깐깐한 실무진 면접관입니다. 대분류 '{sel_category}', 세부 주제 '{sel_subject}'와 관련하여, 지원자의 **전공 이론 기반 실무 트러블슈팅 능력**을 검증할 아주 구체적인 면접 질문 2개를 생성해 주세요.
+[출제 규칙 - 매우 중요]:
+1. "수율이 떨어지면 어떻게 할 것인가?" 같은 포괄적이고 뻔한 질문은 절대 금지합니다.
+2. 질문 지문에는 반드시 [특정 공정 단계], [사용 중인 물질/가스], [발생한 결함 상황]이 명확하게 제시되어야 합니다.
+3. 텍스트 내부에 큰따옴표(") 사용 시 반드시 이스케이프(\\") 처리하고, JSON 배열 마지막에 쉼표(,)를 절대 넣지 마세요.
+
+반드시 아래 JSON 배열 형식으로만 응답하세요.
+[
+  {{
+    "id": "INT-{random.randint(10000,99999)}",
+    "category": "{sel_category}",
+    "topic": "{sel_subject}",
+    "difficulty": "고급",
+    "question": "구체적인 물질/상황/이론이 포함된 핀포인트 실무 면접 질문",
+    "key_points": ["반드시 포함해야 할 전공 핵심 키워드1", "키워드2"],
+    "interview_answer": "전공 이론과 원리에 근거한 두괄식 모범 답변 스크립트"
+  }}
+]
+"""
+
+# 🚨 AI가 만든 불량 JSON 문자열을 강제로 고치는 안전 장치
+def clean_json_string(raw_str):
+    cleaned = raw_str.replace("```json", "").replace("```", "").strip()
+    # 후행 쉼표(Trailing comma) 정규식으로 강제 삭제
+    cleaned = re.sub(r',\s*([\]}])', r'\1', cleaned)
+    return cleaned
+
+def generate_contents():
+    # --- 1. 객관식 생성 ---
+    res_q = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[{"role": "system", "content": "You strictly output a valid JSON array. Do NOT output trailing commas."}, {"role": "user", "content": PROMPT_QUIZ}],
+        temperature=0.8
+    )
     
-    new_theory = json.loads(res3.choices[0].message.content.replace("```json", "").replace("```", "").strip())
+    new_questions = []
+    try:
+        new_questions = json.loads(clean_json_string(res_q.choices[0].message.content))
+        # 🚀 정답 위치 강제 랜덤화 (Shuffle)
+        for q in new_questions:
+            correct_text = q["options"][q["answer"]]
+            random.shuffle(q["options"])
+            q["answer"] = q["options"].index(correct_text)
+    except Exception as e:
+        print(f"⚠️ 객관식 파싱 에러 (건너뜀): {e}")
 
-    existing_draft_t = []
-    if os.path.exists(draft_t_path):
-        with open(draft_t_path, "r", encoding="utf-8") as f:
-            try: existing_draft_t = json.load(f)
-            except: pass
-            
-    with open(draft_t_path, "w", encoding="utf-8") as f:
-        json.dump(new_theory + existing_draft_t, f, ensure_ascii=False, indent=2)
+    # --- 2. 면접 생성 ---
+    res_i = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[{"role": "system", "content": "You strictly output a valid JSON array. Do NOT output trailing commas."}, {"role": "user", "content": PROMPT_INTERVIEW}],
+        temperature=0.8
+    )
+    
+    new_interviews = []
+    try:
+        new_interviews = json.loads(clean_json_string(res_i.choices[0].message.content))
+    except Exception as e:
+        print(f"⚠️ 면접 파싱 에러 (건너뜀): {e}")
 
-    print(f"✅ 이론 서사 + 인라인 코멘트 데이터 생성 완료!")
+    # --- 3. 파일 저장 ---
+    if new_questions:
+        existing_draft_q = []
+        if os.path.exists(draft_q_path):
+            with open(draft_q_path, "r", encoding="utf-8") as f:
+                try: existing_draft_q = json.load(f)
+                except: pass
+        with open(draft_q_path, "w", encoding="utf-8") as f:
+            json.dump(new_questions + existing_draft_q, f, ensure_ascii=False, indent=2)
+
+    if new_interviews:
+        existing_draft_i = []
+        if os.path.exists(draft_i_path):
+            with open(draft_i_path, "r", encoding="utf-8") as f:
+                try: existing_draft_i = json.load(f)
+                except: pass
+        with open(draft_i_path, "w", encoding="utf-8") as f:
+            json.dump(new_interviews + existing_draft_i, f, ensure_ascii=False, indent=2)
+
+    print(f"시험 {len(new_questions)}개, 면접 {len(new_interviews)}개 대기소 저장 완료!")
 
 if __name__ == "__main__":
-    generate_deep_theory()
+    generate_contents()
