@@ -99,7 +99,7 @@
     let currentTheoryIndex = 0; // ✨ 이론 인덱스
 
     async function sha256(message) {
-      if (!window.crypto || !window.crypto.subtle) { return ADMIN_HASH; }
+      if (!window.crypto || !window.crypto.subtle) { alert('보안 연결(HTTPS)에서만 로그인할 수 있습니다.'); return ''; }
       const msgBuffer = new TextEncoder().encode(message);
       const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
       return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
@@ -327,18 +327,22 @@
     // ==========================================
     // 🚨 제보함 & GitHub 통신 유틸리티
     // ==========================================
-    async function loadReports() {
-      if(!supabaseClient) return;
-      const list = document.getElementById('reportsList');
-      const { data } = await supabaseClient.from('error_reports').select('*').eq('status', 'pending').order('created_at', { ascending: false });
-      if(!data || data.length === 0) { list.innerHTML = '<p class="text-sm text-emerald-600 font-bold text-center py-2">새로운 제보가 없습니다.</p>'; return; }
-      list.innerHTML = '';
-      data.forEach(r => {
-        list.innerHTML += `<div class="bg-rose-50 p-3 rounded-xl flex justify-between items-center text-sm border border-rose-200"><div><span class="font-bold text-rose-800">[ID: ${r.question_id}]</span> ${r.content}</div><button onclick="resolveReport(${r.id})" class="bg-rose-600 hover:bg-rose-700 transition text-white px-3 py-1 rounded text-xs font-bold whitespace-nowrap ml-2">무시/삭제</button></div>`;
-      });
+    function escHtml(s) {
+      return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     }
-    async function resolveReport(id) { await supabaseClient.from('error_reports').update({ status: 'resolved' }).eq('id', id); loadReports(); }
-
+    async function loadReports() {
+      const list = document.getElementById('reportsList');
+      if (!supabaseClient) { list.innerHTML = '<p class="text-sm text-rose-600 font-bold text-center py-2">Supabase 연결 실패</p>'; return; }
+      const { data, error } = await supabaseClient.from('error_reports').select('*').eq('status', 'pending').order('created_at', { ascending: false });
+      if (error) { console.error(error); list.innerHTML = `<p class="text-sm text-rose-600 font-bold text-center py-2">제보 불러오기 실패: ${escHtml(error.message)}</p>`; return; }
+      if (!data || data.length === 0) { list.innerHTML = '<p class="text-sm text-emerald-600 font-bold text-center py-2">새로운 제보가 없습니다.</p>'; return; }
+      list.innerHTML = data.map(r => `<div class="bg-rose-50 p-3 rounded-xl flex justify-between items-center text-sm border border-rose-200"><div><span class="font-bold text-rose-800">[ID: ${escHtml(r.question_id)}]</span> ${r.question_text ? `<span class="text-xs text-slate-500">(${escHtml(String(r.question_text).slice(0, 40))})</span> ` : ''}${escHtml(r.content)}</div><button onclick="resolveReport(${Number(r.id)})" class="bg-rose-600 hover:bg-rose-700 transition text-white px-3 py-1 rounded text-xs font-bold whitespace-nowrap ml-2">무시/삭제</button></div>`).join('');
+    }
+    async function resolveReport(id) {
+      const { error } = await supabaseClient.from('error_reports').update({ status: 'resolved' }).eq('id', id);
+      if (error) { console.error(error); return alert('처리 실패: ' + error.message); }
+      loadReports();
+    }    
     async function fetchGitHubFile(path) {
       const res = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`, { headers: { "Authorization": `token ${token}` } });
       if(res.status === 404) return null; 
