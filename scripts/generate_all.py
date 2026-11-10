@@ -48,18 +48,30 @@ def load_json_list(path):
 
 
 def pick_topic():
-    """이미 등재됐거나 검수 대기 중인 키워드는 제외하고 고른다. 남은 키워드가 없으면 None."""
-    used = {
-        re.sub(r"\s+", "", str(t.get("title", "")))
-        for p in ("data/theories.json", draft_t_path)
-        for t in load_json_list(p)
-        if isinstance(t, dict)
-    }
-    pool = [
-        (t, kw) for t in topics for kw in t["keywords"]
-        if re.sub(r"\s+", "", kw) not in used
-    ]
-    return random.choice(pool) if pool else None
+    """폴더(subject)별로 이론이 골고루 쌓이도록 고른다.
+    - 등재된 이론 + 검수 대기 중인 이론 수가 '가장 적은' 폴더를 먼저 뽑는다 (동률이면 무작위)
+    - 이미 만든 키워드는 제외한다. 남은 키워드가 하나도 없으면 None.
+    """
+    norm = lambda x: re.sub(r"\s+", "", str(x))
+    used, per_subject = set(), {}
+    for path in ("data/theories.json", draft_t_path):
+        for t in load_json_list(path):
+            if not isinstance(t, dict) or "채워질 예정" in str(t.get("content", "")):
+                continue  # 자리표시자는 실제 이론이 아니므로 세지 않음
+            used.add(norm(t.get("title", "")))
+            key = (t.get("category"), t.get("subject"))
+            per_subject[key] = per_subject.get(key, 0) + 1
+
+    candidates = []
+    for t in topics:
+        left = [kw for kw in t["keywords"] if norm(kw) not in used]
+        if left:
+            candidates.append((per_subject.get((t["category"], t["subject"]), 0), t, left))
+    if not candidates:
+        return None
+    fewest = min(c[0] for c in candidates)
+    _, topic, left = random.choice([c for c in candidates if c[0] == fewest])
+    return topic, random.choice(left)
 
 
 _picked = pick_topic()
