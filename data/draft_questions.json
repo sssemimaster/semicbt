@@ -1,20 +1,5 @@
 [
   {
-    "id": "Q-002",
-    "category": "반도체 8대 공정",
-    "topic": "Bowing 현상",
-    "difficulty": "중급",
-    "question": "Bowing 현상을 수학적으로 모델링할 때 사용하는 변형 응력의 식에서 어떤 변수를 포함하나요?",
-    "options": [
-      "압력",
-      "시간",
-      "온도",
-      "영률"
-    ],
-    "answer": 3,
-    "explanation": "변형 응력 $\\sigma$는 영률 $E$, 변형률 $\\epsilon$, 포아송 비 $u$를 포함한 식으로 표현됩니다."
-  },
-  {
     "id": "Q-003",
     "category": "반도체 8대 공정",
     "topic": "Bowing 현상",
