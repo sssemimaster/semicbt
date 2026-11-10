@@ -10,6 +10,20 @@
   <!-- ✨ marked.js (마크다운 변환) -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- 수식 렌더링 (KaTeX) : 사용자 페이지와 동일하게 보이도록 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+  <style>
+    /* 사용자 페이지(index.html)와 같은 모양의 미리보기 (관리자 페이지는 라이트 전용) */
+    .custom-highlight-box { background-color: #ecfdf5; border: 1px solid #a7f3d0; border-left: 6px solid #10b981; border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 1.5rem; color: #1f2937; display: flex; gap: 12px; font-size: 0.9rem; line-height: 1.6; }
+    .custom-highlight-box::before { content: '💡'; font-size: 1.15rem; }
+    .custom-badge-heading { display: flex; align-items: center; gap: 10px; margin-top: 2rem; margin-bottom: 1rem; font-size: 1.05rem; font-weight: 800; color: #0f172a; }
+    .custom-badge { background-color: #d1fae5; color: #047857; font-size: 0.7rem; padding: 4px 10px; border-radius: 9999px; white-space: nowrap; }
+    .katex-display { overflow-x: auto; overflow-y: hidden; padding: 0.35rem 0; margin: 1rem 0 !important; }
+    .katex-display > .katex { font-size: 1.25em; }
+  </style>
 </head>
 <body class="bg-slate-100 text-slate-800 antialiased min-h-screen">
 
@@ -253,8 +267,8 @@
       const t = draftTheories[currentTheoryIndex];
       const tagsHtml = (t.tags || []).map(tag => `<span class="inline-block bg-emerald-50 text-emerald-600 font-bold text-[10px] px-2 py-1 rounded mr-1">#${tag}</span>`).join('');
       
-      // 마크다운 파싱
-      const parsedMarkdown = marked.parse(t.content);
+      // 마크다운 파싱 (수식 보호 + 뱃지/팁 박스까지 사용자 페이지와 동일하게)
+      const parsedMarkdown = renderTheoryMarkdown(t.content);
 
       let html = `
         <div class="mb-4">
@@ -265,7 +279,7 @@
         
         <!-- 미리보기 렌더링 박스 (스크롤 적용) -->
         <div class="p-6 bg-slate-50 border border-slate-200 rounded-xl overflow-y-auto max-h-96 mb-6">
-          <div class="prose prose-slate prose-sm max-w-none prose-headings:text-indigo-800 prose-a:text-emerald-600 prose-table:border-collapse prose-th:bg-slate-100 prose-th:p-2 prose-td:border prose-td:border-slate-200 prose-td:p-2">
+          <div id="theoryPreview" class="prose prose-slate prose-sm max-w-none prose-headings:text-indigo-800 prose-a:text-emerald-600 prose-table:border-collapse prose-th:bg-slate-100 prose-th:p-2 prose-td:border prose-td:border-slate-200 prose-td:p-2">
             ${parsedMarkdown}
           </div>
         </div>
@@ -276,6 +290,33 @@
         </div>
       `;
       document.getElementById('tBox').innerHTML = html;
+      renderAdminMath();
+    }
+
+    // 수식($...$, $$...$$)을 marked가 건드리지 못하게 잠시 빼 두었다가 되돌림
+    function stashMath(md) {
+      const stash = [];
+      const hold = (m) => { stash.push(m); return `@@MATH${stash.length - 1}@@`; };
+      const text = String(md || '').replace(/\$\$[\s\S]+?\$\$/g, hold).replace(/\$[^$\n]+?\$/g, hold);
+      const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      return { text, restore: (html) => html.replace(/@@MATH(\d+)@@/g, (_, i) => esc(stash[Number(i)])) };
+    }
+    function renderTheoryMarkdown(content) {
+      const math = stashMath(content);
+      let md = math.text;
+      // '**용어(영문)**는' 처럼 괄호 뒤에 한글이 바로 붙으면 marked가 굵게 처리를 못 하므로 직접 변환
+      md = md.replace(/\*\*([^*\n]+?)\*\*/g, '<strong>$1</strong>');
+      md = md.replace(/>\s*💡\s*(.*?)(?=\n\n|\n###|$)/gs, (m, p1) => `<div class="custom-highlight-box">${marked.parseInline(p1.trim())}</div>\n\n`);
+      md = md.replace(/###\s*\[(.*?)\]\s*(.*)/g, (m, badge, title) => `<div class="custom-badge-heading"><span class="custom-badge">${badge}</span>${title}</div>`);
+      return math.restore(marked.parse(md));
+    }
+    function renderAdminMath() {
+      const run = () => {
+        if (typeof renderMathInElement !== 'function') return setTimeout(run, 150);
+        const el = document.getElementById('theoryPreview');
+        if (el) renderMathInElement(el, { delimiters: [ {left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false} ], throwOnError: false });
+      };
+      setTimeout(run, 30);
     }
 
     async function approveTheory() {
