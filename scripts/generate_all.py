@@ -22,20 +22,25 @@ sel_cat = selected["category"]
 sel_sub = selected["subject"]
 target_keyword = random.choice(selected["keywords"])
 
+# 🚨 LaTeX 역슬래시(\) 및 잘못된 JSON 이스케이프 자동 교정 함수
 def clean_json_string(raw_str):
     cleaned = raw_str.replace("```json", "").replace("```", "").strip()
+    # 후행 쉼표 삭제
     cleaned = re.sub(r',\s*([\]}])', r'\1', cleaned)
+    # JSON 내에서 유효하지 않은 역슬래시(\)를 이중 역슬래시(\\)로 교정하여 Invalid \escape 방지
+    cleaned = re.sub(r'\\(?!["\\/bfnrtu])', r'\\\\', cleaned)
     return cleaned
 
 def generate_unified_content():
     print(f"[{target_keyword}] 기반 통합 콘텐츠 생성 시작...")
     
-    # ----------------------------------------------------
-    # 1. 📖 이론 백과사전 생성
-    # ----------------------------------------------------
-    msg_theory = [
-        {"role": "system", "content": "당신은 반도체 공정 1타 강사입니다. 수식은 반드시 LaTeX 문법을 사용하며, 인라인 수식은 $...$, 블록 수식은 $$...$$로 감싸주세요."},
-        {"role": "user", "content": f"""
+    try:
+        # ----------------------------------------------------
+        # 1. 📖 이론 백과사전 생성
+        # ----------------------------------------------------
+        msg_theory = [
+            {"role": "system", "content": "You strictly output a valid JSON array. 수식은 반드시 LaTeX 문법을 사용하며 인라인은 $...$, 블록은 $$...$$로 감싸세요. 문자열 내 역슬래시는 반드시 \\\\ 형태로 이스케이프하세요."},
+            {"role": "user", "content": f"""
 '{target_keyword}'에 대한 깊이 있는 이론 해설서를 작성하세요.
 - 전체 글은 이론 중심 서사로 이어져야 합니다.
 - 중간에 `> 💡 [실무 코멘트] ...` 같은 인라인 팁을 1~2개 섞어주세요.
@@ -53,21 +58,20 @@ def generate_unified_content():
   }}
 ]
 """}
-    ]
-    res_t = client.chat.completions.create(model="gpt-4o-mini", messages=msg_theory, temperature=0.7)
-    theory_json = json.loads(clean_json_string(res_t.choices[0].message.content))
-    theory_content = theory_json[0]['content'] # 방금 쓴 이론 내용을 추출
+        ]
+        res_t = client.chat.completions.create(model="gpt-4o-mini", messages=msg_theory, temperature=0.7)
+        theory_json = json.loads(clean_json_string(res_t.choices[0].message.content))
+        theory_content = theory_json[0]['content']
 
-    # ----------------------------------------------------
-    # 2. 📝 이론 기반 객관식 생성
-    # ----------------------------------------------------
-    msg_quiz = [
-        {"role": "system", "content": "You strictly output a valid JSON array. 수식은 $ 또는 $$ 로 감싸세요."},
-        {"role": "user", "content": f"""
-다음은 방금 생성된 '{target_keyword}'에 대한 이론입니다:
+        # ----------------------------------------------------
+        # 2. 📝 이론 기반 객관식 생성
+        # ----------------------------------------------------
+        msg_quiz = [
+            {"role": "system", "content": "You strictly output a valid JSON array. 수식은 $ 또는 $$ 로 감싸고, 역슬래시는 \\\\ 로 출력하세요."},
+            {"role": "user", "content": f"""
+다음 이론 내용만을 바탕으로, 이론 이해도를 검증하는 긍정형 객관식 기출문제 3개를 만들어주세요. 부정형("아닌 것은?") 질문은 절대 금지합니다:
 {theory_content}
 
-이 이론 내용만을 바탕으로, 이론을 제대로 읽었는지 검증하는 긍정형 객관식 기출문제 3개를 만들어주세요. 부정형("아닌 것은?") 질문은 금지합니다.
 [
   {{
     "id": "Q-{random.randint(10000,99999)}",
@@ -81,25 +85,23 @@ def generate_unified_content():
   }}
 ]
 """}
-    ]
-    res_q = client.chat.completions.create(model="gpt-4o-mini", messages=msg_quiz, temperature=0.7)
-    quiz_json = json.loads(clean_json_string(res_q.choices[0].message.content))
-    for q in quiz_json: # 정답 셔플링
-        correct_text = q["options"][q["answer"]]
-        random.shuffle(q["options"])
-        q["answer"] = q["options"].index(correct_text)
+        ]
+        res_q = client.chat.completions.create(model="gpt-4o-mini", messages=msg_quiz, temperature=0.7)
+        quiz_json = json.loads(clean_json_string(res_q.choices[0].message.content))
+        for q in quiz_json:
+            correct_text = q["options"][q["answer"]]
+            random.shuffle(q["options"])
+            q["answer"] = q["options"].index(correct_text)
 
-    # ----------------------------------------------------
-    # 3. 🗣️ 이론 기반 면접 생성
-    # ----------------------------------------------------
-    msg_int = [
-        {"role": "system", "content": "You strictly output a valid JSON array."},
-        {"role": "user", "content": f"""
-다음 이론을 바탕으로:
+        # ----------------------------------------------------
+        # 3. 🗣️ 이론 기반 면접 생성
+        # ----------------------------------------------------
+        msg_int = [
+            {"role": "system", "content": "You strictly output a valid JSON array."},
+            {"role": "user", "content": f"""
+다음 이론을 바탕으로 실무 적용 역량을 묻는 날카로운 면접 질문 2개를 만드세요:
 {theory_content}
 
-지원자가 이 이론을 실무에 어떻게 적용하는지 묻는 날카로운 면접 질문 2개를 만드세요.
-(질문에 구체적인 물질/상황을 포함할 것)
 [
   {{
     "id": "INT-{random.randint(10000,99999)}",
@@ -112,26 +114,29 @@ def generate_unified_content():
   }}
 ]
 """}
-    ]
-    res_i = client.chat.completions.create(model="gpt-4o-mini", messages=msg_int, temperature=0.7)
-    interview_json = json.loads(clean_json_string(res_i.choices[0].message.content))
+        ]
+        res_i = client.chat.completions.create(model="gpt-4o-mini", messages=msg_int, temperature=0.7)
+        interview_json = json.loads(clean_json_string(res_i.choices[0].message.content))
 
-    # ----------------------------------------------------
-    # 4. 파일 저장
-    # ----------------------------------------------------
-    def save_draft(path, new_data):
-        existing = []
-        if os.path.exists(path):
-            with open(path, "r", encoding="utf-8") as f:
-                try: existing = json.load(f)
-                except: pass
-        with open(path, "w", encoding="utf-8") as f:
-            json.dump(new_data + existing, f, ensure_ascii=False, indent=2)
+        # ----------------------------------------------------
+        # 4. 안전한 파일 저장
+        # ----------------------------------------------------
+        def save_draft(path, new_data):
+            existing = []
+            if os.path.exists(path):
+                with open(path, "r", encoding="utf-8") as f:
+                    try: existing = json.load(f)
+                    except: pass
+            with open(path, "w", encoding="utf-8") as f:
+                json.dump(new_data + existing, f, ensure_ascii=False, indent=2)
 
-    save_draft(draft_t_path, theory_json)
-    save_draft(draft_q_path, quiz_json)
-    save_draft(draft_i_path, interview_json)
-    print(f"✅ 통합 생성 완료! (이론 1, 퀴즈 3, 면접 2)")
+        save_draft(draft_t_path, theory_json)
+        save_draft(draft_q_path, quiz_json)
+        save_draft(draft_i_path, interview_json)
+        print(f"✅ 통합 생성 완료! (이론 1, 퀴즈 3, 면접 2)")
+
+    except Exception as e:
+        print(f"⚠️ 콘텐츠 생성 중 파싱 에러 발생 (건너뜀): {e}")
 
 if __name__ == "__main__":
     generate_unified_content()
