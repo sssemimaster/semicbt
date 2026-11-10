@@ -25,15 +25,36 @@
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
 
   <style>
+    /* ===== 라이트/다크 색상 토큰 (html.dark 일 때 아래 값으로 바뀜) ===== */
+    :root {
+      color-scheme: light;
+      --hl-bg: #ecfdf5; --hl-border: #a7f3d0; --hl-accent: #10b981; --hl-text: #1f2937;
+      --badge-bg: #d1fae5; --badge-fg: #047857;
+      --heading: #0f172a;
+      --tbl-bg: #ffffff; --tbl-border: #e2e8f0; --tbl-head-bg: #ecfdf5; --tbl-head-fg: #047857; --tbl-text: #334155;
+    }
+    html.dark {
+      color-scheme: dark;
+      --hl-bg: #1a231c; --hl-border: #2d4a36; --hl-accent: #84cc9c; --hl-text: #e2e8f0;
+      --badge-bg: #2d4a36; --badge-fg: #84cc9c;
+      --heading: #f8fafc;
+      --tbl-bg: #1e293b; --tbl-border: #334155; --tbl-head-bg: #253328; --tbl-head-fg: #84cc9c; --tbl-text: #cbd5e1;
+    }
+
     /* 하이라이트 박스 & 뱃지 커스텀 */
-    .custom-highlight-box { background-color: #1a231c; border: 1px solid #2d4a36; border-left: 6px solid #84cc9c; border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 2rem; color: #e2e8f0; display: flex; gap: 12px; font-size: 0.95rem; line-height: 1.6;}
+    .custom-highlight-box { background-color: var(--hl-bg); border: 1px solid var(--hl-border); border-left: 6px solid var(--hl-accent); border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 2rem; color: var(--hl-text); display: flex; gap: 12px; font-size: 0.95rem; line-height: 1.6;}
     .custom-highlight-box::before { content: '💡'; font-size: 1.25rem; }
-    .custom-badge-heading { display: flex; align-items: center; gap: 10px; margin-top: 2.5rem; margin-bottom: 1.25rem; font-size: 1.15rem; font-weight: 800; color: #f8fafc; }
-    .custom-badge { background-color: #2d4a36; color: #84cc9c; font-size: 0.75rem; padding: 4px 10px; border-radius: 9999px; display: flex; align-items: center; gap: 6px; }
-    .custom-badge::before { content: ''; display: inline-block; width: 6px; height: 6px; background-color: #84cc9c; border-radius: 50%; }
-    .custom-table-container table { width: 100%; border-collapse: collapse; border-radius: 12px; overflow: hidden; margin-top: 1rem; margin-bottom: 2rem; background-color: #1e293b; font-size: 0.9rem;}
-    .custom-table-container th { background-color: #253328; color: #84cc9c; text-align: left; padding: 0.75rem 1rem; font-weight: 700; }
-    .custom-table-container td { padding: 0.75rem 1rem; border-bottom: 1px solid #334155; color: #cbd5e1; }
+    .custom-badge-heading { display: flex; align-items: center; gap: 10px; margin-top: 2.5rem; margin-bottom: 1.25rem; font-size: 1.15rem; font-weight: 800; color: var(--heading); }
+    .custom-badge { background-color: var(--badge-bg); color: var(--badge-fg); font-size: 0.75rem; padding: 4px 10px; border-radius: 9999px; display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+    .custom-badge::before { content: ''; display: inline-block; width: 6px; height: 6px; background-color: var(--badge-fg); border-radius: 50%; }
+    .custom-table-container table { width: 100%; border-collapse: separate; border-spacing: 0; border: 1px solid var(--tbl-border); border-radius: 12px; overflow: hidden; margin-top: 1rem; margin-bottom: 2rem; background-color: var(--tbl-bg); font-size: 0.9rem;}
+    .custom-table-container th { background-color: var(--tbl-head-bg); color: var(--tbl-head-fg); text-align: left; padding: 0.75rem 1rem; font-weight: 700; border-bottom: 1px solid var(--tbl-border); }
+    .custom-table-container td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--tbl-border); color: var(--tbl-text); }
+    .custom-table-container tr:last-child td { border-bottom: 0; }
+
+    /* 수식: 좁은 화면에서 긴 수식이 잘리지 않고 가로 스크롤 되도록 */
+    .katex-display { overflow-x: auto; overflow-y: hidden; padding: 0.35rem 0; margin: 1rem 0 !important; }
+    .katex-display > .katex { font-size: 1.5em; }
   </style>
 </head>
 <body class="bg-slate-50 dark:bg-[#111315] text-slate-800 dark:text-slate-200 antialiased min-h-screen flex flex-col relative transition-colors duration-200">
@@ -134,11 +155,11 @@
 
     <!-- 📖 이론 백과사전 뷰 (작은 사이즈에 맞춘 배열로 복귀) -->
     <div id="view-learning" class="hidden w-full flex flex-col">
-      <button onclick="goBack()" class="text-slate-400 hover:text-slate-200 font-bold text-sm mb-4 transition w-fit outline-none">⬅️ 돌아가기</button>
+      <button onclick="goBack()" class="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 font-bold text-sm mb-4 transition w-fit outline-none">⬅️ 돌아가기</button>
       <div class="mb-6 relative">
         <input type="text" id="theorySearchInput" onkeyup="handleTheorySearch()" placeholder="🔍 키워드, 기술명 검색..." class="w-full bg-white dark:bg-[#1a1d20] border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 rounded-xl p-4 shadow-sm outline-none focus:border-[#84cc9c] transition font-medium">
       </div>
-      <div id="breadcrumbContainer" class="bg-[#1a231c] rounded-xl border border-[#2d4a36] p-4 mb-6 flex flex-wrap items-center shadow-sm gap-y-2 text-sm hidden"></div>
+      <div id="breadcrumbContainer" class="bg-emerald-50 dark:bg-[#1a231c] rounded-xl border border-emerald-200 dark:border-[#2d4a36] px-4 py-3 mb-6 flex flex-wrap items-center shadow-sm gap-y-2 text-sm hidden"></div>
       <div id="learningContainer" class="grid grid-cols-1 gap-4"></div>
     </div>
     <!-- 🚨 오류 제보 모달 -->
@@ -215,9 +236,9 @@
       const activeCats = FIXED_CATEGORIES.filter(cat => allTheories.some(t => t.category === cat));
       activeCats.forEach(cat => {
         const btn = document.createElement('button');
-        btn.className = "bg-white dark:bg-[#1a1d20] border border-slate-200 dark:border-slate-800 hover:border-[#84cc9c] dark:hover:border-[#84cc9c] p-6 rounded-2xl text-left transition flex justify-between items-center group shadow-sm";
+        btn.className = "group bg-white dark:bg-[#1a1d20] border border-slate-200 dark:border-slate-800 hover:border-emerald-400 dark:hover:border-[#84cc9c] hover:shadow-md p-5 rounded-2xl text-left transition flex items-center gap-4 shadow-sm";
         btn.onclick = () => navTo('view-learning', { level: 'category', category: cat });
-        btn.innerHTML = `<div><h3 class="text-lg font-bold dark:text-white">${cat}</h3><span class="text-xs text-slate-400 mt-2 block">총 ${allTheories.filter(t => t.category === cat).length}개의 문서</span></div><span class="text-slate-300 group-hover:text-[#84cc9c] text-xl font-bold">➔</span>`;
+        btn.innerHTML = `<span class="w-12 h-12 shrink-0 rounded-xl bg-emerald-50 dark:bg-[#1a231c] border border-emerald-100 dark:border-[#2d4a36] flex items-center justify-center text-2xl">📁</span><div class="min-w-0 flex-1"><h3 class="text-base font-bold text-slate-900 dark:text-white leading-snug">${cat}</h3><span class="text-xs text-slate-500 dark:text-slate-400 mt-1 block">문서 ${allTheories.filter(t => t.category === cat).length}개</span></div><span class="text-slate-300 dark:text-slate-600 group-hover:text-emerald-500 dark:group-hover:text-[#84cc9c] text-2xl leading-none transition">›</span>`;
         container.appendChild(btn);
       });
     }
@@ -227,9 +248,9 @@
       const activeSubs = FIXED_SUBJECTS.filter(sub => allTheories.some(t => t.category === category && t.subject === sub));
       activeSubs.forEach(sub => {
         const btn = document.createElement('button');
-        btn.className = "bg-white dark:bg-[#1a1d20] border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-[#1a231c] p-5 rounded-2xl text-left transition shadow-sm";
+        btn.className = "group bg-white dark:bg-[#1a1d20] border border-slate-200 dark:border-slate-800 hover:border-emerald-400 dark:hover:border-[#84cc9c] hover:shadow-md p-5 rounded-2xl text-left transition flex items-center gap-4 shadow-sm";
         btn.onclick = () => navTo('view-learning', { level: 'subject', category: category, subject: sub });
-        btn.innerHTML = `<h3 class="text-base font-bold text-emerald-700 dark:text-[#84cc9c]">${sub}</h3><span class="text-xs text-slate-400 block mt-2">세부 문서 ${allTheories.filter(t => t.category === category && t.subject === sub).length}개 보기</span>`;
+        btn.innerHTML = `<span class="w-12 h-12 shrink-0 rounded-xl bg-emerald-50 dark:bg-[#1a231c] border border-emerald-100 dark:border-[#2d4a36] flex items-center justify-center text-2xl">📂</span><div class="min-w-0 flex-1"><h3 class="text-base font-bold text-slate-900 dark:text-white leading-snug">${sub}</h3><span class="text-xs text-slate-500 dark:text-slate-400 mt-1 block">문서 ${allTheories.filter(t => t.category === category && t.subject === sub).length}개</span></div><span class="text-slate-300 dark:text-slate-600 group-hover:text-emerald-500 dark:group-hover:text-[#84cc9c] text-2xl leading-none transition">›</span>`;
         container.appendChild(btn);
       });
     }
@@ -241,9 +262,9 @@
 
     function renderTitleCard(t, container) {
       const btn = document.createElement('button');
-      btn.className = "bg-white dark:bg-[#1a1d20] border border-slate-200 dark:border-slate-800 hover:border-emerald-400 dark:hover:border-[#84cc9c] p-5 rounded-xl text-left transition flex items-center w-full shadow-sm";
+      btn.className = "bg-white dark:bg-[#1a1d20] border border-slate-200 dark:border-slate-800 hover:border-emerald-400 dark:hover:border-[#84cc9c] hover:shadow-md p-5 rounded-xl text-left transition flex items-center w-full shadow-sm";
       btn.onclick = () => navTo('view-learning', { level: 'detail', theoryId: t.id });
-      btn.innerHTML = `<span class="text-2xl mr-4">📄</span><div><h3 class="text-lg font-bold dark:text-white leading-snug">${t.title}</h3><div class="mt-2 flex flex-wrap gap-1">${(t.tags || []).map(tag => `<span class="bg-emerald-50 dark:bg-[#1a231c] text-emerald-700 dark:text-[#84cc9c] text-[10px] px-2 py-0.5 rounded font-bold">#${tag}</span>`).join('')}</div></div>`;
+      btn.innerHTML = `<span class="text-2xl mr-4">📄</span><div><h3 class="text-lg font-bold text-slate-900 dark:text-white leading-snug">${t.title}</h3><div class="mt-2 flex flex-wrap gap-1">${(t.tags || []).map(tag => `<span class="bg-emerald-50 dark:bg-[#1a231c] text-emerald-700 dark:text-[#84cc9c] text-[10px] px-2 py-0.5 rounded font-bold">#${tag}</span>`).join('')}</div></div>`;
       container.appendChild(btn);
     }
 
@@ -261,6 +282,8 @@
       const container = document.getElementById('learningContainer'); container.className = "flex flex-col space-y-4"; container.innerHTML = '';
       const card = document.createElement('div'); card.className = "bg-white dark:bg-[#1a1d20] rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden";
       const math = stashMath(t.content); let rawMarkdown = math.text;
+      // '**용어(영문)**는' 처럼 괄호 뒤에 한글이 바로 붙으면 marked가 굵게 처리를 못 해서 ** 가 그대로 보임 -> 직접 변환
+      rawMarkdown = rawMarkdown.replace(/\*\*([^*\n]+?)\*\*/g, '<strong>$1</strong>');
       rawMarkdown = rawMarkdown.replace(/>\s*💡\s*(.*?)(?=\n\n|\n###|$)/gs, (match, p1) => `<div class="custom-highlight-box">${marked.parseInline(p1.trim())}</div>\n\n`);
       rawMarkdown = rawMarkdown.replace(/###\s*\[(.*?)\]\s*(.*)/g, (match, badgeText, titleText) => `<div class="custom-badge-heading"><span class="custom-badge">${badgeText}</span>${titleText}</div>`);
       
@@ -290,7 +313,7 @@
 
     function renderBreadcrumb() {
       const bc = document.getElementById('breadcrumbContainer'); bc.classList.remove('hidden');
-      bc.innerHTML = `<button onclick="navTo('view-learning', {level:'home'})" class="text-emerald-700 dark:text-[#84cc9c] font-bold px-2 hover:underline">홈</button>`;
+      bc.innerHTML = `<button onclick="navTo('view-learning', {level:'home'})" class="text-emerald-700 dark:text-[#84cc9c] font-bold px-2 hover:underline">📚 백과사전</button>`;
       if (learnState.level !== 'home') bc.innerHTML += `<span class="text-emerald-200 dark:text-[#2d4a36]">❯</span><button onclick="navTo('view-learning', {level:'category', category: '${learnState.category}'})" class="text-slate-600 dark:text-white font-bold px-2 hover:underline">${learnState.category}</button>`;
       if (learnState.level === 'subject' || learnState.level === 'detail') bc.innerHTML += `<span class="text-emerald-200 dark:text-[#2d4a36]">❯</span><button onclick="navTo('view-learning', {level:'subject', category: '${learnState.category}', subject: '${learnState.subject}'})" class="text-slate-600 dark:text-white font-bold px-2 hover:underline">${learnState.subject}</button>`;
     }
