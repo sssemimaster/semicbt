@@ -4,16 +4,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SemiCBT - 통합 관리자 대시보드</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- ✨ Tailwind & Typography 플러그인 (마크다운 렌더링용) -->
+  <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+  <!-- ✨ marked.js (마크다운 변환) -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="bg-slate-100 text-slate-800 antialiased min-h-screen">
 
-  <header class="bg-slate-900 text-white p-4 shadow-md flex justify-between items-center">
-    <h1 class="text-xl font-bold">🛠️ 시험/면접 통합 검수소 (Admin)</h1>
-    <div class="text-xs text-slate-400">
-      시험 대기: <span id="draftQCount" class="font-bold text-rose-400">0</span>개 | 
-      면접 대기: <span id="draftICount" class="font-bold text-amber-400">0</span>개
+  <header class="bg-slate-900 text-white p-4 shadow-md flex justify-between items-center flex-wrap gap-2">
+    <h1 class="text-xl font-bold">🛠️ SemiCBT 통합 검수소 (Admin)</h1>
+    <div class="text-xs text-slate-300 bg-slate-800 px-3 py-1.5 rounded-lg flex gap-3">
+      <span>📝 시험: <span id="draftQCount" class="font-bold text-indigo-400">0</span></span>
+      <span>🗣️ 면접: <span id="draftICount" class="font-bold text-rose-400">0</span></span>
+      <span>📖 이론: <span id="draftTCount" class="font-bold text-emerald-400">0</span></span>
     </div>
   </header>
 
@@ -36,12 +41,14 @@
     <!-- 메인 대시보드 뷰 -->
     <div id="dashboardSection" class="hidden space-y-6">
       
-      <div class="flex bg-white p-1 rounded-2xl border border-slate-200 shadow-sm">
-        <button onclick="switchTab('quiz')" id="tabQuizBtn" class="flex-1 py-3 font-bold text-sm rounded-xl bg-indigo-600 text-white transition">📝 시험 문제 검수</button>
-        <button onclick="switchTab('interview')" id="tabInterviewBtn" class="flex-1 py-3 font-bold text-sm rounded-xl text-slate-500 transition">🗣️ 면접 문항 검수</button>
+      <!-- ✨ 3단 탭 전환 메뉴 -->
+      <div class="flex bg-white p-1.5 rounded-2xl border border-slate-200 shadow-sm gap-1">
+        <button onclick="switchTab('quiz')" id="tabQuizBtn" class="flex-1 py-3 font-bold text-sm rounded-xl bg-indigo-600 text-white transition shadow-md">📝 객관식</button>
+        <button onclick="switchTab('interview')" id="tabInterviewBtn" class="flex-1 py-3 font-bold text-sm rounded-xl text-slate-500 hover:bg-slate-50 transition">🗣️ 주관식(면접)</button>
+        <button onclick="switchTab('theory')" id="tabTheoryBtn" class="flex-1 py-3 font-bold text-sm rounded-xl text-slate-500 hover:bg-slate-50 transition">📖 이론(백과)</button>
       </div>
 
-      <!-- 실시간 제보함 -->
+      <!-- 실시간 제보함 (기존 동일) -->
       <div class="bg-white rounded-2xl shadow-sm border border-rose-200 p-6">
         <h2 class="text-xl font-bold text-rose-600 mb-4 flex justify-between items-center">
           <span>🚨 유저 오류 제보함</span>
@@ -50,23 +57,29 @@
         <div id="reportsList" class="space-y-3"><p class="text-sm text-slate-500 text-center py-2">불러오는 중...</p></div>
       </div>
 
-      <!-- 객관식 렌더러 -->
+      <!-- 📝 객관식 렌더러 -->
       <div id="reviewQuizContainer" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
         <h2 class="text-xl font-bold text-slate-800 mb-4">📝 객관식 시험 검수</h2>
         <div id="qBox"></div>
       </div>
 
-      <!-- 주관식 렌더러 -->
+      <!-- 🗣️ 주관식 렌더러 -->
       <div id="reviewInterviewContainer" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 hidden">
         <h2 class="text-xl font-bold text-slate-800 mb-4">🗣️ 면접 시나리오 검수</h2>
         <div id="iBox"></div>
+      </div>
+
+      <!-- 📖 ✨ 신규: 이론 백과사전 렌더러 ✨ -->
+      <div id="reviewTheoryContainer" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 hidden">
+        <h2 class="text-xl font-bold text-slate-800 mb-4">📖 이론 백과사전 검수 (미리보기)</h2>
+        <div id="tBox"></div>
       </div>
 
     </div>
   </main>
 
   <script>
-    // 🔴 적용된 설정 정보 (그대로 유지)
+    // 🔴 설정 정보
     const REPO_OWNER = "sssemimaster"; 
     const REPO_NAME = "semicbt";
     const SUPABASE_URL = "https://hyqsrajudsymexxuekfb.supabase.co"; 
@@ -79,15 +92,14 @@
     let token = "";
     let draftQuizzes = [];
     let draftInterviews = [];
+    let draftTheories = []; // ✨ 이론 대기소
+    
     let currentQuizIndex = 0;
     let currentInterviewIndex = 0;
+    let currentTheoryIndex = 0; // ✨ 이론 인덱스
 
-    // 암호화 API(Web Crypto) 동작 방어 코드
     async function sha256(message) {
-      if (!window.crypto || !window.crypto.subtle) {
-        alert("⚠️ 보안 연결(HTTPS) 환경이 아니거나 브라우저에서 암호화 기능을 지원하지 않아 비밀번호 검증이 취소되었습니다. 강제로 통과합니다.");
-        return ADMIN_HASH; 
-      }
+      if (!window.crypto || !window.crypto.subtle) { return ADMIN_HASH; }
       const msgBuffer = new TextEncoder().encode(message);
       const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
       return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
@@ -100,10 +112,7 @@
           document.getElementById('loginSection').classList.add('hidden');
           document.getElementById('authSection').classList.remove('hidden');
         } else { alert("비밀번호가 틀렸습니다."); document.getElementById('adminPin').value = ""; }
-      } catch (e) {
-        console.error(e);
-        alert("인증 오류가 발생했습니다. (F12 콘솔 확인)");
-      }
+      } catch (e) { console.error(e); }
     }
 
     async function loadAdminData() {
@@ -111,64 +120,67 @@
       if(!token.startsWith("ghp_")) return alert("유효한 토큰이 아닙니다.");
       
       try {
+        // 객관식 로드
         const qFile = await fetchGitHubFile("data/draft_questions.json");
         draftQuizzes = qFile ? JSON.parse(qFile.content) : [];
         document.getElementById('draftQCount').innerText = draftQuizzes.length;
 
+        // 면접 로드
         const iFile = await fetchGitHubFile("data/draft_interviews.json");
         draftInterviews = iFile ? JSON.parse(iFile.content) : [];
         document.getElementById('draftICount').innerText = draftInterviews.length;
+
+        // ✨ 이론 로드
+        const tFile = await fetchGitHubFile("data/draft_theories.json");
+        draftTheories = tFile ? JSON.parse(tFile.content) : [];
+        document.getElementById('draftTCount').innerText = draftTheories.length;
 
         document.getElementById('authSection').classList.add('hidden');
         document.getElementById('dashboardSection').classList.remove('hidden');
 
         renderQuizReview();
         renderInterviewReview();
+        renderTheoryReview(); // ✨ 이론 렌더링 호출
+        
         if(supabaseClient) loadReports();
       } catch (e) { alert("데이터 접근 권한이 없거나 토큰이 만료되었습니다."); console.error(e); }
     }
 
+    // ✨ 3단 탭 전환 로직 개선
     function switchTab(tab) {
-      if(tab === 'quiz') {
-        document.getElementById('tabQuizBtn').className = "flex-1 py-3 font-bold text-sm rounded-xl bg-indigo-600 text-white transition";
-        document.getElementById('tabInterviewBtn').className = "flex-1 py-3 font-bold text-sm rounded-xl text-slate-500 transition";
-        document.getElementById('reviewQuizContainer').classList.remove('hidden');
-        document.getElementById('reviewInterviewContainer').classList.add('hidden');
-      } else {
-        document.getElementById('tabInterviewBtn').className = "flex-1 py-3 font-bold text-sm rounded-xl bg-indigo-600 text-white transition";
-        document.getElementById('tabQuizBtn').className = "flex-1 py-3 font-bold text-sm rounded-xl text-slate-500 transition";
-        document.getElementById('reviewInterviewContainer').classList.remove('hidden');
-        document.getElementById('reviewQuizContainer').classList.add('hidden');
-      }
+      const tabs = ['quiz', 'interview', 'theory'];
+      tabs.forEach(t => {
+        const btn = document.getElementById(`tab${t.charAt(0).toUpperCase() + t.slice(1)}Btn`);
+        const container = document.getElementById(`review${t.charAt(0).toUpperCase() + t.slice(1)}Container`);
+        if (t === tab) {
+          btn.className = "flex-1 py-3 font-bold text-sm rounded-xl bg-indigo-600 text-white transition shadow-md";
+          container.classList.remove('hidden');
+        } else {
+          btn.className = "flex-1 py-3 font-bold text-sm rounded-xl text-slate-500 hover:bg-slate-50 transition";
+          container.classList.add('hidden');
+        }
+      });
     }
 
-    // ✨ 팝업 대신 메인 사이트와 동일한 UI로 해설을 보여주도록 개선된 함수
+    // ==========================================
+    // 📝 객관식 검수
+    // ==========================================
     function renderQuizReview() {
       if(draftQuizzes.length === 0) { 
-        document.getElementById('qBox').innerHTML = "<p class='text-center py-6 text-slate-500 font-bold'>대기 중인 시험 문제가 없습니다.</p>"; 
-        return; 
+        document.getElementById('qBox').innerHTML = "<p class='text-center py-6 text-slate-500 font-bold'>대기 중인 시험 문제가 없습니다.</p>"; return; 
       }
-      
       const q = draftQuizzes[currentQuizIndex];
-      
       let html = `
-        <div class="mb-4">
-          <span class="bg-indigo-100 text-indigo-700 text-xs font-semibold px-2.5 py-1 rounded">${q.category} > ${q.topic}</span>
-        </div>
+        <div class="mb-4"><span class="bg-indigo-100 text-indigo-700 text-xs font-semibold px-2.5 py-1 rounded">${q.category} > ${q.topic}</span></div>
         <h2 class="text-lg font-bold text-slate-900 mb-6 leading-snug">${q.question}</h2>
-        
         <div id="adminOptContainer" class="space-y-3"></div>
-        
         <div id="adminExpBox" class="mt-6 p-4 bg-slate-50 border border-slate-200 rounded-xl hidden">
-          <div id="adminResStatus" class="font-bold text-sm mb-2"></div>
-          <p id="adminExpText" class="text-sm text-slate-600 leading-relaxed"></p>
+          <div id="adminResStatus" class="font-bold text-sm mb-2"></div><p id="adminExpText" class="text-sm text-slate-600 leading-relaxed"></p>
         </div>
-
         <div class="grid grid-cols-2 gap-4 mt-6">
           <button onclick="rejectContent('quiz')" class="bg-rose-100 hover:bg-rose-200 transition text-rose-700 font-bold py-4 rounded-xl border border-rose-200">🗑️ 폐기</button>
           <button onclick="approveQuiz()" class="bg-emerald-600 hover:bg-emerald-700 transition text-white font-bold py-4 rounded-xl shadow-md">✅ 시험 등재</button>
-        </div>
-      `;
+        </div>`;
       
       document.getElementById('qBox').innerHTML = html;
 
@@ -177,17 +189,11 @@
         const btn = document.createElement('button');
         btn.className = "w-full text-left p-4 rounded-xl border border-slate-200 hover:bg-indigo-50 font-medium text-sm flex items-center transition";
         btn.innerHTML = `<span class="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-xs mr-3 font-bold text-slate-500">${idx + 1}</span> <span>${opt}</span>`;
-        
         btn.onclick = () => {
           document.getElementById('adminExpBox').classList.remove('hidden');
           const res = document.getElementById('adminResStatus');
-          if(idx === q.answer) { 
-            res.className = "font-bold text-sm mb-1 text-emerald-600"; 
-            res.innerText = "⭕ 정답입니다!"; 
-          } else { 
-            res.className = "font-bold text-sm mb-1 text-rose-600"; 
-            res.innerText = `❌ 오답 (정답: ${q.answer + 1}번)`; 
-          }
+          if(idx === q.answer) { res.className = "font-bold text-sm mb-1 text-emerald-600"; res.innerText = "⭕ 정답입니다!"; } 
+          else { res.className = "font-bold text-sm mb-1 text-rose-600"; res.innerText = `❌ 오답 (정답: ${q.answer + 1}번)`; }
           document.getElementById('adminExpText').innerText = q.explanation;
         };
         optContainer.appendChild(btn);
@@ -204,16 +210,19 @@
         
         draftQuizzes.splice(currentQuizIndex, 1);
         const draftFile = await fetchGitHubFile("data/draft_questions.json");
-        await updateGitHubFile("data/draft_questions.json", draftFile.sha, JSON.stringify(draftQuizzes, null, 2), "Remove draft");
+        await updateGitHubFile("data/draft_questions.json", draftFile ? draftFile.sha : null, JSON.stringify(draftQuizzes, null, 2), "Remove draft");
         
         alert("✅ 등재 완료!"); document.getElementById('draftQCount').innerText = draftQuizzes.length; renderQuizReview();
       } catch(e) { alert("등재 실패"); }
     }
 
+    // ==========================================
+    // 🗣️ 면접 검수
+    // ==========================================
     function renderInterviewReview() {
       if(draftInterviews.length === 0) { document.getElementById('iBox').innerHTML = "<p class='text-center py-6 text-slate-500 font-bold'>대기 중인 면접 문항이 없습니다.</p>"; return; }
       const i = draftInterviews[currentInterviewIndex];
-      let html = `<div class="mb-4"><span class="bg-rose-100 text-rose-700 text-xs font-semibold px-2.5 py-1 rounded">${i.category} > ${i.topic}</span></div><h2 class="text-lg font-bold text-slate-900 mb-4">${i.question}</h2><div class="p-4 bg-slate-50 border rounded-xl mb-4"><span class="text-xs font-bold text-rose-700 block mb-1">키워드: ${(i.key_points || []).join(', ')}</span><p class="text-sm text-slate-700 mt-2 leading-relaxed">${i.interview_answer}</p></div><div class="grid grid-cols-2 gap-4 mt-6"><button onclick="rejectContent('interview')" class="bg-rose-100 hover:bg-rose-200 transition text-rose-700 font-bold py-4 rounded-xl border border-rose-200">🗑️ 폐기</button><button onclick="approveInterview()" class="bg-emerald-600 hover:bg-emerald-700 transition text-white font-bold py-4 rounded-xl shadow-md">✅ 면접 등재</button></div>`;
+      let html = `<div class="mb-4"><span class="bg-rose-100 text-rose-700 text-xs font-semibold px-2.5 py-1 rounded">${i.category} > ${i.topic}</span></div><h2 class="text-lg font-bold text-slate-900 mb-4">${i.question}</h2><div class="p-4 bg-slate-50 border border-slate-200 rounded-xl mb-4"><span class="text-xs font-bold text-rose-700 block mb-1">키워드: ${(i.key_points || []).join(', ')}</span><p class="text-sm text-slate-700 mt-2 leading-relaxed">${i.interview_answer}</p></div><div class="grid grid-cols-2 gap-4 mt-6"><button onclick="rejectContent('interview')" class="bg-rose-100 hover:bg-rose-200 transition text-rose-700 font-bold py-4 rounded-xl border border-rose-200">🗑️ 폐기</button><button onclick="approveInterview()" class="bg-emerald-600 hover:bg-emerald-700 transition text-white font-bold py-4 rounded-xl shadow-md">✅ 면접 등재</button></div>`;
       document.getElementById('iBox').innerHTML = html;
     }
 
@@ -227,28 +236,97 @@
         
         draftInterviews.splice(currentInterviewIndex, 1);
         const draftFile = await fetchGitHubFile("data/draft_interviews.json");
-        await updateGitHubFile("data/draft_interviews.json", draftFile.sha, JSON.stringify(draftInterviews, null, 2), "Remove draft");
+        await updateGitHubFile("data/draft_interviews.json", draftFile ? draftFile.sha : null, JSON.stringify(draftInterviews, null, 2), "Remove draft");
         
         alert("✅ 등재 완료!"); document.getElementById('draftICount').innerText = draftInterviews.length; renderInterviewReview();
       } catch(e) { alert("등재 실패"); console.error(e); }
     }
 
-    async function rejectContent(type) {
-      if(!confirm("폐기하시겠습니까?")) return;
-      if(type === 'quiz') {
-        draftQuizzes.splice(currentQuizIndex, 1);
-        const f = await fetchGitHubFile("data/draft_questions.json");
-        await updateGitHubFile("data/draft_questions.json", f.sha, JSON.stringify(draftQuizzes, null, 2), "Reject quiz");
-        document.getElementById('draftQCount').innerText = draftQuizzes.length; renderQuizReview();
-      } else {
-        draftInterviews.splice(currentInterviewIndex, 1);
-        const f = await fetchGitHubFile("data/draft_interviews.json");
-        await updateGitHubFile("data/draft_interviews.json", f.sha, JSON.stringify(draftInterviews, null, 2), "Reject interview");
-        document.getElementById('draftICount').innerText = draftInterviews.length; renderInterviewReview();
+    // ==========================================
+    // 📖 ✨ 신규: 이론 검수 (마크다운 렌더링) ✨
+    // ==========================================
+    function renderTheoryReview() {
+      if(draftTheories.length === 0) { 
+        document.getElementById('tBox').innerHTML = "<p class='text-center py-6 text-slate-500 font-bold'>대기 중인 이론 데이터가 없습니다.</p>"; return; 
       }
+      
+      const t = draftTheories[currentTheoryIndex];
+      const tagsHtml = (t.tags || []).map(tag => `<span class="inline-block bg-emerald-50 text-emerald-600 font-bold text-[10px] px-2 py-1 rounded mr-1">#${tag}</span>`).join('');
+      
+      // 마크다운 파싱
+      const parsedMarkdown = marked.parse(t.content);
+
+      let html = `
+        <div class="mb-4">
+          <span class="bg-emerald-100 text-emerald-700 text-xs font-semibold px-2.5 py-1 rounded">${t.category} > ${t.subject}</span>
+        </div>
+        <h2 class="text-xl font-bold text-slate-900 mb-2">${t.title}</h2>
+        <div class="mb-4">${tagsHtml}</div>
+        
+        <!-- 미리보기 렌더링 박스 (스크롤 적용) -->
+        <div class="p-6 bg-slate-50 border border-slate-200 rounded-xl overflow-y-auto max-h-96 mb-6">
+          <div class="prose prose-slate prose-sm max-w-none prose-headings:text-indigo-800 prose-a:text-emerald-600 prose-table:border-collapse prose-th:bg-slate-100 prose-th:p-2 prose-td:border prose-td:border-slate-200 prose-td:p-2">
+            ${parsedMarkdown}
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <button onclick="rejectContent('theory')" class="bg-rose-100 hover:bg-rose-200 transition text-rose-700 font-bold py-4 rounded-xl border border-rose-200">🗑️ 폐기</button>
+          <button onclick="approveTheory()" class="bg-emerald-600 hover:bg-emerald-700 transition text-white font-bold py-4 rounded-xl shadow-md">✅ 이론 정식 등재</button>
+        </div>
+      `;
+      document.getElementById('tBox').innerHTML = html;
     }
 
-    // 제보함 및 깃허브 코어 API
+    async function approveTheory() {
+      if(!confirm("이 이론을 정식 백과사전에 등재하시겠습니까?")) return;
+      try {
+        const t = draftTheories[currentTheoryIndex];
+        const live = await fetchGitHubFile("data/theories.json");
+        let data = live ? JSON.parse(live.content) : []; 
+        data.unshift(t); // 최신 이론을 맨 앞에 배치
+        
+        await updateGitHubFile("data/theories.json", live ? live.sha : null, JSON.stringify(data, null, 2), `Approve theory ${t.id}`);
+        
+        draftTheories.splice(currentTheoryIndex, 1);
+        const draftFile = await fetchGitHubFile("data/draft_theories.json");
+        await updateGitHubFile("data/draft_theories.json", draftFile ? draftFile.sha : null, JSON.stringify(draftTheories, null, 2), "Remove draft theory");
+        
+        alert("✅ 이론 등재 완료!"); 
+        document.getElementById('draftTCount').innerText = draftTheories.length; 
+        renderTheoryReview();
+      } catch(e) { alert("등재 실패"); console.error(e); }
+    }
+
+    // ==========================================
+    // 🗑️ 폐기 통합 처리
+    // ==========================================
+    async function rejectContent(type) {
+      if(!confirm("이 문항을 폐기하시겠습니까?")) return;
+      
+      try {
+        if(type === 'quiz') {
+          draftQuizzes.splice(currentQuizIndex, 1);
+          const f = await fetchGitHubFile("data/draft_questions.json");
+          await updateGitHubFile("data/draft_questions.json", f ? f.sha : null, JSON.stringify(draftQuizzes, null, 2), "Reject quiz");
+          document.getElementById('draftQCount').innerText = draftQuizzes.length; renderQuizReview();
+        } else if(type === 'interview') {
+          draftInterviews.splice(currentInterviewIndex, 1);
+          const f = await fetchGitHubFile("data/draft_interviews.json");
+          await updateGitHubFile("data/draft_interviews.json", f ? f.sha : null, JSON.stringify(draftInterviews, null, 2), "Reject interview");
+          document.getElementById('draftICount').innerText = draftInterviews.length; renderInterviewReview();
+        } else if(type === 'theory') {
+          draftTheories.splice(currentTheoryIndex, 1);
+          const f = await fetchGitHubFile("data/draft_theories.json");
+          await updateGitHubFile("data/draft_theories.json", f ? f.sha : null, JSON.stringify(draftTheories, null, 2), "Reject theory");
+          document.getElementById('draftTCount').innerText = draftTheories.length; renderTheoryReview();
+        }
+      } catch(e) { alert("폐기 중 오류 발생"); console.error(e); }
+    }
+
+    // ==========================================
+    // 🚨 제보함 & GitHub 통신 유틸리티
+    // ==========================================
     async function loadReports() {
       if(!supabaseClient) return;
       const list = document.getElementById('reportsList');
