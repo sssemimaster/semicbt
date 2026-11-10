@@ -1,1 +1,26 @@
-[]
+[
+  {
+    "id": "INT-c9dedacd",
+    "category": "차세대 첨단 기술",
+    "topic": "HBM 구조",
+    "difficulty": "고급",
+    "question": "HBM의 스택 구조와 TSV 기술이 고성능 컴퓨팅에 미치는 영향을 구체적으로 설명해 주시겠습니까?",
+    "key_points": [
+      "스택 구조의 장점",
+      "TSV 기술의 중요성"
+    ],
+    "interview_answer": "HBM의 스택 구조는 여러 개의 DRAM 다이를 수직으로 쌓아 대역폭을 증가시키고, TSV 기술은 데이터 전송 속도를 향상시켜 CPU와 GPU 간의 통신을 원활하게 만듭니다."
+  },
+  {
+    "id": "INT-2cc56821",
+    "category": "실무 적용",
+    "topic": "HBM 공정 이슈",
+    "difficulty": "고급",
+    "question": "HBM 공정에서 발생할 수 있는 TSV 결함 문제에 대해 설명하고, 이를 해결하기 위한 방안을 제시해 주시겠습니까?",
+    "key_points": [
+      "TSV 결함의 영향",
+      "해결 방안"
+    ],
+    "interview_answer": "TSV 결함은 데이터 전송 오류를 초래할 수 있으며, 고급 검사 기술 및 품질 관리 프로세스를 도입함으로써 이러한 문제를 해결할 수 있습니다."
+  }
+]
