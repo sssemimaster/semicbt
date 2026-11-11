@@ -7,8 +7,11 @@ from openai import OpenAI
 
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
-# 이론 생성에 쓸 모델 (품질을 더 올리고 싶으면 "gpt-4o" 등으로 교체)
-THEORY_MODEL = "gpt-4o-mini"
+# 모델 설정: 글쓰기(이론·문제·면접 초안)와 검수(사실 확인·교정)에 쓸 모델.
+# 비용을 줄이고 싶으면 GitHub Actions 환경변수 WRITE_MODEL / CHECK_MODEL 로 "gpt-4o-mini" 등을 지정하세요.
+WRITE_MODEL = os.environ.get("WRITE_MODEL", "gpt-4o")
+CHECK_MODEL = os.environ.get("CHECK_MODEL", "gpt-4o")
+THEORY_MODEL = WRITE_MODEL
 
 topics = [
     {"category": "반도체 기초 이론", "subject": "반도체 물리", "keywords": ["에너지 밴드", "페르미 준위", "캐리어 농도", "PN 접합", "유효 질량"]},
@@ -117,25 +120,37 @@ def save_draft(path, new_data):
 #   - JSON은 파이썬에서 조립해서 json.dump로 저장한다.
 #   - 2, 3단계에는 앞 파트 내용을 넘겨 중복을 막고 용어·기호를 일관되게 유지한다.
 # ====================================================================
-THEORY_SYSTEM = """당신은 반도체 공정·소자 분야 10년차 현직 엔지니어이자, 기사/면접 대비 이론 요약 노트를 쓰는 강사입니다.
-'양파 CBT 이론 노트'처럼 군더더기 없이 핵심만 짚는 깔끔한 스타일로 작성합니다.
+THEORY_SYSTEM = """당신은 반도체 공정·소자 분야 10년차 현직 엔지니어입니다. 이제 막 반도체를 배우는 후배(전공자와 비전공 취준생이 섞여 있음)에게 옆에서 차근차근 설명해 주는 마음으로 학습 글을 씁니다.
+목표는 '외워지는 글'이 아니라 '읽고 나면 이해되는 글'입니다. 이 주제만의 글이어야 하며, 다른 주제 이름만 바꿔도 통하는 글은 실패입니다.
 
 [문체]
-- 한국어 개조식 위주로 쓰고, 한 문단은 최대 3~4문장으로 제한합니다. 길어지면 불릿이나 표로 쪼갭니다.
-- 핵심 용어는 **굵게** 표시하고, 영문 전문용어는 처음 한 번만 괄호로 병기합니다. 예: 식각 선택비(Selectivity)
-- 비교·분류 내용은 마크다운 표로 정리합니다.
+- 부드러운 해요체(~해요, ~예요, ~거든요)로 씁니다. 딱딱한 개조식 나열이나 사전식 정의 나열은 피합니다.
+- 항목을 나열하기 전에 '왜 그런지'를 인과로 먼저 풀어 줍니다. (A 때문에 B가 되고, 그래서 C를 신경 써야 해요)
+- 한 문단은 3~4문장 이내. 문장 길이와 시작 표현을 다양하게 합니다. 같은 어미·접속어를 반복하지 않습니다.
+- 처음 보는 용어는 쉬운 말로 먼저 풀고, 영문 용어는 처음 한 번만 괄호로 병기합니다. 예: 식각 선택비(Selectivity)
+- 핵심 용어와 꼭 기억할 문장은 **굵게** 표시하되, 문단마다 남발하지 않습니다.
+- 비유는 글 전체에서 많아야 1개, 정확히 들어맞을 때만 쓰고 어디까지 맞는지 한 줄로 한계도 말합니다.
+- 표는 '둘 이상을 둘 이상의 기준으로 비교'할 때만 씁니다.
 - 수식은 LaTeX로 쓰고, 인라인은 $...$, 독립 수식은 $$...$$ 로 감쌉니다. 백슬래시는 평소처럼 한 개만 씁니다. 예: $\\sigma$, $$I_D = \\frac{1}{2}\\mu C_{ox}\\frac{W}{L}(V_{GS}-V_{th})^2$$
-- 확실하지 않은 구체 수치는 지어내지 말고, 증가/감소 같은 경향이나 정성적 표현으로 씁니다.
 
-[원칙]
-- 틀에 주제를 맞추지 말고, 주제의 성격에 맞춰 내용을 씁니다. 해당되지 않는 항목(예: 공정이 아닌 지표·특성에 '동작 원리', 장단점이 없는 개념에 '장단점', 정립된 분류가 없는데 '종류')은 쓰지 않고, 그 주제에 실제로 필요한 항목으로 바꿔 씁니다.
-- 교과서에 정립되지 않은 분류, 지어낸 수치·공식, 주제와 직접 상관없는 일반론은 쓰지 않습니다.
+[정확성 - 가장 중요]
+- 교과서·업계에서 정립된 내용만 씁니다. 지어낸 분류, 지어낸 수치·공식, 확실하지 않은 구체 숫자는 쓰지 않고 '커진다/줄어든다' 같은 경향으로 씁니다.
+- 널리 알려진 수치는 '대략'이라고 밝히고 자릿수 수준으로만 씁니다.
+- 주제와 직접 상관없는 일반론으로 분량을 채우지 않습니다. 해당되지 않는 항목(예: 지표에 '동작 원리', 장단점이 없는 개념에 '장단점')은 쓰지 않습니다.
+
+[쓰지 말아야 할 상투적 표현]
+'중요한 역할을 합니다', '필수적입니다', '다양한 분야에서', '이를 통해', '뿐만 아니라', '큰 영향을 미칩니다'(어떻게 미치는지 안 밝히고 쓰는 경우), '~을 명확히 이해하고', '핵심적인 역할'. 이런 말 대신 '구체적으로 무엇이 어떻게 되는지'를 씁니다.
+
+[소제목]
+- `### [뱃지] 제목` 형식. 제목은 이 주제에서만 나올 구체적인 문장이나 질문으로 씁니다. 예: `### [핵심 개념] 식각이 '깎는 일'이 아니라 '고르는 일'인 이유`
+- '~란?', '~의 중요성' 같은 어느 주제에나 붙는 제목은 되도록 피합니다.
+
+[팁 박스]
+- `> 💡 [실무 코멘트]`, `> 💡 [면접 팁]`, `> 💡 [흔한 오해]` 중 하나로 한 줄 인용문으로 씁니다.
+- 반드시 구체적인 정보를 담습니다: 학습자가 자주 하는 오해와 바로잡기, 시험·면접에서 헷갈리는 포인트, 현장에서 실제로 보는 단서 등. '~을 이해하고 설명할 수 있어야 한다' 같은 빈 조언은 금지입니다.
 
 [형식]
-- 출력은 마크다운 본문만 쓰세요. JSON, 서두 인사, 맺음말, 최상위 제목(#, ##)은 쓰지 않습니다.
-- 전체를 코드블록(```)으로 감싸지 않습니다.
-- 소제목은 `### [뱃지] 제목` 형식입니다. 예: `### [핵심 개념] 식각 선택비란?`
-- 인라인 팁은 `> 💡 [실무 코멘트] ...` 또는 `> 💡 [면접 팁] ...` 처럼 한 줄 인용문으로 씁니다."""
+- 출력은 마크다운 본문만 씁니다. JSON, 인사, 맺음말, 최상위 제목(#, ##)은 쓰지 않습니다. 전체를 코드블록으로 감싸지 않습니다."""
 
 DEFAULT_PARTS = [  # 계획 단계가 실패했을 때만 쓰는 기본 틀
     {
@@ -201,6 +216,14 @@ def normalize_markdown(text):
     return t
 
 
+CLICHES = [r"중요한 역할", r"핵심적인 역할", r"필수적", r"다양한 (?:분야|산업|응용)", r"이를 통해", r"뿐만 아니라",
+           r"매우 중요", r"큰 영향을 (?:미|끼)", r"중요성을 (?:이해|명확)", r"명확히 이해", r"효과적으로 활용"]
+
+
+def cliche_hits(text):
+    return sum(len(re.findall(p, text)) for p in CLICHES)
+
+
 def validate_part(text, part):
     if len(text) < part["min_chars"]:
         raise ValueError(f"내용이 너무 짧음 ({len(text)}자)")
@@ -214,6 +237,9 @@ def validate_part(text, part):
     last_badge = part.get("last_badge")
     if last_badge and last_badge not in headings[-1]:
         raise ValueError(f"마지막 소제목이 {last_badge} 가 아님")
+    hits = cliche_hits(text)
+    if hits >= 3:
+        raise ValueError(f"상투적 표현이 {hits}번 쓰임 (구체적으로 다시 쓰기)")
 
 
 def build_part_prompt(part, previous_text, outline=""):
@@ -243,14 +269,15 @@ def ask_markdown(user_prompt, part, retries=2):
     last_err = None
     for attempt in range(1, retries + 2):
         try:
+            feedback = f"\n\n[직전 시도가 실패한 이유 - 이번에는 고쳐서 쓰세요]\n{last_err}" if last_err else ""
             res = client.chat.completions.create(
-                model=THEORY_MODEL,
+                model=WRITE_MODEL,
                 messages=[
                     {"role": "system", "content": THEORY_SYSTEM},
-                    {"role": "user", "content": user_prompt},
+                    {"role": "user", "content": user_prompt + feedback},
                 ],
-                temperature=0.4,   # 이론은 사실성이 중요하므로 낮게
-                max_tokens=2500,
+                temperature=0.6,   # 문장이 틀에 박히지 않도록 약간 열어 두되, 사실성은 아래 교정 단계에서 다시 확인
+                max_tokens=2800,
             )
             choice = res.choices[0]
             if choice.finish_reason == "length":
@@ -264,11 +291,14 @@ def ask_markdown(user_prompt, part, retries=2):
     raise RuntimeError(f"이론 {part['no']}/3 생성 실패: {last_err}")
 
 
-PLAN_SYSTEM = "당신은 반도체 이론 노트의 목차를 설계하는 편집자입니다. 반드시 유효한 JSON 객체 하나만 출력합니다."
+PLAN_SYSTEM = "당신은 반도체 학습 글의 구성을 설계하는 편집자입니다. 반드시 유효한 JSON 객체 하나만 출력합니다."
 
 PLAN_SCHEMA = """{
   "kind": "process | device | phenomenon | metric | material | flow 중 하나",
   "use_formula": true 또는 false,
+  "core_question": "이 글이 답하는 가장 핵심적인 질문 한 문장 (학습자가 실제로 궁금해할 만한 것)",
+  "misconceptions": ["학습자가 자주 하는 실제 오해 1~2개 (없으면 빈 배열)"],
+  "analogy": "정확히 들어맞는 비유가 있을 때만 한 문장. 없으면 빈 문자열",
   "parts": [
     {"name": "파트 이름(12자 이내)", "focus": ["다룰 내용 1", "다룰 내용 2", "다룰 내용 3"], "badges": ["핵심 개념", "정의"]},
     {"name": "...", "focus": ["..."], "badges": ["..."]},
@@ -278,21 +308,22 @@ PLAN_SCHEMA = """{
 
 
 def build_plan_prompt():
-    return f"""'{target_keyword}' ({sel_cat} > {sel_sub}) 에 대한 이론 노트의 구성을 설계하세요.
+    return f"""'{target_keyword}' ({sel_cat} > {sel_sub}) 에 대한 학습 글의 구성을 설계하세요.
 
 먼저 이 주제의 성격(kind)을 판단합니다.
 - process: 공정/장비가 동작하는 방식  - device: 소자·구조  - phenomenon: 물리 현상·효과
 - metric: 특성·지표·평가량 (예: 선택비, 단차 피복성, 수율)  - material: 재료  - flow: 공정 흐름·테스트 체계
 
-노트는 항상 3개 파트이며 역할은 고정입니다.
-- 파트1(개념): 정의, 왜 중요한지, 직관적 이해
+글은 항상 3개 파트이며 역할은 고정입니다.
+- 파트1(개념): 왜 이게 필요한지(문제 상황)에서 출발해 정의와 직관적 이해까지
 - 파트2(세부): 시험·면접에서 깊게 묻는 핵심. 주제에 실제로 맞는 것만 고릅니다. (예: 측정·정의 방법, 값을 좌우하는 변수, 메커니즘, 비교, 정의식)
 - 파트3(실무·요약): 현업에서 겪는 문제와 개선 방향, 마지막은 암기 포인트
 
 설계 규칙
+- 이 주제만의 글이 되도록, 이 주제에서 학습자가 가장 헷갈리거나 놓치기 쉬운 지점을 core_question과 misconceptions 에 담습니다.
 - '동작 원리'는 process·device일 때만 씁니다. metric·phenomenon이면 '정의와 측정 방법', '값을 좌우하는 요인', '발생 원인' 등으로 바꿉니다.
 - '장단점'은 장단점이 실제로 있는 기술·방식일 때만 씁니다. metric이면 '값이 좋을 때/나쁠 때의 영향', '개선 방법'으로 바꿉니다.
-- '종류·분류'는 교과서에 정립된 분류가 있을 때만 씁니다.
+- '종류·분류'는 교과서에 정립된 분류가 있을 때만 씁니다. 확신이 없으면 쓰지 않습니다.
 - use_formula는 널리 쓰이는 정의식·관계식이 실제로 있을 때만 true 입니다.
 - 각 파트의 focus는 이 주제에 딱 맞는 구체적 항목 2~4개이고, 파트 간에 겹치면 안 됩니다.
 - badges는 대괄호 없이, 그 파트 소제목에 쓸 짧은 이름 2~4개입니다. (예: 핵심 개념, 정의, 측정 방법, 변수 영향, 비교, 수식, 실무 이슈, 개선 방법)
@@ -311,6 +342,8 @@ def validate_plan(plan):
             raise ValueError("focus 형식 오류")
         if not isinstance(pt.get("badges"), list) or not (1 <= len(pt["badges"]) <= 6) or not all(isinstance(x, str) and x.strip() for x in pt["badges"]):
             raise ValueError("badges 형식 오류")
+    if not isinstance(plan.get("core_question"), str) or not plan["core_question"].strip():
+        raise ValueError("core_question 없음")
 
 
 def make_plan(retries=2):
@@ -318,10 +351,10 @@ def make_plan(retries=2):
     for attempt in range(1, retries + 2):
         try:
             res = client.chat.completions.create(
-                model=THEORY_MODEL,
+                model=CHECK_MODEL,
                 messages=[{"role": "system", "content": PLAN_SYSTEM}, {"role": "user", "content": build_plan_prompt()}],
-                temperature=0.2,
-                max_tokens=800,
+                temperature=0.3,
+                max_tokens=900,
                 response_format={"type": "json_object"},
             )
             plan = json.loads(clean_json_string(res.choices[0].message.content or ""))
@@ -342,38 +375,87 @@ def parts_from_plan(plan):
     )
     def focus(i):
         return "\n".join(f"  · {x.strip()}" for x in plan["parts"][i]["focus"])
+    core_q = plan["core_question"].strip()
+    miscs = [m.strip() for m in (plan.get("misconceptions") or []) if isinstance(m, str) and m.strip()]
+    misc_rule = ("- 아래 실제 오해 중 하나를 `> 💡 [흔한 오해]` 팁 박스로 바로잡아 주세요: " + " / ".join(miscs)) if miscs else ""
+    analogy = plan.get("analogy") if isinstance(plan.get("analogy"), str) else ""
+    analogy_rule = (f"- 비유를 쓴다면 이것만: {analogy.strip()} (어디까지 맞는지 한 줄로 한계도 밝히기)" if analogy.strip() else "- 비유는 억지로 만들지 않습니다.")
     return [
         {
             "no": 1, "name": plan["parts"][0]["name"].strip(), "badges": badge(plan["parts"][0]["badges"]), "tip": "[면접 팁]",
-            "guide": f"""- 이 파트의 역할: 처음 보는 사람도 이해할 수 있는 '뼈대'(개념)입니다.
+            "guide": f"""- 이 파트의 역할: 처음 보는 사람도 따라올 수 있는 '뼈대'입니다.
+- 글 전체가 답하려는 질문: "{core_q}"
+- 첫 문단은 정의가 아니라 '이게 없으면/이게 어긋나면 어떤 문제가 생기는지' 같은 구체적인 상황이나 궁금증으로 시작하세요.
 - 이 파트에서 다룰 내용 (주제에 맞게 설계됨):
 {focus(0)}
-- 소제목 2~3개, 전체 약 600~1,000자. 위 항목 외의 일반론은 쓰지 않습니다.
+{analogy_rule}
+- 소제목 2~3개, 전체 약 700~1,100자. 위 항목 외의 일반론은 쓰지 않습니다.
 - 세부 변수·수식·표, 실무 이슈는 다음 파트에서 다루므로 여기서는 쓰지 않습니다.""",
-            "min_headings": 2, "min_chars": 350, "last_badge": None,
+            "min_headings": 2, "min_chars": 400, "last_badge": None,
         },
         {
             "no": 2, "name": plan["parts"][1]["name"].strip(), "badges": badge(plan["parts"][1]["badges"]), "tip": "[실무 코멘트]",
-            "guide": f"""- 이 파트의 역할: 시험과 면접에서 구체적으로 묻는 '세부 내용'입니다.
+            "guide": f"""- 이 파트의 역할: 시험과 면접에서 구체적으로 묻는 '세부 내용'입니다. 사실과 인과가 정확해야 합니다.
 - 이 파트에서 다룰 내용 (주제에 맞게 설계됨):
 {focus(1)}
 - 비교나 변수 → 결과 관계가 있으면 마크다운 표로 정리합니다. 억지로 만든 분류·종류 표는 금지입니다.
 {formula_rule}
-- 소제목 2~3개, 전체 약 800~1,300자.
+{misc_rule}
+- 소제목 2~3개, 전체 약 900~1,400자.
 - 정의와 배경은 반복하지 않고, 현업 이슈는 다음 파트에서 다룹니다.""",
-            "min_headings": 2, "min_chars": 400, "last_badge": None,
+            "min_headings": 2, "min_chars": 450, "last_badge": None,
         },
         {
             "no": 3, "name": plan["parts"][2]["name"].strip(), "badges": badge(plan["parts"][2]["badges"] + ["암기 포인트"]), "tip": "[면접 팁]",
             "guide": f"""- 이 파트의 역할: 현업 감각과 시험 직전 복습용 '마무리'입니다.
 - 이 파트에서 다룰 내용 (주제에 맞게 설계됨):
 {focus(2)}
-- 마지막 소제목은 반드시 `### [암기 포인트] 시험·면접 직전 체크` 로 하고, 3~5개의 짧은 불릿으로 핵심을 요약합니다.
-- 소제목 3개, 전체 약 600~1,000자.
+- 마지막 소제목은 반드시 `### [암기 포인트] 시험·면접 직전 체크` 로 하고, 3~5개의 짧은 불릿으로 핵심을 요약합니다. (이 불릿은 개조식으로 짧게 써도 좋습니다)
+- 소제목 3개, 전체 약 700~1,100자.
 - 앞 파트 내용은 반복하지 말고 새로운 관점만 추가합니다.""",
-            "min_headings": 3, "min_chars": 350, "last_badge": "[암기 포인트]",
+            "min_headings": 3, "min_chars": 400, "last_badge": "[암기 포인트]",
         },
     ]
+
+
+POLISH_SYSTEM = """당신은 반도체 공정·소자 전문가이자 까다로운 학습서 편집자입니다.
+받은 학습 글을 다음 순서로 점검하고, 고친 최종본 전체를 마크다운으로만 출력합니다. (설명·메모·코드블록 금지)
+
+1. 사실 확인: 반도체 교과서·업계 상식과 어긋나는 문장, 지어낸 분류·수치·공식, 확신할 수 없는 구체 숫자를 찾아 고치거나 경향 표현으로 바꾸거나 삭제합니다.
+2. 빈말 제거: '중요한 역할을 합니다' 류의 구체적이지 않은 문장, 어느 주제에나 붙는 문장, 같은 말을 되풀이하는 문장을 구체적인 내용으로 바꾸거나 지웁니다. 빈 팁 박스(예: '~을 이해하고 설명할 수 있어야 한다')는 실제로 도움이 되는 한 줄로 바꿉니다.
+3. 읽는 흐름: 파트 사이 이음새가 자연스럽고, 같은 어미·접속어가 반복되지 않게 다듬습니다. 문체는 해요체로 통일합니다.
+
+반드시 지킬 것
+- 소제목(`### [뱃지] 제목`) 구조와 개수, 마지막 `### [암기 포인트] ...` 소제목, 표, 수식($...$, $$...$$) 문법, `> 💡 [..]` 팁 박스 형식은 그대로 유지합니다.
+- 내용을 새로 늘리거나 줄이지 않습니다. 분량은 원문의 90% 이상을 유지합니다.
+- 틀리지 않은 문장은 건드리지 않습니다."""
+
+
+def polish_theory(text):
+    """완성된 이론을 한 번 더 '편집자 눈'으로 교정한다. 결과가 이상하면 원문을 그대로 쓴다."""
+    try:
+        res = client.chat.completions.create(
+            model=CHECK_MODEL,
+            messages=[{"role": "system", "content": POLISH_SYSTEM}, {"role": "user", "content": text}],
+            temperature=0.2,
+            max_tokens=5000,
+        )
+        choice = res.choices[0]
+        if choice.finish_reason == "length":
+            raise ValueError("교정본이 잘림")
+        new = normalize_markdown(choice.message.content or "")
+        old_h, new_h = HEADING_RE.findall(text), HEADING_RE.findall(new)
+        if len(new) < len(text) * 0.85:
+            raise ValueError("교정본이 너무 짧아짐")
+        if len(new_h) != len(old_h) or "[암기 포인트]" not in new_h[-1]:
+            raise ValueError("소제목 구조가 바뀜")
+        if new.count("$$") % 2 or new.replace("$$", "").count("$") % 2:
+            raise ValueError("수식 짝이 깨짐")
+        print(f"   ✨ 편집 교정 완료 (상투 표현 {cliche_hits(text)} → {cliche_hits(new)})")
+        return new
+    except Exception as e:
+        print(f"   ⚠️ 편집 교정을 건너뜁니다(원문 유지): {e}")
+        return text
 
 
 def generate_theory():
@@ -391,7 +473,313 @@ def generate_theory():
         print(f"   📖 이론 {part['no']}/3 「{part['name']}」 생성 중...")
         previous = "\n\n".join(sections)
         sections.append(ask_markdown(build_part_prompt(part, previous, outline), part))
-    return "\n\n".join(sections)
+    return polish_theory("\n\n".join(sections))
+
+
+# ====================================================================
+# 📝 객관식 / 🗣️ 면접: 초안 작성 → 파이썬 규칙 검사 → AI 검수(사실·단서·해설) → 조립
+#   - 보기 순서는 파이썬에서 섞고, 해설의 '몇 번' 표기도 섞은 뒤에 파이썬이 만든다.
+# ====================================================================
+def call_json(model, system, user, temperature, max_tokens=3000):
+    res = client.chat.completions.create(
+        model=model,
+        messages=[{"role": "system", "content": system}, {"role": "user", "content": user}],
+        temperature=temperature, max_tokens=max_tokens,
+        response_format={"type": "json_object"},
+    )
+    if res.choices[0].finish_reason == "length":
+        raise ValueError("출력이 잘림")
+    return json.loads(clean_json_string(res.choices[0].message.content or ""))
+
+
+QUIZ_SYSTEM = """당신은 반도체 자격·면접 대비 문제를 출제하는 20년차 출제위원입니다. 학생이 '글만 읽고 감으로' 풀 수 없고, 풀고 나면 이론이 더 또렷해지는 문제를 만듭니다. 반드시 유효한 JSON 객체 하나만 출력합니다. 수식 기호(LaTeX, 백슬래시)는 쓰지 말고 Vth, ID 처럼 일반 문자로 씁니다."""
+
+QUIZ_SCHEMA = """{
+  "questions": [
+    {
+      "type": "concept | cause | scenario | compare 중 하나",
+      "difficulty": "기초 | 중급 | 응용 중 하나",
+      "question": "문제 지문",
+      "correct": "정답 보기 문장",
+      "distractors": [
+        {"text": "오답 보기 문장", "why_wrong": "이 보기가 왜 틀렸는지, 어떤 오해에서 나온 보기인지 1문장"},
+        {"text": "...", "why_wrong": "..."},
+        {"text": "...", "why_wrong": "..."}
+      ],
+      "why_correct": "정답인 이유 2~3문장. 결론 → 이유 → 이론과의 연결 순서. 이 글을 처음 읽는 사람도 이해할 수 있게",
+      "takeaway": "나중에 떠올릴 한 줄 기억 포인트"
+    }
+  ]
+}"""
+
+
+def build_quiz_prompt(theory):
+    return f"""아래 이론 글만을 근거로 객관식 3문제를 만드세요.
+
+[문제 구성 - 서로 다른 유형으로]
+1번: 개념 이해(concept) 또는 비교·구분(compare) — 기초~중급
+2번: 원인→결과 추론(cause) — 중급
+3번: 상황 적용(scenario) — 응용. 공정·소자에서 관측되는 상황을 2~3문장으로 제시하고 가장 타당한 원인·판단·조치를 묻기. 이론에서 도출 가능한 범위만.
+
+[보기 설계 규칙 - 글만 읽어도 풀리는 문제 금지]
+- 보기 4개(정답 1 + 오답 3)는 길이, 문장 구조, 어조, 구체성 수준이 서로 비슷해야 합니다. 정답이 가장 길거나 가장 구체적이면 안 됩니다.
+- 오답은 '학습자가 실제로 헷갈리는 오개념', '정답과 인접한 개념의 특성', '원인과 결과를 뒤집은 설명'처럼 그럴듯해야 합니다. 상식만으로 걸러지는 극단적·엉뚱한 보기("비용이 많이 든다", "전력 소모가 없다" 같은 것)는 금지입니다.
+- '장점/특징을 고르는' 문제에서 오답을 단점들로만 채우지 마세요. 오답도 '장점처럼 들리지만 이 기술의 특징이 아닌 것' 등 같은 방향의 보기여야 합니다.
+- 보기에 '항상, 절대, 전혀, 모든, 오직, 무조건' 같은 극단어를 쓰지 않습니다.
+- 정답은 이론으로 명백히 하나여야 하고, 오답이 부분적으로 맞아 보여 논란이 생기면 안 됩니다.
+- 문제 지문의 단어를 정답 보기에만 그대로 반복하지 않습니다.
+- 부정형("아닌 것은?", "틀린 것은?") 질문은 금지입니다. 문제는 구체적인 질문 한 개입니다.
+
+[해설]
+- why_correct 는 '왜 맞는지'를 이론과 연결해 친절히, why_wrong 은 '어떤 오해라서 틀렸는지'를 각각 한 문장으로 씁니다.
+- 이론에 없는 새 사실이나 구체 숫자를 지어내지 않습니다.
+
+[이론 글]
+<<<
+{theory}
+>>>
+
+아래 JSON 형식으로만 답하세요.
+{QUIZ_SCHEMA}"""
+
+
+ABSOLUTE_RE = re.compile(r"항상|절대|전혀|모든 |오직|무조건")
+NEGATIVE_RE = re.compile(r"아닌 것|않은 것|틀린 것|옳지 않")
+
+
+def check_quiz_item(it):
+    """규칙으로 잡을 수 있는 문제점을 문자열 목록으로 돌려준다. 비어 있으면 통과."""
+    probs = []
+    try:
+        q, c = str(it["question"]).strip(), str(it["correct"]).strip()
+        ds = it["distractors"]
+        if not isinstance(ds, list) or len(ds) != 3:
+            return ["오답 보기는 정확히 3개여야 함"]
+        dt = [str(d["text"]).strip() for d in ds]
+        dw = [str(d["why_wrong"]).strip() for d in ds]
+    except Exception:
+        return ["필수 필드 누락/형식 오류"]
+    if len(q) < 12: probs.append("문제 지문이 너무 짧음")
+    if NEGATIVE_RE.search(q): probs.append("부정형 질문")
+    texts = [c] + dt
+    norm = [re.sub(r"\s+", "", t) for t in texts]
+    if any(not t for t in texts): probs.append("빈 보기")
+    if len(set(norm)) != 4: probs.append("중복된 보기")
+    if any(ABSOLUTE_RE.search(t) for t in texts): probs.append("극단어(항상/절대/전혀/모든/오직/무조건) 사용")
+    avg = sum(len(t) for t in dt) / 3
+    if len(c) > max(len(t) for t in dt) and len(c) > avg * 1.4: probs.append("정답이 오답보다 눈에 띄게 김")
+    if len(str(it.get("why_correct", "")).strip()) < 20: probs.append("정답 해설이 너무 짧음")
+    if any(len(w) < 8 for w in dw): probs.append("오답 해설이 너무 짧음")
+    if not str(it.get("takeaway", "")).strip(): probs.append("기억 포인트 없음")
+    return probs
+
+
+QUIZ_REVIEW_SYSTEM = """당신은 문제를 깐깐하게 검수하는 반도체 전문가이자 출제 감수위원입니다. 반드시 유효한 JSON 객체 하나만 출력합니다. 수식 기호(백슬래시)는 쓰지 않습니다."""
+
+
+def build_quiz_review_prompt(theory, items):
+    listing = json.dumps([{"index": n, "item": it, "rule_problems": check_quiz_item(it)} for n, it in enumerate(items)], ensure_ascii=False)
+    return f"""아래 객관식 문제 초안을 검수하세요. 각 문제를 다음 기준으로 평가합니다.
+
+1. 사실: 정답이 실제 반도체 지식과 이론 글에서 맞는가? (이론 글 자체가 틀렸거나 문제가 성립하지 않으면 drop)
+2. 정답 유일성: 다른 보기가 정답으로 해석될 여지는 없는가?
+3. 단서 노출: 반도체 지식이 없어도 정답이 드러나는가? (보기 길이·구체성 차이, 극단적이거나 엉뚱한 오답, 지문 단어 반복, 장점을 묻는데 오답이 단점뿐인 경우 등)
+4. 오답의 질: 각 오답이 실제로 헷갈릴 만한 오개념·인접 개념인가?
+5. 해설: 왜 맞고 왜 틀린지 친절하고 정확한가? 이론에 없는 사실을 지어내지 않았는가?
+rule_problems 에 적힌 문제는 반드시 해결하세요.
+
+각 문제에 대해 verdict 를 정합니다.
+- ok: 그대로 사용 (final 에 원본 item 그대로)
+- fix: 위 기준에 걸리는 부분을 고쳐서 final 에 같은 스키마로 완성본을 넣습니다. 문제의 핵심 의도는 유지하세요.
+- drop: 고쳐도 살릴 수 없을 때 (final 은 null)
+
+[이론 글]
+<<<
+{theory}
+>>>
+
+[문제 초안]
+{listing}
+
+아래 JSON 형식으로만 답하세요.
+{{"reviews": [{{"index": 0, "verdict": "ok|fix|drop", "issues": ["발견한 문제 요약"], "final": {{...같은 item 스키마...}} 또는 null}}]}}"""
+
+
+def compose_quiz(it, theory_id):
+    """보기를 섞고, 섞인 번호에 맞춰 해설을 만든다."""
+    pool = [(str(it["correct"]).strip(), None)] + [(str(d["text"]).strip(), str(d["why_wrong"]).strip()) for d in it["distractors"]]
+    random.shuffle(pool)
+    answer = next(n for n, (_, w) in enumerate(pool) if w is None)
+    wrong_lines = "\n".join(f"· {n + 1}번: {w}" for n, (_, w) in enumerate(pool) if w is not None)
+    explanation = f"정답 해설\n{str(it['why_correct']).strip()}\n\n오답 체크\n{wrong_lines}\n\n💡 기억 포인트: {str(it['takeaway']).strip()}"
+    diff = it.get("difficulty") if it.get("difficulty") in ("기초", "중급", "응용") else "중급"
+    return {
+        "id": new_id("Q"), "category": sel_cat, "topic": target_keyword, "theory_id": theory_id,
+        "difficulty": diff, "type": it.get("type", "concept"),
+        "question": str(it["question"]).strip(), "options": [t for t, _ in pool], "answer": answer,
+        "explanation": explanation,
+    }
+
+
+def generate_quiz(theory, theory_id):
+    drafts = (call_json(WRITE_MODEL, QUIZ_SYSTEM, build_quiz_prompt(theory), 0.8).get("questions") or [])[:3]
+    if not drafts:
+        raise ValueError("초안 문제가 비어 있음")
+    final = []
+    try:
+        reviews = call_json(CHECK_MODEL, QUIZ_REVIEW_SYSTEM, build_quiz_review_prompt(theory, drafts), 0.2, 4000).get("reviews") or []
+        by_idx = {r.get("index"): r for r in reviews if isinstance(r, dict)}
+        for n, it in enumerate(drafts):
+            r = by_idx.get(n)
+            if r is None:                      # 검수 누락 → 규칙만 통과하면 사용
+                cand = it
+            elif r.get("verdict") == "drop":
+                print(f"   🗑️ 문제 {n + 1} 제외: {'; '.join(map(str, r.get('issues', [])))[:120]}")
+                continue
+            else:
+                cand = r.get("final") or it
+            if check_quiz_item(cand):
+                print(f"   🗑️ 문제 {n + 1} 제외(검수 후에도 규칙 위반): {check_quiz_item(cand)}")
+                continue
+            if r and r.get("verdict") == "fix":
+                print(f"   🔧 문제 {n + 1} 수정: {'; '.join(map(str, r.get('issues', [])))[:120]}")
+            final.append(cand)
+    except Exception as e:
+        print(f"   ⚠️ 문제 AI 검수 실패 → 규칙 검사만 통과한 초안 사용: {e}")
+        final = [it for it in drafts if not check_quiz_item(it)]
+    if not final:
+        raise ValueError("검수를 통과한 문제가 없음")
+    return [compose_quiz(it, theory_id) for it in final]
+
+
+INTERVIEW_SYSTEM = """당신은 반도체 대기업 공정·소자 직무 면접에서 실무 면접관을 맡는 10년차 엔지니어입니다. 지원자의 암기가 아니라 이해와 사고 과정을 보는 질문을 합니다. 반드시 유효한 JSON 객체 하나만 출력합니다. 수식 기호(백슬래시)는 쓰지 말고 일반 문자로 씁니다."""
+
+INTERVIEW_SCHEMA = """{
+  "interviews": [
+    {
+      "difficulty": "중급 | 고급 중 하나",
+      "question": "면접관이 실제로 입으로 하는 질문 (한 가지만 묻기)",
+      "follow_up": "지원자 답변을 듣고 면접관이 이어서 던질 꼬리 질문 1개",
+      "follow_up_answer": "꼬리 질문에 대한 모범 답변 2~3문장",
+      "key_points": ["면접관이 듣고 싶어 하는 핵심 키워드 3~4개"],
+      "interview_answer": "지원자가 말로 하는 모범 답변"
+    }
+  ]
+}"""
+
+
+def build_interview_prompt(theory):
+    return f"""아래 이론 글을 바탕으로, 실제 면접장에서 나올 법한 면접 질문 2개를 만드세요. 질문은 이론 범위에서 출제하되, 면접관의 말투와 맥락을 살립니다.
+
+[질문 구성]
+1번 (개념 설명형): 핵심 개념을 지원자 자기 말로 풀게 하는 질문. 꼬리 질문으로 '왜 그런지'를 한 단계 더 파고듭니다.
+2번 (상황·판단형): 공정·소자에서 마주칠 상황이나 trade-off를 제시하고 어떻게 판단·접근할지 묻는 질문. 꼬리 질문은 조건을 바꾸거나 한계를 묻습니다.
+
+[질문 규칙]
+- 구어체 한두 문장. 예: "~에 대해 설명해 주시겠어요?", "~한 상황이라면 어떤 순서로 접근하시겠어요?" 교과서 문제처럼 항목을 줄줄이 요구하는 질문("정의, 원인, 대책을 모두 설명하라")은 금지입니다.
+- 한 질문에는 한 가지만 묻습니다.
+- 이론에 없는 내용을 알아야 답할 수 있는 질문은 금지입니다.
+
+[모범 답변 규칙]
+- 지원자가 말하는 정중한 구어체(합니다/해요 혼용 금지, ~입니다/~합니다 체).
+- 구조: 결론 한 문장 → 이유·원리 2~3문장 → 한계·조건이나 실무 연결 1문장. 전체 5~8문장, 300~550자.
+- 이론에 없는 구체 수치, 지어낸 사례, 해 본 적 없는 경험담("제가 현장에서 ~했을 때")은 금지입니다. 모르는 것을 아는 척하지 않고, 조건부로 신중하게 말합니다.
+- 정확성이 최우선입니다. 단정하기 어려운 부분은 '일반적으로', '조건에 따라'로 범위를 밝힙니다.
+
+[이론 글]
+<<<
+{theory}
+>>>
+
+아래 JSON 형식으로만 답하세요.
+{INTERVIEW_SCHEMA}"""
+
+
+def check_interview_item(it):
+    probs = []
+    try:
+        q = str(it["question"]).strip(); fu = str(it["follow_up"]).strip()
+        ans = str(it["interview_answer"]).strip(); fua = str(it["follow_up_answer"]).strip()
+        kp = it["key_points"]
+        if not isinstance(kp, list) or not (2 <= len(kp) <= 6) or not all(isinstance(k, str) and k.strip() for k in kp):
+            return ["key_points 형식 오류"]
+    except Exception:
+        return ["필수 필드 누락/형식 오류"]
+    if len(q) < 10 or len(q) > 160: probs.append("질문 길이가 부적절")
+    if q.count("?") > 1: probs.append("한 질문에 여러 가지를 묻고 있음")
+    if len(fu) < 8: probs.append("꼬리 질문이 너무 짧음")
+    if not (200 <= len(ans) <= 800): probs.append(f"모범 답변 길이 부적절({len(ans)}자)")
+    if len(fua) < 40: probs.append("꼬리 질문 답변이 너무 짧음")
+    if cliche_hits(ans + fua) >= 3: probs.append("상투적 표현이 많음")
+    if re.search(r"제가 (?:현장|실무|회사|인턴)에서", ans): probs.append("지어낸 경험담")
+    return probs
+
+
+INTERVIEW_REVIEW_SYSTEM = """당신은 면접 질문과 모범 답변을 검수하는 반도체 전문가이자 면접 코치입니다. 반드시 유효한 JSON 객체 하나만 출력합니다. 수식 기호(백슬래시)는 쓰지 않습니다."""
+
+
+def build_interview_review_prompt(theory, items):
+    listing = json.dumps([{"index": n, "item": it, "rule_problems": check_interview_item(it)} for n, it in enumerate(items)], ensure_ascii=False)
+    return f"""아래 면접 문항 초안을 검수하세요. 기준은 다음과 같습니다.
+
+1. 정확성(최우선): 모범 답변과 꼬리 질문 답변에 반도체 지식과 이론 글에 어긋나는 내용, 지어낸 수치·사례, 과도한 단정이 없는가?
+2. 실제 면접 같은가: 면접관이 입으로 할 법한 자연스러운 질문인가? 한 번에 한 가지만 묻는가? 이론 밖 지식을 요구하지 않는가?
+3. 답변 품질: 결론이 먼저 나오고, 이유가 인과로 이어지며, 한계·조건을 밝히는가? 말로 했을 때 자연스러운가? 상투적인 빈말이 없는가?
+4. key_points: 면접관이 실제로 체크할 핵심 키워드인가?
+rule_problems 는 반드시 해결하세요.
+
+verdict: ok(final 에 원본) / fix(고친 완성본을 final 에, 같은 스키마) / drop(살릴 수 없음, final null)
+
+[이론 글]
+<<<
+{theory}
+>>>
+
+[면접 초안]
+{listing}
+
+아래 JSON 형식으로만 답하세요.
+{{"reviews": [{{"index": 0, "verdict": "ok|fix|drop", "issues": ["발견한 문제 요약"], "final": {{...같은 item 스키마...}} 또는 null}}]}}"""
+
+
+def generate_interview(theory, theory_id):
+    drafts = (call_json(WRITE_MODEL, INTERVIEW_SYSTEM, build_interview_prompt(theory), 0.7).get("interviews") or [])[:2]
+    if not drafts:
+        raise ValueError("초안 면접이 비어 있음")
+    final = []
+    try:
+        reviews = call_json(CHECK_MODEL, INTERVIEW_REVIEW_SYSTEM, build_interview_review_prompt(theory, drafts), 0.2, 4000).get("reviews") or []
+        by_idx = {r.get("index"): r for r in reviews if isinstance(r, dict)}
+        for n, it in enumerate(drafts):
+            r = by_idx.get(n)
+            if r is None:
+                cand = it
+            elif r.get("verdict") == "drop":
+                print(f"   🗑️ 면접 {n + 1} 제외: {'; '.join(map(str, r.get('issues', [])))[:120]}")
+                continue
+            else:
+                cand = r.get("final") or it
+            if check_interview_item(cand):
+                print(f"   🗑️ 면접 {n + 1} 제외(검수 후에도 규칙 위반): {check_interview_item(cand)}")
+                continue
+            if r and r.get("verdict") == "fix":
+                print(f"   🔧 면접 {n + 1} 수정: {'; '.join(map(str, r.get('issues', [])))[:120]}")
+            final.append(cand)
+    except Exception as e:
+        print(f"   ⚠️ 면접 AI 검수 실패 → 규칙 검사만 통과한 초안 사용: {e}")
+        final = [it for it in drafts if not check_interview_item(it)]
+    if not final:
+        raise ValueError("검수를 통과한 면접이 없음")
+    out = []
+    for it in final:
+        out.append({
+            "id": new_id("INT"), "category": sel_cat, "topic": target_keyword, "theory_id": theory_id,
+            "difficulty": it.get("difficulty") if it.get("difficulty") in ("중급", "고급") else "고급",
+            "question": str(it["question"]).strip(), "follow_up": str(it["follow_up"]).strip(),
+            "follow_up_answer": str(it["follow_up_answer"]).strip(),
+            "key_points": [k.strip() for k in it["key_points"]], "interview_answer": str(it["interview_answer"]).strip(),
+        })
+    return out
 
 
 def generate_unified_content():
@@ -428,75 +816,22 @@ def generate_unified_content():
         return
 
     # ----------------------------------------------------
-    # 2. 📝 이론 기반 객관식 생성 및 저장
+    # 2. 📝 이론 기반 객관식 (초안 → 규칙 검사 → AI 검수 → 조립)
     # ----------------------------------------------------
     try:
-        msg_quiz = [
-            {"role": "system", "content": "You strictly output a valid JSON array. 수식의 역슬래시는 반드시 두 개(\\\\) 작성하세요."},
-            {"role": "user", "content": f"""
-다음 이론 내용만을 바탕으로, 이론 이해도를 검증하는 긍정형 객관식 기출문제 3개를 만들어주세요. 부정형("아닌 것은?") 질문은 금지합니다:
-{theory_content}
-
-[
-  {{
-    "id": "Q-{random.randint(10000,99999)}",
-    "category": "{sel_cat}",
-    "topic": "{target_keyword}",
-    "difficulty": "중급",
-    "question": "문제 지문",
-    "options": ["보기1", "보기2", "보기3", "보기4"],
-    "answer": 0,
-    "explanation": "해설"
-  }}
-]
-"""}
-        ]
-        res_q = client.chat.completions.create(model="gpt-4o-mini", messages=msg_quiz, temperature=0.7)
-        quiz_json = json.loads(clean_json_string(res_q.choices[0].message.content))
-        for q in quiz_json:
-            q["id"] = new_id("Q")  # AI가 만든 ID는 신뢰하지 않고 항상 새로 부여
-            # 이론과의 연결: AI가 topic/category 를 멋대로 바꾸므로 값을 강제로 덮어쓰고 theory_id 로 직접 연결
-            q["theory_id"], q["topic"], q["category"] = theory_id, target_keyword, sel_cat
-            correct_text = q["options"][q["answer"]]
-            random.shuffle(q["options"])
-            q["answer"] = q["options"].index(correct_text)
-
+        quiz_json = generate_quiz(theory_content, theory_id)
         save_draft(draft_q_path, quiz_json)
-        print("✅ 2/3 이론 연계 객관식 생성 및 저장 성공!")
+        print(f"✅ 2/3 이론 연계 객관식 {len(quiz_json)}개 생성 및 저장 성공!")
     except Exception as e:
         print(f"⚠️ 객관식 생성 실패 (건너뜀): {e}")
 
     # ----------------------------------------------------
-    # 3. 🗣️ 이론 기반 면접 생성 및 저장
+    # 3. 🗣️ 이론 기반 면접 (초안 → 규칙 검사 → AI 검수 → 조립)
     # ----------------------------------------------------
     try:
-        msg_int = [
-            {"role": "system", "content": "You strictly output a valid JSON array. 수식의 역슬래시는 반드시 두 개(\\\\) 작성하세요."},
-            {"role": "user", "content": f"""
-다음 이론을 바탕으로 실무 적용 역량을 묻는 날카로운 면접 질문 2개를 만드세요:
-{theory_content}
-
-[
-  {{
-    "id": "INT-{random.randint(10000,99999)}",
-    "category": "{sel_cat}",
-    "topic": "{target_keyword}",
-    "difficulty": "고급",
-    "question": "면접 지문",
-    "key_points": ["키워드1", "키워드2"],
-    "interview_answer": "두괄식 답변 스크립트"
-  }}
-]
-"""}
-        ]
-        res_i = client.chat.completions.create(model="gpt-4o-mini", messages=msg_int, temperature=0.7)
-        interview_json = json.loads(clean_json_string(res_i.choices[0].message.content))
-        for i in interview_json:
-            i["id"] = new_id("INT")
-            i["theory_id"], i["topic"], i["category"] = theory_id, target_keyword, sel_cat
-
+        interview_json = generate_interview(theory_content, theory_id)
         save_draft(draft_i_path, interview_json)
-        print("✅ 3/3 이론 연계 실무 면접 생성 및 저장 성공!")
+        print(f"✅ 3/3 이론 연계 실무 면접 {len(interview_json)}개 생성 및 저장 성공!")
     except Exception as e:
         print(f"⚠️ 면접 생성 실패 (건너뜀): {e}")
 
