@@ -1,18 +1,5 @@
 [
   {
-    "id": "INT-8d08e6a5",
-    "category": "반도체 8대 공정",
-    "topic": "단차 피복성",
-    "difficulty": "고급",
-    "question": "단차 피복성을 측정하기 위해 SEM과 AFM을 사용하는 이유와 각 기법의 장단점에 대해 설명해 주세요.",
-    "key_points": [
-      "SEM",
-      "AFM"
-    ],
-    "interview_answer": "SEM은 고해상도 이미지를 통해 단차 피복 상태를 시각적으로 분석할 수 있는 반면, AFM은 표면의 미세 구조를 정량적으로 평가할 수 있습니다. SEM은 시각적으로 직관적이지만, AFM은 더 세밀한 측정이 가능합니다.",
-    "theory_id": "TH-2c6a2107"
-  },
-  {
     "id": "INT-b979b4c0",
     "category": "반도체 8대 공정",
     "topic": "EUV 리소그래피",
