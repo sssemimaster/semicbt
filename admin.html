@@ -70,6 +70,8 @@
         <button onclick="switchTab('theory')" id="tabTheoryBtn" class="flex-1 py-3 font-bold text-sm rounded-xl text-slate-500 hover:bg-slate-50 transition">📖 이론(백과)</button>
       </div>
 
+      <div class="flex justify-end -mt-3"><button onclick="refreshDrafts()" class="text-xs bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 px-3 py-1.5 rounded-lg font-semibold transition">🔄 대기열 새로고침</button></div>
+
       <!-- 실시간 제보함 (기존 동일) -->
       <div class="bg-white rounded-2xl shadow-sm border border-rose-200 p-6">
         <h2 class="text-xl font-bold text-rose-600 mb-4 flex justify-between items-center">
@@ -169,6 +171,24 @@
       try { if (supabaseClient) { const { data } = await supabaseClient.auth.getSession(); if (data && data.session) showTokenStep(); } } catch (e) {}
     })();
 
+    // ⚠️ 대기열 파일을 고칠 때는 항상 GitHub 의 '최신본'을 읽어 그 위에서 수정한다.
+    //    (화면에 열려 있던 옛 목록으로 덮어쓰면, 그사이 AI가 새로 넣은 문항이 사라진다)
+    async function draftMutate(path, mutator, msg) {
+      const f = await fetchGitHubFile(path);
+      const next = mutator(f ? JSON.parse(f.content) : []);
+      await updateGitHubFile(path, f ? f.sha : null, JSON.stringify(next, null, 2), msg);
+      return next;
+    }
+    async function refreshDrafts() {
+      try {
+        const [q, i, t] = await Promise.all(["data/draft_questions.json", "data/draft_interviews.json", "data/draft_theories.json"].map(fetchGitHubFile));
+        draftQuizzes = q ? JSON.parse(q.content) : []; draftInterviews = i ? JSON.parse(i.content) : []; draftTheories = t ? JSON.parse(t.content) : [];
+        currentQuizIndex = currentInterviewIndex = currentTheoryIndex = 0;
+        document.getElementById('draftQCount').innerText = draftQuizzes.length; document.getElementById('draftICount').innerText = draftInterviews.length; document.getElementById('draftTCount').innerText = draftTheories.length;
+        renderQuizReview(); renderInterviewReview(); renderTheoryReview();
+      } catch (e) { console.error(e); alert('새로고침 실패 (토큰/권한 확인)'); }
+    }
+
     async function loadAdminData() {
       token = document.getElementById('ghToken').value.trim();
       if(!/^(github_pat_|ghp_)/.test(token)) return alert("유효한 토큰이 아닙니다.");
@@ -265,9 +285,8 @@
         let data = live ? JSON.parse(live.content) : []; if (repId) data = data.filter(x => String(x.id) !== String(repId)); data.unshift(q);
         await updateGitHubFile("data/questions.json", live ? live.sha : null, JSON.stringify(data, null, 2), `Approve quiz ${q.id}`);
         
-        draftQuizzes.splice(currentQuizIndex, 1);
-        const draftFile = await fetchGitHubFile("data/draft_questions.json");
-        await updateGitHubFile("data/draft_questions.json", draftFile ? draftFile.sha : null, JSON.stringify(draftQuizzes, null, 2), "Remove draft");
+        draftQuizzes = await draftMutate("data/draft_questions.json", a => a.filter(x => x.id !== q.id), "Remove draft");
+        currentQuizIndex = Math.min(currentQuizIndex, Math.max(0, draftQuizzes.length - 1));
         
         alert("✅ 등재 완료!"); document.getElementById('draftQCount').innerText = draftQuizzes.length; renderQuizReview();
       } catch(e) { alert("등재 실패"); }
@@ -292,9 +311,8 @@
         let data = live ? JSON.parse(live.content) : []; if (repId) data = data.filter(x => String(x.id) !== String(repId)); data.unshift(i);
         await updateGitHubFile("data/interviews.json", live ? live.sha : null, JSON.stringify(data, null, 2), `Approve interview ${i.id}`);
         
-        draftInterviews.splice(currentInterviewIndex, 1);
-        const draftFile = await fetchGitHubFile("data/draft_interviews.json");
-        await updateGitHubFile("data/draft_interviews.json", draftFile ? draftFile.sha : null, JSON.stringify(draftInterviews, null, 2), "Remove draft");
+        draftInterviews = await draftMutate("data/draft_interviews.json", a => a.filter(x => x.id !== i.id), "Remove draft");
+        currentInterviewIndex = Math.min(currentInterviewIndex, Math.max(0, draftInterviews.length - 1));
         
         alert("✅ 등재 완료!"); document.getElementById('draftICount').innerText = draftInterviews.length; renderInterviewReview();
       } catch(e) { alert("등재 실패"); console.error(e); }
@@ -375,9 +393,8 @@
         
         await updateGitHubFile("data/theories.json", live ? live.sha : null, JSON.stringify(data, null, 2), `Approve theory ${t.id}`);
         
-        draftTheories.splice(currentTheoryIndex, 1);
-        const draftFile = await fetchGitHubFile("data/draft_theories.json");
-        await updateGitHubFile("data/draft_theories.json", draftFile ? draftFile.sha : null, JSON.stringify(draftTheories, null, 2), "Remove draft theory");
+        draftTheories = await draftMutate("data/draft_theories.json", a => a.filter(x => x.id !== t.id), "Remove draft theory");
+        currentTheoryIndex = Math.min(currentTheoryIndex, Math.max(0, draftTheories.length - 1));
         
         alert("✅ 이론 등재 완료!"); 
         document.getElementById('draftTCount').innerText = draftTheories.length; 
@@ -393,26 +410,24 @@
       
       try {
         // 재검수 초안이면, 기존 정식 문항도 함께 지울지 묻는다 (취소 = 기존 문항 유지)
-        const cur = type === 'quiz' ? draftQuizzes[currentQuizIndex] : type === 'interview' ? draftInterviews[currentInterviewIndex] : null;
+        const cur = type === 'quiz' ? draftQuizzes[currentQuizIndex] : type === 'interview' ? draftInterviews[currentInterviewIndex] : draftTheories[currentTheoryIndex];
+        if (!cur) return;
         if (cur && cur.replaces && confirm("기존 정식 문항도 함께 삭제할까요?\n확인 = 기존 문항까지 삭제 / 취소 = 기존 문항은 그대로 유지")) {
           const lp = type === 'quiz' ? "data/questions.json" : "data/interviews.json", lf = await fetchGitHubFile(lp);
           if (lf) { const arr = JSON.parse(lf.content).filter(x => String(x.id) !== String(cur.replaces)); await updateGitHubFile(lp, lf.sha, JSON.stringify(arr, null, 2), `Remove reviewed ${cur.replaces}`); }
           liveCache = null;
         }
         if(type === 'quiz') {
-          draftQuizzes.splice(currentQuizIndex, 1);
-          const f = await fetchGitHubFile("data/draft_questions.json");
-          await updateGitHubFile("data/draft_questions.json", f ? f.sha : null, JSON.stringify(draftQuizzes, null, 2), "Reject quiz");
+          draftQuizzes = await draftMutate("data/draft_questions.json", a => a.filter(x => x.id !== cur.id), "Reject quiz");
+          currentQuizIndex = Math.min(currentQuizIndex, Math.max(0, draftQuizzes.length - 1));
           document.getElementById('draftQCount').innerText = draftQuizzes.length; renderQuizReview();
         } else if(type === 'interview') {
-          draftInterviews.splice(currentInterviewIndex, 1);
-          const f = await fetchGitHubFile("data/draft_interviews.json");
-          await updateGitHubFile("data/draft_interviews.json", f ? f.sha : null, JSON.stringify(draftInterviews, null, 2), "Reject interview");
+          draftInterviews = await draftMutate("data/draft_interviews.json", a => a.filter(x => x.id !== cur.id), "Reject interview");
+          currentInterviewIndex = Math.min(currentInterviewIndex, Math.max(0, draftInterviews.length - 1));
           document.getElementById('draftICount').innerText = draftInterviews.length; renderInterviewReview();
         } else if(type === 'theory') {
-          draftTheories.splice(currentTheoryIndex, 1);
-          const f = await fetchGitHubFile("data/draft_theories.json");
-          await updateGitHubFile("data/draft_theories.json", f ? f.sha : null, JSON.stringify(draftTheories, null, 2), "Reject theory");
+          draftTheories = await draftMutate("data/draft_theories.json", a => a.filter(x => x.id !== cur.id), "Reject theory");
+          currentTheoryIndex = Math.min(currentTheoryIndex, Math.max(0, draftTheories.length - 1));
           document.getElementById('draftTCount').innerText = draftTheories.length; renderTheoryReview();
         }
       } catch(e) { alert("폐기 중 오류 발생"); console.error(e); }
@@ -462,8 +477,9 @@
           if (!val('e_title') || !val('e_content')) return alert('제목과 본문을 채워 주세요.');
           Object.assign(it, { category: val('e_category'), subject: val('e_subject'), title: val('e_title'), tags: csv('e_tags'), content: document.getElementById('e_content').value });
         }
-        const f = await fetchGitHubFile(d.file);
-        await updateGitHubFile(d.file, f ? f.sha : null, JSON.stringify(d.list(), null, 2), `Edit draft ${it.id}`);
+        let found = true;
+        await draftMutate(d.file, a => { const k = a.findIndex(x => x.id === it.id); if (k < 0) { found = false; return a; } a[k] = it; return a; }, `Edit draft ${it.id}`);
+        if (!found) return alert('이 초안이 대기열에서 이미 사라졌어요. 대기열 새로고침을 눌러 주세요.');
         d.render(); alert('💾 수정 내용을 저장했어요. (내용이 맞으면 이어서 등재하세요)');
       } catch (e) { console.error(e); alert('저장 실패: ' + (e.message || e)); }
     }
