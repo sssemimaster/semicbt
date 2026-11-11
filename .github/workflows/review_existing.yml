@@ -13,6 +13,11 @@ on:
       limit:
         description: "종류별로 한 번에 점검할 문항 수 (비용 조절용)"
         default: "12"
+      preset:
+        description: "품질/비용 프리셋 (비워두면 balanced)"
+        default: ""
+        type: choice
+        options: ["", high, balanced, economy]
 
 concurrency:
   group: auto-content-generator
@@ -44,6 +49,7 @@ jobs:
     - name: Review existing items
       env:
         OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        QUALITY_PRESET: ${{ github.event.inputs.preset || vars.QUALITY_PRESET || 'balanced' }}
       run: python scripts/review_existing.py --kind "${{ github.event.inputs.kind }}" --limit "${{ github.event.inputs.limit }}"
 
     - name: Commit and Push changes
