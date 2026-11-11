@@ -1,1 +1,50 @@
-[]
+[
+  {
+    "id": "Q-6aafcfba",
+    "category": "반도체 8대 공정",
+    "topic": "습식 산화",
+    "difficulty": "중급",
+    "question": "습식 산화 공정에서 형성되는 산화막의 주 성분은 무엇인가요?",
+    "options": [
+      "Si₃N₄",
+      "SiO₂",
+      "O₂",
+      "H₂O"
+    ],
+    "answer": 1,
+    "explanation": "습식 산화 공정에서는 실리콘(Si)과 수증기(H₂O) 반응을 통해 실리콘 산화물(SiO₂)이 형성됩니다.",
+    "theory_id": "TH-131b1f3a"
+  },
+  {
+    "id": "Q-080962d7",
+    "category": "반도체 8대 공정",
+    "topic": "습식 산화",
+    "difficulty": "중급",
+    "question": "습식 산화 공정의 주된 장점은 무엇인가요?",
+    "options": [
+      "산화 속도가 빠르다",
+      "저온에서 진행된다",
+      "불순물 침투를 촉진한다",
+      "산화막이 얇다"
+    ],
+    "answer": 0,
+    "explanation": "습식 산화는 산화 속도가 빠르고 두꺼운 산화막을 형성하는 데 유리합니다.",
+    "theory_id": "TH-131b1f3a"
+  },
+  {
+    "id": "Q-aa76d119",
+    "category": "반도체 8대 공정",
+    "topic": "습식 산화",
+    "difficulty": "중급",
+    "question": "산화막 두께 측정에 사용되지 않는 방법은 무엇인가요?",
+    "options": [
+      "SEM",
+      "Ellipsometry",
+      "FTIR",
+      "X-ray Reflectometry"
+    ],
+    "answer": 2,
+    "explanation": "Ellipsometry, X-ray Reflectometry, SEM는 산화막 두께 측정에 사용되지만, FTIR은 해당 방법이 아닙니다.",
+    "theory_id": "TH-131b1f3a"
+  }
+]
