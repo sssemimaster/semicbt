@@ -1,20 +1,5 @@
 [
   {
-    "id": "Q-1a8acf15",
-    "category": "반도체 8대 공정",
-    "topic": "EDS 테스트의 장점",
-    "difficulty": "중급",
-    "question": "EDS 테스트의 장점 중 하나는 무엇인가?",
-    "options": [
-      "복잡한 해석",
-      "고온 분석",
-      "시간 소모",
-      "비파괴성"
-    ],
-    "answer": 3,
-    "explanation": "EDS 테스트는 샘플을 파괴하지 않고 분석할 수 있는 비파괴성 장점이 있다."
-  },
-  {
     "id": "Q-500f3547",
     "category": "반도체 8대 공정",
     "topic": "EDS 테스트의 원리",
