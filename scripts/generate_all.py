@@ -411,8 +411,9 @@ def generate_unified_content():
     # ----------------------------------------------------
     try:
         theory_content = generate_theory()
+        theory_id = new_id("TH")
         theory_json = [{
-            "id": new_id("TH"),
+            "id": theory_id,
             "category": sel_cat,
             "subject": sel_sub,
             "title": target_keyword,
@@ -454,6 +455,8 @@ def generate_unified_content():
         quiz_json = json.loads(clean_json_string(res_q.choices[0].message.content))
         for q in quiz_json:
             q["id"] = new_id("Q")  # AI가 만든 ID는 신뢰하지 않고 항상 새로 부여
+            # 이론과의 연결: AI가 topic/category 를 멋대로 바꾸므로 값을 강제로 덮어쓰고 theory_id 로 직접 연결
+            q["theory_id"], q["topic"], q["category"] = theory_id, target_keyword, sel_cat
             correct_text = q["options"][q["answer"]]
             random.shuffle(q["options"])
             q["answer"] = q["options"].index(correct_text)
@@ -490,6 +493,7 @@ def generate_unified_content():
         interview_json = json.loads(clean_json_string(res_i.choices[0].message.content))
         for i in interview_json:
             i["id"] = new_id("INT")
+            i["theory_id"], i["topic"], i["category"] = theory_id, target_keyword, sel_cat
 
         save_draft(draft_i_path, interview_json)
         print("✅ 3/3 이론 연계 실무 면접 생성 및 저장 성공!")
