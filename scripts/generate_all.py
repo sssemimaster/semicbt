@@ -641,8 +641,11 @@ def compose_quiz(it, theory_id):
     pool = [(str(it["correct"]).strip(), None)] + [(str(d["text"]).strip(), str(d["why_wrong"]).strip()) for d in it["distractors"]]
     random.shuffle(pool)
     answer = next(n for n, (_, w) in enumerate(pool) if w is None)
+    # 이미 완성된 해설 형식("정답 해설 ... 오답 체크 ...")이 why_correct 로 들어와도 두 번 감싸지 않는다
+    why_correct = re.sub(r"^\s*정답 해설\s*\n", "", str(it["why_correct"]).strip())
+    why_correct = re.split(r"\n\s*오답 체크\s*\n", why_correct)[0].split("\n💡 기억 포인트")[0].strip()
     wrong_lines = "\n".join(f"· {n + 1}번: {w}" for n, (_, w) in enumerate(pool) if w is not None)
-    explanation = f"정답 해설\n{str(it['why_correct']).strip()}\n\n오답 체크\n{wrong_lines}\n\n💡 기억 포인트: {str(it['takeaway']).strip()}"
+    explanation = f"정답 해설\n{why_correct}\n\n오답 체크\n{wrong_lines}\n\n💡 기억 포인트: {str(it['takeaway']).strip()}"
     diff = it.get("difficulty") if it.get("difficulty") in ("기초", "중급", "응용") else "중급"
     return {
         "id": new_id("Q"), "category": sel_cat, "topic": target_keyword, "theory_id": theory_id,
