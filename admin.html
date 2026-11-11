@@ -192,6 +192,7 @@
         <div id="adminExpBox" class="mt-6 p-4 bg-slate-50 border border-slate-200 rounded-xl hidden">
           <div id="adminResStatus" class="font-bold text-sm mb-2"></div><p id="adminExpText" class="text-sm text-slate-600 leading-relaxed"></p>
         </div>
+        <button onclick="editDraft('quiz')" class="w-full mt-4 bg-amber-50 hover:bg-amber-100 transition text-amber-800 font-bold py-3 rounded-xl border border-amber-200">✏️ 내용 수정</button>
         <div class="grid grid-cols-2 gap-4 mt-6">
           <button onclick="rejectContent('quiz')" class="bg-rose-100 hover:bg-rose-200 transition text-rose-700 font-bold py-4 rounded-xl border border-rose-200">🗑️ 폐기</button>
           <button onclick="approveQuiz()" class="bg-emerald-600 hover:bg-emerald-700 transition text-white font-bold py-4 rounded-xl shadow-md">✅ 시험 등재</button>
@@ -237,7 +238,8 @@
     function renderInterviewReview() {
       if(draftInterviews.length === 0) { document.getElementById('iBox').innerHTML = "<p class='text-center py-6 text-slate-500 font-bold'>대기 중인 면접 문항이 없습니다.</p>"; return; }
       const i = draftInterviews[currentInterviewIndex];
-      let html = `${i.report_note ? `<div class="mb-3 p-3 rounded-lg bg-amber-50 border border-amber-200 text-xs text-amber-800">🚨 제보로 이동됨: ${escHtml(i.report_note)}</div>` : ''}<div class="mb-4"><span class="bg-rose-100 text-rose-700 text-xs font-semibold px-2.5 py-1 rounded">${i.category} > ${i.topic}</span></div><h2 class="text-lg font-bold text-slate-900 mb-4">${i.question}</h2><div class="p-4 bg-slate-50 border border-slate-200 rounded-xl mb-4"><span class="text-xs font-bold text-rose-700 block mb-1">키워드: ${(i.key_points || []).join(', ')}</span><p class="text-sm text-slate-700 mt-2 leading-relaxed">${i.interview_answer}</p></div><div class="grid grid-cols-2 gap-4 mt-6"><button onclick="rejectContent('interview')" class="bg-rose-100 hover:bg-rose-200 transition text-rose-700 font-bold py-4 rounded-xl border border-rose-200">🗑️ 폐기</button><button onclick="approveInterview()" class="bg-emerald-600 hover:bg-emerald-700 transition text-white font-bold py-4 rounded-xl shadow-md">✅ 면접 등재</button></div>`;
+      let html = `${i.report_note ? `<div class="mb-3 p-3 rounded-lg bg-amber-50 border border-amber-200 text-xs text-amber-800">🚨 제보로 이동됨: ${escHtml(i.report_note)}</div>` : ''}<div class="mb-4"><span class="bg-rose-100 text-rose-700 text-xs font-semibold px-2.5 py-1 rounded">${i.category} > ${i.topic}</span></div><h2 class="text-lg font-bold text-slate-900 mb-4">${i.question}</h2><div class="p-4 bg-slate-50 border border-slate-200 rounded-xl mb-4"><span class="text-xs font-bold text-rose-700 block mb-1">키워드: ${(i.key_points || []).join(', ')}</span><p class="text-sm text-slate-700 mt-2 leading-relaxed">${i.interview_answer}</p></div><button onclick="editDraft('interview')" class="w-full mt-4 bg-amber-50 hover:bg-amber-100 transition text-amber-800 font-bold py-3 rounded-xl border border-amber-200">✏️ 내용 수정</button>
+        <div class="grid grid-cols-2 gap-4 mt-6"><button onclick="rejectContent('interview')" class="bg-rose-100 hover:bg-rose-200 transition text-rose-700 font-bold py-4 rounded-xl border border-rose-200">🗑️ 폐기</button><button onclick="approveInterview()" class="bg-emerald-600 hover:bg-emerald-700 transition text-white font-bold py-4 rounded-xl shadow-md">✅ 면접 등재</button></div>`;
       document.getElementById('iBox').innerHTML = html;
     }
 
@@ -285,6 +287,7 @@
           </div>
         </div>
 
+        <button onclick="editDraft('theory')" class="w-full mt-4 bg-amber-50 hover:bg-amber-100 transition text-amber-800 font-bold py-3 rounded-xl border border-amber-200">✏️ 내용 수정</button>
         <div class="grid grid-cols-2 gap-4">
           <button onclick="rejectContent('theory')" class="bg-rose-100 hover:bg-rose-200 transition text-rose-700 font-bold py-4 rounded-xl border border-rose-200">🗑️ 폐기</button>
           <button onclick="approveTheory()" class="bg-emerald-600 hover:bg-emerald-700 transition text-white font-bold py-4 rounded-xl shadow-md">✅ 이론 정식 등재</button>
@@ -364,6 +367,56 @@
           document.getElementById('draftTCount').innerText = draftTheories.length; renderTheoryReview();
         }
       } catch(e) { alert("폐기 중 오류 발생"); console.error(e); }
+    }
+
+
+    // ==========================================
+    // ✏️ 초안 내용 수정 (객관식 / 면접 / 이론)
+    // ==========================================
+    const INP = 'w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm outline-none focus:border-indigo-400';
+    const fld = (label, html) => `<label class="block text-xs font-bold text-slate-500 mb-1 mt-3">${label}</label>${html}`;
+    const tin = (id, v, rows) => rows ? `<textarea id="${id}" rows="${rows}" class="${INP}">${escHtml(v)}</textarea>` : `<input id="${id}" value="${escHtml(v)}" class="${INP}">`;
+    const editCtl = (type) => `<div class="grid grid-cols-2 gap-3 mt-5"><button onclick="cancelEdit('${type}')" class="border border-slate-300 text-slate-600 font-bold py-3 rounded-xl">취소</button><button onclick="saveEdit('${type}')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl shadow-md">💾 저장</button></div>`;
+    const DRAFT = {
+      quiz: { box: 'qBox', file: 'data/draft_questions.json', list: () => draftQuizzes, idx: () => currentQuizIndex, render: () => renderQuizReview() },
+      interview: { box: 'iBox', file: 'data/draft_interviews.json', list: () => draftInterviews, idx: () => currentInterviewIndex, render: () => renderInterviewReview() },
+      theory: { box: 'tBox', file: 'data/draft_theories.json', list: () => draftTheories, idx: () => currentTheoryIndex, render: () => renderTheoryReview() }
+    };
+    function editDraft(type) {
+      const d = DRAFT[type], it = d.list()[d.idx()]; if (!it) return;
+      let h = '<div class="mb-2 text-sm font-bold text-amber-700">✏️ 내용 수정 중</div>';
+      if (type === 'quiz') {
+        h += fld('대분류(category)', tin('e_category', it.category)) + fld('주제(topic)', tin('e_topic', it.topic)) + fld('난이도', tin('e_difficulty', it.difficulty || '')) + fld('문제', tin('e_question', it.question, 3));
+        (it.options || []).forEach((o, n) => { h += fld(`보기 ${n + 1}`, tin('e_opt' + n, o, 2)); });
+        h += fld('정답 번호', `<select id="e_answer" class="${INP}">${(it.options || []).map((_, n) => `<option value="${n}" ${n === it.answer ? 'selected' : ''}>${n + 1}번</option>`).join('')}</select>`) + fld('해설', tin('e_explanation', it.explanation, 5));
+      } else if (type === 'interview') {
+        h += fld('대분류(category)', tin('e_category', it.category)) + fld('주제(topic)', tin('e_topic', it.topic)) + fld('질문', tin('e_question', it.question, 3)) + fld('핵심 키워드 (쉼표로 구분)', tin('e_keys', (it.key_points || []).join(', '))) + fld('모범 답안', tin('e_answer', it.interview_answer, 8));
+      } else {
+        h += fld('대분류(category)', tin('e_category', it.category)) + fld('소분류(subject)', tin('e_subject', it.subject)) + fld('제목', tin('e_title', it.title)) + fld('태그 (쉼표로 구분)', tin('e_tags', (it.tags || []).join(', '))) + fld('본문 (마크다운)', tin('e_content', it.content, 20));
+      }
+      document.getElementById(d.box).innerHTML = h + editCtl(type);
+    }
+    function cancelEdit(type) { DRAFT[type].render(); }
+    const val = (id) => document.getElementById(id).value.trim();
+    const csv = (id) => val(id).split(',').map(x => x.trim()).filter(Boolean);
+    async function saveEdit(type) {
+      const d = DRAFT[type], it = d.list()[d.idx()];
+      try {
+        if (type === 'quiz') {
+          const opts = (it.options || []).map((_, n) => val('e_opt' + n));
+          if (!val('e_question') || opts.some(o => !o)) return alert('문제와 모든 보기를 채워 주세요.');
+          Object.assign(it, { category: val('e_category'), topic: val('e_topic'), difficulty: val('e_difficulty'), question: val('e_question'), options: opts, answer: Number(document.getElementById('e_answer').value), explanation: val('e_explanation') });
+        } else if (type === 'interview') {
+          if (!val('e_question') || !val('e_answer')) return alert('질문과 모범 답안을 채워 주세요.');
+          Object.assign(it, { category: val('e_category'), topic: val('e_topic'), question: val('e_question'), key_points: csv('e_keys'), interview_answer: val('e_answer') });
+        } else {
+          if (!val('e_title') || !val('e_content')) return alert('제목과 본문을 채워 주세요.');
+          Object.assign(it, { category: val('e_category'), subject: val('e_subject'), title: val('e_title'), tags: csv('e_tags'), content: document.getElementById('e_content').value });
+        }
+        const f = await fetchGitHubFile(d.file);
+        await updateGitHubFile(d.file, f ? f.sha : null, JSON.stringify(d.list(), null, 2), `Edit draft ${it.id}`);
+        d.render(); alert('💾 수정 내용을 저장했어요. (내용이 맞으면 이어서 등재하세요)');
+      } catch (e) { console.error(e); alert('저장 실패: ' + (e.message || e)); }
     }
 
     // ==========================================
