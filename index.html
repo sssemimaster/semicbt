@@ -32,14 +32,14 @@
     /* ===== 라이트/다크 색상 토큰 (html.dark 일 때 아래 값으로 바뀜) ===== */
     :root {
       color-scheme: light;
-      --hl-bg: #eef2ff; --hl-border: #c7d2fe; --hl-accent: #6366f1; --hl-text: #1f2937;
+      --hl-bg: #fffbeb; --hl-border: #fde68a; --hl-accent: #f59e0b; --hl-text: #4b3a0a;
       --badge-bg: #e0e7ff; --badge-fg: #4338ca;
       --heading: #0f172a;
       --tbl-bg: #ffffff; --tbl-border: #e2e8f0; --tbl-head-bg: #eef2ff; --tbl-head-fg: #4338ca; --tbl-text: #334155;
     }
     html.dark {
       color-scheme: dark;
-      --hl-bg: #0d1f35; --hl-border: #1e3a5f; --hl-accent: #67e8f9; --hl-text: #e2e8f0;
+      --hl-bg: #2a2410; --hl-border: #5a4a1a; --hl-accent: #fbbf24; --hl-text: #fde9b0;
       --badge-bg: #14304f; --badge-fg: #67e8f9;
       --heading: #f8fafc;
       --tbl-bg: #0f1a30; --tbl-border: #22314d; --tbl-head-bg: #112844; --tbl-head-fg: #67e8f9; --tbl-text: #cbd5e1;
@@ -69,9 +69,7 @@
     /* --- 아이콘 (이모지 → 라인 SVG) --- */
     .ic { display: inline-flex; width: 1.15em; height: 1.15em; vertical-align: -.2em; flex-shrink: 0; }
     .ic svg { width: 100%; height: 100%; }
-    .custom-highlight-box::before { content: '' !important; width: 1.35rem; height: 1.35rem; flex: none; background: var(--hl-accent);
-      -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z'/%3E%3C/svg%3E") center/contain no-repeat;
-      mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z'/%3E%3C/svg%3E") center/contain no-repeat; }
+    .custom-highlight-box::before { content: '💡' !important; font-size: 1.4rem; line-height: 1; flex: none; background: none !important; -webkit-mask: none !important; mask: none !important; width: auto; height: auto; }
     /* --- 모션 --- */
     @keyframes viewIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
     @keyframes riseIn { from { opacity: 0; transform: translateY(16px) scale(.985); } to { opacity: 1; transform: none; } }
@@ -90,7 +88,8 @@
     .stagger > *:nth-child(5), #learningContainer > *:nth-child(5), #noteContainer > *:nth-child(5), #reviewList > *:nth-child(5) { animation-delay: .22s; }
     .stagger > *:nth-child(n+6), #learningContainer > *:nth-child(n+6), #noteContainer > *:nth-child(n+6), #reviewList > *:nth-child(n+6) { animation-delay: .27s; }
     .float-slow { animation: drift 14s ease-in-out infinite; } .float-slower { animation: drift 19s ease-in-out infinite reverse; }
-    .prism-text { background-size: 200% 100% !important; animation: shimmer 7s linear infinite; background-image: linear-gradient(90deg, #67e8f9, #a78bfa 25%, #f472b6 50%, #a78bfa 75%, #67e8f9) !important; }
+    .prism-text { background-size: 200% 100% !important; animation: shimmer 7s linear infinite; background-image: linear-gradient(90deg, #0891b2, #6366f1 25%, #c026d3 50%, #6366f1 75%, #0891b2) !important; }
+    html.dark .prism-text { background-image: linear-gradient(90deg, #67e8f9, #a78bfa 25%, #f472b6 50%, #a78bfa 75%, #67e8f9) !important; }
     .wafer-sheen { animation: sheen 7s ease-in-out infinite; }
     .opt.opt-correct { animation: pop .4s ease; } .opt.opt-wrong { animation: shake .45s ease; }
     .pbtn:active:not(:disabled), .opt:active:not(:disabled), .feature-card:active, .chip:active { transform: scale(.98); }
@@ -132,15 +131,36 @@
     .pbtn { background: linear-gradient(135deg, #4f46e5, #7c3aed); color: #fff; transition: filter .15s, transform .15s; }
     html.dark .pbtn { background: linear-gradient(90deg, #22d3ee, #818cf8 58%, #e879f9); color: #0a1020; }
     .pbtn:hover:not(:disabled) { filter: brightness(1.08); }
-    .hero .pbtn { background: linear-gradient(90deg, #22d3ee, #818cf8 58%, #e879f9); color: #0a1020; }
-    .nav-btn { padding: .45rem .8rem; border-radius: .6rem; font-size: .875rem; font-weight: 700; color: #cbd5e1; transition: background .15s, color .15s; }
-    .nav-btn:hover { background: rgba(255,255,255,.08); color: #fff; }
-    .nav-btn.active { background: rgba(255,255,255,.14); color: #fff; box-shadow: inset 0 -2px 0 #67e8f9; }
+    html.dark .hero .pbtn { background: linear-gradient(90deg, #22d3ee, #818cf8 58%, #e879f9); color: #0a1020; }
+    .nav-btn { padding: .45rem .8rem; border-radius: .6rem; font-size: .875rem; font-weight: 700; color: #475569; transition: background .15s, color .15s; }
+    .nav-btn:hover { background: rgba(15,23,42,.06); color: #0f172a; }
+    .nav-btn.active { background: rgba(99,102,241,.10); color: #4338ca; box-shadow: inset 0 -2px 0 #6366f1; }
+    html.dark .nav-btn { color: #cbd5e1; } html.dark .nav-btn:hover { background: rgba(255,255,255,.08); color: #fff; }
+    html.dark .nav-btn.active { background: rgba(255,255,255,.14); color: #fff; box-shadow: inset 0 -2px 0 #67e8f9; }
+    .logo-disc { fill: #eef2ff; } html.dark .logo-disc { fill: #101a33; }
+    .logo-dies { fill: #6366f1; fill-opacity: .14; } html.dark .logo-dies { fill: #fff; fill-opacity: .1; }
+    .logo-notch { fill: #fff; } html.dark .logo-notch { fill: #0a1020; }
     .feature-card { transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease; }
     .feature-card:hover { transform: translateY(-2px); box-shadow: 0 10px 30px -12px rgba(99,102,241,.45); }
     @keyframes waferPulse { 0%,100% { opacity: .75 } 50% { opacity: 1 } }
     .wafer-latest { animation: waferPulse 2.4s ease-in-out infinite; }
     @media (prefers-reduced-motion: reduce) { .etch-line { animation: none; stroke-dashoffset: 0; } .wafer-latest { animation: none; } .feature-card { transition: none; } }
+
+    /* ===== 이론 본문: 읽기 쉽고 가벼운 느낌 ===== */
+    .theory-body { font-size: 1.0625rem; line-height: 1.9; color: #334155; word-break: keep-all; }
+    html.dark .theory-body { color: #cbd5e1; }
+    .theory-body p { margin: .9rem 0; }
+    .theory-body strong { font-weight: 700; color: #0f172a; background: linear-gradient(transparent 62%, rgba(250,204,21,.38) 0); padding: 0 .1em; }
+    html.dark .theory-body strong { color: #f8fafc; background: linear-gradient(transparent 62%, rgba(103,232,249,.22) 0); }
+    .theory-body ul, .theory-body ol { margin: .8rem 0; padding-left: 1.4rem; }
+    .theory-body li { margin: .45rem 0; padding-left: .2rem; }
+    .theory-body li::marker { color: #818cf8; font-weight: 700; }
+    .theory-body .custom-highlight-box { font-size: .98rem; line-height: 1.75; border-radius: 16px; border-left-width: 5px; margin: 1.6rem 0; }
+    .custom-badge-heading { font-size: 1.3rem !important; margin-top: 3rem !important; margin-bottom: 1rem !important; letter-spacing: -.03em; }
+    .custom-badge { font-size: .78rem !important; padding: 5px 12px !important; background: var(--badge-bg); }
+    .custom-badge::before { display: none !important; }
+    .custom-table-container table { border-radius: 16px !important; font-size: .95rem; }
+    .custom-table-container tbody tr:nth-child(even) td { background: rgba(148,163,184,.07); }
 
     /* 수식: 좁은 화면에서 긴 수식이 잘리지 않고 가로 스크롤 되도록 */
     .katex-display { overflow-x: auto; overflow-y: hidden; padding: 0.35rem 0; margin: 1rem 0 !important; }
@@ -167,16 +187,16 @@
     </div>
   </div>
 
-  <header class="sticky top-0 z-30 bg-[#0a1020]/90 backdrop-blur border-b border-white/10 text-white">
+  <header class="sticky top-0 z-30 bg-white/85 dark:bg-[#0a1020]/90 backdrop-blur border-b border-slate-200 dark:border-white/10 text-slate-800 dark:text-white">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
       <div class="flex items-center gap-3">
-        <button onclick="toggleSidebar()" aria-label="메뉴" class="lg:hidden text-2xl hover:text-cyan-300 transition outline-none">☰</button>
+        <button onclick="toggleSidebar()" aria-label="메뉴" class="lg:hidden text-2xl hover:text-indigo-600 dark:hover:text-cyan-300 transition outline-none">☰</button>
         <button onclick="navTo('view-lobby')" class="flex items-center gap-3 outline-none" aria-label="반도체 새김 홈">
           <svg viewBox="0 0 36 36" class="w-9 h-9" aria-hidden="true"><defs><linearGradient id="lg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#67e8f9"/><stop offset=".5" stop-color="#a78bfa"/><stop offset="1" stop-color="#f472b6"/></linearGradient></defs>
-            <circle cx="18" cy="18" r="16" fill="#101a33" stroke="url(#lg1)" stroke-width="1.4"/><circle cx="18" cy="18" r="12.5" fill="none" stroke="#fff" stroke-opacity=".08"/>
-            <g fill="#fff" fill-opacity=".1"><rect x="9" y="9" width="4" height="4" rx=".6"/><rect x="16" y="9" width="4" height="4" rx=".6"/><rect x="23" y="9" width="4" height="4" rx=".6"/><rect x="9" y="23" width="4" height="4" rx=".6"/><rect x="23" y="23" width="4" height="4" rx=".6"/></g>
-            <path d="M8.5 19.5h6v-5h5v9h8" fill="none" stroke="url(#lg1)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="27.5" cy="23.5" r="1.6" fill="#67e8f9"/><circle cx="18" cy="34" r="2.4" fill="#0a1020"/></svg>
-          <span class="flex flex-col items-start leading-none text-left"><span class="font-mono text-[9px] tracking-[.34em] text-cyan-200/70 font-bold">SEMICONDUCTOR</span><span class="mt-1.5 text-[22px] font-bold tracking-[-.05em] prism-text">새김</span></span>
+            <circle class="logo-disc" cx="18" cy="18" r="16" stroke="url(#lg1)" stroke-width="1.4"/><circle cx="18" cy="18" r="12.5" fill="none" stroke="#fff" stroke-opacity=".08"/>
+            <g class="logo-dies"><rect x="9" y="9" width="4" height="4" rx=".6"/><rect x="16" y="9" width="4" height="4" rx=".6"/><rect x="23" y="9" width="4" height="4" rx=".6"/><rect x="9" y="23" width="4" height="4" rx=".6"/><rect x="23" y="23" width="4" height="4" rx=".6"/></g>
+            <path d="M8.5 19.5h6v-5h5v9h8" fill="none" stroke="url(#lg1)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="27.5" cy="23.5" r="1.6" fill="#67e8f9"/><circle class="logo-notch" cx="18" cy="34" r="2.4"/></svg>
+          <span class="flex flex-col items-start leading-none text-left"><span class="font-mono text-[9px] tracking-[.34em] text-indigo-500/80 dark:text-cyan-200/70 font-bold">SEMICONDUCTOR</span><span class="mt-1.5 text-[22px] font-bold tracking-[-.05em] prism-text">새김</span></span>
         </button>
       </div>
       <nav class="hidden lg:flex items-center gap-1" aria-label="주 메뉴">
@@ -189,9 +209,9 @@
         <button data-nav="stats" onclick="navTo('view-stats')" class="nav-btn">통계</button>
       </nav>
       <div class="flex items-center gap-2">
-        <button id="navAttend" onclick="navTo('view-lobby'); setTimeout(()=>document.getElementById('waferPanel').scrollIntoView({behavior:'smooth',block:'center'}),60)" class="hidden sm:flex items-center gap-1.5 text-xs font-bold bg-white/10 hover:bg-white/15 border border-white/10 px-3 h-8 rounded-full transition"><span class="w-2 h-2 rounded-full bg-cyan-300"></span><span id="navAttendText">출석 0일</span></button>
-        <button onclick="navTo('view-search')" aria-label="검색" class="text-base bg-white/10 hover:bg-white/15 w-8 h-8 rounded-full flex items-center justify-center transition">🔍</button>
-        <button onclick="toggleTheme()" id="themeToggleBtn" aria-label="테마 전환" class="text-base bg-white/10 hover:bg-white/15 w-8 h-8 rounded-full flex items-center justify-center transition">🌙</button>
+        <button id="navAttend" onclick="navTo('view-lobby'); setTimeout(()=>document.getElementById('waferPanel').scrollIntoView({behavior:'smooth',block:'center'}),60)" class="hidden sm:flex items-center gap-1.5 text-xs font-bold bg-slate-900/5 hover:bg-slate-900/10 border border-slate-200 dark:bg-white/10 dark:hover:bg-white/15 dark:border-white/10 px-3 h-8 rounded-full transition"><span class="w-2 h-2 rounded-full bg-indigo-500 dark:bg-cyan-300"></span><span id="navAttendText">출석 0일</span></button>
+        <button onclick="navTo('view-search')" aria-label="검색" class="text-base bg-slate-900/5 hover:bg-slate-900/10 dark:bg-white/10 dark:hover:bg-white/15 w-8 h-8 rounded-full flex items-center justify-center transition">🔍</button>
+        <button onclick="toggleTheme()" id="themeToggleBtn" aria-label="테마 전환" class="text-base bg-slate-900/5 hover:bg-slate-900/10 dark:bg-white/10 dark:hover:bg-white/15 w-8 h-8 rounded-full flex items-center justify-center transition">🌙</button>
       </div>
     </div>
   </header>
@@ -202,25 +222,25 @@
     <!-- 🏠 메인 로비 -->
     <div id="view-lobby" class="w-full flex flex-col gap-6 lg:gap-8">
       <!-- 히어로 -->
-      <section class="hero relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#0a1124] via-[#0c1a3a] to-[#141a3a] text-white border border-white/10 shadow-xl">
-        <div class="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-indigo-500/20 blur-3xl pointer-events-none float-slow"></div>
-        <div class="absolute -bottom-28 -left-16 w-72 h-72 rounded-full bg-cyan-400/10 blur-3xl pointer-events-none float-slower"></div>
+      <section class="hero relative overflow-hidden rounded-3xl bg-gradient-to-br from-white via-indigo-50/70 to-cyan-50 text-slate-900 border border-slate-200 shadow-xl shadow-indigo-100/70 dark:from-[#0a1124] dark:via-[#0c1a3a] dark:to-[#141a3a] dark:text-white dark:border-white/10 dark:shadow-black/30">
+        <div class="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-indigo-300/30 dark:bg-indigo-500/20 blur-3xl pointer-events-none float-slow"></div>
+        <div class="absolute -bottom-28 -left-16 w-72 h-72 rounded-full bg-cyan-300/30 dark:bg-cyan-400/10 blur-3xl pointer-events-none float-slower"></div>
         <div class="relative grid lg:grid-cols-2 gap-8 items-center p-6 sm:p-10 lg:p-12">
           <div>
-            <p class="font-mono text-[11px] tracking-[.28em] font-bold text-cyan-200/80 mb-5 flex items-center gap-3"><span class="w-8 h-px bg-gradient-to-r from-cyan-300 to-transparent"></span>MY LEARNING WAFER</p>
+            <p class="font-mono text-[11px] tracking-[.28em] font-bold text-indigo-500 dark:text-cyan-200/80 mb-5 flex items-center gap-3"><span class="w-8 h-px bg-gradient-to-r from-indigo-400 dark:from-cyan-300 to-transparent"></span>MY LEARNING WAFER</p>
             <h2 class="leading-[1.14] tracking-[-.04em]" style="font-size:clamp(2.4rem,5.2vw,3.9rem)">
-              <span class="block font-light text-slate-200">오늘의 배움을</span>
+              <span class="block font-light text-slate-700 dark:text-slate-200">오늘의 배움을</span>
               <span class="relative inline-block font-bold prism-text pb-3">새기세요.<svg class="absolute left-0 bottom-0 w-full h-3" viewBox="0 0 200 12" preserveAspectRatio="none" aria-hidden="true"><path class="etch-line" pathLength="1" d="M0 8 H64 V3 H104 V9 H200" fill="none" stroke="url(#lg1)" stroke-width="1.6" vector-effect="non-scaling-stroke"/></svg></span>
             </h2>
-            <p class="mt-6 text-[15px] sm:text-base font-light text-slate-300 leading-[1.8] max-w-lg">매일 쌓이는 지식이 나만의 웨이퍼를 완성합니다.<br>이론으로 개념을 잡고, 문제와 면접으로 다지는 반도체 직무 학습 공간.</p>
+            <p class="mt-6 text-[15px] sm:text-base font-light text-slate-600 dark:text-slate-300 leading-[1.8] max-w-lg">매일 쌓이는 지식이 나만의 웨이퍼를 완성합니다.<br>이론으로 개념을 잡고, 문제와 면접으로 다지는 반도체 직무 학습 공간.</p>
             <div class="mt-8 flex flex-wrap gap-3">
               <button onclick="navTo('view-learning', {level:'home'})" class="pbtn font-bold px-7 py-3.5 rounded-full shadow-lg inline-flex items-center gap-2">이론 보기 <span aria-hidden="true">→</span></button>
-              <button onclick="openSetup('quiz')" class="font-semibold px-7 py-3.5 rounded-full border border-white/25 hover:bg-white/10 transition">문제 풀기</button>
+              <button onclick="openSetup('quiz')" class="font-semibold px-7 py-3.5 rounded-full border border-slate-300 hover:bg-white text-slate-800 dark:text-white dark:border-white/25 dark:hover:bg-white/10 transition">문제 풀기</button>
             </div>
-            <div class="mt-10 grid grid-cols-3 max-w-md border-t border-white/10 pt-6">
+            <div class="mt-10 grid grid-cols-3 max-w-md border-t border-slate-200 dark:border-white/10 pt-6">
               <div><div id="heroTheories" class="font-display text-3xl font-bold">0</div><div class="font-mono text-[10px] tracking-[.14em] text-slate-400 mt-1">THEORY</div></div>
-              <div class="border-l border-white/10 pl-5"><div id="heroQuizzes" class="font-display text-3xl font-bold">0</div><div class="font-mono text-[10px] tracking-[.14em] text-slate-400 mt-1">QUIZ</div></div>
-              <div class="border-l border-white/10 pl-5"><div id="heroInterviews" class="font-display text-3xl font-bold">0</div><div class="font-mono text-[10px] tracking-[.14em] text-slate-400 mt-1">INTERVIEW</div></div>
+              <div class="border-l border-slate-200 dark:border-white/10 pl-5"><div id="heroQuizzes" class="font-display text-3xl font-bold">0</div><div class="font-mono text-[10px] tracking-[.14em] text-slate-400 mt-1">QUIZ</div></div>
+              <div class="border-l border-slate-200 dark:border-white/10 pl-5"><div id="heroInterviews" class="font-display text-3xl font-bold">0</div><div class="font-mono text-[10px] tracking-[.14em] text-slate-400 mt-1">INTERVIEW</div></div>
             </div>
           </div>
           <div id="waferPanel"></div>
@@ -403,11 +423,11 @@
     <div id="view-learning" class="hidden w-full flex flex-col">
       <button onclick="goBack()" class="back-link mb-5">← 돌아가기</button>
       <div class="mb-6"><div class="mb-5"><p class="eyebrow mb-1.5">ENCYCLOPEDIA</p><h2 class="page-title text-slate-900 dark:text-white">이론 백과사전</h2><p class="text-sm text-slate-500 dark:text-slate-400 mt-1.5">소자부터 공정, 첨단 기술까지 폴더별로 정리했어요.</p></div></div>
-      <div class="mb-6 relative">
-        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">🔍</span><input type="text" id="theorySearchInput" onkeyup="handleTheorySearch()" placeholder="키워드, 기술명 검색..." class="pl-11 w-full bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-200 rounded-xl p-4 shadow-sm outline-none focus:border-[#67e8f9] transition font-medium">
-      </div>
-      <div id="breadcrumbContainer" class="bg-indigo-50 dark:bg-[#0f2233] rounded-xl border border-indigo-200 dark:border-emerald-900/60 px-4 py-3 mb-6 flex flex-wrap items-center shadow-sm gap-y-2 text-sm hidden"></div>
+      <input type="text" id="theorySearchInput" class="hidden" onkeyup="handleTheorySearch()">
+      <div id="breadcrumbContainer" class="bg-indigo-50/70 dark:bg-[#0f2233] rounded-xl border border-indigo-100 dark:border-white/10 px-4 py-3 mb-6 flex flex-wrap items-center gap-y-2 text-sm hidden"></div>
       <div id="learningContainer" class="grid grid-cols-1 gap-4"></div>
+      <button onclick="navTo('view-search')" class="mt-10 w-full flex items-center justify-between gap-3 rounded-2xl border border-dashed border-slate-300 dark:border-white/15 px-5 py-4 text-left text-sm text-slate-500 dark:text-slate-400 hover:border-indigo-400 dark:hover:border-cyan-300/60 transition">
+        <span>🔍 <b class="text-slate-700 dark:text-slate-200">찾는 주제가 안 보이나요?</b> 이론 · 문제 · 면접을 한 번에 검색해 보세요</span><span class="text-indigo-600 dark:text-cyan-300 font-bold shrink-0">통합 검색 →</span></button>
     </div>
     <!-- 🚨 오류 제보 모달 -->
     <div id="reportModal" class="hidden fixed inset-0 z-[60] items-center justify-center bg-black/60 p-4" onclick="if(event.target===this) closeReportModal()">
@@ -433,7 +453,7 @@
   </footer>
 
   <script>
-    function toggleTheme() { document.documentElement.classList.toggle('dark'); localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light'); document.getElementById('themeToggleBtn').innerText = document.documentElement.classList.contains('dark') ? '☀️' : '🌙'; }
+    function toggleTheme() { document.documentElement.classList.toggle('dark'); localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light'); document.getElementById('themeToggleBtn').innerText = document.documentElement.classList.contains('dark') ? '☀️' : '🌙';  if (currentViewId === 'view-lobby') renderHome(); }
     window.addEventListener('DOMContentLoaded', () => { document.getElementById('themeToggleBtn').innerText = document.documentElement.classList.contains('dark') ? '☀️' : '🌙'; });
     function toggleSidebar() { document.getElementById('sidebar').classList.toggle('-translate-x-full'); document.getElementById('sidebarOverlay').classList.toggle('hidden'); }
 
@@ -515,29 +535,31 @@
         const btn = document.createElement('button');
         btn.className = "group bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-white/10 hover:border-indigo-400 dark:hover:border-[#67e8f9] hover:shadow-md p-5 rounded-2xl text-left transition flex items-center gap-4 shadow-sm";
         btn.onclick = () => navTo('view-learning', { level: 'category', category: cat });
-        btn.innerHTML = `<span class="w-12 h-12 shrink-0 rounded-xl text-indigo-600 dark:text-cyan-300 bg-indigo-50 dark:bg-[#0f2233] border border-indigo-100 dark:border-[#1e3a5f] flex items-center justify-center text-2xl">📁</span><div class="min-w-0 flex-1"><h3 class="text-base font-bold text-slate-900 dark:text-white leading-snug">${cat}</h3><span class="text-xs text-slate-500 dark:text-slate-400 mt-1 block">문서 ${allTheories.filter(t => t.category === cat).length}개</span></div><span class="text-slate-300 dark:text-slate-600 group-hover:text-indigo-500 dark:group-hover:text-[#67e8f9] text-2xl leading-none transition">›</span>`;
+        btn.innerHTML = `<span class="w-14 h-14 shrink-0 rounded-2xl text-indigo-600 dark:text-cyan-300 bg-indigo-50 dark:bg-[#0f2233] border border-indigo-100 dark:border-[#1e3a5f] flex items-center justify-center text-2xl">📁</span><div class="min-w-0 flex-1"><h3 class="text-[17px] font-bold text-slate-900 dark:text-white leading-snug">${cat}</h3><span class="inline-block mt-1.5 text-[11px] font-bold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-white/10 text-slate-500 dark:text-slate-300">문서 ${allTheories.filter(t => t.category === cat).length}개</span></div><span class="text-slate-300 dark:text-slate-600 group-hover:text-indigo-500 dark:group-hover:text-[#67e8f9] text-2xl leading-none transition">›</span>`;
         container.appendChild(btn);
       });
     }
 
     function renderSubjectsDOM(category) {
-      renderBreadcrumb(); const container = document.getElementById('learningContainer'); container.className = "grid grid-cols-1 sm:grid-cols-2 gap-4"; container.innerHTML = folderBar(category, null);
+      renderBreadcrumb(); const container = document.getElementById('learningContainer'); container.className = "grid grid-cols-1 sm:grid-cols-2 gap-4"; container.innerHTML = '';
       const extra = [...new Set(allTheories.filter(t => t.category === category).map(t => t.subject))].filter(sub => !(CATEGORY_TREE[category] || []).includes(sub));
       const activeSubs = (CATEGORY_TREE[category] || []).concat(extra);
       activeSubs.forEach(sub => {
         const btn = document.createElement('button');
         btn.className = "group bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-white/10 hover:border-indigo-400 dark:hover:border-[#67e8f9] hover:shadow-md p-5 rounded-2xl text-left transition flex items-center gap-4 shadow-sm";
         btn.onclick = () => navTo('view-learning', { level: 'subject', category: category, subject: sub });
-        btn.innerHTML = `<span class="w-12 h-12 shrink-0 rounded-xl text-indigo-600 dark:text-cyan-300 bg-indigo-50 dark:bg-[#0f2233] border border-indigo-100 dark:border-[#1e3a5f] flex items-center justify-center text-2xl">📂</span><div class="min-w-0 flex-1"><h3 class="text-base font-bold text-slate-900 dark:text-white leading-snug">${sub}</h3><span class="text-xs text-slate-500 dark:text-slate-400 mt-1 block">문서 ${allTheories.filter(t => t.category === category && t.subject === sub).length}개</span></div><span class="text-slate-300 dark:text-slate-600 group-hover:text-indigo-500 dark:group-hover:text-[#67e8f9] text-2xl leading-none transition">›</span>`;
+        btn.innerHTML = `<span class="w-14 h-14 shrink-0 rounded-2xl text-indigo-600 dark:text-cyan-300 bg-indigo-50 dark:bg-[#0f2233] border border-indigo-100 dark:border-[#1e3a5f] flex items-center justify-center text-2xl">📂</span><div class="min-w-0 flex-1"><h3 class="text-[17px] font-bold text-slate-900 dark:text-white leading-snug">${sub}</h3><span class="inline-block mt-1.5 text-[11px] font-bold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-white/10 text-slate-500 dark:text-slate-300">문서 ${allTheories.filter(t => t.category === category && t.subject === sub).length}개</span></div><span class="text-slate-300 dark:text-slate-600 group-hover:text-indigo-500 dark:group-hover:text-[#67e8f9] text-2xl leading-none transition">›</span>`;
         container.appendChild(btn);
       });
+      container.insertAdjacentHTML('beforeend', folderBar(category, null));
     }
 
     function renderTitlesDOM(category, subject) {
-      renderBreadcrumb(); const container = document.getElementById('learningContainer'); container.className = "flex flex-col space-y-3"; container.innerHTML = folderBar(category, subject);
+      renderBreadcrumb(); const container = document.getElementById('learningContainer'); container.className = "flex flex-col space-y-3"; container.innerHTML = '';
       const list = allTheories.filter(t => t.category === category && t.subject === subject);
       if (list.length === 0) container.innerHTML = `<div class="bg-white dark:bg-[#0f1729] border border-dashed border-slate-300 dark:border-white/15 p-8 text-center text-slate-400 rounded-xl text-sm">아직 등록된 이론이 없습니다.<br>곧 업데이트될 예정이에요.</div>`;
       list.forEach(t => renderTitleCard(t, container));
+      container.insertAdjacentHTML('beforeend', folderBar(category, subject));
     }
 
     function renderTitleCard(t, container) {
@@ -557,6 +579,11 @@
       return { text, restore: (html) => html.replace(/@@MATH(\d+)@@/g, (_, i) => esc(stash[Number(i)])) };
     }
     
+    // 섹션 뱃지에 가벼운 이모지를 붙여 읽는 재미를 더함
+    function badgeEmoji(t) {
+      const m = [[/정의|개념|정체/, '📘'], [/배경|필요|왜/, '🌱'], [/원리|동작|작동/, '⚙️'], [/메커니즘|세부|상세|구조/, '🔬'], [/분류|종류|유형/, '🗂️'], [/변수|영향|요인/, '🎚️'], [/장단점|한계/, '⚖️'], [/실무|이슈|응용|활용/, '🛠️'], [/암기|체크|정리|요약/, '🧠']];
+      const f = m.find(([re]) => re.test(t)); return f ? f[1] : '📌'.replace('📌', '✏️');
+    }
     function renderDetailDOM(theoryId) {
       const t = allTheories.find(x => x.id === theoryId); addPoints(2, theoryId);
       renderBreadcrumb();
@@ -568,14 +595,14 @@
       // '**용어(영문)**는' 처럼 괄호 뒤에 한글이 바로 붙으면 marked가 굵게 처리를 못 해서 ** 가 그대로 보임 -> 직접 변환
       rawMarkdown = rawMarkdown.replace(/\*\*([^*\n]+?)\*\*/g, '<strong>$1</strong>');
       rawMarkdown = rawMarkdown.replace(/>\s*💡\s*(.*?)(?=\n\n|\n###|$)/gs, (match, p1) => `<div class="custom-highlight-box">${marked.parseInline(p1.trim())}</div>\n\n`);
-      rawMarkdown = rawMarkdown.replace(/###\s*\[(.*?)\]\s*(.*)/g, (match, badgeText, titleText) => `<div class="custom-badge-heading"><span class="custom-badge">${badgeText}</span>${titleText}</div>`);
+      rawMarkdown = rawMarkdown.replace(/###\s*\[(.*?)\]\s*(.*)/g, (match, badgeText, titleText) => `<div class="custom-badge-heading"><span class="custom-badge">${badgeEmoji(badgeText)} ${badgeText}</span>${titleText}</div>`);
       
       card.innerHTML = `
         <div class="p-6 md:p-8">
-          <p class="eyebrow mb-2">${escH(t.category)} <span class="opacity-50">/</span> ${escH(t.subject)}</p>
+          <p class="eyebrow mb-2">${escH(t.category)} <span class="opacity-50">/</span> ${escH(t.subject)} <span class="opacity-50">·</span> 약 ${Math.max(1, Math.round(String(t.content).length / 650))}분 읽기</p>
           <h2 class="page-title text-slate-900 dark:text-white mb-3">${t.title}</h2>
           <div class="flex flex-wrap gap-1.5 mb-6 pb-6 border-b border-slate-100 dark:border-white/10">${(t.tags || []).map(tag => `<span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#${escH(tag)}</span>`).join('')}</div>
-          <div class="custom-table-container prose prose-slate dark:prose-invert max-w-none text-sm md:text-base leading-relaxed dark:text-slate-300">
+          <div class="custom-table-container theory-body prose prose-slate dark:prose-invert max-w-none">
             ${math.restore(marked.parse(rawMarkdown))}
           </div>
         </div>
@@ -1006,327 +1033,4 @@
           x = Math.min(c.cx + 9, x + Math.round(6 + r2() * 5)); d += ` H${x}`;
           y = Math.max(c.cy - 9, Math.min(c.cy + 9, y + Math.round((r2() * 2 - 1) * 12))); d += ` V${y}`;
         }
-        c.start = [x0, y0]; c.end = [x, y]; c.d = d;
-      });
-      return order;
-    }
-    const RING_CATS = [['반도체 기초 이론', '#22d3ee'], ['반도체 8대 공정', '#a78bfa'], ['차세대 첨단 기술', '#f472b6']];
-    function arcPath(r, a0, a1) {
-      const pt = (a) => [r * Math.cos(a * Math.PI / 180), r * Math.sin(a * Math.PI / 180)];
-      const [x0, y0] = pt(a0), [x1, y1] = pt(a1); return `M${x0.toFixed(2)} ${y0.toFixed(2)} A${r} ${r} 0 0 1 ${x1.toFixed(2)} ${y1.toFixed(2)}`;
-    }
-    function waferSVG(info, earned) {
-      const cells = waferCells(info.cycle), lvl = info.level;
-      const max = Math.max(1, ...RING_CATS.map(([k]) => (stats.cats[k] || { t: 0 }).t));
-      let h = `<svg id="waferSvg" viewBox="-163 -163 326 326" class="w-full h-full" role="img" aria-label="나의 학습 웨이퍼 ${info.d}/30"><defs>
-        <radialGradient id="wBase" cx="35%" cy="30%" r="85%"><stop offset="0" stop-color="#3d4968"/><stop offset=".55" stop-color="#1b2542"/><stop offset="1" stop-color="#0b1122"/></radialGradient>
-        <linearGradient id="prism" gradientUnits="userSpaceOnUse" x1="-120" y1="-120" x2="120" y2="120"><stop offset="0" stop-color="#67e8f9"/><stop offset=".5" stop-color="#a78bfa"/><stop offset="1" stop-color="#f472b6"/></linearGradient>
-        <clipPath id="wClip"><circle r="138"/></clipPath><linearGradient id="sheenG" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".13"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
-        <filter id="glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>`;
-      RING_CATS.forEach(([k, c], i) => { const op = (.2 + .8 * ((stats.cats[k] || { t: 0 }).t / max)).toFixed(2); h += `<path d="${arcPath(155, -90 + i * 120 + 5, -90 + (i + 1) * 120 - 5)}" fill="none" stroke="${c}" stroke-opacity="${op}" stroke-width="4" stroke-linecap="round"/>`; });
-      h += `<circle r="140" fill="url(#wBase)" stroke="#94a3b8" stroke-opacity=".5"/><circle r="134" fill="none" stroke="#fff" stroke-opacity=".06"/>`;
-      if (lvl >= 2) h += `<circle r="124" fill="none" stroke="url(#prism)" stroke-opacity=".35" stroke-width=".7"/>`;
-      if (lvl >= 4) h += `<circle r="140" fill="none" stroke="url(#prism)" stroke-width="2.2" filter="url(#glow)"/>`;
-      cells.forEach((c, i) => { h += `<rect x="${c.cx - 12}" y="${c.cy - 12}" width="24" height="24" rx="2" fill="${i < earned ? 'rgba(103,232,249,.07)' : 'rgba(255,255,255,.015)'}" stroke="rgba(148,163,184,.16)" stroke-width=".6"/>`; });
-      for (let i = earned; i < 30 && i < cells.length; i++) h += `<path d="${cells[i].d}" fill="none" stroke="#64748b" stroke-opacity=".38" stroke-width="1"/>`;
-      if (lvl >= 3) for (let i = 0; i < earned - 1; i++) { const a = cells[i].end, b = cells[i + 1].start; h += `<path d="M${a[0]} ${a[1]} H${b[0]} V${b[1]}" fill="none" stroke="url(#prism)" stroke-opacity=".7" stroke-width=".9" stroke-dasharray="2 2"/>`; }
-      for (let i = 0; i < earned && i < cells.length; i++) h += `<path ${i === earned - 1 ? 'class="wafer-latest"' : ''} d="${cells[i].d}" fill="none" stroke="url(#prism)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)"/><circle cx="${cells[i].end[0]}" cy="${cells[i].end[1]}" r="1.9" fill="url(#prism)"/>`;
-      h += `<circle cx="0" cy="140" r="7" fill="#0b1226"/><g clip-path="url(#wClip)" style="pointer-events:none"><rect class="wafer-sheen" x="-30" y="-200" width="60" height="400" fill="url(#sheenG)"/></g><g id="waferFx"></g></svg>`;
-      return { svg: h, cells };
-    }
-    function renderWaferPanel(animate) {
-      const panel = document.getElementById('waferPanel'); if (!panel) return;
-      const N = attendDays.length, info = waferInfo(N), t = todayData(), doneToday = attendDays.includes(dateStr()), ready = t.pts >= DAILY_GOAL;
-      const earned = animate ? info.d - 1 : info.d, { svg, cells } = waferSVG(info, earned);
-      const pts = Math.min(DAILY_GOAL, t.pts);
-      const btn = doneToday ? `<button disabled class="w-full font-bold py-3 rounded-xl bg-white/10 text-slate-300 cursor-default">✅ 오늘의 회로를 새겼어요</button>`
-        : ready ? `<button onclick="attendToday()" class="w-full pbtn font-bold py-3 rounded-xl shadow-lg hover:opacity-90 transition">✨ 오늘의 회로 새기기</button>`
-        : `<button disabled class="w-full font-bold py-3 rounded-xl bg-white/10 text-slate-400 cursor-not-allowed">학습 완료 후 출석 기록하기 (${pts}/${DAILY_GOAL})</button>`;
-      const next = info.nextAt ? `${info.nextIn}일 후 · ${info.nextName}` : (info.d >= 30 ? '다음 출석에 새 웨이퍼 개방' : '');
-      panel.innerHTML = `<div class="rounded-2xl bg-white/[.04] border border-white/10 p-5 sm:p-6 backdrop-blur">
-        <div class="flex justify-between items-start gap-3">
-          <div><p class="font-mono text-[10px] tracking-[.22em] text-cyan-200/70 font-bold">CURRENT WAFER${info.cycle ? ' #' + (info.cycle + 1) : ''}</p><p class="text-sm font-bold mt-1">PATTERN LEVEL ${pad2(info.level)} <span class="text-slate-400 font-medium">· ${info.name[1]}</span></p></div>
-          <div class="text-right shrink-0"><span id="waferDays" class="font-display text-3xl font-bold">${info.d}</span><span class="text-slate-400 font-bold"> / 30</span><p class="text-[10px] text-slate-400">출석 누적 일수</p></div>
-        </div>
-        <div class="relative mx-auto my-3 w-full max-w-[340px] aspect-square">${svg}</div>
-        <p id="waferStep" class="text-center text-xs font-mono h-4 text-cyan-200">${escH(waferMsg)}</p>
-        <div class="mt-3 flex justify-between text-[11px] text-slate-400"><span class="font-mono tracking-widest font-bold">NEXT UPGRADE</span><span>${next}</span></div>
-        <div class="mt-2 mb-4"><div class="flex justify-between text-[11px] text-slate-300 mb-1"><span>오늘의 학습</span><span>${pts} / ${DAILY_GOAL}</span></div><div class="h-1.5 rounded-full bg-white/10 overflow-hidden"><div class="h-full rounded-full pbtn" style="width:${pts / DAILY_GOAL * 100}%"></div></div>
-          <p class="text-[10px] text-slate-500 mt-1.5">문제 1개 +1 · 면접 문항 확인 +1 · 이론 1개 읽기 +2</p></div>
-        ${btn}
-        <div class="mt-3 flex items-center justify-between text-[10px] text-slate-400"><span class="flex items-center gap-2"><i class="w-2 h-2 rounded-full inline-block" style="background:#22d3ee"></i>기초 <i class="w-2 h-2 rounded-full inline-block ml-1" style="background:#a78bfa"></i>공정 <i class="w-2 h-2 rounded-full inline-block ml-1" style="background:#f472b6"></i>차세대</span><span>수집한 웨이퍼 ${info.collected}장</span></div></div>`;
-      if (animate) runAttendAnimation(cells[info.d - 1], info);
-    }
-    const tween = (ms, fn) => new Promise(res => { const t0 = performance.now(); const f = (t) => { const p = Math.min(1, (t - t0) / ms); fn(p); p < 1 ? requestAnimationFrame(f) : res(); }; requestAnimationFrame(f); });
-    async function runAttendAnimation(cell, info) {
-      attendBusy = true;
-      const fx = document.getElementById('waferFx'), step = document.getElementById('waferStep'); if (!fx || !step) { attendBusy = false; return; }
-      fx.innerHTML = `<path id="newTrace" d="${cell.d}" fill="none" stroke="url(#prism)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)" opacity="0"/><circle id="laser" r="0" cx="0" cy="0" fill="#fff" filter="url(#glow)"/>`;
-      const path = fx.querySelector('#newTrace'), laser = fx.querySelector('#laser'), len = path.getTotalLength();
-      path.style.strokeDasharray = len; path.style.strokeDashoffset = len;
-      const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches, k = reduce ? 0.05 : 1;
-      step.textContent = 'STEP 01 · 레이저 활성화';
-      await tween(700 * k, p => { laser.setAttribute('r', 3.2 * p); laser.setAttribute('cx', cell.start[0] * p); laser.setAttribute('cy', cell.start[1] * p); });
-      step.textContent = 'STEP 02 · 회로 각인'; path.setAttribute('opacity', 1);
-      await tween(1400 * k, p => { path.style.strokeDashoffset = len * (1 - p); const pt = path.getPointAtLength(len * p); laser.setAttribute('cx', pt.x); laser.setAttribute('cy', pt.y); });
-      step.textContent = 'STEP 03 · 패턴 활성화';
-      await tween(900 * k, p => { laser.setAttribute('r', 3.2 * (1 - p)); path.setAttribute('stroke-width', 2.2 + 2.2 * Math.sin(Math.PI * p)); });
-      const ms = { 10: ' · PATTERN LAYER UNLOCKED', 20: ' · CONNECTED WAFER UNLOCKED', 30: ' · WAFER COMPLETE' };
-      waferMsg = `STEP 04 · DAY ${info.d} COMPLETE${ms[info.d] || ''}`;
-      attendBusy = false; renderWaferPanel(false); renderHomeDash(); updateHeaderChip();
-    }
-    function attendToday() {
-      if (attendBusy) return; const t = todayData();
-      if (attendDays.includes(dateStr()) || t.pts < DAILY_GOAL) return;
-      attendDays.push(dateStr()); saveAttend(); waferMsg = ''; renderWaferPanel(true);
-    }
-    function updateHeaderChip() { const el = document.getElementById('navAttendText'); if (el) el.textContent = `출석 ${attendDays.length}일`; }
-    function updateNav() {
-      const v = currentViewId, map = { 'view-lobby': 'home', 'view-learning': 'theory', 'view-quiz': 'quiz', 'view-result': 'quiz', 'view-interview': 'interview', 'view-exam': 'exam', 'view-note': 'note', 'view-stats': 'stats', 'view-setup': currentMode === 'interview' ? 'interview' : (document.getElementById('examToggle') && document.getElementById('examToggle').checked ? 'exam' : 'quiz') };
-      document.querySelectorAll('[data-nav]').forEach(b => b.classList.toggle('active', b.dataset.nav === map[v]));
-    }
-    function renderHome() {
-      [['heroTheories', allTheories.length], ['heroQuizzes', allQuizData.length], ['heroInterviews', allInterviewData.length]].forEach(([id, v]) => { const e = document.getElementById(id); if (e.dataset.cu !== String(v)) { e.dataset.cu = v; countUp(e); } });
-      const wc = allQuizData.filter(q => wrongNotes[q.id]).length;
-      document.getElementById('homeNoteDesc').textContent = wc ? `복습할 오답 ${wc}문제가 기다리고 있어요` : '틀린 문제는 자동으로 모이고 메모도 남길 수 있어요';
-      if (!attendBusy) renderWaferPanel(false); renderHomeDash(); runCountUps(document.getElementById('homeDash')); updateHeaderChip();
-    }
-    function renderHomeDash() {
-      const el = document.getElementById('homeDash'); if (!el) return;
-      const T = stats.total, pct = T.t ? Math.round(T.r / T.t * 100) : 0, wc = allQuizData.filter(q => wrongNotes[q.id]).length;
-      const card = 'bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-white/10 rounded-2xl p-5 sm:p-6 shadow-sm';
-      const col = (p) => p >= 80 ? '#10b981' : p >= 50 ? '#f59e0b' : '#f43f5e';
-      const tile = (label, val, sub) => `<div class="rounded-xl bg-slate-50 dark:bg-[#0a1020] border border-slate-100 dark:border-white/5 p-4"><div class="text-xs text-slate-400 dark:text-slate-500 mb-1">${label}</div><div class="font-display text-2xl font-bold text-slate-900 dark:text-white">${typeof val === 'number' ? `<span data-cu="${val}">0</span>` : val}<span class="text-xs font-bold text-slate-400 ml-0.5">${sub}</span></div></div>`;
-      const cats = RING_CATS.map(([k]) => [k, stats.cats[k]]).filter(x => x[1]);
-      const bars = cats.length ? cats.map(([k, v]) => { const p = Math.round(v.r / v.t * 100); return `<div class="mb-3"><div class="flex justify-between text-xs mb-1"><span class="font-bold text-slate-700 dark:text-slate-200">${escH(k)}</span><span class="text-slate-400">${v.r}/${v.t} · ${p}%</span></div><div class="h-2 rounded-full bg-slate-200 dark:bg-white/10 overflow-hidden"><div class="h-full rounded-full" style="width:${p}%;background:${col(p)}"></div></div></div>`; }).join('') : `<p class="text-sm text-slate-400 py-2">문제를 풀면 과목별 정답률이 여기에 쌓여요.</p>`;
-      const t = todayData(), pts = Math.min(DAILY_GOAL, t.pts), N = attendDays.length;
-      el.innerHTML = `<div class="${card} lg:col-span-2"><div class="flex justify-between items-center mb-4"><h3 class="font-bold text-slate-900 dark:text-white">내 학습 현황</h3><button onclick="navTo('view-stats')" class="text-sm font-bold text-indigo-600 dark:text-cyan-300">자세히 보기 →</button></div>
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">${tile('푼 문제', T.t, '문항')}${tile('정답률', T.t ? pct : '-', T.t ? '%' : '')}${tile('오답 노트', wc, '문제')}${tile('출석', N, '일')}</div>${bars}</div>
-        <div class="${card}"><h3 class="font-bold text-slate-900 dark:text-white mb-1">오늘의 학습</h3><p class="text-xs text-slate-400 dark:text-slate-500 mb-4">${pts >= DAILY_GOAL ? '목표 달성! 웨이퍼에 오늘의 회로를 새길 수 있어요.' : '목표를 채우면 오늘의 회로를 새길 수 있어요.'}</p>
-          <div class="flex items-end justify-between mb-2"><span class="text-3xl font-bold text-slate-900 dark:text-white">${pts}<span class="text-base text-slate-400 font-bold"> / ${DAILY_GOAL}</span></span><span class="text-xs text-slate-400">포인트</span></div>
-          <div class="h-2 rounded-full bg-slate-200 dark:bg-white/10 overflow-hidden mb-4"><div class="h-full rounded-full pbtn" style="width:${pts / DAILY_GOAL * 100}%"></div></div>
-          <ul class="text-sm text-slate-600 dark:text-slate-300 space-y-1.5 mb-5"><li>📝 문제 1개 풀기 <b class="text-slate-400">+1</b></li><li>🗣️ 면접 문항 확인 <b class="text-slate-400">+1</b></li><li>📖 이론 1개 읽기 <b class="text-slate-400">+2</b></li></ul>
-          <div class="grid grid-cols-2 gap-2"><button onclick="navTo('view-learning',{level:'home'})" class="py-2.5 rounded-xl text-sm font-bold border border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/5 text-slate-700 dark:text-slate-200">이론 읽기</button><button onclick="openSetup('quiz')" class="py-2.5 rounded-xl text-sm font-bold pbtn hover:opacity-90">문제 풀기</button></div></div>`;
-    }
-
-    // =====================================================
-    // 아이콘 시스템: 텍스트 속 이모지를 사이트 톤에 맞는 라인 SVG로 자동 교체
-    // =====================================================
-    const ICON = {
-      search: '<circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>',
-      folder: '<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
-      layers: '<path d="M12 3 3 8l9 5 9-5-9-5zM3 12.5l9 5 9-5M3 16.5l9 5 9-5"/>',
-      book: '<path d="M2 5.5C4 4 8 4 12 6c4-2 8-2 10-.5V19c-2-1.5-6-1.5-10 .5-4-2-8-2-10-.5z"/><path d="M12 6v13.5"/>',
-      pencil: '<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/>',
-      chat: '<path d="M21 12a8 8 0 0 1-11.5 7.2L4 20l1-4.4A8 8 0 1 1 21 12z"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01" stroke-width="2.6"/>',
-      timer: '<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/>',
-      home: '<path d="M3 11l9-8 9 8M5 10v10h14V10M10 20v-6h4v6"/>',
-      chart: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
-      notebook: '<path d="M6 3h12a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H6z"/><path d="M9 3v18M12 8h4M12 12h4"/>',
-      moon: '<path d="M20 14.5A8.5 8.5 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5z"/>',
-      sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
-      sparkle: '<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 15l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z"/>',
-      xcircle: '<circle cx="12" cy="12" r="9"/><path d="M15 9l-6 6M9 9l6 6"/>',
-      check: '<circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.7 2.7L16 9.5"/>',
-      alert: '<path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18h.01" stroke-width="2.2"/>',
-      repeat: '<path d="M17 2l4 4-4 4"/><path d="M3 11V9a3 3 0 0 1 3-3h15"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a3 3 0 0 1-3 3H3"/>',
-      grid: '<path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/>',
-      bulb: '<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/>',
-      target: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1" fill="currentColor"/>',
-      trophy: '<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM7 6H4v2a3 3 0 0 0 3 3M17 6h3v2a3 3 0 0 1-3 3"/>',
-      file: '<path d="M6 3h8l5 5v13H6zM14 3v5h5M9 13h7M9 17h7"/>',
-      pin: '<path d="M12 17v5M8 3h8l-1 7 3 3H6l3-3z"/>',
-      link: '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
-      x: '<path d="M6 6l12 12M18 6L6 18"/>',
-      menu: '<path d="M4 7h16M4 12h16M4 17h16"/>',
-      chevron: '<path d="M9 6l6 6-6 6"/>',
-      star: '<path d="M12 3l2.7 5.8 6.3.8-4.6 4.4 1.2 6.3L12 17.3l-5.6 3 1.2-6.3L3 9.6l6.3-.8z"/>',
-      starfill: '<path d="M12 3l2.7 5.8 6.3.8-4.6 4.4 1.2 6.3L12 17.3l-5.6 3 1.2-6.3L3 9.6l6.3-.8z" fill="currentColor"/>',
-      none: ''
-    };
-    const EMOJI_ICON = { '🔍': 'search', '📁': 'folder', '📂': 'folder', '📚': 'layers', '📖': 'book', '📝': 'pencil', '✏': 'pencil', '🗣': 'chat', '⏱': 'timer', '🏠': 'home', '📊': 'chart', '📒': 'notebook', '🌙': 'moon', '☀': 'sun', '✨': 'sparkle', '❌': 'xcircle', '✅': 'check', '⭕': 'check', '🚨': 'alert', '🔁': 'repeat', '🧩': 'grid', '💡': 'bulb', '🎯': 'target', '🏆': 'trophy', '📄': 'file', '📌': 'pin', '🔗': 'link', '✕': 'x', '☰': 'menu', '❯': 'chevron', '★': 'starfill', '☆': 'star', '🎉': 'none', '💪': 'none', '👍': 'none' };
-    const EMO_RE = new RegExp('(' + Object.keys(EMOJI_ICON).join('|') + ')\\uFE0F?', 'g');
-    const SKIP_TAGS = new Set(['SCRIPT', 'STYLE', 'TEXTAREA', 'OPTION', 'TITLE', 'INPUT']);
-    function iconHTML(name) { return `<span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ICON[name]}</svg></span>`; }
-    function iconize(root) {
-      if (!root) return;
-      const nodes = [];
-      if (root.nodeType === 3) nodes.push(root);
-      else if (root.nodeType === 1 && !SKIP_TAGS.has(root.tagName)) { const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT); let n; while ((n = w.nextNode())) nodes.push(n); }
-      nodes.forEach(n => {
-        const par = n.parentNode; if (!par || SKIP_TAGS.has(par.tagName) || !n.nodeValue) return;
-        EMO_RE.lastIndex = 0; if (!EMO_RE.test(n.nodeValue)) return;
-        const html = n.nodeValue.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(EMO_RE, (m, ch) => { const k = EMOJI_ICON[ch]; return k === 'none' ? '' : iconHTML(k); });
-        const tpl = document.createElement('template'); tpl.innerHTML = html; par.replaceChild(tpl.content, n);
-      });
-    }
-    const emoObserver = new MutationObserver((muts) => {
-      emoObserver.disconnect();
-      muts.forEach(m => { if (m.type === 'characterData') iconize(m.target); else m.addedNodes.forEach(iconize); });
-      emoObserver.observe(document.body, { childList: true, subtree: true, characterData: true });
-    });
-    iconize(document.body); emoObserver.observe(document.body, { childList: true, subtree: true, characterData: true });
-
-    // ✨ 모션: 숫자 올라가기 / 보기 화면 전환 / 축하 효과
-    const REDUCE = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    function countUp(el) {
-      const to = parseFloat(el.dataset.cu); if (isNaN(to)) return; if (REDUCE || to === 0) { el.textContent = to; return; }
-      const t0 = performance.now(), dur = 900;
-      const f = (t) => { const p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - p, 3); el.textContent = Math.round(to * e); if (p < 1) requestAnimationFrame(f); }; requestAnimationFrame(f);
-    }
-    function runCountUps(root) { (root || document).querySelectorAll('[data-cu]').forEach(countUp); }
-    function confetti() {
-      if (REDUCE) return; const colors = ['#67e8f9', '#818cf8', '#e879f9', '#fbbf24', '#34d399'];
-      for (let i = 0; i < 46; i++) { const d = document.createElement('i'); d.className = 'confetti-piece'; d.style.left = (Math.random() * 100) + 'vw'; d.style.background = colors[i % colors.length];
-        d.style.setProperty('--dx', ((Math.random() - .5) * 240) + 'px'); d.style.setProperty('--rot', (Math.random() * 900 - 450) + 'deg'); d.style.animationDelay = (Math.random() * .5) + 's'; d.style.animationDuration = (1.8 + Math.random() * 1.2) + 's';
-        document.body.appendChild(d); setTimeout(() => d.remove(), 3500); }
-    }
-    // ===== 🚨 오류 제보 =====
-    let reportTarget = null;
-    function setReportMsg(text, kind) {
-      const el = document.getElementById('reportMsg');
-      el.textContent = text;
-      el.className = 'text-xs mt-2 min-h-[1rem] ' + (kind === 'err' ? 'text-rose-500' : kind === 'ok' ? 'text-indigo-500' : 'text-slate-400');
-    }
-    function openReportModal() {
-      const item = filteredSession[currentIndex];
-      if (!item) return;
-      reportTarget = { id: String(item.id || ''), text: String(item.question || '').slice(0, 120) };
-      const short = reportTarget.text.length > 40 ? reportTarget.text.slice(0, 40) + '…' : reportTarget.text;
-      document.getElementById('reportTarget').textContent = `대상: ${reportTarget.id} · ${short}`;
-      document.getElementById('reportContent').value = '';
-      document.getElementById('reportSubmitBtn').disabled = false;
-      setReportMsg('', '');
-      const m = document.getElementById('reportModal'); m.classList.remove('hidden'); m.classList.add('flex');
-      setTimeout(() => document.getElementById('reportContent').focus(), 50);
-    }
-    function closeReportModal() {
-      const m = document.getElementById('reportModal'); m.classList.remove('flex'); m.classList.add('hidden');
-    }
-    async function submitReport() {
-      if (!reportTarget) return;
-      const content = document.getElementById('reportContent').value.trim();
-      if (content.length < 5) return setReportMsg('5자 이상 적어 주세요.', 'err');
-      let last = 0; try { last = Number(localStorage.getItem('semiCbtLastReport') || 0); } catch (e) {}
-      if (Date.now() - last < 15000) return setReportMsg('잠시 후 다시 제보해 주세요.', 'err');
-      if (!supabaseClient) return setReportMsg('서버 연결에 실패했습니다. 새로고침 후 다시 시도해 주세요.', 'err');
-
-      const btn = document.getElementById('reportSubmitBtn');
-      btn.disabled = true; setReportMsg('전송 중...', 'info');
-      const { error } = await supabaseClient.from('error_reports').insert({
-        question_id: reportTarget.id,
-        question_text: reportTarget.text,
-        content: content,
-        status: 'pending'
-      });
-      if (error) {
-        console.error('제보 실패:', error);
-        btn.disabled = false;
-        return setReportMsg('전송 실패: ' + (error.message || '알 수 없는 오류'), 'err');
-      }
-      try { localStorage.setItem('semiCbtLastReport', String(Date.now())); } catch (e) {}
-      setReportMsg('✅ 제보가 접수되었습니다. 감사합니다!', 'ok');
-      setTimeout(closeReportModal, 1200);
-    }
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeReportModal(); });
-    // 📁 폴더 단위 풀기: 폴더(대분류/소분류)에 속한 이론과 연결된 문제·면접을 모아서 출제
-    let folderCtx = null;
-    function folderPool(kind, category, subject) {
-      const data = kind === 'quiz' ? allQuizData : allInterviewData, map = new Map();
-      allTheories.filter(t => t.category === category && (!subject || t.subject === subject) && !String(t.content).includes('채워질 예정'))
-        .forEach(t => matchItems(data, t.title).forEach(x => map.set(x.id, x)));
-      if (!subject) data.filter(x => x.category === category).forEach(x => map.set(x.id, x));
-      return [...map.values()];
-    }
-    function folderBar(category, subject) {
-      folderCtx = { category, subject };
-      const q = folderPool('quiz', category, subject).length, i = folderPool('interview', category, subject).length;
-      const cls = 'flex-1 font-bold text-sm py-3 rounded-xl transition disabled:opacity-40 disabled:cursor-not-allowed ';
-      return `<div class="col-span-full flex gap-2 mb-1">
-        <button onclick="startFolder('quiz')" ${q ? '' : 'disabled'} class="${cls}pbtn shadow-md">🧩 이 폴더 문제 풀기 <span class="text-xs opacity-80">${q ? q + '문항' : '준비 중'}</span></button>
-        <button onclick="startFolder('interview')" ${i ? '' : 'disabled'} class="${cls}bg-white dark:bg-[#0a1020] border-2 border-indigo-600 dark:border-[#67e8f9] text-indigo-700 dark:text-[#67e8f9]">🗣️ 면접 <span class="text-xs opacity-80">${i ? i + '문항' : '준비 중'}</span></button></div>`;
-    }
-    function startFolder(kind) {
-      if (!folderCtx) return;
-      const list = folderPool(kind, folderCtx.category, folderCtx.subject); if (!list.length) return;
-      filteredSession = list.sort(() => Math.random() - 0.5).slice(0, kind === 'quiz' ? 10 : 5);
-      currentKeyword = null; currentIndex = 0; correctCount = 0; sessionLog = []; currentMode = kind;
-      navTo(kind === 'quiz' ? 'view-quiz' : 'view-interview'); if (kind === 'quiz') renderQuiz(); else renderInterview();
-    }
-
-    // ▶ 이어 풀기: 풀던 세션(문제/면접)을 저장해 두었다가 홈에서 이어서 시작
-    const RESUME_KEY = 'semiCbtResume';
-    function loadResume() {
-      try { const r = JSON.parse(localStorage.getItem(RESUME_KEY)); if (r && r.ids && r.ids.length && r.next < r.ids.length && Date.now() - r.t < 7 * 864e5) return r; } catch (e) {}
-      return null;
-    }
-    function saveResume() {
-      if (currentMode !== 'quiz' && currentMode !== 'interview') return;
-      if (currentIndex + 1 >= filteredSession.length) return clearResume();
-      try { localStorage.setItem(RESUME_KEY, JSON.stringify({ mode: currentMode, ids: filteredSession.map(x => x.id), next: currentIndex + 1, correct: correctCount, kw: currentKeyword, log: sessionLog.map(r => r ? { id: r.q.id, picked: r.picked } : null), t: Date.now() })); } catch (e) {}
-    }
-    function clearResume() { try { localStorage.removeItem(RESUME_KEY); } catch (e) {} renderResumeBanner(); }
-    function renderResumeBanner() {
-      const b = document.getElementById('resumeBanner'), r = loadResume();
-      if (!r) { b.className = 'hidden'; b.innerHTML = ''; return; }
-      b.className = 'bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-800/30 rounded-2xl p-4 flex items-center gap-3';
-      b.innerHTML = `<div class="flex-1 min-w-0"><div class="text-sm font-bold text-amber-800 dark:text-amber-400">▶ 풀던 ${r.mode === 'quiz' ? '문제' : '면접'}가 있어요</div><div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${r.next} / ${r.ids.length}문항까지 진행</div></div>
-        <button onclick="resumeSession()" class="bg-amber-500 hover:bg-amber-600 text-white font-bold text-sm px-4 py-2 rounded-xl shrink-0">이어 풀기</button>
-        <button onclick="clearResume()" aria-label="삭제" class="text-slate-400 hover:text-rose-500 text-lg px-1">✕</button>`;
-    }
-    function resumeSession() {
-      const r = loadResume(); if (!r) return;
-      const pool = r.mode === 'quiz' ? allQuizData : allInterviewData, list = r.ids.map(id => pool.find(x => x.id === id)).filter(Boolean);
-      if (list.length !== r.ids.length) { clearResume(); return alert('일부 문항이 바뀌어서 이어 풀 수 없어요.'); }
-      filteredSession = list; currentIndex = r.next; correctCount = r.correct || 0; currentKeyword = r.kw || null; currentMode = r.mode;
-      sessionLog = (r.log || []).map(e => { const q = e && list.find(x => x.id === e.id); return q ? { q, picked: e.picked, ok: e.picked === q.answer } : null; });
-      navTo(r.mode === 'quiz' ? 'view-quiz' : 'view-interview'); if (r.mode === 'quiz') renderQuiz(); else renderInterview();
-    }
-
-    // 🔍 통합 검색 (이론 · 문제 · 면접)
-    let searchTimer = null;
-    function debouncedSearch() { clearTimeout(searchTimer); searchTimer = setTimeout(runGlobalSearch, 180); }
-    function runGlobalSearch() {
-      const q = document.getElementById('globalSearchInput').value.trim().toLowerCase(), out = document.getElementById('globalSearchResults');
-      const sec = 'text-xs font-bold text-slate-400 dark:text-slate-500 mb-2';
-      const card = 'bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-white/10 rounded-xl';
-      if (!q) { out.innerHTML = `<p class="text-center text-sm text-slate-400 py-10">이론 제목·본문, 문제, 면접 질문을 한 번에 찾아 드려요.</p>`; return; }
-      const has = (...vals) => vals.some(v => String(Array.isArray(v) ? v.join(' ') : v || '').toLowerCase().includes(q));
-      const real = (t) => !String(t.content).includes('채워질 예정');
-      const th = allTheories.filter(t => real(t) && has(t.title, t.tags, t.content)).slice(0, 8);
-      const qs = allQuizData.filter(x => has(x.question, x.topic, x.options, x.explanation)).slice(0, 15);
-      const iv = allInterviewData.filter(x => has(x.question, x.topic, x.key_points, x.interview_answer)).slice(0, 10);
-      if (!th.length && !qs.length && !iv.length) { out.innerHTML = `<p class="text-center text-sm text-slate-400 py-10">'${escH(q)}' 검색 결과가 없어요.</p>`; return; }
-      let h = '';
-      if (th.length) h += `<div><p class="${sec}">📖 이론 ${th.length}</p><div class="space-y-2">${th.map(t => `<button onclick="openTheory('${escH(t.id)}')" class="${card} w-full text-left p-4 hover:border-indigo-400 dark:hover:border-[#67e8f9] transition"><div class="font-bold text-slate-900 dark:text-white">${escH(t.title)}</div><div class="text-[11px] text-slate-400 mt-1">${escH(t.category)} › ${escH(t.subject)}</div></button>`).join('')}</div></div>`;
-      if (qs.length) h += `<div><p class="${sec}">📝 문제 ${qs.length}</p><div class="space-y-2">${qs.map((x, n) => `<div class="${card}"><button data-sx="q${n}" class="w-full text-left p-4"><div class="text-[11px] text-slate-400 mb-1">${escH(x.category)}</div><div class="text-sm font-bold text-slate-800 dark:text-slate-100">${escH(x.question)}</div></button><div id="sx-q${n}" class="hidden px-4 pb-4 text-sm"><p class="text-emerald-600 dark:text-indigo-400 font-bold mb-2">정답: ${x.answer + 1}번 · ${escH(x.options[x.answer])}</p><p class="text-slate-600 dark:text-slate-400 leading-relaxed bg-slate-50 dark:bg-[#0a1020] rounded-lg p-3">${escH(x.explanation)}</p>${theoryLinkHtml(x)}</div></div>`).join('')}</div></div>`;
-      if (iv.length) h += `<div><p class="${sec}">🗣️ 면접 ${iv.length}</p><div class="space-y-2">${iv.map((x, n) => `<div class="${card}"><button data-sx="i${n}" class="w-full text-left p-4"><div class="text-[11px] text-slate-400 mb-1">${escH(x.category)}</div><div class="text-sm font-bold text-slate-800 dark:text-slate-100">${escH(x.question)}</div></button><div id="sx-i${n}" class="hidden px-4 pb-4 text-sm"><div class="flex flex-wrap gap-1 mb-2">${(x.key_points || []).map(k => `<span class="bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-400 px-2 py-0.5 rounded text-xs font-bold">#${escH(k)}</span>`).join('')}</div><p class="text-slate-600 dark:text-slate-400 leading-relaxed bg-slate-50 dark:bg-[#0a1020] rounded-lg p-3">${escH(x.interview_answer)}</p></div></div>`).join('')}</div></div>`;
-      out.innerHTML = h; applyMathRendering();
-    }
-    document.getElementById('globalSearchResults').addEventListener('click', (e) => { const b = e.target.closest('[data-sx]'); if (b) document.getElementById('sx-' + b.dataset.sx).classList.toggle('hidden'); });
-
-    // ⌨️ 단축키 (PC): 숫자키=보기 선택, Enter/→/Space=다음, ←=이전(모의고사), S=즐겨찾기
-    document.addEventListener('keydown', (e) => {
-      if (e.ctrlKey || e.metaKey || e.altKey || /^(INPUT|TEXTAREA|SELECT)$/.test((e.target.tagName || ''))) return;
-      if (!document.getElementById('reportModal').classList.contains('hidden')) return;
-      const k = e.key, num = /^[1-9]$/.test(k) ? Number(k) - 1 : -1, next = (k === 'Enter' || k === ' ' || k === 'ArrowRight');
-      const click = (el) => { if (el && !el.disabled) { e.preventDefault(); el.click(); return true; } return false; };
-      if (currentViewId === 'view-quiz') {
-        if (num >= 0) click(document.getElementById('qOptions').children[num]);
-        else if (next && !document.getElementById('qExpBox').classList.contains('hidden')) click(document.getElementById('qNextBtn'));
-        else if (k === 's' || k === 'S') toggleStar();
-      } else if (currentViewId === 'view-interview') {
-        if (next) { if (!document.getElementById('iRevealBtn').classList.contains('hidden')) click(document.getElementById('iRevealBtn')); else click(document.getElementById('iNextBtn')); }
-      } else if (currentViewId === 'view-exam' && exam) {
-        if (num >= 0) click(document.getElementById('exOptions').children[num]);
-        else if (k === 'ArrowRight') examGo(1); else if (k === 'ArrowLeft') examGo(-1);
-      }
-    });
-
-    ['view-setup', 'view-quiz', 'view-interview', 'view-result', 'view-note', 'view-stats', 'view-exam', 'view-search'].forEach(id => document.getElementById(id).classList.add('max-w-2xl', 'mx-auto'));
-    document.getElementById('view-learning').classList.add('max-w-4xl', 'mx-auto');
-    renderResumeBanner(); updateHeaderChip();
-    initApp();
-  </script>
-</body>
-</html>
+    
