@@ -1,5 +1,53 @@
 [
   {
+    "id": "Q-06b79495",
+    "category": "차세대 첨단 기술",
+    "topic": "GAA 나노시트",
+    "difficulty": "중급",
+    "question": "GAA 나노시트의 게이트 구조는 어떤 특징을 가지고 있습니까?",
+    "options": [
+      "상단에만 위치하는 구조",
+      "하단에만 위치하는 구조",
+      "모든 면을 감싸는 구조",
+      "하나의 면만 감싸는 구조"
+    ],
+    "answer": 2,
+    "explanation": "GAA 나노시트는 모든 면을 감싸는 게이트 구조를 가지고 있습니다.",
+    "theory_id": "TH-b74a53b7"
+  },
+  {
+    "id": "Q-ab4a6c5e",
+    "category": "차세대 첨단 기술",
+    "topic": "GAA 나노시트",
+    "difficulty": "중급",
+    "question": "GAA 나노시트의 주요 이점 중 하나는 무엇입니까?",
+    "options": [
+      "스위칭 속도를 느리게 함",
+      "소자 밀도를 감소시킬 수 있음",
+      "제조 공정의 복잡성을 증가시킴",
+      "전류 누설을 감소시킬 수 있음"
+    ],
+    "answer": 3,
+    "explanation": "GAA 나노시트는 전류 누설을 감소시키는 효과가 있습니다.",
+    "theory_id": "TH-b74a53b7"
+  },
+  {
+    "id": "Q-3b159e5d",
+    "category": "차세대 첨단 기술",
+    "topic": "GAA 나노시트",
+    "difficulty": "중급",
+    "question": "GAA 나노시트의 발전 방향으로 올바른 것은 무엇입니까?",
+    "options": [
+      "제조 공정의 단순화",
+      "상용화의 중단",
+      "신소재 개발",
+      "기존 기술의 유지"
+    ],
+    "answer": 2,
+    "explanation": "GAA 나노시트의 발전 방향으로 신소재 개발이 필요합니다.",
+    "theory_id": "TH-b74a53b7"
+  },
+  {
     "id": "Q-6aafcfba",
     "category": "반도체 8대 공정",
     "topic": "습식 산화",
