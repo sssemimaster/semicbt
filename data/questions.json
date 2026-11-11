@@ -1,5 +1,21 @@
 [
   {
+    "id": "Q-c3985c7f",
+    "category": "반도체 8대 공정",
+    "topic": "EUV 리소그래피",
+    "difficulty": "중급",
+    "question": "EUV 리소그래피에서 패턴의 최소 크기를 측정하는 지표는 무엇인가요?",
+    "options": [
+      "선택비",
+      "패턴 밀도",
+      "노광 균일성",
+      "해상도"
+    ],
+    "answer": 3,
+    "explanation": "EUV 리소그래피에서 해상도는 패턴의 최소 크기를 측정하는 중요한 지표입니다.",
+    "theory_id": "TH-8fee3eb5"
+  },
+  {
     "id": "Q-d6bd5a06",
     "category": "반도체 8대 공정",
     "topic": "EUV 리소그래피",
