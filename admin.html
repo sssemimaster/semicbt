@@ -185,6 +185,7 @@
       }
       const q = draftQuizzes[currentQuizIndex];
       let html = `
+        ${q.report_note ? `<div class="mb-3 p-3 rounded-lg bg-amber-50 border border-amber-200 text-xs text-amber-800">🚨 제보로 이동됨: ${escHtml(q.report_note)}</div>` : ''}
         <div class="mb-4"><span class="bg-indigo-100 text-indigo-700 text-xs font-semibold px-2.5 py-1 rounded">${q.category} > ${q.topic}</span></div>
         <h2 class="text-lg font-bold text-slate-900 mb-6 leading-snug">${q.question}</h2>
         <div id="adminOptContainer" class="space-y-3"></div>
@@ -217,7 +218,7 @@
     async function approveQuiz() {
       if(!confirm("이 시험 문제를 정식 등재하시겠습니까?")) return;
       try {
-        const q = draftQuizzes[currentQuizIndex];
+        const q = draftQuizzes[currentQuizIndex]; delete q.report_note;
         const live = await fetchGitHubFile("data/questions.json");
         let data = live ? JSON.parse(live.content) : []; data.unshift(q);
         await updateGitHubFile("data/questions.json", live ? live.sha : null, JSON.stringify(data, null, 2), `Approve quiz ${q.id}`);
@@ -236,14 +237,14 @@
     function renderInterviewReview() {
       if(draftInterviews.length === 0) { document.getElementById('iBox').innerHTML = "<p class='text-center py-6 text-slate-500 font-bold'>대기 중인 면접 문항이 없습니다.</p>"; return; }
       const i = draftInterviews[currentInterviewIndex];
-      let html = `<div class="mb-4"><span class="bg-rose-100 text-rose-700 text-xs font-semibold px-2.5 py-1 rounded">${i.category} > ${i.topic}</span></div><h2 class="text-lg font-bold text-slate-900 mb-4">${i.question}</h2><div class="p-4 bg-slate-50 border border-slate-200 rounded-xl mb-4"><span class="text-xs font-bold text-rose-700 block mb-1">키워드: ${(i.key_points || []).join(', ')}</span><p class="text-sm text-slate-700 mt-2 leading-relaxed">${i.interview_answer}</p></div><div class="grid grid-cols-2 gap-4 mt-6"><button onclick="rejectContent('interview')" class="bg-rose-100 hover:bg-rose-200 transition text-rose-700 font-bold py-4 rounded-xl border border-rose-200">🗑️ 폐기</button><button onclick="approveInterview()" class="bg-emerald-600 hover:bg-emerald-700 transition text-white font-bold py-4 rounded-xl shadow-md">✅ 면접 등재</button></div>`;
+      let html = `${i.report_note ? `<div class="mb-3 p-3 rounded-lg bg-amber-50 border border-amber-200 text-xs text-amber-800">🚨 제보로 이동됨: ${escHtml(i.report_note)}</div>` : ''}<div class="mb-4"><span class="bg-rose-100 text-rose-700 text-xs font-semibold px-2.5 py-1 rounded">${i.category} > ${i.topic}</span></div><h2 class="text-lg font-bold text-slate-900 mb-4">${i.question}</h2><div class="p-4 bg-slate-50 border border-slate-200 rounded-xl mb-4"><span class="text-xs font-bold text-rose-700 block mb-1">키워드: ${(i.key_points || []).join(', ')}</span><p class="text-sm text-slate-700 mt-2 leading-relaxed">${i.interview_answer}</p></div><div class="grid grid-cols-2 gap-4 mt-6"><button onclick="rejectContent('interview')" class="bg-rose-100 hover:bg-rose-200 transition text-rose-700 font-bold py-4 rounded-xl border border-rose-200">🗑️ 폐기</button><button onclick="approveInterview()" class="bg-emerald-600 hover:bg-emerald-700 transition text-white font-bold py-4 rounded-xl shadow-md">✅ 면접 등재</button></div>`;
       document.getElementById('iBox').innerHTML = html;
     }
 
     async function approveInterview() {
       if(!confirm("면접 문항을 정식 등재하시겠습니까?")) return;
       try {
-        const i = draftInterviews[currentInterviewIndex];
+        const i = draftInterviews[currentInterviewIndex]; delete i.report_note;
         const live = await fetchGitHubFile("data/interviews.json");
         let data = live ? JSON.parse(live.content) : []; data.unshift(i);
         await updateGitHubFile("data/interviews.json", live ? live.sha : null, JSON.stringify(data, null, 2), `Approve interview ${i.id}`);
@@ -377,7 +378,66 @@
       const { data, error } = await supabaseClient.from('error_reports').select('*').eq('status', 'pending').order('created_at', { ascending: false });
       if (error) { console.error(error); list.innerHTML = `<p class="text-sm text-rose-600 font-bold text-center py-2">제보 불러오기 실패: ${escHtml(error.message)}</p>`; return; }
       if (!data || data.length === 0) { list.innerHTML = '<p class="text-sm text-emerald-600 font-bold text-center py-2">새로운 제보가 없습니다.</p>'; return; }
-      list.innerHTML = data.map(r => `<div class="bg-rose-50 p-3 rounded-xl flex justify-between items-center text-sm border border-rose-200"><div><span class="font-bold text-rose-800">[ID: ${escHtml(r.question_id)}]</span> ${r.question_text ? `<span class="text-xs text-slate-500">(${escHtml(String(r.question_text).slice(0, 40))})</span> ` : ''}${escHtml(r.content)}</div><button onclick="resolveReport(${Number(r.id)})" class="bg-rose-600 hover:bg-rose-700 transition text-white px-3 py-1 rounded text-xs font-bold whitespace-nowrap ml-2">무시/삭제</button></div>`).join('');
+      list.innerHTML = data.map(r => `<div class="bg-rose-50 p-3 rounded-xl text-sm border border-rose-200">
+        <div class="flex justify-between items-start gap-2">
+          <div class="min-w-0"><span class="font-bold text-rose-800">[ID: ${escHtml(r.question_id)}]</span> ${r.question_text ? `<span class="text-xs text-slate-500">(${escHtml(String(r.question_text).slice(0, 40))})</span> ` : ''}<div class="mt-1 text-slate-800 break-words">${escHtml(r.content)}</div></div>
+          <div class="flex flex-col gap-1 shrink-0">
+            <button onclick="toggleReportQuestion(${Number(r.id)}, '${escHtml(r.question_id)}')" class="bg-white border border-rose-300 text-rose-700 hover:bg-rose-100 transition px-3 py-1 rounded text-xs font-bold whitespace-nowrap">🔍 문제 펼치기</button>
+            <button onclick="moveReportToReview(${Number(r.id)}, '${escHtml(r.question_id)}', this)" class="bg-amber-500 hover:bg-amber-600 transition text-white px-3 py-1 rounded text-xs font-bold whitespace-nowrap">📤 검수로 이동</button>
+            <button onclick="resolveReport(${Number(r.id)})" class="bg-rose-600 hover:bg-rose-700 transition text-white px-3 py-1 rounded text-xs font-bold whitespace-nowrap">무시/삭제</button>
+          </div>
+        </div>
+        <div id="rq-${Number(r.id)}" class="hidden mt-3"></div></div>`).join('');
+      reportContent = Object.fromEntries(data.map(r => [r.id, r.content]));
+    }
+    // ---- 제보된 문제 보기 / 검수 대기열로 이동 ----
+    let reportContent = {}; let liveCache = null;
+    async function loadLive(force) {
+      if (liveCache && !force) return liveCache;
+      const q = await fetchGitHubFile("data/questions.json"), i = await fetchGitHubFile("data/interviews.json");
+      liveCache = { q: q ? JSON.parse(q.content) : [], i: i ? JSON.parse(i.content) : [] };
+      return liveCache;
+    }
+    // id 로 문제(객관식) 또는 면접 문항을 찾음. 같은 ID 가 여러 개면 첫 번째
+    function findLive(live, id) {
+      let k = live.q.findIndex(x => String(x.id) === id); if (k >= 0) return { kind: 'q', idx: k, item: live.q[k] };
+      k = live.i.findIndex(x => String(x.id) === id); if (k >= 0) return { kind: 'i', idx: k, item: live.i[k] };
+      return null;
+    }
+    async function toggleReportQuestion(rid, qid) {
+      const box = document.getElementById('rq-' + rid);
+      if (!box.classList.contains('hidden')) { box.classList.add('hidden'); return; }
+      box.classList.remove('hidden'); box.innerHTML = '<p class="text-xs text-slate-500">불러오는 중...</p>';
+      try {
+        const f = findLive(await loadLive(), qid);
+        if (!f) { box.innerHTML = '<p class="text-xs text-rose-600 font-bold">현재 등재된 문제에서 이 ID를 찾지 못했어요. (이미 이동/삭제됐거나 검수 대기 중일 수 있어요)</p>'; return; }
+        const it = f.item;
+        const opts = f.kind === 'q' ? `<ol class="mt-2 space-y-1">${it.options.map((o, n) => `<li class="px-3 py-2 rounded-lg border text-xs ${n === it.answer ? 'bg-emerald-50 border-emerald-300 text-emerald-800 font-bold' : 'bg-white border-slate-200 text-slate-700'}">${n + 1}. ${escHtml(o)}${n === it.answer ? ' ✔ 정답' : ''}</li>`).join('')}</ol>` : `<p class="mt-2 text-xs text-slate-600">${(it.key_points || []).map(k => '#' + escHtml(k)).join(' ')}</p>`;
+        const exp = f.kind === 'q' ? it.explanation : it.interview_answer;
+        box.innerHTML = `<div class="bg-white rounded-xl border border-slate-200 p-3"><p class="text-[11px] text-slate-400 mb-1">${escHtml(it.category)} > ${escHtml(it.topic || '')} · ${f.kind === 'q' ? '객관식' : '면접'}</p><p class="font-bold text-slate-900 text-sm">${escHtml(it.question)}</p>${opts}<p class="mt-2 text-xs text-slate-600 leading-relaxed bg-slate-50 rounded-lg p-2">${escHtml(exp)}</p></div>`;
+      } catch (e) { console.error(e); box.innerHTML = '<p class="text-xs text-rose-600 font-bold">불러오기 실패 (토큰/권한 확인)</p>'; }
+    }
+    // 제보된 문제를 정식 목록에서 빼서 '검수 대기'로 옮기고(제보 내용 메모 첨부), 제보는 처리 완료로 표시
+    async function moveReportToReview(rid, qid, btn) {
+      if (!confirm('이 문제를 정식 목록에서 빼서 검수 대기열로 옮길까요?\n(검수에서 다시 등재하거나 폐기할 수 있어요)')) return;
+      btn.disabled = true;
+      try {
+        const live = await loadLive(true); const f = findLive(live, qid);
+        if (!f) { btn.disabled = false; return alert('정식 목록에서 해당 ID를 찾지 못했어요.'); }
+        const item = { ...f.item, report_note: String(reportContent[rid] || '').slice(0, 300) };
+        const liveName = f.kind === 'q' ? 'data/questions.json' : 'data/interviews.json', draftName = f.kind === 'q' ? 'data/draft_questions.json' : 'data/draft_interviews.json';
+        // 1) 임시 보관(검수 대기)에 먼저 추가 → 2) 정식 목록에서 제거 (중간에 실패해도 문제가 사라지지 않게)
+        const df = await fetchGitHubFile(draftName); const drafts = df ? JSON.parse(df.content) : []; drafts.unshift(item);
+        await updateGitHubFile(draftName, df ? df.sha : null, JSON.stringify(drafts, null, 2), `Report -> review ${qid}`);
+        const lf = await fetchGitHubFile(liveName); const arr = JSON.parse(lf.content); const k = arr.findIndex(x => String(x.id) === qid);
+        if (k >= 0) arr.splice(k, 1);
+        await updateGitHubFile(liveName, lf.sha, JSON.stringify(arr, null, 2), `Remove reported ${qid}`);
+        if (f.kind === 'q') { draftQuizzes = drafts; currentQuizIndex = 0; document.getElementById('draftQCount').innerText = drafts.length; renderQuizReview(); }
+        else { draftInterviews = drafts; currentInterviewIndex = 0; document.getElementById('draftICount').innerText = drafts.length; renderInterviewReview(); }
+        liveCache = null;
+        await supabaseClient.from('error_reports').update({ status: 'resolved' }).eq('id', rid);
+        alert('✅ 검수 대기열로 옮겼어요. 위 탭에서 확인하세요.'); loadReports();
+      } catch (e) { console.error(e); btn.disabled = false; alert('이동 실패: ' + (e.message || e)); }
     }
     async function resolveReport(id) {
       const { error } = await supabaseClient.from('error_reports').update({ status: 'resolved' }).eq('id', id);
