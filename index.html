@@ -71,7 +71,8 @@
       <button onclick="openSetup('quiz'); toggleSidebar()" class="w-full text-left p-4 rounded-xl hover:bg-indigo-50 dark:hover:bg-indigo-900/20 text-indigo-700 dark:text-indigo-400 font-bold flex items-center gap-3"><span class="text-xl">📝</span> 문제 풀기</button>
       <button onclick="openSetup('interview'); toggleSidebar()" class="w-full text-left p-4 rounded-xl hover:bg-rose-50 dark:hover:bg-rose-900/20 text-rose-700 dark:text-rose-400 font-bold flex items-center gap-3"><span class="text-xl">🗣️</span> 면접 대비</button>
       <button onclick="navTo('view-learning', {level:'home'}); toggleSidebar()" class="w-full text-left p-4 rounded-xl hover:bg-emerald-50 dark:hover:bg-[#1a231c] text-emerald-800 dark:text-[#84cc9c] font-bold flex items-center gap-3"><span class="text-xl">📖</span> 이론 백과사전</button>
-      <button onclick="navTo('view-note'); toggleSidebar()" class="w-full text-left p-4 rounded-xl hover:bg-amber-50 dark:hover:bg-amber-900/20 text-amber-700 dark:text-amber-400 font-bold flex items-center gap-3"><span class="text-xl">⭐</span> 오답 노트</button>
+      <button onclick="navTo('view-note'); toggleSidebar()" class="w-full text-left p-4 rounded-xl hover:bg-amber-50 dark:hover:bg-amber-900/20 text-amber-700 dark:text-amber-400 font-bold flex items-center gap-3"><span class="text-xl">📒</span> 오답 노트</button>
+      <button onclick="navTo('view-stats'); toggleSidebar()" class="w-full text-left p-4 rounded-xl hover:bg-sky-50 dark:hover:bg-sky-900/20 text-sky-700 dark:text-sky-400 font-bold flex items-center gap-3"><span class="text-xl">📊</span> 내 학습 통계</button>
     </div>
   </div>
 
@@ -102,6 +103,7 @@
           <span class="text-3xl mb-3">📒</span><span class="font-bold text-sm">오답 노트</span>
         </button>
       </div>
+      <button onclick="navTo('view-stats')" class="w-full mt-4 bg-sky-50 dark:bg-sky-900/10 hover:bg-sky-100 border border-sky-200 dark:border-sky-800/30 text-sky-800 dark:text-sky-400 p-4 rounded-2xl flex items-center justify-center gap-3 transition shadow-sm"><span class="text-2xl">📊</span><span class="font-bold text-sm">내 학습 통계 · 약점 분석</span></button>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
         <button onclick="openSetup('quiz')" class="bg-indigo-50 dark:bg-indigo-900/10 hover:bg-indigo-100 border border-indigo-200 dark:border-indigo-800/30 text-indigo-800 dark:text-indigo-400 p-6 rounded-2xl flex flex-col items-center justify-center transition shadow-sm">
           <span class="text-3xl mb-2">📝</span><span class="font-bold text-lg">객관식 시험</span>
@@ -180,6 +182,16 @@
       <div id="noteContainer" class="space-y-4"></div>
     </div>
 
+    <!-- 📊 학습 통계 -->
+    <div id="view-stats" class="hidden w-full flex flex-col">
+      <button onclick="goBack()" class="text-slate-400 font-bold text-sm mb-3 w-fit">⬅️ 뒤로</button>
+      <div class="bg-white dark:bg-[#1a1d20] rounded-2xl border border-slate-200 dark:border-slate-800 p-6 mb-4 text-center">
+        <h2 class="text-xl font-bold dark:text-white">📊 내 학습 통계</h2>
+        <p class="text-xs text-slate-400 dark:text-slate-500 mt-1">이 기기에서 푼 문제 기준이에요.</p>
+      </div>
+      <div id="statsBody" class="space-y-4"></div>
+    </div>
+
     <!-- 📖 이론 백과사전 뷰 (작은 사이즈에 맞춘 배열로 복귀) -->
     <div id="view-learning" class="hidden w-full flex flex-col">
       <button onclick="goBack()" class="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 font-bold text-sm mb-4 transition w-fit outline-none">⬅️ 돌아가기</button>
@@ -223,6 +235,14 @@
     // 📒 오답 노트: 틀린 문제는 자동 저장 { 문제ID: {wrong, right, last, memo} } — ★ 즐겨찾기(starredIds)와 별개
     let wrongNotes = {}; try { wrongNotes = JSON.parse(localStorage.getItem('semiCbtWrong')) || {}; } catch (e) { wrongNotes = {}; }
     let sessionLog = []; let noteTab = 'wrong';
+    // 📊 통계: 문제를 풀 때마다 과목/주제별 맞힌 수·푼 수를 누적 { cats:{과목:{r,t}}, topics:{'과목||주제':{r,t}}, total:{r,t} }
+    let stats = { cats: {}, topics: {}, total: { r: 0, t: 0 } };
+    try { const sv = JSON.parse(localStorage.getItem('semiCbtStats')); if (sv && sv.cats) stats = sv; } catch (e) {}
+    function recordStat(q, ok) {
+      const bump = (o, k) => { const x = o[k] || (o[k] = { r: 0, t: 0 }); x.t++; if (ok) x.r++; };
+      bump(stats.cats, q.category || '기타'); bump(stats.topics, (q.category || '기타') + '||' + (q.topic || '기타')); stats.total.t++; if (ok) stats.total.r++;
+      try { localStorage.setItem('semiCbtStats', JSON.stringify(stats)); } catch (e) {}
+    }
     function saveWrong() { try { localStorage.setItem('semiCbtWrong', JSON.stringify(wrongNotes)); } catch (e) {} }
     const escH = (v) => String(v == null ? '' : v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     
@@ -259,12 +279,12 @@
       } else { navTo('view-lobby'); }
     }
     function applyState(viewId, state) {
-      ['view-lobby', 'view-setup', 'view-quiz', 'view-interview', 'view-learning', 'view-note', 'view-result'].forEach(id => document.getElementById(id).classList.add('hidden'));
+      ['view-lobby', 'view-setup', 'view-quiz', 'view-interview', 'view-learning', 'view-note', 'view-result', 'view-stats'].forEach(id => document.getElementById(id).classList.add('hidden'));
       document.getElementById(viewId).classList.remove('hidden'); currentViewId = viewId;
       if (viewId === 'view-learning') {
         document.getElementById('theorySearchInput').value = '';
         if (state.level === 'home') renderHomeDOM(); else if (state.level === 'category') renderSubjectsDOM(state.category); else if (state.level === 'subject') renderTitlesDOM(state.category, state.subject); else if (state.level === 'detail') renderDetailDOM(state.theoryId);
-      } else if (viewId === 'view-note') renderNoteDOM();
+      } else if (viewId === 'view-note') renderNoteDOM(); else if (viewId === 'view-stats') renderStats();
       applyMathRendering();
     }
 
@@ -498,7 +518,7 @@
     function checkAnswer(idx, q) {
       Array.from(document.getElementById('qOptions').children).forEach(b => b.disabled = true); document.getElementById('qExpBox').classList.remove('hidden');
       const st = document.getElementById('qStatus');
-      const ok = idx === q.answer; sessionLog[currentIndex] = { q, picked: idx, ok };
+      const ok = idx === q.answer; sessionLog[currentIndex] = { q, picked: idx, ok }; recordStat(q, ok);
       const n = wrongNotes[q.id] || (ok ? null : { wrong: 0, right: 0, memo: '' });
       if (n) { if (ok) n.right = (n.right || 0) + 1; else n.wrong = (n.wrong || 0) + 1; n.last = Date.now(); wrongNotes[q.id] = n; saveWrong(); }
       if (ok) { correctCount++; st.className = "font-bold text-emerald-600 dark:text-[#84cc9c] mb-1"; st.innerText = "⭕ 정답!"; } else { st.className = "font-bold text-rose-500 dark:text-rose-400 mb-1"; st.innerText = `❌ 오답 (정답: ${q.answer + 1}번)`; }
@@ -521,6 +541,37 @@
       const nxt = document.getElementById('iNextBtn');
       if(currentIndex === filteredSession.length-1) { nxt.innerText = "종료"; nxt.onclick = () => showResult('interview'); } else { nxt.innerText = "다음"; nxt.onclick = ()=>{currentIndex++; renderInterview();} }
       applyMathRendering();
+    }
+    function weakTopics() {
+      return Object.entries(stats.topics).map(([k, v]) => ({ cat: k.split('||')[0], topic: k.split('||')[1], ...v, acc: v.r / v.t }))
+        .filter(x => x.t >= 2 && x.acc < 0.7).sort((a, b) => a.acc - b.acc || b.t - a.t).slice(0, 5);
+    }
+    function renderStats() {
+      const c = document.getElementById('statsBody'), T = stats.total;
+      const card = 'bg-white dark:bg-[#1a1d20] rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm';
+      const col = (p) => p >= 80 ? '#10b981' : p >= 50 ? '#f59e0b' : '#f43f5e';
+      if (!T.t) { c.innerHTML = `<div class="${card} text-center text-slate-400 text-sm">아직 푼 문제가 없어요. 문제를 풀면 통계가 쌓여요.</div>`; return; }
+      const pct = Math.round(T.r / T.t * 100);
+      const cats = Object.entries(stats.cats).sort((a, b) => a[1].r / a[1].t - b[1].r / b[1].t);
+      const bar = (name, v) => { const p = Math.round(v.r / v.t * 100); return `<div class="mb-3"><div class="flex justify-between text-xs mb-1"><span class="font-bold text-slate-700 dark:text-slate-200 truncate pr-2">${escH(name)}</span><span class="text-slate-400 shrink-0">${v.r}/${v.t} · ${p}%</span></div><div class="h-2.5 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden"><div class="h-full rounded-full" style="width:${p}%;background:${col(p)}"></div></div></div>`; };
+      const weak = weakTopics();
+      const wrongCnt = allQuizData.filter(q => wrongNotes[q.id]).length;
+      c.innerHTML = `
+        <div class="${card}"><div class="grid grid-cols-3 text-center gap-2">
+          <div><div class="text-xs text-slate-400 mb-1">푼 문제</div><div class="text-2xl font-black dark:text-white">${T.t}</div></div>
+          <div><div class="text-xs text-slate-400 mb-1">정답률</div><div class="text-2xl font-black" style="color:${col(pct)}">${pct}%</div></div>
+          <div><div class="text-xs text-slate-400 mb-1">오답 노트</div><div class="text-2xl font-black dark:text-white">${wrongCnt}</div></div></div></div>
+        <div class="${card}"><h3 class="text-sm font-black text-slate-900 dark:text-white mb-3">과목별 정답률 <span class="text-xs font-medium text-slate-400">약한 순</span></h3>${cats.map(([n, v]) => bar(n, v)).join('')}</div>
+        <div class="${card}"><h3 class="text-sm font-black text-slate-900 dark:text-white mb-3">🎯 약점 주제 <span class="text-xs font-medium text-slate-400">2번 이상 풀고 정답률 70% 미만</span></h3>
+          ${weak.length ? weak.map(w => bar(w.topic + ' (' + w.cat + ')', w)).join('') + `<button onclick="practiceWeak()" class="w-full mt-2 bg-rose-500 hover:bg-rose-600 text-white font-black py-3 rounded-xl shadow-md transition">🎯 약점 주제 집중 풀기</button>` : '<p class="text-sm text-slate-400">아직 뚜렷한 약점이 없어요. 잘하고 있어요! 👍</p>'}</div>
+        <button onclick="if(confirm('통계를 초기화할까요? (오답 노트는 유지돼요)')){stats={cats:{},topics:{},total:{r:0,t:0}};localStorage.removeItem('semiCbtStats');renderStats();}" class="w-full text-xs text-slate-400 hover:text-rose-500 py-2">통계 초기화</button>`;
+    }
+    function practiceWeak() {
+      const keys = new Set(weakTopics().map(w => w.cat + '||' + w.topic));
+      const pool = allQuizData.filter(q => keys.has((q.category || '기타') + '||' + (q.topic || '기타')));
+      if (!pool.length) return alert('약점 주제에 해당하는 문제가 없어요.');
+      filteredSession = pool.sort(() => Math.random() - 0.5).slice(0, 10);
+      currentKeyword = null; currentIndex = 0; correctCount = 0; sessionLog = []; currentMode = 'quiz'; navTo('view-quiz'); renderQuiz();
     }
     function setNoteTab(t) { noteTab = t; renderNoteDOM(); }
     function noteItems() {
