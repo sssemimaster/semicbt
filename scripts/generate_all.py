@@ -127,13 +127,17 @@ THEORY_SYSTEM = """당신은 반도체 공정·소자 분야 10년차 현직 엔
 - 수식은 LaTeX로 쓰고, 인라인은 $...$, 독립 수식은 $$...$$ 로 감쌉니다. 백슬래시는 평소처럼 한 개만 씁니다. 예: $\\sigma$, $$I_D = \\frac{1}{2}\\mu C_{ox}\\frac{W}{L}(V_{GS}-V_{th})^2$$
 - 확실하지 않은 구체 수치는 지어내지 말고, 증가/감소 같은 경향이나 정성적 표현으로 씁니다.
 
+[원칙]
+- 틀에 주제를 맞추지 말고, 주제의 성격에 맞춰 내용을 씁니다. 해당되지 않는 항목(예: 공정이 아닌 지표·특성에 '동작 원리', 장단점이 없는 개념에 '장단점', 정립된 분류가 없는데 '종류')은 쓰지 않고, 그 주제에 실제로 필요한 항목으로 바꿔 씁니다.
+- 교과서에 정립되지 않은 분류, 지어낸 수치·공식, 주제와 직접 상관없는 일반론은 쓰지 않습니다.
+
 [형식]
 - 출력은 마크다운 본문만 쓰세요. JSON, 서두 인사, 맺음말, 최상위 제목(#, ##)은 쓰지 않습니다.
 - 전체를 코드블록(```)으로 감싸지 않습니다.
 - 소제목은 `### [뱃지] 제목` 형식입니다. 예: `### [핵심 개념] 식각 선택비란?`
 - 인라인 팁은 `> 💡 [실무 코멘트] ...` 또는 `> 💡 [면접 팁] ...` 처럼 한 줄 인용문으로 씁니다."""
 
-THEORY_PARTS = [
+DEFAULT_PARTS = [  # 계획 단계가 실패했을 때만 쓰는 기본 틀
     {
         "no": 1,
         "name": "개념 & 원리",
@@ -212,7 +216,7 @@ def validate_part(text, part):
         raise ValueError(f"마지막 소제목이 {last_badge} 가 아님")
 
 
-def build_part_prompt(part, previous_text):
+def build_part_prompt(part, previous_text, outline=""):
     prev_block = ""
     if previous_text:
         prev_block = f"""
@@ -225,7 +229,7 @@ def build_part_prompt(part, previous_text):
 
 - 분류: {sel_cat} > {sel_sub}
 - 주제: {target_keyword}
-{prev_block}
+{outline}{prev_block}
 [이 파트 작성 지침]
 {part['guide']}
 
@@ -260,12 +264,133 @@ def ask_markdown(user_prompt, part, retries=2):
     raise RuntimeError(f"이론 {part['no']}/3 생성 실패: {last_err}")
 
 
+PLAN_SYSTEM = "당신은 반도체 이론 노트의 목차를 설계하는 편집자입니다. 반드시 유효한 JSON 객체 하나만 출력합니다."
+
+PLAN_SCHEMA = """{
+  "kind": "process | device | phenomenon | metric | material | flow 중 하나",
+  "use_formula": true 또는 false,
+  "parts": [
+    {"name": "파트 이름(12자 이내)", "focus": ["다룰 내용 1", "다룰 내용 2", "다룰 내용 3"], "badges": ["핵심 개념", "정의"]},
+    {"name": "...", "focus": ["..."], "badges": ["..."]},
+    {"name": "...", "focus": ["..."], "badges": ["..."]}
+  ]
+}"""
+
+
+def build_plan_prompt():
+    return f"""'{target_keyword}' ({sel_cat} > {sel_sub}) 에 대한 이론 노트의 구성을 설계하세요.
+
+먼저 이 주제의 성격(kind)을 판단합니다.
+- process: 공정/장비가 동작하는 방식  - device: 소자·구조  - phenomenon: 물리 현상·효과
+- metric: 특성·지표·평가량 (예: 선택비, 단차 피복성, 수율)  - material: 재료  - flow: 공정 흐름·테스트 체계
+
+노트는 항상 3개 파트이며 역할은 고정입니다.
+- 파트1(개념): 정의, 왜 중요한지, 직관적 이해
+- 파트2(세부): 시험·면접에서 깊게 묻는 핵심. 주제에 실제로 맞는 것만 고릅니다. (예: 측정·정의 방법, 값을 좌우하는 변수, 메커니즘, 비교, 정의식)
+- 파트3(실무·요약): 현업에서 겪는 문제와 개선 방향, 마지막은 암기 포인트
+
+설계 규칙
+- '동작 원리'는 process·device일 때만 씁니다. metric·phenomenon이면 '정의와 측정 방법', '값을 좌우하는 요인', '발생 원인' 등으로 바꿉니다.
+- '장단점'은 장단점이 실제로 있는 기술·방식일 때만 씁니다. metric이면 '값이 좋을 때/나쁠 때의 영향', '개선 방법'으로 바꿉니다.
+- '종류·분류'는 교과서에 정립된 분류가 있을 때만 씁니다.
+- use_formula는 널리 쓰이는 정의식·관계식이 실제로 있을 때만 true 입니다.
+- 각 파트의 focus는 이 주제에 딱 맞는 구체적 항목 2~4개이고, 파트 간에 겹치면 안 됩니다.
+- badges는 대괄호 없이, 그 파트 소제목에 쓸 짧은 이름 2~4개입니다. (예: 핵심 개념, 정의, 측정 방법, 변수 영향, 비교, 수식, 실무 이슈, 개선 방법)
+
+아래 JSON 형식으로만 답하세요.
+{PLAN_SCHEMA}"""
+
+
+def validate_plan(plan):
+    if not isinstance(plan, dict) or not isinstance(plan.get("parts"), list) or len(plan["parts"]) != 3:
+        raise ValueError("parts 가 3개가 아님")
+    for pt in plan["parts"]:
+        if not isinstance(pt.get("name"), str) or not pt["name"].strip():
+            raise ValueError("파트 이름 없음")
+        if not isinstance(pt.get("focus"), list) or not (1 <= len(pt["focus"]) <= 6) or not all(isinstance(x, str) and x.strip() for x in pt["focus"]):
+            raise ValueError("focus 형식 오류")
+        if not isinstance(pt.get("badges"), list) or not (1 <= len(pt["badges"]) <= 6) or not all(isinstance(x, str) and x.strip() for x in pt["badges"]):
+            raise ValueError("badges 형식 오류")
+
+
+def make_plan(retries=2):
+    """주제 성격에 맞는 3파트 구성안을 받는다. 끝내 실패하면 None (→ 기본 틀 사용)."""
+    for attempt in range(1, retries + 2):
+        try:
+            res = client.chat.completions.create(
+                model=THEORY_MODEL,
+                messages=[{"role": "system", "content": PLAN_SYSTEM}, {"role": "user", "content": build_plan_prompt()}],
+                temperature=0.2,
+                max_tokens=800,
+                response_format={"type": "json_object"},
+            )
+            plan = json.loads(clean_json_string(res.choices[0].message.content or ""))
+            validate_plan(plan)
+            return plan
+        except Exception as e:
+            print(f"   ↻ 구성 설계 재시도 {attempt}/{retries + 1}: {e}")
+    return None
+
+
+def parts_from_plan(plan):
+    use_formula = bool(plan.get("use_formula"))
+    badge = lambda names: ", ".join(f"[{b.strip().strip('[]')}]" for b in names)
+    formula_rule = (
+        "- 핵심 수식 1~2개를 독립 수식($$...$$)으로 넣고, 쓰인 기호는 바로 아래에 한 줄씩 설명합니다."
+        if use_formula else
+        "- 수식은 억지로 만들지 않습니다. 정의식이 필요하면 말로 풀어 쓰세요."
+    )
+    def focus(i):
+        return "\n".join(f"  · {x.strip()}" for x in plan["parts"][i]["focus"])
+    return [
+        {
+            "no": 1, "name": plan["parts"][0]["name"].strip(), "badges": badge(plan["parts"][0]["badges"]), "tip": "[면접 팁]",
+            "guide": f"""- 이 파트의 역할: 처음 보는 사람도 이해할 수 있는 '뼈대'(개념)입니다.
+- 이 파트에서 다룰 내용 (주제에 맞게 설계됨):
+{focus(0)}
+- 소제목 2~3개, 전체 약 600~1,000자. 위 항목 외의 일반론은 쓰지 않습니다.
+- 세부 변수·수식·표, 실무 이슈는 다음 파트에서 다루므로 여기서는 쓰지 않습니다.""",
+            "min_headings": 2, "min_chars": 350, "last_badge": None,
+        },
+        {
+            "no": 2, "name": plan["parts"][1]["name"].strip(), "badges": badge(plan["parts"][1]["badges"]), "tip": "[실무 코멘트]",
+            "guide": f"""- 이 파트의 역할: 시험과 면접에서 구체적으로 묻는 '세부 내용'입니다.
+- 이 파트에서 다룰 내용 (주제에 맞게 설계됨):
+{focus(1)}
+- 비교나 변수 → 결과 관계가 있으면 마크다운 표로 정리합니다. 억지로 만든 분류·종류 표는 금지입니다.
+{formula_rule}
+- 소제목 2~3개, 전체 약 800~1,300자.
+- 정의와 배경은 반복하지 않고, 현업 이슈는 다음 파트에서 다룹니다.""",
+            "min_headings": 2, "min_chars": 400, "last_badge": None,
+        },
+        {
+            "no": 3, "name": plan["parts"][2]["name"].strip(), "badges": badge(plan["parts"][2]["badges"] + ["암기 포인트"]), "tip": "[면접 팁]",
+            "guide": f"""- 이 파트의 역할: 현업 감각과 시험 직전 복습용 '마무리'입니다.
+- 이 파트에서 다룰 내용 (주제에 맞게 설계됨):
+{focus(2)}
+- 마지막 소제목은 반드시 `### [암기 포인트] 시험·면접 직전 체크` 로 하고, 3~5개의 짧은 불릿으로 핵심을 요약합니다.
+- 소제목 3개, 전체 약 600~1,000자.
+- 앞 파트 내용은 반복하지 말고 새로운 관점만 추가합니다.""",
+            "min_headings": 3, "min_chars": 350, "last_badge": "[암기 포인트]",
+        },
+    ]
+
+
 def generate_theory():
+    plan = make_plan()
+    if plan:
+        parts = parts_from_plan(plan)
+        print(f"   🧭 구성 설계 완료 (성격: {plan.get('kind', '?')}) → " + " / ".join(pt["name"] for pt in parts))
+        outline = "[전체 구성 계획 - 파트끼리 내용이 겹치지 않게 합니다]\n" + "\n".join(
+            f"- {pt['no']}/3 「{pt['name']}」" for pt in parts) + "\n"
+    else:
+        parts, outline = DEFAULT_PARTS, ""
+        print("   ⚠️ 구성 설계에 실패해 기본 틀로 진행합니다.")
     sections = []
-    for part in THEORY_PARTS:
+    for part in parts:
         print(f"   📖 이론 {part['no']}/3 「{part['name']}」 생성 중...")
         previous = "\n\n".join(sections)
-        sections.append(ask_markdown(build_part_prompt(part, previous), part))
+        sections.append(ask_markdown(build_part_prompt(part, previous, outline), part))
     return "\n\n".join(sections)
 
 
