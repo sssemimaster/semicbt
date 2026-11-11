@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>반도체 새김 - 오늘의 배움을 새기다</title>
   <meta name="description" content="반도체 직무 CBT · 이론 · 면접 대비. 매일의 학습이 나만의 웨이퍼 회로로 새겨집니다.">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Sora:wght@500;600;700;800&display=swap">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%230f1729' stroke='%2367e8f9' stroke-width='2'/%3E%3Cpath d='M9 18h5v-5h4v8h5' fill='none' stroke='%23a78bfa' stroke-width='2'/%3E%3C/svg%3E">
   
   <script>
@@ -30,17 +32,17 @@
     /* ===== 라이트/다크 색상 토큰 (html.dark 일 때 아래 값으로 바뀜) ===== */
     :root {
       color-scheme: light;
-      --hl-bg: #ecfdf5; --hl-border: #a7f3d0; --hl-accent: #10b981; --hl-text: #1f2937;
-      --badge-bg: #d1fae5; --badge-fg: #047857;
+      --hl-bg: #eef2ff; --hl-border: #c7d2fe; --hl-accent: #6366f1; --hl-text: #1f2937;
+      --badge-bg: #e0e7ff; --badge-fg: #4338ca;
       --heading: #0f172a;
-      --tbl-bg: #ffffff; --tbl-border: #e2e8f0; --tbl-head-bg: #ecfdf5; --tbl-head-fg: #047857; --tbl-text: #334155;
+      --tbl-bg: #ffffff; --tbl-border: #e2e8f0; --tbl-head-bg: #eef2ff; --tbl-head-fg: #4338ca; --tbl-text: #334155;
     }
     html.dark {
       color-scheme: dark;
-      --hl-bg: #1a231c; --hl-border: #2d4a36; --hl-accent: #84cc9c; --hl-text: #e2e8f0;
-      --badge-bg: #2d4a36; --badge-fg: #84cc9c;
+      --hl-bg: #0d1f35; --hl-border: #1e3a5f; --hl-accent: #67e8f9; --hl-text: #e2e8f0;
+      --badge-bg: #14304f; --badge-fg: #67e8f9;
       --heading: #f8fafc;
-      --tbl-bg: #1e293b; --tbl-border: #334155; --tbl-head-bg: #253328; --tbl-head-fg: #84cc9c; --tbl-text: #cbd5e1;
+      --tbl-bg: #0f1a30; --tbl-border: #22314d; --tbl-head-bg: #112844; --tbl-head-fg: #67e8f9; --tbl-text: #cbd5e1;
     }
 
     /* 하이라이트 박스 & 뱃지 커스텀 */
@@ -55,7 +57,32 @@
     .custom-table-container tr:last-child td { border-bottom: 0; }
 
     /* ===== 반도체 새김 브랜드 스타일 ===== */
-    body { font-family: 'Pretendard', 'Noto Sans KR', system-ui, -apple-system, 'Segoe UI', sans-serif; }
+    body { font-family: 'IBM Plex Sans KR', 'Noto Sans KR', system-ui, -apple-system, 'Segoe UI', sans-serif; font-feature-settings: 'tnum' 1; }
+    .font-display { font-family: 'Sora', 'IBM Plex Sans KR', sans-serif; letter-spacing: -.02em; }
+    html .font-mono, .eyebrow, .back-link { font-family: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace; }
+    .eyebrow { font-size: .68rem; letter-spacing: .24em; text-transform: uppercase; font-weight: 700; color: #6366f1; }
+    html.dark .eyebrow { color: #67e8f9; }
+    .page-title { font-weight: 700; font-size: clamp(1.55rem, 3vw, 2rem); letter-spacing: -.035em; line-height: 1.2; }
+    .back-link { display: inline-flex; align-items: center; gap: .45rem; font-size: .72rem; letter-spacing: .06em; font-weight: 700; color: #64748b; transition: color .15s; width: fit-content; }
+    .back-link:hover { color: #4f46e5; } html.dark .back-link:hover { color: #67e8f9; }
+    h1, h2, h3, h4 { letter-spacing: -.02em; }
+    select { appearance: none; -webkit-appearance: none; padding-right: 2.5rem !important; background-repeat: no-repeat; background-position: right .9rem center; background-size: 1rem;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 8l5 5 5-5'/%3E%3C/svg%3E"); }
+    input[type=checkbox] { accent-color: #6366f1; }
+    html.dark input[type=checkbox] { accent-color: #67e8f9; }
+    .opt { transition: border-color .15s, background-color .15s, transform .15s, box-shadow .15s; }
+    .opt:not(:disabled):hover { border-color: #818cf8; transform: translateX(2px); box-shadow: 0 0 0 3px rgba(99,102,241,.10); }
+    html.dark .opt:not(:disabled):hover { border-color: #67e8f9; box-shadow: 0 0 0 3px rgba(103,232,249,.10); }
+    html .opt.opt-correct { border-color: #10b981 !important; background: rgba(16,185,129,.10) !important; }
+    html .opt.opt-wrong { border-color: #f43f5e !important; background: rgba(244,63,94,.10) !important; }
+    .opt-num { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+    html .opt.opt-correct .opt-num { background: #10b981 !important; color: #fff !important; }
+    html .opt.opt-wrong .opt-num { background: #f43f5e !important; color: #fff !important; }
+    .qcard { position: relative; overflow: hidden; }
+    .qbar-wrap { height: 3px; margin: -1.5rem -1.5rem 1.4rem; background: rgba(148,163,184,.18); }
+    .qbar { height: 100%; transition: width .35s ease; background: linear-gradient(90deg, #22d3ee, #818cf8 58%, #e879f9); }
+    @keyframes etch { to { stroke-dashoffset: 0; } }
+    .etch-line { stroke-dasharray: 1; stroke-dashoffset: 1; animation: etch 1.6s .5s cubic-bezier(.4,0,.2,1) forwards; }
     body::before { content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
       background: radial-gradient(900px 500px at 85% -10%, rgba(99,102,241,.10), transparent 60%), radial-gradient(700px 420px at -10% 10%, rgba(34,211,238,.08), transparent 60%),
         linear-gradient(rgba(100,116,139,.06) 1px, transparent 1px) 0 0/32px 32px, linear-gradient(90deg, rgba(100,116,139,.06) 1px, transparent 1px) 0 0/32px 32px; }
@@ -63,7 +90,10 @@
         linear-gradient(rgba(148,163,184,.05) 1px, transparent 1px) 0 0/32px 32px, linear-gradient(90deg, rgba(148,163,184,.05) 1px, transparent 1px) 0 0/32px 32px; }
     main, footer { position: relative; z-index: 1; }
     .prism-text { background: linear-gradient(90deg, #67e8f9, #a78bfa 55%, #f472b6); -webkit-background-clip: text; background-clip: text; color: transparent; }
-    .prism-btn { background: linear-gradient(90deg, #22d3ee, #818cf8 55%, #e879f9); color: #0a1020; }
+    .pbtn { background: linear-gradient(135deg, #4f46e5, #7c3aed); color: #fff; transition: filter .15s, transform .15s; }
+    html.dark .pbtn { background: linear-gradient(90deg, #22d3ee, #818cf8 58%, #e879f9); color: #0a1020; }
+    .pbtn:hover:not(:disabled) { filter: brightness(1.08); }
+    .hero .pbtn { background: linear-gradient(90deg, #22d3ee, #818cf8 58%, #e879f9); color: #0a1020; }
     .nav-btn { padding: .45rem .8rem; border-radius: .6rem; font-size: .875rem; font-weight: 700; color: #cbd5e1; transition: background .15s, color .15s; }
     .nav-btn:hover { background: rgba(255,255,255,.08); color: #fff; }
     .nav-btn.active { background: rgba(255,255,255,.14); color: #fff; box-shadow: inset 0 -2px 0 #67e8f9; }
@@ -71,7 +101,7 @@
     .feature-card:hover { transform: translateY(-2px); box-shadow: 0 10px 30px -12px rgba(99,102,241,.45); }
     @keyframes waferPulse { 0%,100% { opacity: .75 } 50% { opacity: 1 } }
     .wafer-latest { animation: waferPulse 2.4s ease-in-out infinite; }
-    @media (prefers-reduced-motion: reduce) { .wafer-latest { animation: none; } .feature-card { transition: none; } }
+    @media (prefers-reduced-motion: reduce) { .etch-line { animation: none; stroke-dashoffset: 0; } .wafer-latest { animation: none; } .feature-card { transition: none; } }
 
     /* 수식: 좁은 화면에서 긴 수식이 잘리지 않고 가로 스크롤 되도록 */
     .katex-display { overflow-x: auto; overflow-y: hidden; padding: 0.35rem 0; margin: 1rem 0 !important; }
@@ -82,9 +112,9 @@
 
   <!-- 좌측 슬라이드 사이드바 -->
   <div id="sidebarOverlay" class="fixed inset-0 bg-black/60 z-40 hidden transition-opacity" onclick="toggleSidebar()"></div>
-  <div id="sidebar" class="fixed inset-y-0 left-0 transform -translate-x-full w-64 bg-white dark:bg-[#0f1729] border-r border-slate-200 dark:border-slate-800 z-50 transition-transform duration-300 flex flex-col shadow-2xl">
-    <div class="p-5 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center">
-      <span class="text-xl font-black text-indigo-700 dark:text-cyan-300">◉ 반도체 새김</span>
+  <div id="sidebar" class="fixed inset-y-0 left-0 transform -translate-x-full w-64 bg-white dark:bg-[#0f1729] border-r border-slate-200 dark:border-white/10 z-50 transition-transform duration-300 flex flex-col shadow-2xl">
+    <div class="p-5 border-b border-slate-200 dark:border-white/10 flex justify-between items-center">
+      <span class="text-xl font-bold text-indigo-700 dark:text-cyan-300">◉ 반도체 새김</span>
       <button onclick="toggleSidebar()" class="text-3xl text-slate-400 hover:text-slate-600 dark:hover:text-white">&times;</button>
     </div>
     <div class="flex-1 p-4 space-y-2 mt-2">
@@ -92,7 +122,7 @@
       <button onclick="openSetup('quiz'); toggleSidebar()" class="w-full text-left p-4 rounded-xl hover:bg-indigo-50 dark:hover:bg-indigo-900/20 text-indigo-700 dark:text-indigo-400 font-bold flex items-center gap-3"><span class="text-xl">📝</span> 문제 풀기</button>
       <button onclick="openSetup('quiz', true); toggleSidebar()" class="w-full text-left p-4 rounded-xl hover:bg-amber-50 dark:hover:bg-amber-900/20 text-amber-700 dark:text-amber-400 font-bold flex items-center gap-3"><span class="text-xl">⏱️</span> 모의고사</button>
       <button onclick="openSetup('interview'); toggleSidebar()" class="w-full text-left p-4 rounded-xl hover:bg-rose-50 dark:hover:bg-rose-900/20 text-rose-700 dark:text-rose-400 font-bold flex items-center gap-3"><span class="text-xl">🗣️</span> 면접 대비</button>
-      <button onclick="navTo('view-learning', {level:'home'}); toggleSidebar()" class="w-full text-left p-4 rounded-xl hover:bg-emerald-50 dark:hover:bg-[#1a231c] text-emerald-800 dark:text-[#84cc9c] font-bold flex items-center gap-3"><span class="text-xl">📖</span> 이론 백과사전</button>
+      <button onclick="navTo('view-learning', {level:'home'}); toggleSidebar()" class="w-full text-left p-4 rounded-xl hover:bg-indigo-50 dark:hover:bg-[#0f2233] text-indigo-800 dark:text-[#67e8f9] font-bold flex items-center gap-3"><span class="text-xl">📖</span> 이론 백과사전</button>
       <button onclick="navTo('view-note'); toggleSidebar()" class="w-full text-left p-4 rounded-xl hover:bg-amber-50 dark:hover:bg-amber-900/20 text-amber-700 dark:text-amber-400 font-bold flex items-center gap-3"><span class="text-xl">📒</span> 오답 노트</button>
       <button onclick="navTo('view-stats'); toggleSidebar()" class="w-full text-left p-4 rounded-xl hover:bg-sky-50 dark:hover:bg-sky-900/20 text-sky-700 dark:text-sky-400 font-bold flex items-center gap-3"><span class="text-xl">📊</span> 내 학습 통계</button>
     </div>
@@ -102,9 +132,12 @@
     <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
       <div class="flex items-center gap-3">
         <button onclick="toggleSidebar()" aria-label="메뉴" class="lg:hidden text-2xl hover:text-cyan-300 transition outline-none">☰</button>
-        <button onclick="navTo('view-lobby')" class="flex items-center gap-2.5 outline-none">
-          <svg viewBox="0 0 32 32" class="w-8 h-8" aria-hidden="true"><defs><linearGradient id="lg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#67e8f9"/><stop offset=".5" stop-color="#a78bfa"/><stop offset="1" stop-color="#f472b6"/></linearGradient></defs><circle cx="16" cy="16" r="14" fill="#141c33" stroke="url(#lg1)" stroke-width="1.6"/><path d="M8 19h5v-5h4v8h6M12 10h4v3" fill="none" stroke="url(#lg1)" stroke-width="1.5" stroke-linecap="round"/><circle cx="23" cy="22" r="1.4" fill="#67e8f9"/></svg>
-          <span class="text-lg font-black tracking-tight">반도체 <span class="prism-text">새김</span></span>
+        <button onclick="navTo('view-lobby')" class="flex items-center gap-3 outline-none" aria-label="반도체 새김 홈">
+          <svg viewBox="0 0 36 36" class="w-9 h-9" aria-hidden="true"><defs><linearGradient id="lg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#67e8f9"/><stop offset=".5" stop-color="#a78bfa"/><stop offset="1" stop-color="#f472b6"/></linearGradient></defs>
+            <circle cx="18" cy="18" r="16" fill="#101a33" stroke="url(#lg1)" stroke-width="1.4"/><circle cx="18" cy="18" r="12.5" fill="none" stroke="#fff" stroke-opacity=".08"/>
+            <g fill="#fff" fill-opacity=".1"><rect x="9" y="9" width="4" height="4" rx=".6"/><rect x="16" y="9" width="4" height="4" rx=".6"/><rect x="23" y="9" width="4" height="4" rx=".6"/><rect x="9" y="23" width="4" height="4" rx=".6"/><rect x="23" y="23" width="4" height="4" rx=".6"/></g>
+            <path d="M8.5 19.5h6v-5h5v9h8" fill="none" stroke="url(#lg1)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="27.5" cy="23.5" r="1.6" fill="#67e8f9"/><circle cx="18" cy="34" r="2.4" fill="#0a1020"/></svg>
+          <span class="flex flex-col items-start leading-none text-left"><span class="font-mono text-[9px] tracking-[.34em] text-cyan-200/70 font-bold">SEMICONDUCTOR</span><span class="mt-1.5 text-[22px] font-bold tracking-[-.05em] prism-text">새김</span></span>
         </button>
       </div>
       <nav class="hidden lg:flex items-center gap-1" aria-label="주 메뉴">
@@ -130,22 +163,25 @@
     <!-- 🏠 메인 로비 -->
     <div id="view-lobby" class="w-full flex flex-col gap-6 lg:gap-8">
       <!-- 히어로 -->
-      <section class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#0a1124] via-[#0c1a3a] to-[#141a3a] text-white border border-white/10 shadow-xl">
+      <section class="hero relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#0a1124] via-[#0c1a3a] to-[#141a3a] text-white border border-white/10 shadow-xl">
         <div class="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-indigo-500/20 blur-3xl pointer-events-none"></div>
         <div class="absolute -bottom-28 -left-16 w-72 h-72 rounded-full bg-cyan-400/10 blur-3xl pointer-events-none"></div>
         <div class="relative grid lg:grid-cols-2 gap-8 items-center p-6 sm:p-10 lg:p-12">
           <div>
-            <p class="text-[11px] tracking-[.25em] font-bold text-cyan-200/80 mb-4">SEMICONDUCTOR · MY LEARNING WAFER</p>
-            <h2 class="text-4xl sm:text-5xl font-black leading-[1.15] tracking-tight">오늘의 배움을<br><span class="prism-text">새기세요.</span></h2>
-            <p class="mt-5 text-slate-300 leading-relaxed max-w-lg">매일 쌓이는 지식이 나만의 웨이퍼를 완성합니다.<br> 이론으로 개념을 잡고, 문제와 면접으로 다지는 반도체 직무 학습 공간.</p>
-            <div class="mt-7 flex flex-wrap gap-3">
-              <button onclick="navTo('view-learning', {level:'home'})" class="prism-btn font-black px-6 py-3 rounded-xl shadow-lg hover:opacity-90 transition">📖 이론 보기 →</button>
-              <button onclick="openSetup('quiz')" class="font-bold px-6 py-3 rounded-xl border border-white/25 hover:bg-white/10 transition">📝 문제 풀기</button>
+            <p class="font-mono text-[11px] tracking-[.28em] font-bold text-cyan-200/80 mb-5 flex items-center gap-3"><span class="w-8 h-px bg-gradient-to-r from-cyan-300 to-transparent"></span>MY LEARNING WAFER</p>
+            <h2 class="leading-[1.14] tracking-[-.04em]" style="font-size:clamp(2.4rem,5.2vw,3.9rem)">
+              <span class="block font-light text-slate-200">오늘의 배움을</span>
+              <span class="relative inline-block font-bold prism-text pb-3">새기세요.<svg class="absolute left-0 bottom-0 w-full h-3" viewBox="0 0 200 12" preserveAspectRatio="none" aria-hidden="true"><path class="etch-line" pathLength="1" d="M0 8 H64 V3 H104 V9 H200" fill="none" stroke="url(#lg1)" stroke-width="1.6" vector-effect="non-scaling-stroke"/></svg></span>
+            </h2>
+            <p class="mt-6 text-[15px] sm:text-base font-light text-slate-300 leading-[1.8] max-w-lg">매일 쌓이는 지식이 나만의 웨이퍼를 완성합니다.<br>이론으로 개념을 잡고, 문제와 면접으로 다지는 반도체 직무 학습 공간.</p>
+            <div class="mt-8 flex flex-wrap gap-3">
+              <button onclick="navTo('view-learning', {level:'home'})" class="pbtn font-bold px-7 py-3.5 rounded-full shadow-lg inline-flex items-center gap-2">이론 보기 <span aria-hidden="true">→</span></button>
+              <button onclick="openSetup('quiz')" class="font-semibold px-7 py-3.5 rounded-full border border-white/25 hover:bg-white/10 transition">문제 풀기</button>
             </div>
-            <div class="mt-9 grid grid-cols-3 max-w-md border-t border-white/10 pt-5 text-center sm:text-left">
-              <div><div id="heroTheories" class="text-2xl font-black">0</div><div class="text-[11px] text-slate-400 mt-0.5">등록된 이론</div></div>
-              <div><div id="heroQuizzes" class="text-2xl font-black">0</div><div class="text-[11px] text-slate-400 mt-0.5">객관식 문제</div></div>
-              <div><div id="heroInterviews" class="text-2xl font-black">0</div><div class="text-[11px] text-slate-400 mt-0.5">면접 문항</div></div>
+            <div class="mt-10 grid grid-cols-3 max-w-md border-t border-white/10 pt-6">
+              <div><div id="heroTheories" class="font-display text-3xl font-bold">0</div><div class="font-mono text-[10px] tracking-[.14em] text-slate-400 mt-1">THEORY</div></div>
+              <div class="border-l border-white/10 pl-5"><div id="heroQuizzes" class="font-display text-3xl font-bold">0</div><div class="font-mono text-[10px] tracking-[.14em] text-slate-400 mt-1">QUIZ</div></div>
+              <div class="border-l border-white/10 pl-5"><div id="heroInterviews" class="font-display text-3xl font-bold">0</div><div class="font-mono text-[10px] tracking-[.14em] text-slate-400 mt-1">INTERVIEW</div></div>
             </div>
           </div>
           <div id="waferPanel"></div>
@@ -156,32 +192,32 @@
 
       <!-- 학습 메뉴 -->
       <section>
-        <div class="flex items-end justify-between mb-4"><h3 class="text-lg font-black text-slate-900 dark:text-white">무엇을 공부할까요?</h3><span class="text-xs text-slate-400 dark:text-slate-500">가입 없이 바로 시작</span></div>
+        <div class="flex items-end justify-between mb-4"><h3 class="text-lg font-bold text-slate-900 dark:text-white">무엇을 공부할까요?</h3><span class="text-xs text-slate-400 dark:text-slate-500">가입 없이 바로 시작</span></div>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <button onclick="navTo('view-learning', {level:'home'})" class="feature-card text-left bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-white/10 rounded-2xl p-5 shadow-sm">
-            <span class="w-11 h-11 rounded-xl bg-emerald-50 dark:bg-[#0f2a2e] border border-emerald-100 dark:border-teal-900/60 flex items-center justify-center text-xl mb-4">📖</span>
-            <h4 class="font-black text-slate-900 dark:text-white">이론 백과사전</h4><p class="text-sm text-slate-500 dark:text-slate-400 mt-1">소자 · 8대 공정 · 첨단 기술을 폴더별로 정리</p>
-            <span class="inline-block mt-4 text-sm font-bold text-emerald-700 dark:text-[#84cc9c]">이론 보기 →</span></button>
+            <span class="w-11 h-11 rounded-xl bg-indigo-50 dark:bg-[#0f2a2e] border border-indigo-100 dark:border-teal-900/60 flex items-center justify-center mb-4 text-teal-600 dark:text-teal-300 "><svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z"/></svg></span>
+            <h4 class="font-bold text-slate-900 dark:text-white">이론 백과사전</h4><p class="text-sm text-slate-500 dark:text-slate-400 mt-1">소자 · 8대 공정 · 첨단 기술을 폴더별로 정리</p>
+            <span class="inline-block mt-4 text-sm font-bold text-indigo-700 dark:text-[#67e8f9]">이론 보기 →</span></button>
           <button onclick="openSetup('quiz')" class="feature-card relative text-left bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-white/10 rounded-2xl p-5 shadow-sm">
-            <span class="absolute top-4 right-4 text-[10px] font-black bg-indigo-100 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 px-2 py-0.5 rounded-full">추천</span>
-            <span class="w-11 h-11 rounded-xl bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-100 dark:border-indigo-500/20 flex items-center justify-center text-xl mb-4">📝</span>
-            <h4 class="font-black text-slate-900 dark:text-white">문제 풀이</h4><p class="text-sm text-slate-500 dark:text-slate-400 mt-1">과목과 문항 수를 골라 한 문제씩 즉시 채점</p>
+            <span class="absolute top-4 right-4 text-[10px] font-bold bg-indigo-100 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 px-2 py-0.5 rounded-full">추천</span>
+            <span class="w-11 h-11 rounded-xl bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-100 dark:border-indigo-500/20 flex items-center justify-center mb-4 text-indigo-600 dark:text-indigo-300 "><svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h3"/></svg></span>
+            <h4 class="font-bold text-slate-900 dark:text-white">문제 풀이</h4><p class="text-sm text-slate-500 dark:text-slate-400 mt-1">과목과 문항 수를 골라 한 문제씩 즉시 채점</p>
             <span class="inline-block mt-4 text-sm font-bold text-indigo-700 dark:text-indigo-300">시작하기 →</span></button>
           <button onclick="openSetup('quiz', true)" class="feature-card text-left bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-white/10 rounded-2xl p-5 shadow-sm">
-            <span class="w-11 h-11 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-100 dark:border-amber-500/20 flex items-center justify-center text-xl mb-4">⏱️</span>
-            <h4 class="font-black text-slate-900 dark:text-white">실전 모의고사</h4><p class="text-sm text-slate-500 dark:text-slate-400 mt-1">문항당 90초 타이머 · 마지막에 한꺼번에 채점</p>
+            <span class="w-11 h-11 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-100 dark:border-amber-500/20 flex items-center justify-center mb-4 text-amber-600 dark:text-amber-300 "><svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/></svg></span>
+            <h4 class="font-bold text-slate-900 dark:text-white">실전 모의고사</h4><p class="text-sm text-slate-500 dark:text-slate-400 mt-1">문항당 90초 타이머 · 마지막에 한꺼번에 채점</p>
             <span class="inline-block mt-4 text-sm font-bold text-amber-700 dark:text-amber-400">응시하기 →</span></button>
           <button onclick="openSetup('interview')" class="feature-card text-left bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-white/10 rounded-2xl p-5 shadow-sm">
-            <span class="w-11 h-11 rounded-xl bg-rose-50 dark:bg-rose-500/10 border border-rose-100 dark:border-rose-500/20 flex items-center justify-center text-xl mb-4">🗣️</span>
-            <h4 class="font-black text-slate-900 dark:text-white">실무 면접 대비</h4><p class="text-sm text-slate-500 dark:text-slate-400 mt-1">핵심 키워드와 모범 답안으로 말하기 연습</p>
+            <span class="w-11 h-11 rounded-xl bg-rose-50 dark:bg-rose-500/10 border border-rose-100 dark:border-rose-500/20 flex items-center justify-center mb-4 text-rose-600 dark:text-rose-300 "><svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.5 7.2L4 20l1.1-4.2A8 8 0 1 1 21 12z"/><path d="M8.5 11h7M8.5 14h4"/></svg></span>
+            <h4 class="font-bold text-slate-900 dark:text-white">실무 면접 대비</h4><p class="text-sm text-slate-500 dark:text-slate-400 mt-1">핵심 키워드와 모범 답안으로 말하기 연습</p>
             <span class="inline-block mt-4 text-sm font-bold text-rose-700 dark:text-rose-400">연습하기 →</span></button>
           <button onclick="navTo('view-note')" class="feature-card text-left bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-white/10 rounded-2xl p-5 shadow-sm">
-            <span class="w-11 h-11 rounded-xl bg-orange-50 dark:bg-orange-500/10 border border-orange-100 dark:border-orange-500/20 flex items-center justify-center text-xl mb-4">📒</span>
-            <h4 class="font-black text-slate-900 dark:text-white">오답 노트</h4><p id="homeNoteDesc" class="text-sm text-slate-500 dark:text-slate-400 mt-1">틀린 문제는 자동으로 모이고 메모도 남길 수 있어요</p>
+            <span class="w-11 h-11 rounded-xl bg-orange-50 dark:bg-orange-500/10 border border-orange-100 dark:border-orange-500/20 flex items-center justify-center mb-4 text-orange-600 dark:text-orange-300 "><svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H6z"/><path d="M6 3v18M10 8h5M10 12h5"/></svg></span>
+            <h4 class="font-bold text-slate-900 dark:text-white">오답 노트</h4><p id="homeNoteDesc" class="text-sm text-slate-500 dark:text-slate-400 mt-1">틀린 문제는 자동으로 모이고 메모도 남길 수 있어요</p>
             <span class="inline-block mt-4 text-sm font-bold text-orange-700 dark:text-orange-400">복습하기 →</span></button>
           <button onclick="navTo('view-stats')" class="feature-card text-left bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-white/10 rounded-2xl p-5 shadow-sm">
-            <span class="w-11 h-11 rounded-xl bg-sky-50 dark:bg-sky-500/10 border border-sky-100 dark:border-sky-500/20 flex items-center justify-center text-xl mb-4">📊</span>
-            <h4 class="font-black text-slate-900 dark:text-white">학습 통계 · 약점</h4><p class="text-sm text-slate-500 dark:text-slate-400 mt-1">과목별 정답률과 약한 주제를 한눈에</p>
+            <span class="w-11 h-11 rounded-xl bg-sky-50 dark:bg-sky-500/10 border border-sky-100 dark:border-sky-500/20 flex items-center justify-center mb-4 text-sky-600 dark:text-sky-300 "><svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span>
+            <h4 class="font-bold text-slate-900 dark:text-white">학습 통계 · 약점</h4><p class="text-sm text-slate-500 dark:text-slate-400 mt-1">과목별 정답률과 약한 주제를 한눈에</p>
             <span class="inline-block mt-4 text-sm font-bold text-sky-700 dark:text-sky-400">분석 보기 →</span></button>
         </div>
       </section>
@@ -192,43 +228,44 @@
 
     <!-- ⚙️ 공통 설정 화면 -->
     <div id="view-setup" class="hidden w-full flex flex-col">
-      <button onclick="goBack()" class="text-slate-400 font-bold text-sm mb-3 w-fit">⬅️ 뒤로</button>
-      <div class="bg-white dark:bg-[#0f1729] rounded-2xl border border-slate-200 dark:border-slate-800 p-6">
-        <h2 id="setupTitle" class="text-xl font-bold dark:text-white mb-6">설정</h2>
+      <button onclick="goBack()" class="back-link mb-5">← 뒤로</button>
+      <div class="bg-white dark:bg-[#0f1729] rounded-2xl border border-slate-200 dark:border-white/10 p-6">
+        <p id="setupEyebrow" class="eyebrow mb-2">PRACTICE</p><h2 id="setupTitle" class="page-title text-slate-900 dark:text-white mb-7">설정</h2>
         <label class="block text-xs font-bold text-slate-400 dark:text-slate-500 mb-1.5">과목</label>
         <div class="mb-4">
-          <select id="select-subject" onchange="updateSetupHint()" class="w-full bg-slate-50 dark:bg-[#0a1020] border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 rounded-lg p-3 outline-none"><option value="ALL">✨ 전체 과목 통합</option><option value="반도체 기초 이론">반도체 기초 이론</option><option value="반도체 8대 공정">반도체 8대 공정</option><option value="차세대 첨단 기술">차세대 첨단 기술</option></select>
+          <select id="select-subject" onchange="updateSetupHint()" class="w-full bg-slate-50 dark:bg-[#0a1020] border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-200 rounded-lg p-3 outline-none"><option value="ALL">✨ 전체 과목 통합</option><option value="반도체 기초 이론">반도체 기초 이론</option><option value="반도체 8대 공정">반도체 8대 공정</option><option value="차세대 첨단 기술">차세대 첨단 기술</option></select>
         </div>
         <label class="block text-xs font-bold text-slate-400 dark:text-slate-500 mb-1.5">문항 수</label>
         <div class="mb-2">
-          <select id="select-count" onchange="updateSetupHint()" class="w-full bg-slate-50 dark:bg-[#0a1020] border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 rounded-lg p-3 outline-none"></select>
+          <select id="select-count" onchange="updateSetupHint()" class="w-full bg-slate-50 dark:bg-[#0a1020] border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-200 rounded-lg p-3 outline-none"></select>
         </div>
         <p id="setupHint" class="text-xs text-slate-400 dark:text-slate-500 mb-8 min-h-[1rem]"></p>
-        <label id="examRow" class="hidden items-start gap-3 mb-6 p-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-[#0a1020] cursor-pointer">
+        <label id="examRow" class="hidden items-start gap-3 mb-6 p-3 rounded-lg border border-slate-200 dark:border-white/15 bg-slate-50 dark:bg-[#0a1020] cursor-pointer">
           <input type="checkbox" id="examToggle" class="mt-1 w-4 h-4 accent-indigo-600">
           <span class="text-sm text-slate-700 dark:text-slate-200"><b>⏱️ 모의고사 모드</b><br><span class="text-xs text-slate-400 dark:text-slate-500">문항당 90초 타이머 · 풀이 중 정답 비공개 · 마지막에 한꺼번에 채점</span></span>
         </label>
-        <button onclick="startSession()" class="w-full bg-slate-800 dark:bg-indigo-600 text-white font-bold py-3.5 rounded-xl">시작하기</button>
+        <button onclick="startSession()" class="w-full pbtn font-bold py-3.5 rounded-xl shadow-md">시작하기</button>
       </div>
     </div>
 
     <!-- 📝 객관식 풀이 영역 -->
     <div id="view-quiz" class="hidden w-full flex flex-col">
-      <button onclick="goBack()" class="text-slate-400 font-bold text-sm mb-3 w-fit outline-none">⬅️ 종료</button>
-      <div class="bg-white dark:bg-[#0f1729] rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6">
+      <button onclick="goBack()" class="back-link mb-5">← 종료</button>
+      <div class="qcard bg-white dark:bg-[#0f1729] rounded-2xl shadow-sm border border-slate-200 dark:border-white/10 p-6">
+        <div class="qbar-wrap"><div id="qBar" class="qbar" style="width:0%"></div></div>
         <div class="flex justify-between items-center mb-4">
           <div><span id="qBadge" class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 text-xs font-semibold px-2.5 py-1 rounded mr-2">과목</span><span id="qProgress" class="text-xs text-slate-400 font-medium">1/10</span></div>
           <button onclick="toggleStar()" id="starBtn" class="text-3xl outline-none">☆</button>
         </div>
-        <h2 id="qTitle" class="text-lg font-bold dark:text-white mb-6">문제 지문</h2>
+        <p id="qEyebrow" class="eyebrow mb-2">QUESTION</p><h2 id="qTitle" class="text-xl font-bold leading-snug dark:text-white mb-6">문제 지문</h2>
         <div id="qOptions" class="space-y-3"></div>
-        <div id="qExpBox" class="mt-6 p-5 bg-slate-50 dark:bg-[#0a1020] border border-slate-200 dark:border-slate-700 rounded-xl hidden">
+        <div id="qExpBox" class="mt-6 p-5 bg-slate-50 dark:bg-[#0a1020] border border-slate-200 dark:border-white/15 rounded-xl hidden">
           <div id="qStatus" class="font-bold text-sm mb-2"></div>
           <p id="qExpText" class="text-sm dark:text-slate-300 mb-4 leading-relaxed"></p>
-          <button id="qTheoryBtn" class="hidden w-full mb-3 bg-emerald-50 dark:bg-[#1a231c] border border-emerald-200 dark:border-[#2d4a36] text-emerald-700 dark:text-[#84cc9c] py-2.5 rounded-lg text-sm font-bold">📖 관련 이론 보기</button>
+          <button id="qTheoryBtn" class="hidden w-full mb-3 bg-indigo-50 dark:bg-[#0f2233] border border-indigo-200 dark:border-emerald-900/60 text-indigo-700 dark:text-[#67e8f9] py-2.5 rounded-lg text-sm font-bold">📖 관련 이론 보기</button>
           <div class="flex gap-2">
-            <button onclick="openReportModal()" class="w-1/3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-rose-600 dark:text-rose-400 py-2.5 rounded-lg text-sm font-semibold">🚨 제보</button>
-            <button id="qNextBtn" onclick="nextQuiz()" class="w-2/3 bg-indigo-600 dark:bg-indigo-500 text-white py-2.5 rounded-lg text-sm font-semibold">다음</button>
+            <button onclick="openReportModal()" class="w-1/3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/15 text-rose-600 dark:text-rose-400 py-2.5 rounded-lg text-sm font-semibold">🚨 제보</button>
+            <button id="qNextBtn" onclick="nextQuiz()" class="w-2/3 pbtn py-2.5 rounded-lg text-sm font-bold">다음</button>
           </div>
         </div>
       </div>
@@ -236,91 +273,107 @@
     </div>
 
     <!-- 🗣️ 면접 대비 영역 -->
-    <div id="view-interview" class="hidden w-full flex flex-col"><button onclick="goBack()" class="text-slate-400 font-bold text-sm mb-3 w-fit outline-none">⬅️ 종료</button><div class="bg-white dark:bg-[#0f1729] rounded-2xl border dark:border-slate-800 p-6"><div class="mb-4"><span id="iBadge" class="bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-400 text-xs font-semibold px-2.5 py-1 rounded mr-2">면접</span><span id="iProgress" class="text-xs text-slate-400 font-medium">1/10</span></div><h2 id="iTitle" class="text-lg font-bold dark:text-white mb-6">지문</h2><button id="iRevealBtn" onclick="revealInterview()" class="w-full bg-slate-50 dark:bg-[#0a1020] text-slate-600 dark:text-slate-400 font-bold py-12 rounded-xl border-2 border-dashed dark:border-slate-700">🤔 답변 후 클릭</button><div id="iExpBox" class="mt-6 p-4 bg-rose-50 dark:bg-[#0a1020] rounded-xl hidden"><div id="iKeywords" class="flex flex-wrap gap-2 mb-4"></div><p id="iAnsText" class="text-sm dark:text-slate-300 mb-4"></p><div class="flex gap-2"><button onclick="openReportModal()" class="w-1/3 border dark:border-slate-700 text-rose-400 py-2.5 rounded-lg text-sm font-semibold">🚨 제보</button><button id="iNextBtn" onclick="nextInterview()" class="w-2/3 bg-slate-800 text-white py-2.5 rounded-lg text-sm font-semibold">다음</button></div></div></div></div>
-    
+    <div id="view-interview" class="hidden w-full flex flex-col">
+      <button onclick="goBack()" class="back-link mb-5">← 종료</button>
+      <div class="qcard bg-white dark:bg-[#0f1729] rounded-2xl shadow-sm border border-slate-200 dark:border-white/10 p-6">
+        <div class="qbar-wrap"><div id="iBar" class="qbar" style="width:0%"></div></div>
+        <div class="mb-4"><span id="iBadge" class="bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-400 text-xs font-semibold px-2.5 py-1 rounded mr-2">면접</span><span id="iProgress" class="text-xs text-slate-400 font-medium">1/10</span></div>
+        <p id="iEyebrow" class="eyebrow mb-2" style="color:#f43f5e">INTERVIEW</p>
+        <h2 id="iTitle" class="text-xl font-bold leading-snug dark:text-white mb-6">지문</h2>
+        <button id="iRevealBtn" onclick="revealInterview()" class="w-full bg-slate-50 dark:bg-[#0a1020] hover:border-rose-400 text-slate-500 dark:text-slate-400 font-bold py-12 rounded-xl border-2 border-dashed border-slate-200 dark:border-white/15 transition"><span class="block text-2xl mb-1">🗣️</span>소리 내어 답해 본 뒤 눌러 확인하세요</button>
+        <div id="iExpBox" class="mt-6 p-5 bg-rose-50/60 dark:bg-[#0a1020] border border-rose-100 dark:border-white/10 rounded-xl hidden">
+          <p class="eyebrow mb-2" style="color:#f43f5e">KEY POINTS</p>
+          <div id="iKeywords" class="flex flex-wrap gap-2 mb-4"></div>
+          <p id="iAnsText" class="text-sm text-slate-700 dark:text-slate-300 leading-relaxed mb-5"></p>
+          <div class="flex gap-2"><button onclick="openReportModal()" class="w-1/3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/15 text-rose-600 dark:text-rose-400 py-2.5 rounded-lg text-sm font-semibold">🚨 제보</button><button id="iNextBtn" onclick="nextInterview()" class="w-2/3 pbtn py-2.5 rounded-lg text-sm font-bold">다음</button></div>
+        </div>
+      </div>
+      <p class="hidden md:block text-center text-[11px] text-slate-400 dark:text-slate-500 mt-3">⌨️ Enter / → 로 정답 확인 · 다음 문항</p>
+    </div>
+
     <!-- 🏆 결과 뷰 & 오답 노트 -->
     <div id="view-result" class="hidden w-full flex flex-col">
-      <button onclick="goBack()" class="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 font-bold text-sm mb-3 w-fit outline-none">⬅️ 홈으로</button>
-      <div class="bg-white dark:bg-[#0f1729] rounded-2xl border border-slate-200 dark:border-slate-800 p-8 text-center shadow-sm">
-        <h2 id="resultTitle" class="text-2xl font-black text-slate-900 dark:text-white mb-1">문제 풀이 완료!</h2>
+      <button onclick="goBack()" class="back-link mb-5">← 홈으로</button>
+      <div class="bg-white dark:bg-[#0f1729] rounded-2xl border border-slate-200 dark:border-white/10 p-8 text-center shadow-sm">
+        <p class="eyebrow mb-2">RESULT</p><h2 id="resultTitle" class="page-title text-slate-900 dark:text-white mb-1">문제 풀이 완료!</h2>
         <p id="resultSub" class="text-sm text-slate-500 dark:text-slate-400 mb-6"></p>
         <div id="resultGauge" class="flex justify-center mb-6"></div>
         <p id="scoreDetail" class="mb-8 text-sm text-slate-600 dark:text-slate-300"></p>
         <div id="resultActions" class="space-y-3"></div>
       </div>
-      <div id="resultReview" class="hidden mt-4 bg-white dark:bg-[#0f1729] rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm">
-        <h3 class="text-sm font-black text-slate-900 dark:text-white mb-3">📋 문항별 복습 <span class="text-xs font-medium text-slate-400">탭하면 해설이 열려요</span></h3>
+      <div id="resultReview" class="hidden mt-4 bg-white dark:bg-[#0f1729] rounded-2xl border border-slate-200 dark:border-white/10 p-5 shadow-sm">
+        <h3 class="text-sm font-bold text-slate-900 dark:text-white mb-3">문항별 복습 <span class="text-xs font-medium text-slate-400">탭하면 해설이 열려요</span></h3>
         <div id="reviewList" class="space-y-2"></div>
       </div>
     </div>
     <div id="view-note" class="hidden w-full flex flex-col">
-      <button onclick="goBack()" class="text-slate-400 font-bold text-sm mb-3 w-fit">⬅️ 뒤로</button>
-      <div class="bg-white dark:bg-[#0f1729] rounded-2xl border border-slate-200 dark:border-slate-800 p-6 mb-4 text-center"><h2 class="text-xl font-bold dark:text-white">📒 오답 노트</h2><p class="text-xs text-slate-400 dark:text-slate-500 mt-1">틀린 문제는 자동으로 저장돼요. ★ 즐겨찾기는 따로 모아 볼 수 있어요.</p></div>
+      <button onclick="goBack()" class="back-link mb-5">← 뒤로</button>
+      <div class="mb-6"><p class="eyebrow mb-1.5">REVIEW</p><h2 class="page-title text-slate-900 dark:text-white">오답 노트</h2><p class="text-sm text-slate-500 dark:text-slate-400 mt-1.5">틀린 문제는 자동으로 저장돼요. ★ 즐겨찾기는 따로 모아 볼 수 있어요.</p></div>
       <div class="grid grid-cols-2 gap-2 mb-4">
         <button id="noteTabWrong" onclick="setNoteTab('wrong')" class="py-2.5 rounded-xl text-sm font-bold border transition">❌ 틀린 문제</button>
         <button id="noteTabStar" onclick="setNoteTab('star')" class="py-2.5 rounded-xl text-sm font-bold border transition">★ 즐겨찾기</button>
       </div>
-      <button id="notePracticeBtn" onclick="practiceNotes()" class="hidden w-full bg-indigo-600 dark:bg-[#84cc9c] hover:bg-indigo-700 dark:hover:bg-[#6ab382] text-white dark:text-[#0a1020] font-black py-3 rounded-xl shadow-md mb-4 transition"></button>
+      <button id="notePracticeBtn" onclick="practiceNotes()" class="hidden w-full pbtn font-bold py-3 rounded-xl shadow-md mb-4 transition"></button>
       <div id="noteContainer" class="space-y-4"></div>
     </div>
 
     <!-- 🔍 통합 검색 -->
     <div id="view-search" class="hidden w-full flex flex-col">
-      <button onclick="goBack()" class="text-slate-400 font-bold text-sm mb-3 w-fit">⬅️ 뒤로</button>
-      <input type="text" id="globalSearchInput" oninput="debouncedSearch()" placeholder="🔍 이론 · 문제 · 면접 통합 검색 (예: 식각, DRAM)" class="w-full bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 rounded-xl p-4 shadow-sm outline-none focus:border-[#84cc9c] transition font-medium mb-4">
+      <button onclick="goBack()" class="back-link mb-5">← 뒤로</button>
+      <div class="mb-5"><p class="eyebrow mb-1.5">SEARCH</p><h2 class="page-title text-slate-900 dark:text-white">통합 검색</h2></div>
+      <input type="text" id="globalSearchInput" oninput="debouncedSearch()" placeholder="🔍 이론 · 문제 · 면접 통합 검색 (예: 식각, DRAM)" class="w-full bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-200 rounded-xl p-4 shadow-sm outline-none focus:border-[#67e8f9] transition font-medium mb-4">
       <div id="globalSearchResults" class="space-y-5"></div>
     </div>
 
     <!-- ⏱️ 모의고사 -->
     <div id="view-exam" class="hidden w-full flex flex-col">
-      <button onclick="leaveExam()" class="text-slate-400 font-bold text-sm mb-3 w-fit outline-none">⬅️ 시험 중단</button>
-      <div class="bg-white dark:bg-[#0f1729] rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6">
+      <button onclick="leaveExam()" class="back-link mb-5">← 시험 중단</button>
+      <div class="qcard bg-white dark:bg-[#0f1729] rounded-2xl shadow-sm border border-slate-200 dark:border-white/10 p-6">
+        <div class="qbar-wrap"><div id="exBar" class="qbar" style="width:0%"></div></div>
         <div class="flex justify-between items-center mb-4">
           <div><span id="exBadge" class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 text-xs font-semibold px-2.5 py-1 rounded mr-2">모의고사</span><span id="exProgress" class="text-xs text-slate-400 font-medium"></span></div>
-          <span id="exTimer" class="font-mono font-black text-lg text-slate-700 dark:text-slate-200">00:00</span>
+          <span id="exTimer" class="font-mono font-bold text-lg text-slate-700 dark:text-slate-200">00:00</span>
         </div>
         <h2 id="exTitle" class="text-lg font-bold dark:text-white mb-6"></h2>
         <div id="exOptions" class="space-y-3"></div>
         <div class="grid grid-cols-2 gap-2 mt-6">
-          <button id="exPrev" onclick="examGo(-1)" class="border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 py-2.5 rounded-lg text-sm font-semibold disabled:opacity-40">← 이전</button>
-          <button id="exNext" onclick="examGo(1)" class="border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 py-2.5 rounded-lg text-sm font-semibold disabled:opacity-40">다음 →</button>
+          <button id="exPrev" onclick="examGo(-1)" class="border border-slate-200 dark:border-white/15 text-slate-600 dark:text-slate-300 py-2.5 rounded-lg text-sm font-semibold disabled:opacity-40">← 이전</button>
+          <button id="exNext" onclick="examGo(1)" class="border border-slate-200 dark:border-white/15 text-slate-600 dark:text-slate-300 py-2.5 rounded-lg text-sm font-semibold disabled:opacity-40">다음 →</button>
         </div>
       </div>
-      <div class="bg-white dark:bg-[#0f1729] rounded-2xl border border-slate-200 dark:border-slate-800 p-5 mt-4 shadow-sm">
+      <div class="bg-white dark:bg-[#0f1729] rounded-2xl border border-slate-200 dark:border-white/10 p-5 mt-4 shadow-sm">
         <p class="text-xs text-slate-400 dark:text-slate-500 mb-3">문항 이동 · 색이 채워진 번호는 답을 고른 문항이에요</p>
         <div id="exPalette" class="flex flex-wrap gap-2 mb-4"></div>
-        <button onclick="submitExam(false)" class="w-full bg-indigo-600 dark:bg-[#84cc9c] hover:bg-indigo-700 dark:hover:bg-[#6ab382] text-white dark:text-[#0a1020] font-black py-3 rounded-xl shadow-md transition">제출하고 채점하기</button>
+        <button onclick="submitExam(false)" class="w-full pbtn font-bold py-3 rounded-xl shadow-md transition">제출하고 채점하기</button>
       </div>
     </div>
 
     <!-- 📊 학습 통계 -->
     <div id="view-stats" class="hidden w-full flex flex-col">
-      <button onclick="goBack()" class="text-slate-400 font-bold text-sm mb-3 w-fit">⬅️ 뒤로</button>
-      <div class="bg-white dark:bg-[#0f1729] rounded-2xl border border-slate-200 dark:border-slate-800 p-6 mb-4 text-center">
-        <h2 class="text-xl font-bold dark:text-white">📊 내 학습 통계</h2>
-        <p class="text-xs text-slate-400 dark:text-slate-500 mt-1">이 기기에서 푼 문제 기준이에요.</p>
-      </div>
+      <button onclick="goBack()" class="back-link mb-5">← 뒤로</button>
+      <div class="mb-6"><p class="eyebrow mb-1.5">ANALYTICS</p><h2 class="page-title text-slate-900 dark:text-white">내 학습 통계</h2><p class="text-sm text-slate-500 dark:text-slate-400 mt-1.5">이 기기에서 푼 문제 기준이에요.</p></div>
       <div id="statsBody" class="space-y-4"></div>
     </div>
 
     <!-- 📖 이론 백과사전 뷰 (작은 사이즈에 맞춘 배열로 복귀) -->
     <div id="view-learning" class="hidden w-full flex flex-col">
-      <button onclick="goBack()" class="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 font-bold text-sm mb-4 transition w-fit outline-none">⬅️ 돌아가기</button>
+      <button onclick="goBack()" class="back-link mb-5">← 돌아가기</button>
+      <div class="mb-6"><div class="mb-5"><p class="eyebrow mb-1.5">ENCYCLOPEDIA</p><h2 class="page-title text-slate-900 dark:text-white">이론 백과사전</h2><p class="text-sm text-slate-500 dark:text-slate-400 mt-1.5">소자부터 공정, 첨단 기술까지 폴더별로 정리했어요.</p></div></div>
       <div class="mb-6 relative">
-        <input type="text" id="theorySearchInput" onkeyup="handleTheorySearch()" placeholder="🔍 키워드, 기술명 검색..." class="w-full bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 rounded-xl p-4 shadow-sm outline-none focus:border-[#84cc9c] transition font-medium">
+        <input type="text" id="theorySearchInput" onkeyup="handleTheorySearch()" placeholder="🔍 키워드, 기술명 검색..." class="w-full bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-200 rounded-xl p-4 shadow-sm outline-none focus:border-[#67e8f9] transition font-medium">
       </div>
-      <div id="breadcrumbContainer" class="bg-emerald-50 dark:bg-[#1a231c] rounded-xl border border-emerald-200 dark:border-[#2d4a36] px-4 py-3 mb-6 flex flex-wrap items-center shadow-sm gap-y-2 text-sm hidden"></div>
+      <div id="breadcrumbContainer" class="bg-indigo-50 dark:bg-[#0f2233] rounded-xl border border-indigo-200 dark:border-emerald-900/60 px-4 py-3 mb-6 flex flex-wrap items-center shadow-sm gap-y-2 text-sm hidden"></div>
       <div id="learningContainer" class="grid grid-cols-1 gap-4"></div>
     </div>
     <!-- 🚨 오류 제보 모달 -->
     <div id="reportModal" class="hidden fixed inset-0 z-[60] items-center justify-center bg-black/60 p-4" onclick="if(event.target===this) closeReportModal()">
-      <div class="w-full max-w-md bg-white dark:bg-[#0f1729] rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl p-6">
+      <div class="w-full max-w-md bg-white dark:bg-[#0f1729] rounded-2xl border border-slate-200 dark:border-white/10 shadow-2xl p-6">
         <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-1">🚨 오류 제보</h3>
         <p id="reportTarget" class="text-xs text-slate-400 mb-4 break-words"></p>
-        <textarea id="reportContent" rows="4" maxlength="500" placeholder="어떤 점이 잘못되었나요? (정답 오류, 오타, 해설 오류 등)" class="w-full bg-slate-50 dark:bg-[#0a1020] border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 rounded-lg p-3 text-sm outline-none focus:border-rose-400"></textarea>
+        <textarea id="reportContent" rows="4" maxlength="500" placeholder="어떤 점이 잘못되었나요? (정답 오류, 오타, 해설 오류 등)" class="w-full bg-slate-50 dark:bg-[#0a1020] border border-slate-200 dark:border-white/15 text-slate-700 dark:text-slate-200 rounded-lg p-3 text-sm outline-none focus:border-rose-400"></textarea>
         <p id="reportMsg" class="text-xs mt-2 min-h-[1rem]"></p>
         <div class="flex gap-2 mt-4">
-          <button onclick="closeReportModal()" class="w-1/3 border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-300 py-2.5 rounded-lg text-sm font-semibold">취소</button>
+          <button onclick="closeReportModal()" class="w-1/3 border border-slate-200 dark:border-white/15 text-slate-500 dark:text-slate-300 py-2.5 rounded-lg text-sm font-semibold">취소</button>
           <button id="reportSubmitBtn" onclick="submitReport()" class="w-2/3 bg-rose-600 hover:bg-rose-700 text-white py-2.5 rounded-lg text-sm font-semibold disabled:opacity-50">제보하기</button>
         </div>
       </div>
@@ -330,7 +383,7 @@
 
   <footer class="border-t border-slate-200 dark:border-white/10 mt-10">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 text-sm">
-      <div><div class="font-black text-slate-800 dark:text-white">반도체 <span class="text-indigo-600 dark:text-cyan-300">새김</span></div><p class="text-xs text-slate-500 dark:text-slate-400 mt-1">오늘의 배움을 새기다 · LEARN · RECORD · EVOLVE</p></div>
+      <div><div class="font-bold text-slate-800 dark:text-white">반도체 <span class="text-indigo-600 dark:text-cyan-300">새김</span></div><p class="text-xs text-slate-500 dark:text-slate-400 mt-1">오늘의 배움을 새기다 · LEARN · RECORD · EVOLVE</p></div>
       <p class="text-xs text-slate-400 dark:text-slate-500 sm:max-w-sm sm:text-right leading-relaxed">AI가 생성한 문제와 이론은 검수 후 게시돼요. 오류를 발견하면 문제 풀이 중 🚨 제보를 눌러 알려 주세요.</p>
     </div>
   </footer>
@@ -416,9 +469,9 @@
       const activeCats = FIXED_CATEGORIES.filter(cat => CATEGORY_TREE[cat] || allTheories.some(t => t.category === cat));
       activeCats.forEach(cat => {
         const btn = document.createElement('button');
-        btn.className = "group bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-slate-800 hover:border-emerald-400 dark:hover:border-[#84cc9c] hover:shadow-md p-5 rounded-2xl text-left transition flex items-center gap-4 shadow-sm";
+        btn.className = "group bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-white/10 hover:border-indigo-400 dark:hover:border-[#67e8f9] hover:shadow-md p-5 rounded-2xl text-left transition flex items-center gap-4 shadow-sm";
         btn.onclick = () => navTo('view-learning', { level: 'category', category: cat });
-        btn.innerHTML = `<span class="w-12 h-12 shrink-0 rounded-xl bg-emerald-50 dark:bg-[#1a231c] border border-emerald-100 dark:border-[#2d4a36] flex items-center justify-center text-2xl">📁</span><div class="min-w-0 flex-1"><h3 class="text-base font-bold text-slate-900 dark:text-white leading-snug">${cat}</h3><span class="text-xs text-slate-500 dark:text-slate-400 mt-1 block">문서 ${allTheories.filter(t => t.category === cat).length}개</span></div><span class="text-slate-300 dark:text-slate-600 group-hover:text-emerald-500 dark:group-hover:text-[#84cc9c] text-2xl leading-none transition">›</span>`;
+        btn.innerHTML = `<span class="w-12 h-12 shrink-0 rounded-xl bg-indigo-50 dark:bg-[#0f2233] border border-indigo-100 dark:border-[#1e3a5f] flex items-center justify-center text-2xl">📁</span><div class="min-w-0 flex-1"><h3 class="text-base font-bold text-slate-900 dark:text-white leading-snug">${cat}</h3><span class="text-xs text-slate-500 dark:text-slate-400 mt-1 block">문서 ${allTheories.filter(t => t.category === cat).length}개</span></div><span class="text-slate-300 dark:text-slate-600 group-hover:text-indigo-500 dark:group-hover:text-[#67e8f9] text-2xl leading-none transition">›</span>`;
         container.appendChild(btn);
       });
     }
@@ -429,9 +482,9 @@
       const activeSubs = (CATEGORY_TREE[category] || []).concat(extra);
       activeSubs.forEach(sub => {
         const btn = document.createElement('button');
-        btn.className = "group bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-slate-800 hover:border-emerald-400 dark:hover:border-[#84cc9c] hover:shadow-md p-5 rounded-2xl text-left transition flex items-center gap-4 shadow-sm";
+        btn.className = "group bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-white/10 hover:border-indigo-400 dark:hover:border-[#67e8f9] hover:shadow-md p-5 rounded-2xl text-left transition flex items-center gap-4 shadow-sm";
         btn.onclick = () => navTo('view-learning', { level: 'subject', category: category, subject: sub });
-        btn.innerHTML = `<span class="w-12 h-12 shrink-0 rounded-xl bg-emerald-50 dark:bg-[#1a231c] border border-emerald-100 dark:border-[#2d4a36] flex items-center justify-center text-2xl">📂</span><div class="min-w-0 flex-1"><h3 class="text-base font-bold text-slate-900 dark:text-white leading-snug">${sub}</h3><span class="text-xs text-slate-500 dark:text-slate-400 mt-1 block">문서 ${allTheories.filter(t => t.category === category && t.subject === sub).length}개</span></div><span class="text-slate-300 dark:text-slate-600 group-hover:text-emerald-500 dark:group-hover:text-[#84cc9c] text-2xl leading-none transition">›</span>`;
+        btn.innerHTML = `<span class="w-12 h-12 shrink-0 rounded-xl bg-indigo-50 dark:bg-[#0f2233] border border-indigo-100 dark:border-[#1e3a5f] flex items-center justify-center text-2xl">📂</span><div class="min-w-0 flex-1"><h3 class="text-base font-bold text-slate-900 dark:text-white leading-snug">${sub}</h3><span class="text-xs text-slate-500 dark:text-slate-400 mt-1 block">문서 ${allTheories.filter(t => t.category === category && t.subject === sub).length}개</span></div><span class="text-slate-300 dark:text-slate-600 group-hover:text-indigo-500 dark:group-hover:text-[#67e8f9] text-2xl leading-none transition">›</span>`;
         container.appendChild(btn);
       });
     }
@@ -439,15 +492,15 @@
     function renderTitlesDOM(category, subject) {
       renderBreadcrumb(); const container = document.getElementById('learningContainer'); container.className = "flex flex-col space-y-3"; container.innerHTML = folderBar(category, subject);
       const list = allTheories.filter(t => t.category === category && t.subject === subject);
-      if (list.length === 0) container.innerHTML = `<div class="bg-white dark:bg-[#0f1729] border border-dashed border-slate-300 dark:border-slate-700 p-8 text-center text-slate-400 rounded-xl text-sm">아직 등록된 이론이 없습니다.<br>곧 업데이트될 예정이에요.</div>`;
+      if (list.length === 0) container.innerHTML = `<div class="bg-white dark:bg-[#0f1729] border border-dashed border-slate-300 dark:border-white/15 p-8 text-center text-slate-400 rounded-xl text-sm">아직 등록된 이론이 없습니다.<br>곧 업데이트될 예정이에요.</div>`;
       list.forEach(t => renderTitleCard(t, container));
     }
 
     function renderTitleCard(t, container) {
       const btn = document.createElement('button');
-      btn.className = "bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-slate-800 hover:border-emerald-400 dark:hover:border-[#84cc9c] hover:shadow-md p-5 rounded-xl text-left transition flex items-center w-full shadow-sm";
+      btn.className = "bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-white/10 hover:border-indigo-400 dark:hover:border-[#67e8f9] hover:shadow-md p-5 rounded-xl text-left transition flex items-center w-full shadow-sm";
       btn.onclick = () => navTo('view-learning', { level: 'detail', theoryId: t.id });
-      btn.innerHTML = `<span class="text-2xl mr-4">📄</span><div><h3 class="text-lg font-bold text-slate-900 dark:text-white leading-snug">${t.title}</h3><div class="mt-2 flex flex-wrap gap-1">${(t.tags || []).map(tag => `<span class="bg-emerald-50 dark:bg-[#1a231c] text-emerald-700 dark:text-[#84cc9c] text-[10px] px-2 py-0.5 rounded font-bold">#${tag}</span>`).join('')}</div></div>`;
+      btn.innerHTML = `<span class="text-2xl mr-4">📄</span><div><h3 class="text-lg font-bold text-slate-900 dark:text-white leading-snug">${t.title}</h3><div class="mt-2 flex flex-wrap gap-1">${(t.tags || []).map(tag => `<span class="bg-indigo-50 dark:bg-[#0f2233] text-indigo-700 dark:text-[#67e8f9] text-[10px] px-2 py-0.5 rounded font-bold">#${tag}</span>`).join('')}</div></div>`;
       container.appendChild(btn);
     }
 
@@ -462,8 +515,9 @@
     
     function renderDetailDOM(theoryId) {
       const t = allTheories.find(x => x.id === theoryId); addPoints(2, theoryId);
+      renderBreadcrumb();
       const container = document.getElementById('learningContainer'); container.className = "flex flex-col space-y-4"; container.innerHTML = '';
-      const card = document.createElement('div'); card.className = "bg-white dark:bg-[#0f1729] rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden";
+      const card = document.createElement('div'); card.className = "bg-white dark:bg-[#0f1729] rounded-2xl shadow-sm border border-slate-200 dark:border-white/10 overflow-hidden";
       const kwAttr = String(t.title).replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '&quot;');
       const qN = Math.min(3, matchItems(allQuizData, t.title).length); const iN = Math.min(2, matchItems(allInterviewData, t.title).length);
       const math = stashMath(t.content); let rawMarkdown = math.text;
@@ -474,18 +528,20 @@
       
       card.innerHTML = `
         <div class="p-6 md:p-8">
-          <h2 class="text-2xl font-black text-slate-900 dark:text-white mb-4 leading-tight">${t.title}</h2>
+          <p class="eyebrow mb-2">${escH(t.category)} <span class="opacity-50">/</span> ${escH(t.subject)}</p>
+          <h2 class="page-title text-slate-900 dark:text-white mb-3">${t.title}</h2>
+          <div class="flex flex-wrap gap-1.5 mb-6 pb-6 border-b border-slate-100 dark:border-white/10">${(t.tags || []).map(tag => `<span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#${escH(tag)}</span>`).join('')}</div>
           <div class="custom-table-container prose prose-slate dark:prose-invert max-w-none text-sm md:text-base leading-relaxed dark:text-slate-300">
             ${math.restore(marked.parse(rawMarkdown))}
           </div>
         </div>
-        <div class="bg-slate-50 dark:bg-[#1a231c] p-6 border-t border-slate-200 dark:border-[#2d4a36]">
+        <div class="bg-slate-50 dark:bg-[#0f2233] p-6 border-t border-slate-200 dark:border-[#1e3a5f]">
           <p class="text-xs font-bold text-slate-400 dark:text-slate-500 mb-3">📌 배운 내용 점검하기</p>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <button onclick="startMiniQuiz('${kwAttr}')" ${qN ? '' : 'disabled'} class="w-full bg-indigo-600 dark:bg-[#84cc9c] hover:bg-indigo-700 dark:hover:bg-[#6ab382] text-white dark:text-[#0a1020] font-black text-sm py-4 rounded-xl shadow-md transition flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed">
+            <button onclick="startMiniQuiz('${kwAttr}')" ${qN ? '' : 'disabled'} class="w-full pbtn font-bold text-sm py-4 rounded-xl shadow-md transition flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed">
               <span class="text-lg">🧩</span> 실전 문제 풀기 <span class="text-xs font-bold opacity-80">${qN ? qN + '문항' : '준비 중'}</span>
             </button>
-            <button onclick="startMiniInterview('${kwAttr}')" ${iN ? '' : 'disabled'} class="w-full bg-white dark:bg-[#0a1020] border-2 border-indigo-600 dark:border-[#84cc9c] text-indigo-700 dark:text-[#84cc9c] hover:bg-indigo-50 dark:hover:bg-[#1a231c] font-black text-sm py-4 rounded-xl transition flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed">
+            <button onclick="startMiniInterview('${kwAttr}')" ${iN ? '' : 'disabled'} class="w-full bg-white dark:bg-[#0a1020] border-2 border-indigo-600 dark:border-[#67e8f9] text-indigo-700 dark:text-[#67e8f9] hover:bg-indigo-50 dark:hover:bg-[#0f2233] font-bold text-sm py-4 rounded-xl transition flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed">
               <span class="text-lg">🗣️</span> 실전 면접 대비 <span class="text-xs font-bold opacity-80">${iN ? iN + '문항' : '준비 중'}</span>
             </button>
           </div>
@@ -557,7 +613,7 @@
           </svg>
           <div class="absolute inset-0 flex flex-col items-center justify-center">
             <span class="text-xs font-bold text-slate-400 dark:text-slate-500">정답률</span>
-            <span class="font-black text-slate-900 dark:text-white leading-none mt-1"><span class="text-4xl">${pct}</span><span class="text-base text-slate-400 dark:text-slate-500">/100%</span></span>
+            <span class="font-bold text-slate-900 dark:text-white leading-none mt-1"><span class="font-display text-4xl">${pct}</span><span class="text-base text-slate-400 dark:text-slate-500">/100%</span></span>
           </div>
         </div>`;
         requestAnimationFrame(() => requestAnimationFrame(() => { const a = document.getElementById('gaugeArc'); if (a && pct > 0) a.style.strokeDashoffset = C * (1 - pct / 100); }));
@@ -571,18 +627,18 @@
 
       if (mode === 'quiz') renderReview(); else document.getElementById('resultReview').classList.add('hidden');
       const wrongN = mode === 'quiz' ? sessionLog.filter(r => r && !r.ok).length : 0;
-      const retryBtn = wrongN ? `<button onclick="retryWrong()" class="w-full bg-rose-500 hover:bg-rose-600 text-white font-black py-3.5 rounded-xl shadow-md transition">🔁 틀린 ${wrongN}문제만 다시 풀기</button>` : '';
+      const retryBtn = wrongN ? `<button onclick="retryWrong()" class="w-full bg-rose-500 hover:bg-rose-600 text-white font-bold py-3.5 rounded-xl shadow-md transition">🔁 틀린 ${wrongN}문제만 다시 풀기</button>` : '';
       const nextLabel = other === 'interview' ? '🗣️ 실무 면접 대비로 이어가기' : '📝 실전 문제로 이어가기';
       actions.innerHTML = retryBtn + `
-        <button onclick="continueTo('${other}')" ${otherReady ? '' : 'disabled'} class="w-full bg-indigo-600 dark:bg-[#84cc9c] hover:bg-indigo-700 dark:hover:bg-[#6ab382] text-white dark:text-[#0a1020] font-black py-3.5 rounded-xl shadow-md transition disabled:opacity-40 disabled:cursor-not-allowed">${nextLabel}${otherReady ? '' : ' (준비 중)'}</button>
-        <button onclick="navTo('view-lobby')" class="w-full bg-white dark:bg-[#0a1020] border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 font-bold py-3.5 rounded-xl transition">🏠 홈으로</button>`;
+        <button onclick="continueTo('${other}')" ${otherReady ? '' : 'disabled'} class="w-full pbtn font-bold py-3.5 rounded-xl shadow-md transition disabled:opacity-40 disabled:cursor-not-allowed">${nextLabel}${otherReady ? '' : ' (준비 중)'}</button>
+        <button onclick="navTo('view-lobby')" class="w-full bg-white dark:bg-[#0a1020] border border-slate-200 dark:border-white/15 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 font-bold py-3.5 rounded-xl transition">🏠 홈으로</button>`;
     }
 
     function renderBreadcrumb() {
       const bc = document.getElementById('breadcrumbContainer'); bc.classList.remove('hidden');
-      bc.innerHTML = `<button onclick="navTo('view-learning', {level:'home'})" class="text-emerald-700 dark:text-[#84cc9c] font-bold px-2 hover:underline">📚 백과사전</button>`;
-      if (learnState.level !== 'home') bc.innerHTML += `<span class="text-emerald-200 dark:text-[#2d4a36]">❯</span><button onclick="navTo('view-learning', {level:'category', category: '${learnState.category}'})" class="text-slate-600 dark:text-white font-bold px-2 hover:underline">${learnState.category}</button>`;
-      if (learnState.level === 'subject' || learnState.level === 'detail') bc.innerHTML += `<span class="text-emerald-200 dark:text-[#2d4a36]">❯</span><button onclick="navTo('view-learning', {level:'subject', category: '${learnState.category}', subject: '${learnState.subject}'})" class="text-slate-600 dark:text-white font-bold px-2 hover:underline">${learnState.subject}</button>`;
+      bc.innerHTML = `<button onclick="navTo('view-learning', {level:'home'})" class="text-indigo-700 dark:text-[#67e8f9] font-bold px-2 hover:underline">📚 백과사전</button>`;
+      if (learnState.level !== 'home') bc.innerHTML += `<span class="text-indigo-200 dark:text-[#1e3a5f]">❯</span><button onclick="navTo('view-learning', {level:'category', category: '${learnState.category}'})" class="text-slate-600 dark:text-white font-bold px-2 hover:underline">${learnState.category}</button>`;
+      if (learnState.level === 'subject' || learnState.level === 'detail') bc.innerHTML += `<span class="text-indigo-200 dark:text-[#1e3a5f]">❯</span><button onclick="navTo('view-learning', {level:'subject', category: '${learnState.category}', subject: '${learnState.subject}'})" class="text-slate-600 dark:text-white font-bold px-2 hover:underline">${learnState.subject}</button>`;
     }
 
     function handleTheorySearch() {
@@ -600,7 +656,7 @@
     const COUNT_DEFAULT = { quiz: 10, interview: 5 };
     function openSetup(mode, preExam) {
       currentMode = mode;
-      document.getElementById('setupTitle').innerText = mode === 'quiz' ? "📝 객관식 설정" : "🗣️ 면접 설정";
+      document.getElementById('setupTitle').innerText = mode === 'quiz' ? "문제 풀이 설정" : "면접 연습 설정"; document.getElementById('setupEyebrow').innerText = mode === 'quiz' ? 'PRACTICE' : 'INTERVIEW';
       const sel = document.getElementById('select-count');
       sel.innerHTML = COUNT_OPTIONS[mode].map(n => `<option value="${n}" ${n === COUNT_DEFAULT[mode] ? 'selected' : ''}>${n}개</option>`).join('');
       const ex = document.getElementById('examRow'); document.getElementById('examToggle').checked = !!preExam && mode === 'quiz';
@@ -632,12 +688,13 @@
     function renderQuiz() {
       const q = filteredSession[currentIndex];
       document.getElementById('qBadge').innerText = `${q.category} (${q.difficulty})`; document.getElementById('qProgress').innerText = `${currentIndex + 1} / ${filteredSession.length}`; document.getElementById('qTitle').innerText = q.question;
+      document.getElementById('qBar').style.width = (currentIndex / filteredSession.length * 100) + '%'; document.getElementById('qEyebrow').textContent = `QUESTION ${pad2(currentIndex + 1)}`;
       const star = document.getElementById('starBtn'); star.innerText = starredIds.includes(q.id) ? "★" : "☆"; star.className = starredIds.includes(q.id) ? "text-3xl text-amber-400" : "text-3xl text-slate-300 dark:text-slate-600";
       const opts = document.getElementById('qOptions'); opts.innerHTML = ''; document.getElementById('qExpBox').classList.add('hidden');
       q.options.forEach((opt, idx) => {
         const btn = document.createElement('button'); 
-        btn.className = "w-full text-left p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#0f1729] hover:bg-indigo-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 text-sm flex items-center transition";
-        btn.innerHTML = `<span class="w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-300 flex items-center justify-center text-xs mr-3 font-bold">${idx + 1}</span> <span>${opt}</span>`;
+        btn.className = "opt w-full text-left p-4 rounded-xl border border-slate-200 dark:border-white/15 bg-white dark:bg-[#0f1729] text-slate-700 dark:text-slate-200 text-[15px] flex items-center";
+        btn.innerHTML = `<span class="opt-num w-7 h-7 shrink-0 rounded-lg bg-slate-100 dark:bg-white/10 text-slate-500 dark:text-slate-300 flex items-center justify-center text-xs mr-3 font-bold">${idx + 1}</span><span class="leading-snug">${opt}</span>`;
         btn.onclick = () => checkAnswer(idx, q); opts.appendChild(btn);
       });
       applyMathRendering();
@@ -646,9 +703,11 @@
       Array.from(document.getElementById('qOptions').children).forEach(b => b.disabled = true); document.getElementById('qExpBox').classList.remove('hidden');
       const st = document.getElementById('qStatus');
       const ok = idx === q.answer; sessionLog[currentIndex] = { q, picked: idx, ok };
+      const kids = document.getElementById('qOptions').children; kids[q.answer].classList.add('opt-correct'); if (!ok) kids[idx].classList.add('opt-wrong');
+      document.getElementById('qBar').style.width = ((currentIndex + 1) / filteredSession.length * 100) + '%';
       gradeRecord(q, ok); saveResume();
       const tb = document.getElementById('qTheoryBtn'), th = theoryFor(q); tb.classList.toggle('hidden', !th); if (th) tb.onclick = () => openTheory(th.id);
-      if (ok) { correctCount++; st.className = "font-bold text-emerald-600 dark:text-[#84cc9c] mb-1"; st.innerText = "⭕ 정답!"; } else { st.className = "font-bold text-rose-500 dark:text-rose-400 mb-1"; st.innerText = `❌ 오답 (정답: ${q.answer + 1}번)`; }
+      if (ok) { correctCount++; st.className = "font-bold text-emerald-600 dark:text-indigo-400 mb-1"; st.innerText = "⭕ 정답!"; } else { st.className = "font-bold text-rose-500 dark:text-rose-400 mb-1"; st.innerText = `❌ 오답 (정답: ${q.answer + 1}번)`; }
       document.getElementById('qExpText').innerText = q.explanation;
       const nxt = document.getElementById('qNextBtn');
       if (currentIndex === filteredSession.length - 1) { nxt.innerText = "종료"; nxt.onclick = () => showResult('quiz'); } else { nxt.innerText = "다음"; nxt.onclick = () => { currentIndex++; renderQuiz(); }; }
@@ -656,13 +715,13 @@
     }
     function renderInterview() {
       const i = filteredSession[currentIndex];
-      document.getElementById('iBadge').innerText = i.category; document.getElementById('iProgress').innerText = `${currentIndex+1}/${filteredSession.length}`; document.getElementById('iTitle').innerText = i.question;
+      document.getElementById('iBadge').innerText = i.category; document.getElementById('iProgress').innerText = `${currentIndex+1}/${filteredSession.length}`; document.getElementById('iBar').style.width = (currentIndex / filteredSession.length * 100) + '%'; document.getElementById('iEyebrow').textContent = `INTERVIEW ${pad2(currentIndex + 1)}`; document.getElementById('iTitle').innerText = i.question;
       document.getElementById('iRevealBtn').classList.remove('hidden'); document.getElementById('iExpBox').classList.add('hidden');
       applyMathRendering();
     }
     function revealInterview() {
       const i = filteredSession[currentIndex];
-      document.getElementById('iRevealBtn').classList.add('hidden'); document.getElementById('iExpBox').classList.remove('hidden'); saveResume(); addPoints(1);
+      document.getElementById('iRevealBtn').classList.add('hidden'); document.getElementById('iExpBox').classList.remove('hidden'); saveResume(); addPoints(1); document.getElementById('iBar').style.width = ((currentIndex + 1) / filteredSession.length * 100) + '%';
       document.getElementById('iKeywords').innerHTML = (i.key_points||[]).map(k=>`<span class="bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-400 px-2 py-1 rounded text-xs font-bold">#${k}</span>`).join('');
       document.getElementById('iAnsText').innerText = i.interview_answer;
       const nxt = document.getElementById('iNextBtn');
@@ -675,7 +734,7 @@
     }
     function renderStats() {
       const c = document.getElementById('statsBody'), T = stats.total;
-      const card = 'bg-white dark:bg-[#0f1729] rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm';
+      const card = 'bg-white dark:bg-[#0f1729] rounded-2xl border border-slate-200 dark:border-white/10 p-5 shadow-sm';
       const col = (p) => p >= 80 ? '#10b981' : p >= 50 ? '#f59e0b' : '#f43f5e';
       if (!T.t) { c.innerHTML = `<div class="${card} text-center text-slate-400 text-sm">아직 푼 문제가 없어요. 문제를 풀면 통계가 쌓여요.</div>`; return; }
       const pct = Math.round(T.r / T.t * 100);
@@ -685,12 +744,12 @@
       const wrongCnt = allQuizData.filter(q => wrongNotes[q.id]).length;
       c.innerHTML = `
         <div class="${card}"><div class="grid grid-cols-3 text-center gap-2">
-          <div><div class="text-xs text-slate-400 mb-1">푼 문제</div><div class="text-2xl font-black dark:text-white">${T.t}</div></div>
-          <div><div class="text-xs text-slate-400 mb-1">정답률</div><div class="text-2xl font-black" style="color:${col(pct)}">${pct}%</div></div>
-          <div><div class="text-xs text-slate-400 mb-1">오답 노트</div><div class="text-2xl font-black dark:text-white">${wrongCnt}</div></div></div></div>
-        <div class="${card}"><h3 class="text-sm font-black text-slate-900 dark:text-white mb-3">과목별 정답률 <span class="text-xs font-medium text-slate-400">약한 순</span></h3>${cats.map(([n, v]) => bar(n, v)).join('')}</div>
-        <div class="${card}"><h3 class="text-sm font-black text-slate-900 dark:text-white mb-3">🎯 약점 주제 <span class="text-xs font-medium text-slate-400">2번 이상 풀고 정답률 70% 미만</span></h3>
-          ${weak.length ? weak.map(w => bar(w.topic + ' (' + w.cat + ')', w)).join('') + `<button onclick="practiceWeak()" class="w-full mt-2 bg-rose-500 hover:bg-rose-600 text-white font-black py-3 rounded-xl shadow-md transition">🎯 약점 주제 집중 풀기</button>` : '<p class="text-sm text-slate-400">아직 뚜렷한 약점이 없어요. 잘하고 있어요! 👍</p>'}</div>
+          <div><div class="text-xs text-slate-400 mb-1">푼 문제</div><div class="text-2xl font-bold dark:text-white">${T.t}</div></div>
+          <div><div class="text-xs text-slate-400 mb-1">정답률</div><div class="text-2xl font-bold" style="color:${col(pct)}">${pct}%</div></div>
+          <div><div class="text-xs text-slate-400 mb-1">오답 노트</div><div class="text-2xl font-bold dark:text-white">${wrongCnt}</div></div></div></div>
+        <div class="${card}"><h3 class="text-sm font-bold text-slate-900 dark:text-white mb-3">과목별 정답률 <span class="text-xs font-medium text-slate-400">약한 순</span></h3>${cats.map(([n, v]) => bar(n, v)).join('')}</div>
+        <div class="${card}"><h3 class="text-sm font-bold text-slate-900 dark:text-white mb-3">🎯 약점 주제 <span class="text-xs font-medium text-slate-400">2번 이상 풀고 정답률 70% 미만</span></h3>
+          ${weak.length ? weak.map(w => bar(w.topic + ' (' + w.cat + ')', w)).join('') + `<button onclick="practiceWeak()" class="w-full mt-2 bg-rose-500 hover:bg-rose-600 text-white font-bold py-3 rounded-xl shadow-md transition">🎯 약점 주제 집중 풀기</button>` : '<p class="text-sm text-slate-400">아직 뚜렷한 약점이 없어요. 잘하고 있어요! 👍</p>'}</div>
         <button onclick="if(confirm('통계를 초기화할까요? (오답 노트는 유지돼요)')){stats={cats:{},topics:{},total:{r:0,t:0}};localStorage.removeItem('semiCbtStats');renderStats();}" class="w-full text-xs text-slate-400 hover:text-rose-500 py-2">통계 초기화</button>`;
     }
     function practiceWeak() {
@@ -717,7 +776,7 @@
       const t = allTheories.find(x => x.id === id); if (!t) return;
       navTo('view-learning', { level: 'detail', category: t.category, subject: t.subject, theoryId: t.id });
     }
-    const theoryLinkHtml = (q) => { const t = theoryFor(q); return t ? `<button onclick="openTheory('${escH(t.id)}')" class="mt-3 w-full bg-emerald-50 dark:bg-[#1a231c] border border-emerald-200 dark:border-[#2d4a36] text-emerald-700 dark:text-[#84cc9c] py-2 rounded-lg text-xs font-bold">📖 관련 이론 보기: ${escH(t.title)}</button>` : ''; };
+    const theoryLinkHtml = (q) => { const t = theoryFor(q); return t ? `<button onclick="openTheory('${escH(t.id)}')" class="mt-3 w-full bg-indigo-50 dark:bg-[#0f2233] border border-indigo-200 dark:border-emerald-900/60 text-indigo-700 dark:text-[#67e8f9] py-2 rounded-lg text-xs font-bold">📖 관련 이론 보기: ${escH(t.title)}</button>` : ''; };
 
     // ⏱️ 모의고사 모드
     let exam = null, examMeta = null;
@@ -732,24 +791,24 @@
     function examTick() {
       if (!exam) return;
       const left = (exam.end - Date.now()) / 1000, el = document.getElementById('exTimer');
-      el.textContent = fmtTime(left); el.className = 'font-mono font-black text-lg ' + (left <= 60 ? 'text-rose-500' : 'text-slate-700 dark:text-slate-200');
+      el.textContent = fmtTime(left); el.className = 'font-mono font-bold text-lg ' + (left <= 60 ? 'text-rose-500' : 'text-slate-700 dark:text-slate-200');
       if (left <= 0) submitExam(true);
     }
     function renderExam() {
       const q = filteredSession[exam.idx], n = filteredSession.length;
       document.getElementById('exBadge').textContent = q.category;
-      document.getElementById('exProgress').textContent = `${exam.idx + 1} / ${n}`;
+      document.getElementById('exProgress').textContent = `${exam.idx + 1} / ${n}`; document.getElementById('exBar').style.width = (exam.answers.filter(a => a >= 0).length / n * 100) + '%';
       document.getElementById('exTitle').textContent = q.question;
       const opts = document.getElementById('exOptions'); opts.innerHTML = '';
       q.options.forEach((opt, i) => {
         const sel = exam.answers[exam.idx] === i, b = document.createElement('button');
-        b.className = 'w-full text-left p-4 rounded-xl border text-sm flex items-center transition ' + (sel ? 'border-indigo-500 dark:border-[#84cc9c] bg-indigo-50 dark:bg-[#1a231c] text-slate-900 dark:text-white' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-[#0f1729] hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200');
-        b.innerHTML = `<span class="w-6 h-6 rounded-full flex items-center justify-center text-xs mr-3 font-bold ${sel ? 'bg-indigo-600 dark:bg-[#84cc9c] text-white dark:text-[#0a1020]' : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-300'}">${i + 1}</span><span>${opt}</span>`;
+        b.className = 'w-full text-left p-4 rounded-xl border text-sm flex items-center transition ' + (sel ? 'border-indigo-500 dark:border-[#67e8f9] bg-indigo-50 dark:bg-[#0f2233] text-slate-900 dark:text-white' : 'border-slate-200 dark:border-white/15 bg-white dark:bg-[#0f1729] hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200');
+        b.innerHTML = `<span class="w-6 h-6 rounded-full flex items-center justify-center text-xs mr-3 font-bold ${sel ? 'pbtn' : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-300'}">${i + 1}</span><span>${opt}</span>`;
         b.onclick = () => { exam.answers[exam.idx] = (exam.answers[exam.idx] === i ? -1 : i); renderExam(); };
         opts.appendChild(b);
       });
       document.getElementById('exPrev').disabled = exam.idx === 0; document.getElementById('exNext').disabled = exam.idx === n - 1;
-      document.getElementById('exPalette').innerHTML = exam.answers.map((a, i) => `<button onclick="examJump(${i})" class="w-9 h-9 rounded-lg text-xs font-bold border ${i === exam.idx ? 'ring-2 ring-indigo-500 dark:ring-[#84cc9c] ' : ''}${a >= 0 ? 'bg-indigo-600 dark:bg-[#84cc9c] text-white dark:text-[#0a1020] border-transparent' : 'bg-white dark:bg-[#0a1020] text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700'}">${i + 1}</button>`).join('');
+      document.getElementById('exPalette').innerHTML = exam.answers.map((a, i) => `<button onclick="examJump(${i})" class="w-9 h-9 rounded-lg text-xs font-bold border ${i === exam.idx ? 'ring-2 ring-indigo-500 dark:ring-[#67e8f9] ' : ''}${a >= 0 ? 'pbtn border-transparent' : 'bg-white dark:bg-[#0a1020] text-slate-500 dark:text-slate-400 border-slate-200 dark:border-white/15'}">${i + 1}</button>`).join('');
       applyMathRendering();
     }
     function examGo(d) { exam.idx = Math.min(filteredSession.length - 1, Math.max(0, exam.idx + d)); renderExam(); }
@@ -772,7 +831,7 @@
       return allQuizData.filter(q => wrongNotes[q.id]).sort((a, b) => (wrongNotes[b.id].last || 0) - (wrongNotes[a.id].last || 0));
     }
     function renderNoteDOM() {
-      const on = 'bg-indigo-600 dark:bg-[#84cc9c] text-white dark:text-[#0a1020] border-transparent', off = 'bg-white dark:bg-[#0f1729] text-slate-500 dark:text-slate-300 border-slate-200 dark:border-slate-700';
+      const on = 'pbtn border-transparent', off = 'bg-white dark:bg-[#0f1729] text-slate-500 dark:text-slate-300 border-slate-200 dark:border-white/15';
       const wc = allQuizData.filter(q => wrongNotes[q.id]).length, sc = allQuizData.filter(q => starredIds.includes(q.id)).length;
       const tw = document.getElementById('noteTabWrong'), ts = document.getElementById('noteTabStar');
       tw.textContent = `❌ 틀린 문제 ${wc}`; ts.textContent = `★ 즐겨찾기 ${sc}`;
@@ -784,18 +843,18 @@
       pb.textContent = (noteTab === 'wrong' ? '🔁 틀린 문제 다시 풀기' : '🔁 즐겨찾기 문제 풀기') + ` (${Math.min(items.length, 20)}문항)`;
       const c = document.getElementById('noteContainer'); c.innerHTML = '';
       if (items.length === 0) {
-        c.innerHTML = `<div class="bg-white dark:bg-[#0f1729] p-6 rounded-2xl text-center text-slate-400 border border-slate-200 dark:border-slate-800">${noteTab === 'wrong' ? '틀린 문제가 아직 없어요. 문제를 풀면 오답이 자동으로 쌓여요.' : '즐겨찾기한 문제가 없어요. 문제 풀이 중 ☆를 눌러 보세요.'}</div>`;
+        c.innerHTML = `<div class="bg-white dark:bg-[#0f1729] p-6 rounded-2xl text-center text-slate-400 border border-slate-200 dark:border-white/10">${noteTab === 'wrong' ? '틀린 문제가 아직 없어요. 문제를 풀면 오답이 자동으로 쌓여요.' : '즐겨찾기한 문제가 없어요. 문제 풀이 중 ☆를 눌러 보세요.'}</div>`;
         return;
       }
       items.forEach(q => {
         const n = wrongNotes[q.id] || {};
         const stat = noteTab === 'wrong' ? `<span class="text-xs text-slate-400 dark:text-slate-500">틀림 ${n.wrong || 0} · 맞힘 ${n.right || 0}</span>` : '';
-        const d = document.createElement('div'); d.className = 'bg-white dark:bg-[#0f1729] rounded-2xl p-5 border border-slate-200 dark:border-slate-800';
+        const d = document.createElement('div'); d.className = 'bg-white dark:bg-[#0f1729] rounded-2xl p-5 border border-slate-200 dark:border-white/10';
         d.innerHTML = `<div class="flex justify-between items-center mb-3 gap-2"><div class="flex items-center gap-2 min-w-0"><span class="bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 text-xs px-2 py-1 rounded font-bold shrink-0">${escH(q.category)}</span>${stat}</div><button data-del="${escH(q.id)}" class="text-xs text-rose-500 dark:text-rose-400 font-bold shrink-0">${noteTab === 'wrong' ? '노트에서 삭제' : '즐겨찾기 해제'}</button></div>
           <h3 class="mb-4 font-bold dark:text-white">${q.question}</h3>
           <button data-toggle="ans-${escH(q.id)}" class="w-full bg-slate-100 dark:bg-[#0a1020] hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 py-2 rounded-lg text-sm font-bold">해설 보기 ↕</button>
-          <div id="ans-${escH(q.id)}" class="hidden bg-slate-50 dark:bg-[#0a1020] p-4 rounded-lg mt-3 border border-slate-100 dark:border-slate-800"><span class="text-emerald-600 dark:text-[#84cc9c] mb-2 block font-bold">정답: ${q.answer + 1}번 · ${q.options[q.answer]}</span><p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">${q.explanation}</p>${theoryLinkHtml(q)}</div>
-          ${noteTab === 'wrong' ? `<textarea data-memo="${escH(q.id)}" rows="2" maxlength="300" placeholder="✏️ 나만의 메모 (헷갈린 이유, 외울 포인트…)" class="w-full mt-3 bg-slate-50 dark:bg-[#0a1020] border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 rounded-lg p-3 text-sm outline-none focus:border-amber-400">${escH(n.memo || '')}</textarea>` : ''}`;
+          <div id="ans-${escH(q.id)}" class="hidden bg-slate-50 dark:bg-[#0a1020] p-4 rounded-lg mt-3 border border-slate-100 dark:border-white/10"><span class="text-emerald-600 dark:text-indigo-400 mb-2 block font-bold">정답: ${q.answer + 1}번 · ${q.options[q.answer]}</span><p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">${q.explanation}</p>${theoryLinkHtml(q)}</div>
+          ${noteTab === 'wrong' ? `<textarea data-memo="${escH(q.id)}" rows="2" maxlength="300" placeholder="✏️ 나만의 메모 (헷갈린 이유, 외울 포인트…)" class="w-full mt-3 bg-slate-50 dark:bg-[#0a1020] border border-slate-200 dark:border-white/15 text-slate-700 dark:text-slate-200 rounded-lg p-3 text-sm outline-none focus:border-amber-400">${escH(n.memo || '')}</textarea>` : ''}`;
         c.appendChild(d);
       });
       applyMathRendering();
@@ -832,15 +891,15 @@
       box.classList.remove('hidden'); list.innerHTML = '';
       rows.forEach((r, i) => {
         const q = r.q, d = document.createElement('div');
-        d.className = 'rounded-xl border ' + (r.ok ? 'border-emerald-200 dark:border-[#2d4a36]' : 'border-rose-200 dark:border-rose-900/50');
+        d.className = 'rounded-xl border ' + (r.ok ? 'border-indigo-200 dark:border-emerald-900/60' : 'border-rose-200 dark:border-rose-900/50');
         d.innerHTML = `<button data-rv="${i}" class="w-full flex items-center gap-3 p-3 text-left">
-            <span class="w-7 h-7 shrink-0 rounded-full flex items-center justify-center text-sm font-black ${r.ok ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-[#84cc9c]' : 'bg-rose-100 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400'}">${r.ok ? 'O' : 'X'}</span>
+            <span class="w-7 h-7 shrink-0 rounded-full flex items-center justify-center text-sm font-bold ${r.ok ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-indigo-400' : 'bg-rose-100 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400'}">${r.ok ? 'O' : 'X'}</span>
             <span class="flex-1 min-w-0 text-sm font-semibold text-slate-700 dark:text-slate-200 truncate">${i + 1}. ${escH(q.question)}</span>
             <span class="text-slate-300 dark:text-slate-600">⌄</span></button>
           <div id="rv-${i}" class="hidden px-4 pb-4 text-sm">
             <p class="font-bold text-slate-900 dark:text-white mb-3">${q.question}</p>
-            <p class="mb-1 ${r.ok ? 'text-emerald-600 dark:text-[#84cc9c]' : 'text-rose-500 dark:text-rose-400'}">내 답: ${r.picked < 0 ? '미응답' : (r.picked + 1) + '번 · ' + q.options[r.picked]}</p>
-            ${r.ok ? '' : `<p class="mb-2 text-emerald-600 dark:text-[#84cc9c] font-bold">정답: ${q.answer + 1}번 · ${q.options[q.answer]}</p>`}
+            <p class="mb-1 ${r.ok ? 'text-emerald-600 dark:text-indigo-400' : 'text-rose-500 dark:text-rose-400'}">내 답: ${r.picked < 0 ? '미응답' : (r.picked + 1) + '번 · ' + q.options[r.picked]}</p>
+            ${r.ok ? '' : `<p class="mb-2 text-emerald-600 dark:text-indigo-400 font-bold">정답: ${q.answer + 1}번 · ${q.options[q.answer]}</p>`}
             <p class="text-slate-600 dark:text-slate-400 leading-relaxed bg-slate-50 dark:bg-[#0a1020] rounded-lg p-3">${q.explanation}</p>${theoryLinkHtml(q)}</div>`;
         list.appendChild(d);
       });
@@ -923,19 +982,19 @@
       const N = attendDays.length, info = waferInfo(N), t = todayData(), doneToday = attendDays.includes(dateStr()), ready = t.pts >= DAILY_GOAL;
       const earned = animate ? info.d - 1 : info.d, { svg, cells } = waferSVG(info, earned);
       const pts = Math.min(DAILY_GOAL, t.pts);
-      const btn = doneToday ? `<button disabled class="w-full font-black py-3 rounded-xl bg-white/10 text-slate-300 cursor-default">✅ 오늘의 회로를 새겼어요</button>`
-        : ready ? `<button onclick="attendToday()" class="w-full prism-btn font-black py-3 rounded-xl shadow-lg hover:opacity-90 transition">✨ 오늘의 회로 새기기</button>`
+      const btn = doneToday ? `<button disabled class="w-full font-bold py-3 rounded-xl bg-white/10 text-slate-300 cursor-default">✅ 오늘의 회로를 새겼어요</button>`
+        : ready ? `<button onclick="attendToday()" class="w-full pbtn font-bold py-3 rounded-xl shadow-lg hover:opacity-90 transition">✨ 오늘의 회로 새기기</button>`
         : `<button disabled class="w-full font-bold py-3 rounded-xl bg-white/10 text-slate-400 cursor-not-allowed">학습 완료 후 출석 기록하기 (${pts}/${DAILY_GOAL})</button>`;
       const next = info.nextAt ? `${info.nextIn}일 후 · ${info.nextName}` : (info.d >= 30 ? '다음 출석에 새 웨이퍼 개방' : '');
       panel.innerHTML = `<div class="rounded-2xl bg-white/[.04] border border-white/10 p-5 sm:p-6 backdrop-blur">
         <div class="flex justify-between items-start gap-3">
-          <div><p class="text-[10px] tracking-[.22em] text-cyan-200/70 font-bold">CURRENT WAFER${info.cycle ? ' #' + (info.cycle + 1) : ''}</p><p class="text-sm font-black mt-1">PATTERN LEVEL ${pad2(info.level)} <span class="text-slate-400 font-medium">· ${info.name[1]}</span></p></div>
-          <div class="text-right shrink-0"><span id="waferDays" class="text-3xl font-black">${info.d}</span><span class="text-slate-400 font-bold"> / 30</span><p class="text-[10px] text-slate-400">출석 누적 일수</p></div>
+          <div><p class="font-mono text-[10px] tracking-[.22em] text-cyan-200/70 font-bold">CURRENT WAFER${info.cycle ? ' #' + (info.cycle + 1) : ''}</p><p class="text-sm font-bold mt-1">PATTERN LEVEL ${pad2(info.level)} <span class="text-slate-400 font-medium">· ${info.name[1]}</span></p></div>
+          <div class="text-right shrink-0"><span id="waferDays" class="font-display text-3xl font-bold">${info.d}</span><span class="text-slate-400 font-bold"> / 30</span><p class="text-[10px] text-slate-400">출석 누적 일수</p></div>
         </div>
         <div class="relative mx-auto my-3 w-full max-w-[340px] aspect-square">${svg}</div>
         <p id="waferStep" class="text-center text-xs font-mono h-4 text-cyan-200">${escH(waferMsg)}</p>
-        <div class="mt-3 flex justify-between text-[11px] text-slate-400"><span class="tracking-widest font-bold">NEXT UPGRADE</span><span>${next}</span></div>
-        <div class="mt-2 mb-4"><div class="flex justify-between text-[11px] text-slate-300 mb-1"><span>오늘의 학습</span><span>${pts} / ${DAILY_GOAL}</span></div><div class="h-1.5 rounded-full bg-white/10 overflow-hidden"><div class="h-full rounded-full prism-btn" style="width:${pts / DAILY_GOAL * 100}%"></div></div>
+        <div class="mt-3 flex justify-between text-[11px] text-slate-400"><span class="font-mono tracking-widest font-bold">NEXT UPGRADE</span><span>${next}</span></div>
+        <div class="mt-2 mb-4"><div class="flex justify-between text-[11px] text-slate-300 mb-1"><span>오늘의 학습</span><span>${pts} / ${DAILY_GOAL}</span></div><div class="h-1.5 rounded-full bg-white/10 overflow-hidden"><div class="h-full rounded-full pbtn" style="width:${pts / DAILY_GOAL * 100}%"></div></div>
           <p class="text-[10px] text-slate-500 mt-1.5">문제 1개 +1 · 면접 문항 확인 +1 · 이론 1개 읽기 +2</p></div>
         ${btn}
         <div class="mt-3 flex items-center justify-between text-[10px] text-slate-400"><span class="flex items-center gap-2"><i class="w-2 h-2 rounded-full inline-block" style="background:#22d3ee"></i>기초 <i class="w-2 h-2 rounded-full inline-block ml-1" style="background:#a78bfa"></i>공정 <i class="w-2 h-2 rounded-full inline-block ml-1" style="background:#f472b6"></i>차세대</span><span>수집한 웨이퍼 ${info.collected}장</span></div></div>`;
@@ -980,24 +1039,24 @@
       const T = stats.total, pct = T.t ? Math.round(T.r / T.t * 100) : 0, wc = allQuizData.filter(q => wrongNotes[q.id]).length;
       const card = 'bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-white/10 rounded-2xl p-5 sm:p-6 shadow-sm';
       const col = (p) => p >= 80 ? '#10b981' : p >= 50 ? '#f59e0b' : '#f43f5e';
-      const tile = (label, val, sub) => `<div class="rounded-xl bg-slate-50 dark:bg-[#0a1020] border border-slate-100 dark:border-white/5 p-4"><div class="text-xs text-slate-400 dark:text-slate-500 mb-1">${label}</div><div class="text-2xl font-black text-slate-900 dark:text-white">${val}<span class="text-xs font-bold text-slate-400 ml-0.5">${sub}</span></div></div>`;
+      const tile = (label, val, sub) => `<div class="rounded-xl bg-slate-50 dark:bg-[#0a1020] border border-slate-100 dark:border-white/5 p-4"><div class="text-xs text-slate-400 dark:text-slate-500 mb-1">${label}</div><div class="text-2xl font-bold text-slate-900 dark:text-white">${val}<span class="text-xs font-bold text-slate-400 ml-0.5">${sub}</span></div></div>`;
       const cats = RING_CATS.map(([k]) => [k, stats.cats[k]]).filter(x => x[1]);
       const bars = cats.length ? cats.map(([k, v]) => { const p = Math.round(v.r / v.t * 100); return `<div class="mb-3"><div class="flex justify-between text-xs mb-1"><span class="font-bold text-slate-700 dark:text-slate-200">${escH(k)}</span><span class="text-slate-400">${v.r}/${v.t} · ${p}%</span></div><div class="h-2 rounded-full bg-slate-200 dark:bg-white/10 overflow-hidden"><div class="h-full rounded-full" style="width:${p}%;background:${col(p)}"></div></div></div>`; }).join('') : `<p class="text-sm text-slate-400 py-2">문제를 풀면 과목별 정답률이 여기에 쌓여요.</p>`;
       const t = todayData(), pts = Math.min(DAILY_GOAL, t.pts), N = attendDays.length;
-      el.innerHTML = `<div class="${card} lg:col-span-2"><div class="flex justify-between items-center mb-4"><h3 class="font-black text-slate-900 dark:text-white">내 학습 현황</h3><button onclick="navTo('view-stats')" class="text-sm font-bold text-indigo-600 dark:text-cyan-300">자세히 보기 →</button></div>
+      el.innerHTML = `<div class="${card} lg:col-span-2"><div class="flex justify-between items-center mb-4"><h3 class="font-bold text-slate-900 dark:text-white">내 학습 현황</h3><button onclick="navTo('view-stats')" class="text-sm font-bold text-indigo-600 dark:text-cyan-300">자세히 보기 →</button></div>
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">${tile('푼 문제', T.t, '문항')}${tile('정답률', T.t ? pct : '-', T.t ? '%' : '')}${tile('오답 노트', wc, '문제')}${tile('출석', N, '일')}</div>${bars}</div>
-        <div class="${card}"><h3 class="font-black text-slate-900 dark:text-white mb-1">오늘의 학습</h3><p class="text-xs text-slate-400 dark:text-slate-500 mb-4">${pts >= DAILY_GOAL ? '목표 달성! 웨이퍼에 오늘의 회로를 새길 수 있어요.' : '목표를 채우면 오늘의 회로를 새길 수 있어요.'}</p>
-          <div class="flex items-end justify-between mb-2"><span class="text-3xl font-black text-slate-900 dark:text-white">${pts}<span class="text-base text-slate-400 font-bold"> / ${DAILY_GOAL}</span></span><span class="text-xs text-slate-400">포인트</span></div>
-          <div class="h-2 rounded-full bg-slate-200 dark:bg-white/10 overflow-hidden mb-4"><div class="h-full rounded-full prism-btn" style="width:${pts / DAILY_GOAL * 100}%"></div></div>
+        <div class="${card}"><h3 class="font-bold text-slate-900 dark:text-white mb-1">오늘의 학습</h3><p class="text-xs text-slate-400 dark:text-slate-500 mb-4">${pts >= DAILY_GOAL ? '목표 달성! 웨이퍼에 오늘의 회로를 새길 수 있어요.' : '목표를 채우면 오늘의 회로를 새길 수 있어요.'}</p>
+          <div class="flex items-end justify-between mb-2"><span class="text-3xl font-bold text-slate-900 dark:text-white">${pts}<span class="text-base text-slate-400 font-bold"> / ${DAILY_GOAL}</span></span><span class="text-xs text-slate-400">포인트</span></div>
+          <div class="h-2 rounded-full bg-slate-200 dark:bg-white/10 overflow-hidden mb-4"><div class="h-full rounded-full pbtn" style="width:${pts / DAILY_GOAL * 100}%"></div></div>
           <ul class="text-sm text-slate-600 dark:text-slate-300 space-y-1.5 mb-5"><li>📝 문제 1개 풀기 <b class="text-slate-400">+1</b></li><li>🗣️ 면접 문항 확인 <b class="text-slate-400">+1</b></li><li>📖 이론 1개 읽기 <b class="text-slate-400">+2</b></li></ul>
-          <div class="grid grid-cols-2 gap-2"><button onclick="navTo('view-learning',{level:'home'})" class="py-2.5 rounded-xl text-sm font-bold border border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/5 text-slate-700 dark:text-slate-200">이론 읽기</button><button onclick="openSetup('quiz')" class="py-2.5 rounded-xl text-sm font-bold bg-indigo-600 dark:bg-[#84cc9c] text-white dark:text-[#0a1020] hover:opacity-90">문제 풀기</button></div></div>`;
+          <div class="grid grid-cols-2 gap-2"><button onclick="navTo('view-learning',{level:'home'})" class="py-2.5 rounded-xl text-sm font-bold border border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/5 text-slate-700 dark:text-slate-200">이론 읽기</button><button onclick="openSetup('quiz')" class="py-2.5 rounded-xl text-sm font-bold pbtn hover:opacity-90">문제 풀기</button></div></div>`;
     }
     // ===== 🚨 오류 제보 =====
     let reportTarget = null;
     function setReportMsg(text, kind) {
       const el = document.getElementById('reportMsg');
       el.textContent = text;
-      el.className = 'text-xs mt-2 min-h-[1rem] ' + (kind === 'err' ? 'text-rose-500' : kind === 'ok' ? 'text-emerald-500' : 'text-slate-400');
+      el.className = 'text-xs mt-2 min-h-[1rem] ' + (kind === 'err' ? 'text-rose-500' : kind === 'ok' ? 'text-indigo-500' : 'text-slate-400');
     }
     function openReportModal() {
       const item = filteredSession[currentIndex];
@@ -1054,8 +1113,8 @@
       const q = folderPool('quiz', category, subject).length, i = folderPool('interview', category, subject).length;
       const cls = 'flex-1 font-bold text-sm py-3 rounded-xl transition disabled:opacity-40 disabled:cursor-not-allowed ';
       return `<div class="col-span-full flex gap-2 mb-1">
-        <button onclick="startFolder('quiz')" ${q ? '' : 'disabled'} class="${cls}bg-indigo-600 dark:bg-[#84cc9c] text-white dark:text-[#0a1020] shadow-md">🧩 이 폴더 문제 풀기 <span class="text-xs opacity-80">${q ? q + '문항' : '준비 중'}</span></button>
-        <button onclick="startFolder('interview')" ${i ? '' : 'disabled'} class="${cls}bg-white dark:bg-[#0a1020] border-2 border-indigo-600 dark:border-[#84cc9c] text-indigo-700 dark:text-[#84cc9c]">🗣️ 면접 <span class="text-xs opacity-80">${i ? i + '문항' : '준비 중'}</span></button></div>`;
+        <button onclick="startFolder('quiz')" ${q ? '' : 'disabled'} class="${cls}pbtn shadow-md">🧩 이 폴더 문제 풀기 <span class="text-xs opacity-80">${q ? q + '문항' : '준비 중'}</span></button>
+        <button onclick="startFolder('interview')" ${i ? '' : 'disabled'} class="${cls}bg-white dark:bg-[#0a1020] border-2 border-indigo-600 dark:border-[#67e8f9] text-indigo-700 dark:text-[#67e8f9]">🗣️ 면접 <span class="text-xs opacity-80">${i ? i + '문항' : '준비 중'}</span></button></div>`;
     }
     function startFolder(kind) {
       if (!folderCtx) return;
@@ -1081,7 +1140,7 @@
       const b = document.getElementById('resumeBanner'), r = loadResume();
       if (!r) { b.className = 'hidden'; b.innerHTML = ''; return; }
       b.className = 'bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-800/30 rounded-2xl p-4 flex items-center gap-3';
-      b.innerHTML = `<div class="flex-1 min-w-0"><div class="text-sm font-black text-amber-800 dark:text-amber-400">▶ 풀던 ${r.mode === 'quiz' ? '문제' : '면접'}가 있어요</div><div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${r.next} / ${r.ids.length}문항까지 진행</div></div>
+      b.innerHTML = `<div class="flex-1 min-w-0"><div class="text-sm font-bold text-amber-800 dark:text-amber-400">▶ 풀던 ${r.mode === 'quiz' ? '문제' : '면접'}가 있어요</div><div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${r.next} / ${r.ids.length}문항까지 진행</div></div>
         <button onclick="resumeSession()" class="bg-amber-500 hover:bg-amber-600 text-white font-bold text-sm px-4 py-2 rounded-xl shrink-0">이어 풀기</button>
         <button onclick="clearResume()" aria-label="삭제" class="text-slate-400 hover:text-rose-500 text-lg px-1">✕</button>`;
     }
@@ -1099,8 +1158,8 @@
     function debouncedSearch() { clearTimeout(searchTimer); searchTimer = setTimeout(runGlobalSearch, 180); }
     function runGlobalSearch() {
       const q = document.getElementById('globalSearchInput').value.trim().toLowerCase(), out = document.getElementById('globalSearchResults');
-      const sec = 'text-xs font-black text-slate-400 dark:text-slate-500 mb-2';
-      const card = 'bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-slate-800 rounded-xl';
+      const sec = 'text-xs font-bold text-slate-400 dark:text-slate-500 mb-2';
+      const card = 'bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-white/10 rounded-xl';
       if (!q) { out.innerHTML = `<p class="text-center text-sm text-slate-400 py-10">이론 제목·본문, 문제, 면접 질문을 한 번에 찾아 드려요.</p>`; return; }
       const has = (...vals) => vals.some(v => String(Array.isArray(v) ? v.join(' ') : v || '').toLowerCase().includes(q));
       const real = (t) => !String(t.content).includes('채워질 예정');
@@ -1109,8 +1168,8 @@
       const iv = allInterviewData.filter(x => has(x.question, x.topic, x.key_points, x.interview_answer)).slice(0, 10);
       if (!th.length && !qs.length && !iv.length) { out.innerHTML = `<p class="text-center text-sm text-slate-400 py-10">'${escH(q)}' 검색 결과가 없어요.</p>`; return; }
       let h = '';
-      if (th.length) h += `<div><p class="${sec}">📖 이론 ${th.length}</p><div class="space-y-2">${th.map(t => `<button onclick="openTheory('${escH(t.id)}')" class="${card} w-full text-left p-4 hover:border-emerald-400 dark:hover:border-[#84cc9c] transition"><div class="font-bold text-slate-900 dark:text-white">${escH(t.title)}</div><div class="text-[11px] text-slate-400 mt-1">${escH(t.category)} › ${escH(t.subject)}</div></button>`).join('')}</div></div>`;
-      if (qs.length) h += `<div><p class="${sec}">📝 문제 ${qs.length}</p><div class="space-y-2">${qs.map((x, n) => `<div class="${card}"><button data-sx="q${n}" class="w-full text-left p-4"><div class="text-[11px] text-slate-400 mb-1">${escH(x.category)}</div><div class="text-sm font-bold text-slate-800 dark:text-slate-100">${escH(x.question)}</div></button><div id="sx-q${n}" class="hidden px-4 pb-4 text-sm"><p class="text-emerald-600 dark:text-[#84cc9c] font-bold mb-2">정답: ${x.answer + 1}번 · ${escH(x.options[x.answer])}</p><p class="text-slate-600 dark:text-slate-400 leading-relaxed bg-slate-50 dark:bg-[#0a1020] rounded-lg p-3">${escH(x.explanation)}</p>${theoryLinkHtml(x)}</div></div>`).join('')}</div></div>`;
+      if (th.length) h += `<div><p class="${sec}">📖 이론 ${th.length}</p><div class="space-y-2">${th.map(t => `<button onclick="openTheory('${escH(t.id)}')" class="${card} w-full text-left p-4 hover:border-indigo-400 dark:hover:border-[#67e8f9] transition"><div class="font-bold text-slate-900 dark:text-white">${escH(t.title)}</div><div class="text-[11px] text-slate-400 mt-1">${escH(t.category)} › ${escH(t.subject)}</div></button>`).join('')}</div></div>`;
+      if (qs.length) h += `<div><p class="${sec}">📝 문제 ${qs.length}</p><div class="space-y-2">${qs.map((x, n) => `<div class="${card}"><button data-sx="q${n}" class="w-full text-left p-4"><div class="text-[11px] text-slate-400 mb-1">${escH(x.category)}</div><div class="text-sm font-bold text-slate-800 dark:text-slate-100">${escH(x.question)}</div></button><div id="sx-q${n}" class="hidden px-4 pb-4 text-sm"><p class="text-emerald-600 dark:text-indigo-400 font-bold mb-2">정답: ${x.answer + 1}번 · ${escH(x.options[x.answer])}</p><p class="text-slate-600 dark:text-slate-400 leading-relaxed bg-slate-50 dark:bg-[#0a1020] rounded-lg p-3">${escH(x.explanation)}</p>${theoryLinkHtml(x)}</div></div>`).join('')}</div></div>`;
       if (iv.length) h += `<div><p class="${sec}">🗣️ 면접 ${iv.length}</p><div class="space-y-2">${iv.map((x, n) => `<div class="${card}"><button data-sx="i${n}" class="w-full text-left p-4"><div class="text-[11px] text-slate-400 mb-1">${escH(x.category)}</div><div class="text-sm font-bold text-slate-800 dark:text-slate-100">${escH(x.question)}</div></button><div id="sx-i${n}" class="hidden px-4 pb-4 text-sm"><div class="flex flex-wrap gap-1 mb-2">${(x.key_points || []).map(k => `<span class="bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-400 px-2 py-0.5 rounded text-xs font-bold">#${escH(k)}</span>`).join('')}</div><p class="text-slate-600 dark:text-slate-400 leading-relaxed bg-slate-50 dark:bg-[#0a1020] rounded-lg p-3">${escH(x.interview_answer)}</p></div></div>`).join('')}</div></div>`;
       out.innerHTML = h; applyMathRendering();
     }
