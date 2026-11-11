@@ -324,7 +324,7 @@
         <div id="qOptions" class="space-y-3"></div>
         <div id="qExpBox" class="mt-6 p-5 bg-slate-50 dark:bg-[#0a1020] border border-slate-200 dark:border-white/15 rounded-xl hidden">
           <div id="qStatus" class="font-bold text-sm mb-2"></div>
-          <p id="qExpText" class="text-sm dark:text-slate-300 mb-4 leading-relaxed"></p>
+          <p id="qExpText" class="text-sm dark:text-slate-300 mb-4 leading-relaxed whitespace-pre-line"></p>
           <button id="qTheoryBtn" class="hidden w-full mb-3 bg-indigo-50 dark:bg-[#0f2233] border border-indigo-200 dark:border-emerald-900/60 text-indigo-700 dark:text-[#67e8f9] py-2.5 rounded-lg text-sm font-bold">📖 관련 이론 보기</button>
           <div class="flex gap-2">
             <button onclick="openReportModal()" class="w-1/3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/15 text-rose-600 dark:text-rose-400 py-2.5 rounded-lg text-sm font-semibold">🚨 제보</button>
@@ -347,7 +347,8 @@
         <div id="iExpBox" class="mt-6 p-5 bg-rose-50/60 dark:bg-[#0a1020] border border-rose-100 dark:border-white/10 rounded-xl hidden">
           <p class="eyebrow mb-2" style="color:#f43f5e">KEY POINTS</p>
           <div id="iKeywords" class="flex flex-wrap gap-2 mb-4"></div>
-          <p id="iAnsText" class="text-sm text-slate-700 dark:text-slate-300 leading-relaxed mb-5"></p>
+          <p id="iAnsText" class="text-sm text-slate-700 dark:text-slate-300 leading-relaxed mb-5 whitespace-pre-line"></p>
+          <div id="iFollow" class="hidden mb-5 rounded-xl border border-dashed border-rose-200 dark:border-white/15 p-4"><p class="eyebrow mb-1.5" style="color:#f43f5e">FOLLOW-UP · 꼬리 질문</p><p id="iFollowQ" class="text-sm font-bold text-slate-800 dark:text-slate-100 mb-2"></p><p id="iFollowA" class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed"></p></div>
           <div class="flex gap-2"><button onclick="openReportModal()" class="w-1/3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/15 text-rose-600 dark:text-rose-400 py-2.5 rounded-lg text-sm font-semibold">🚨 제보</button><button id="iNextBtn" onclick="nextInterview()" class="w-2/3 pbtn py-2.5 rounded-lg text-sm font-bold">다음</button></div>
         </div>
       </div>
@@ -807,6 +808,8 @@
       document.getElementById('iRevealBtn').classList.add('hidden'); document.getElementById('iExpBox').classList.remove('hidden'); saveResume(); addPoints(1); document.getElementById('iBar').style.width = ((currentIndex + 1) / filteredSession.length * 100) + '%';
       document.getElementById('iKeywords').innerHTML = (i.key_points||[]).map(k=>`<span class="bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-400 px-2 py-1 rounded text-xs font-bold">#${k}</span>`).join('');
       document.getElementById('iAnsText').innerText = i.interview_answer;
+      const fw = document.getElementById('iFollow'); fw.classList.toggle('hidden', !i.follow_up);
+      if (i.follow_up) { document.getElementById('iFollowQ').innerText = i.follow_up; document.getElementById('iFollowA').innerText = i.follow_up_answer || ''; }
       const nxt = document.getElementById('iNextBtn');
       if(currentIndex === filteredSession.length-1) { nxt.innerText = "종료"; nxt.onclick = () => showResult('interview'); } else { nxt.innerText = "다음"; nxt.onclick = ()=>{currentIndex++; renderInterview();} }
       applyMathRendering();
@@ -983,7 +986,7 @@
             <p class="font-bold text-slate-900 dark:text-white mb-3">${q.question}</p>
             <p class="mb-1 ${r.ok ? 'text-emerald-600 dark:text-indigo-400' : 'text-rose-500 dark:text-rose-400'}">내 답: ${r.picked < 0 ? '미응답' : (r.picked + 1) + '번 · ' + q.options[r.picked]}</p>
             ${r.ok ? '' : `<p class="mb-2 text-emerald-600 dark:text-indigo-400 font-bold">정답: ${q.answer + 1}번 · ${q.options[q.answer]}</p>`}
-            <p class="text-slate-600 dark:text-slate-400 leading-relaxed bg-slate-50 dark:bg-[#0a1020] rounded-lg p-3">${q.explanation}</p>${theoryLinkHtml(q)}</div>`;
+            <p class="text-slate-600 dark:text-slate-400 leading-relaxed bg-slate-50 dark:bg-[#0a1020] rounded-lg p-3 whitespace-pre-line">${escH(q.explanation)}</p>${theoryLinkHtml(q)}</div>`;
         list.appendChild(d);
       });
       applyMathRendering();
