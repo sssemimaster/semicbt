@@ -231,7 +231,7 @@
         <h2 class="text-lg font-bold text-slate-900 mb-6 leading-snug">${escHtml(q.question)}</h2>
         <div id="adminOptContainer" class="space-y-3"></div>
         <div id="adminExpBox" class="mt-6 p-4 bg-slate-50 border border-slate-200 rounded-xl hidden">
-          <div id="adminResStatus" class="font-bold text-sm mb-2"></div><p id="adminExpText" class="text-sm text-slate-600 leading-relaxed"></p>
+          <div id="adminResStatus" class="font-bold text-sm mb-2"></div><p id="adminExpText" class="text-sm text-slate-600 leading-relaxed whitespace-pre-line"></p>
         </div>
         <button onclick="editDraft('quiz')" class="w-full mt-4 bg-amber-50 hover:bg-amber-100 transition text-amber-800 font-bold py-3 rounded-xl border border-amber-200">✏️ 내용 수정</button>
         <div class="grid grid-cols-2 gap-4 mt-6">
@@ -279,7 +279,7 @@
     function renderInterviewReview() {
       if(draftInterviews.length === 0) { document.getElementById('iBox').innerHTML = "<p class='text-center py-6 text-slate-500 font-bold'>대기 중인 면접 문항이 없습니다.</p>"; return; }
       const i = draftInterviews[currentInterviewIndex];
-      let html = `${i.report_note ? `<div class="mb-3 p-3 rounded-lg bg-amber-50 border border-amber-200 text-xs text-amber-800">🚨 제보로 이동됨: ${escHtml(i.report_note)}</div>` : ''}<div class="mb-4"><span class="bg-rose-100 text-rose-700 text-xs font-semibold px-2.5 py-1 rounded">${escHtml(i.category)} > ${escHtml(i.topic)}</span></div><h2 class="text-lg font-bold text-slate-900 mb-4">${escHtml(i.question)}</h2><div class="p-4 bg-slate-50 border border-slate-200 rounded-xl mb-4"><span class="text-xs font-bold text-rose-700 block mb-1">키워드: ${(i.key_points || []).map(escHtml).join(', ')}</span><p class="text-sm text-slate-700 mt-2 leading-relaxed">${escHtml(i.interview_answer)}</p></div><button onclick="editDraft('interview')" class="w-full mt-4 bg-amber-50 hover:bg-amber-100 transition text-amber-800 font-bold py-3 rounded-xl border border-amber-200">✏️ 내용 수정</button>
+      let html = `${i.report_note ? `<div class="mb-3 p-3 rounded-lg bg-amber-50 border border-amber-200 text-xs text-amber-800">🚨 제보로 이동됨: ${escHtml(i.report_note)}</div>` : ''}<div class="mb-4"><span class="bg-rose-100 text-rose-700 text-xs font-semibold px-2.5 py-1 rounded">${escHtml(i.category)} > ${escHtml(i.topic)}</span></div><h2 class="text-lg font-bold text-slate-900 mb-4">${escHtml(i.question)}</h2><div class="p-4 bg-slate-50 border border-slate-200 rounded-xl mb-4"><span class="text-xs font-bold text-rose-700 block mb-1">키워드: ${(i.key_points || []).map(escHtml).join(', ')}</span><p class="text-sm text-slate-700 mt-2 leading-relaxed">${escHtml(i.interview_answer)}</p></div>${i.follow_up ? `<div class="p-4 border border-dashed border-rose-200 rounded-xl mb-4"><span class="text-xs font-bold text-rose-700 block mb-1">꼬리 질문</span><p class="text-sm font-bold text-slate-800">${escHtml(i.follow_up)}</p><p class="text-sm text-slate-600 mt-1 leading-relaxed">${escHtml(i.follow_up_answer || '')}</p></div>` : ''}<button onclick="editDraft('interview')" class="w-full mt-4 bg-amber-50 hover:bg-amber-100 transition text-amber-800 font-bold py-3 rounded-xl border border-amber-200">✏️ 내용 수정</button>
         <div class="grid grid-cols-2 gap-4 mt-6"><button onclick="rejectContent('interview')" class="bg-rose-100 hover:bg-rose-200 transition text-rose-700 font-bold py-4 rounded-xl border border-rose-200">🗑️ 폐기</button><button onclick="approveInterview()" class="bg-emerald-600 hover:bg-emerald-700 transition text-white font-bold py-4 rounded-xl shadow-md">✅ 면접 등재</button></div>`;
       document.getElementById('iBox').innerHTML = html;
     }
@@ -432,7 +432,7 @@
         (it.options || []).forEach((o, n) => { h += fld(`보기 ${n + 1}`, tin('e_opt' + n, o, 2)); });
         h += fld('정답 번호', `<select id="e_answer" class="${INP}">${(it.options || []).map((_, n) => `<option value="${n}" ${n === it.answer ? 'selected' : ''}>${n + 1}번</option>`).join('')}</select>`) + fld('해설', tin('e_explanation', it.explanation, 5));
       } else if (type === 'interview') {
-        h += fld('대분류(category)', tin('e_category', it.category)) + fld('주제(topic)', tin('e_topic', it.topic)) + fld('질문', tin('e_question', it.question, 3)) + fld('핵심 키워드 (쉼표로 구분)', tin('e_keys', (it.key_points || []).join(', '))) + fld('모범 답안', tin('e_answer', it.interview_answer, 8));
+        h += fld('대분류(category)', tin('e_category', it.category)) + fld('주제(topic)', tin('e_topic', it.topic)) + fld('질문', tin('e_question', it.question, 3)) + fld('핵심 키워드 (쉼표로 구분)', tin('e_keys', (it.key_points || []).join(', '))) + fld('모범 답안', tin('e_answer', it.interview_answer, 8)) + fld('꼬리 질문', tin('e_follow', it.follow_up || '', 2)) + fld('꼬리 질문 모범 답', tin('e_followa', it.follow_up_answer || '', 4));
       } else {
         h += fld('대분류(category)', tin('e_category', it.category)) + fld('소분류(subject)', tin('e_subject', it.subject)) + fld('제목', tin('e_title', it.title)) + fld('태그 (쉼표로 구분)', tin('e_tags', (it.tags || []).join(', '))) + fld('본문 (마크다운)', tin('e_content', it.content, 20));
       }
@@ -450,7 +450,7 @@
           Object.assign(it, { category: val('e_category'), topic: val('e_topic'), difficulty: val('e_difficulty'), question: val('e_question'), options: opts, answer: Number(document.getElementById('e_answer').value), explanation: val('e_explanation') });
         } else if (type === 'interview') {
           if (!val('e_question') || !val('e_answer')) return alert('질문과 모범 답안을 채워 주세요.');
-          Object.assign(it, { category: val('e_category'), topic: val('e_topic'), question: val('e_question'), key_points: csv('e_keys'), interview_answer: val('e_answer') });
+          Object.assign(it, { category: val('e_category'), topic: val('e_topic'), question: val('e_question'), key_points: csv('e_keys'), interview_answer: val('e_answer'), follow_up: val('e_follow'), follow_up_answer: val('e_followa') });
         } else {
           if (!val('e_title') || !val('e_content')) return alert('제목과 본문을 채워 주세요.');
           Object.assign(it, { category: val('e_category'), subject: val('e_subject'), title: val('e_title'), tags: csv('e_tags'), content: document.getElementById('e_content').value });
