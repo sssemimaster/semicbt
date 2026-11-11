@@ -68,6 +68,8 @@
     </div>
     <div class="flex-1 p-4 space-y-2 mt-2">
       <button onclick="navTo('view-lobby'); toggleSidebar()" class="w-full text-left p-4 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 dark:text-slate-200 font-bold flex items-center gap-3"><span class="text-xl">🏠</span> 홈으로</button>
+      <button onclick="openSetup('quiz'); toggleSidebar()" class="w-full text-left p-4 rounded-xl hover:bg-indigo-50 dark:hover:bg-indigo-900/20 text-indigo-700 dark:text-indigo-400 font-bold flex items-center gap-3"><span class="text-xl">📝</span> 문제 풀기</button>
+      <button onclick="openSetup('interview'); toggleSidebar()" class="w-full text-left p-4 rounded-xl hover:bg-rose-50 dark:hover:bg-rose-900/20 text-rose-700 dark:text-rose-400 font-bold flex items-center gap-3"><span class="text-xl">🗣️</span> 면접 대비</button>
       <button onclick="navTo('view-learning', {level:'home'}); toggleSidebar()" class="w-full text-left p-4 rounded-xl hover:bg-emerald-50 dark:hover:bg-[#1a231c] text-emerald-800 dark:text-[#84cc9c] font-bold flex items-center gap-3"><span class="text-xl">📖</span> 이론 백과사전</button>
       <button onclick="navTo('view-note'); toggleSidebar()" class="w-full text-left p-4 rounded-xl hover:bg-amber-50 dark:hover:bg-amber-900/20 text-amber-700 dark:text-amber-400 font-bold flex items-center gap-3"><span class="text-xl">⭐</span> 오답 노트</button>
     </div>
@@ -115,12 +117,15 @@
       <button onclick="goBack()" class="text-slate-400 font-bold text-sm mb-3 w-fit">⬅️ 뒤로</button>
       <div class="bg-white dark:bg-[#1a1d20] rounded-2xl border border-slate-200 dark:border-slate-800 p-6">
         <h2 id="setupTitle" class="text-xl font-bold dark:text-white mb-6">설정</h2>
+        <label class="block text-xs font-bold text-slate-400 dark:text-slate-500 mb-1.5">과목</label>
         <div class="mb-4">
-          <select id="select-subject" class="w-full bg-slate-50 dark:bg-[#111315] border dark:border-slate-800 text-slate-700 dark:text-slate-200 rounded-lg p-3 outline-none"><option value="ALL">✨ 전체 과목 통합</option><option value="반도체 기초 이론">반도체 기초 이론</option><option value="반도체 8대 공정">반도체 8대 공정</option><option value="차세대 첨단 기술">차세대 첨단 기술</option></select>
+          <select id="select-subject" onchange="updateSetupHint()" class="w-full bg-slate-50 dark:bg-[#111315] border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 rounded-lg p-3 outline-none"><option value="ALL">✨ 전체 과목 통합</option><option value="반도체 기초 이론">반도체 기초 이론</option><option value="반도체 8대 공정">반도체 8대 공정</option><option value="차세대 첨단 기술">차세대 첨단 기술</option></select>
         </div>
-        <div class="mb-8">
-          <select id="select-count" class="w-full bg-slate-50 dark:bg-[#111315] border dark:border-slate-800 text-slate-700 dark:text-slate-200 rounded-lg p-3 outline-none"><option value="ALL">최대 (모두 풀기)</option><option value="5">5개</option><option value="10">10개</option></select>
+        <label class="block text-xs font-bold text-slate-400 dark:text-slate-500 mb-1.5">문항 수</label>
+        <div class="mb-2">
+          <select id="select-count" onchange="updateSetupHint()" class="w-full bg-slate-50 dark:bg-[#111315] border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 rounded-lg p-3 outline-none"></select>
         </div>
+        <p id="setupHint" class="text-xs text-slate-400 dark:text-slate-500 mb-8 min-h-[1rem]"></p>
         <button onclick="startSession()" class="w-full bg-slate-800 dark:bg-indigo-600 text-white font-bold py-3.5 rounded-xl">시작하기</button>
       </div>
     </div>
@@ -413,13 +418,32 @@
       else res.forEach(t => renderTitleCard(t, container));
     }
 
-    function openSetup(mode) { currentMode = mode; document.getElementById('setupTitle').innerText = mode === 'quiz' ? "📝 객관식 설정" : "🗣️ 면접 설정"; navTo('view-setup'); }
-    function startSession() {
-      const sub = document.getElementById('select-subject').value; const cnt = document.getElementById('select-count').value;
+    // 문항 수 선택지: 문제 5/10/20, 면접 3/5/10 (보유 문항이 적으면 있는 만큼만 출제)
+    const COUNT_OPTIONS = { quiz: [5, 10, 20], interview: [3, 5, 10] };
+    const COUNT_DEFAULT = { quiz: 10, interview: 5 };
+    function openSetup(mode) {
+      currentMode = mode;
+      document.getElementById('setupTitle').innerText = mode === 'quiz' ? "📝 객관식 설정" : "🗣️ 면접 설정";
+      const sel = document.getElementById('select-count');
+      sel.innerHTML = COUNT_OPTIONS[mode].map(n => `<option value="${n}" ${n === COUNT_DEFAULT[mode] ? 'selected' : ''}>${n}개</option>`).join('');
+      updateSetupHint();
+      navTo('view-setup');
+    }
+    function setupPool() {
+      const sub = document.getElementById('select-subject').value;
       const data = currentMode === 'quiz' ? allQuizData : allInterviewData;
-      filteredSession = data.filter(q => sub === "ALL" || (q.category && q.category.includes(sub)));
-      if (filteredSession.length === 0) return alert("문항이 없습니다.");
-      filteredSession = filteredSession.sort(() => Math.random() - 0.5); if (cnt !== "ALL") filteredSession = filteredSession.slice(0, parseInt(cnt));
+      return data.filter(q => sub === "ALL" || (q.category && q.category.includes(sub)));
+    }
+    function updateSetupHint() {
+      const n = setupPool().length, want = parseInt(document.getElementById('select-count').value || '0');
+      const unit = currentMode === 'quiz' ? '문제' : '면접 문항';
+      document.getElementById('setupHint').textContent = n === 0 ? `선택한 과목에 등록된 ${unit}가 아직 없어요.` : (n < want ? `현재 ${unit} ${n}개가 있어서 ${n}개를 모두 출제해요.` : `현재 ${unit} ${n}개 중에서 무작위로 출제해요.`);
+    }
+    function startSession() {
+      const cnt = parseInt(document.getElementById('select-count').value) || COUNT_DEFAULT[currentMode];
+      filteredSession = setupPool();
+      if (filteredSession.length === 0) return alert("선택한 과목에 등록된 문항이 없습니다.");
+      filteredSession = filteredSession.sort(() => Math.random() - 0.5).slice(0, cnt);
       currentKeyword = null; currentIndex = 0; correctCount = 0; navTo(currentMode === 'quiz' ? 'view-quiz' : 'view-interview');
       if (currentMode === 'quiz') renderQuiz(); else renderInterview();
     }
