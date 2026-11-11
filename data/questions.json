@@ -1,5 +1,21 @@
 [
   {
+    "id": "Q-01e699e4",
+    "category": "차세대 첨단 기술",
+    "topic": "TSV 공정",
+    "difficulty": "중급",
+    "question": "TSV 공정에서 사용되는 전기적 테스트의 주요 목적은 무엇인가요?",
+    "options": [
+      "구조적 결함 분석",
+      "메탈 재료 선택",
+      "저항 및 전도성 측정",
+      "비용 평가"
+    ],
+    "answer": 2,
+    "explanation": "전기적 테스트는 TSV의 저항 및 전도성을 측정하여 성능을 평가하기 위해 사용됩니다.",
+    "theory_id": "TH-5f46b72f"
+  },
+  {
     "id": "Q-172ec9fc",
     "category": "차세대 첨단 기술",
     "topic": "TSV 공정",
