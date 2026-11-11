@@ -1,17 +1,1 @@
-[
-  {
-    "id": "Q-047d3107",
-    "category": "차세대 첨단 기술",
-    "topic": "HBM 구조",
-    "difficulty": "중급",
-    "question": "HBM에서 TSV(Through-Silicon Via) 기술의 역할은 무엇인가요?",
-    "options": [
-      "다이 간의 전기적 신호 전달",
-      "소형화 지원",
-      "전력 소비 감소",
-      "열 관리 개선"
-    ],
-    "answer": 0,
-    "explanation": "TSV 기술은 HBM에서 다이 간의 전기적 신호를 전달하는 역할을 합니다."
-  }
-]
+[]
