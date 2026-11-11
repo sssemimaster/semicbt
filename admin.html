@@ -173,6 +173,14 @@
 
     // ⚠️ 대기열 파일을 고칠 때는 항상 GitHub 의 '최신본'을 읽어 그 위에서 수정한다.
     //    (화면에 열려 있던 옛 목록으로 덮어쓰면, 그사이 AI가 새로 넣은 문항이 사라진다)
+    // 재검수 때 해설이 두 겹으로 감싸진 초안("정답 해설\n정답 해설\n...")을 한 겹으로 정리
+    function fixExpl(e) {
+      e = String(e || '');
+      if (!/^정답 해설\s*\n\s*정답 해설\s*\n/.test(e)) return e;
+      const parts = e.split(/\n\s*오답 체크\s*\n/);
+      const wc = parts[0].replace(/^정답 해설\s*\n\s*정답 해설\s*\n/, '').split('\n💡 기억 포인트')[0].trim();
+      return parts.length < 2 ? '정답 해설\n' + wc : '정답 해설\n' + wc + '\n\n오답 체크\n' + parts[parts.length - 1];
+    }
     async function draftMutate(path, mutator, msg) {
       const f = await fetchGitHubFile(path);
       const next = mutator(f ? JSON.parse(f.content) : []);
@@ -182,7 +190,7 @@
     async function refreshDrafts() {
       try {
         const [q, i, t] = await Promise.all(["data/draft_questions.json", "data/draft_interviews.json", "data/draft_theories.json"].map(fetchGitHubFile));
-        draftQuizzes = q ? JSON.parse(q.content) : []; draftInterviews = i ? JSON.parse(i.content) : []; draftTheories = t ? JSON.parse(t.content) : [];
+        draftQuizzes = (q ? JSON.parse(q.content) : []).map(x => ({ ...x, explanation: fixExpl(x.explanation) })); draftInterviews = i ? JSON.parse(i.content) : []; draftTheories = t ? JSON.parse(t.content) : [];
         currentQuizIndex = currentInterviewIndex = currentTheoryIndex = 0;
         document.getElementById('draftQCount').innerText = draftQuizzes.length; document.getElementById('draftICount').innerText = draftInterviews.length; document.getElementById('draftTCount').innerText = draftTheories.length;
         renderQuizReview(); renderInterviewReview(); renderTheoryReview();
@@ -197,7 +205,7 @@
       try {
         // 객관식 로드
         const qFile = await fetchGitHubFile("data/draft_questions.json");
-        draftQuizzes = qFile ? JSON.parse(qFile.content) : [];
+        draftQuizzes = (qFile ? JSON.parse(qFile.content) : []).map(q => ({ ...q, explanation: fixExpl(q.explanation) }));
         document.getElementById('draftQCount').innerText = draftQuizzes.length;
 
         // 면접 로드
@@ -280,7 +288,7 @@
     async function approveQuiz() {
       if(!confirm("이 시험 문제를 정식 등재하시겠습니까?")) return;
       try {
-        const q = draftQuizzes[currentQuizIndex]; const repId = q.replaces; delete q.report_note; delete q.replaces; delete q.before;
+        const q = draftQuizzes[currentQuizIndex]; q.explanation = fixExpl(q.explanation); const repId = q.replaces; delete q.report_note; delete q.replaces; delete q.before;
         const live = await fetchGitHubFile("data/questions.json");
         let data = live ? JSON.parse(live.content) : []; if (repId) data = data.filter(x => String(x.id) !== String(repId)); data.unshift(q);
         await updateGitHubFile("data/questions.json", live ? live.sha : null, JSON.stringify(data, null, 2), `Approve quiz ${q.id}`);
