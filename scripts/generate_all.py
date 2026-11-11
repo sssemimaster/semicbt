@@ -7,11 +7,22 @@ from openai import OpenAI
 
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
-# 모델 설정: 글쓰기(이론·문제·면접 초안)와 검수(사실 확인·교정)에 쓸 모델.
-# 비용을 줄이고 싶으면 GitHub Actions 환경변수 WRITE_MODEL / CHECK_MODEL 로 "gpt-4o-mini" 등을 지정하세요.
-WRITE_MODEL = os.environ.get("WRITE_MODEL", "gpt-4o")
-CHECK_MODEL = os.environ.get("CHECK_MODEL", "gpt-4o")
-THEORY_MODEL = WRITE_MODEL
+# 품질/비용 프리셋. GitHub 저장소 Variables 의 QUALITY_PRESET (또는 수동 실행 시 입력)으로 고릅니다.
+#   high     : 전부 gpt-4o            (품질 최고, 비용 최대)
+#   balanced : 이론 본문·검수만 gpt-4o, 구성안·문제/면접 초안은 gpt-4o-mini  (기본값)
+#   economy  : 전부 gpt-4o-mini       (비용 최소)
+PRESETS = {
+    "high":     {"plan": "gpt-4o",      "theory": "gpt-4o",      "audit": "gpt-4o",      "qa": "gpt-4o",      "review": "gpt-4o"},
+    "balanced": {"plan": "gpt-4o-mini", "theory": "gpt-4o",      "audit": "gpt-4o",      "qa": "gpt-4o-mini", "review": "gpt-4o"},
+    "economy":  {"plan": "gpt-4o-mini", "theory": "gpt-4o-mini", "audit": "gpt-4o-mini", "qa": "gpt-4o-mini", "review": "gpt-4o-mini"},
+}
+PRESET = (os.environ.get("QUALITY_PRESET") or "balanced").strip().lower()
+if PRESET not in PRESETS:
+    print(f"⚠️ 알 수 없는 QUALITY_PRESET '{PRESET}' → balanced 로 진행")
+    PRESET = "balanced"
+M = PRESETS[PRESET]
+CHECK_MODEL = M["review"]  # review_existing.py 호환용
+print(f"⚙️ 품질 프리셋: {PRESET} {M}")
 
 topics = [
     {"category": "반도체 기초 이론", "subject": "반도체 물리", "keywords": ["에너지 밴드", "페르미 준위", "캐리어 농도", "PN 접합", "유효 질량"]},
@@ -127,6 +138,7 @@ THEORY_SYSTEM = """당신은 반도체 공정·소자 분야 10년차 현직 엔
 - 부드러운 해요체(~해요, ~예요, ~거든요)로 씁니다. 딱딱한 개조식 나열이나 사전식 정의 나열은 피합니다.
 - 항목을 나열하기 전에 '왜 그런지'를 인과로 먼저 풀어 줍니다. (A 때문에 B가 되고, 그래서 C를 신경 써야 해요)
 - 한 문단은 3~4문장 이내. 문장 길이와 시작 표현을 다양하게 합니다. 같은 어미·접속어를 반복하지 않습니다.
+- 독자에게 질문을 던지며 시작하지 않고, 본문에서도 수사 의문문("~일까요?")을 쓰지 않습니다. 궁금할 만한 점은 평서문으로 짚고 바로 설명합니다.
 - 처음 보는 용어는 쉬운 말로 먼저 풀고, 영문 용어는 처음 한 번만 괄호로 병기합니다. 예: 식각 선택비(Selectivity)
 - 핵심 용어와 꼭 기억할 문장은 **굵게** 표시하되, 문단마다 남발하지 않습니다.
 - 비유는 글 전체에서 많아야 1개, 정확히 들어맞을 때만 쓰고 어디까지 맞는지 한 줄로 한계도 말합니다.
@@ -142,8 +154,9 @@ THEORY_SYSTEM = """당신은 반도체 공정·소자 분야 10년차 현직 엔
 '중요한 역할을 합니다', '필수적입니다', '다양한 분야에서', '이를 통해', '뿐만 아니라', '큰 영향을 미칩니다'(어떻게 미치는지 안 밝히고 쓰는 경우), '~을 명확히 이해하고', '핵심적인 역할'. 이런 말 대신 '구체적으로 무엇이 어떻게 되는지'를 씁니다.
 
 [소제목]
-- `### [뱃지] 제목` 형식. 제목은 이 주제에서만 나올 구체적인 문장이나 질문으로 씁니다. 예: `### [핵심 개념] 식각이 '깎는 일'이 아니라 '고르는 일'인 이유`
-- '~란?', '~의 중요성' 같은 어느 주제에나 붙는 제목은 되도록 피합니다.
+- `### [뱃지] 제목` 형식. 제목은 이 주제에서만 나올 구체적인 명사구나 평서문으로 씁니다. 예: `### [핵심 개념] 식각은 '깎는 일'이 아니라 '고르는 일'이다`
+- 이론은 면접이 아니라 설명하는 글입니다. 제목에 물음표(?)나 의문형(~란?, ~일까, ~할까요)을 쓰지 않습니다.
+- '~의 중요성' 같은 어느 주제에나 붙는 제목도 피합니다.
 
 [팁 박스]
 - `> 💡 [실무 코멘트]`, `> 💡 [면접 팁]`, `> 💡 [흔한 오해]` 중 하나로 한 줄 인용문으로 씁니다.
@@ -240,15 +253,32 @@ def validate_part(text, part):
     hits = cliche_hits(text)
     if hits >= 3:
         raise ValueError(f"상투적 표현이 {hits}번 쓰임 (구체적으로 다시 쓰기)")
+    q_heads = [h for h in re.findall(r"^###.*$", text, re.M) if "?" in h or re.search(r"(?:까|나요|니까|란)\s*$", h.strip())]
+    if q_heads:
+        raise ValueError(f"소제목이 질문형임 ({q_heads[0][:40]}...) → 명사구/평서문으로 바꾸기")
+    body_q = [ln for ln in text.splitlines() if "?" in ln and not ln.lstrip().startswith(("###", ">"))]
+    if len(body_q) > 1:
+        raise ValueError(f"본문에 물음표 문장이 {len(body_q)}개 있음 (수사 의문문 금지, 평서문으로)")
+
+
+def digest(text):
+    """앞 파트 전체를 다시 보내면 토큰이 낭비되므로, 소제목·굵은 용어·수식 기호만 추린다."""
+    heads = re.findall(r"^###.*$", text, re.M)
+    bolds = list(dict.fromkeys(re.findall(r"\*\*([^*\n]{1,30})\*\*", text)))[:25]
+    maths = list(dict.fromkeys(re.findall(r"\$([^$\n]{1,40})\$", text)))[:10]
+    out = "소제목:\n" + "\n".join(heads)
+    if bolds: out += "\n쓰인 핵심 용어: " + ", ".join(bolds)
+    if maths: out += "\n쓰인 기호: " + ", ".join(f"${m}$" for m in maths)
+    return out
 
 
 def build_part_prompt(part, previous_text, outline=""):
     prev_block = ""
     if previous_text:
         prev_block = f"""
-[앞 파트에서 이미 작성된 내용 - 중복 서술 금지, 용어와 기호 표기는 그대로 유지]
+[앞 파트에서 이미 다룬 내용 요약 - 같은 설명을 반복하지 말고, 용어와 기호 표기는 그대로 유지]
 <<<
-{previous_text}
+{digest(previous_text)}
 >>>
 """
     return f"""'{target_keyword}'에 대한 이론 노트를 3개 파트로 나눠 쓰고 있습니다. 지금은 {part['no']}/3 파트 「{part['name']}」입니다.
@@ -271,7 +301,7 @@ def ask_markdown(user_prompt, part, retries=2):
         try:
             feedback = f"\n\n[직전 시도가 실패한 이유 - 이번에는 고쳐서 쓰세요]\n{last_err}" if last_err else ""
             res = client.chat.completions.create(
-                model=WRITE_MODEL,
+                model=M["theory"],
                 messages=[
                     {"role": "system", "content": THEORY_SYSTEM},
                     {"role": "user", "content": user_prompt + feedback},
@@ -351,7 +381,7 @@ def make_plan(retries=2):
     for attempt in range(1, retries + 2):
         try:
             res = client.chat.completions.create(
-                model=CHECK_MODEL,
+                model=M["plan"],
                 messages=[{"role": "system", "content": PLAN_SYSTEM}, {"role": "user", "content": build_plan_prompt()}],
                 temperature=0.3,
                 max_tokens=900,
@@ -384,8 +414,8 @@ def parts_from_plan(plan):
         {
             "no": 1, "name": plan["parts"][0]["name"].strip(), "badges": badge(plan["parts"][0]["badges"]), "tip": "[면접 팁]",
             "guide": f"""- 이 파트의 역할: 처음 보는 사람도 따라올 수 있는 '뼈대'입니다.
-- 글 전체가 답하려는 질문: "{core_q}"
-- 첫 문단은 정의가 아니라 '이게 없으면/이게 어긋나면 어떤 문제가 생기는지' 같은 구체적인 상황이나 궁금증으로 시작하세요.
+- 글 전체가 답하려는 핵심: "{core_q}" (방향 참고용입니다. 질문 문장으로 쓰지 말고 평서문으로 답하며 풀어 쓰세요)
+- 첫 문단은 정의가 아니라 '이게 없으면/이게 어긋나면 어떤 문제가 생기는지' 같은 구체적인 상황으로 시작하세요. 질문으로 시작하지 않습니다.
 - 이 파트에서 다룰 내용 (주제에 맞게 설계됨):
 {focus(0)}
 {analogy_rule}
@@ -418,41 +448,42 @@ def parts_from_plan(plan):
     ]
 
 
-POLISH_SYSTEM = """당신은 반도체 공정·소자 전문가이자 까다로운 학습서 편집자입니다.
-받은 학습 글을 다음 순서로 점검하고, 고친 최종본 전체를 마크다운으로만 출력합니다. (설명·메모·코드블록 금지)
+AUDIT_SYSTEM = """당신은 반도체 공정·소자 전문가이자 까다로운 학습서 편집자입니다. 받은 학습 글에서 '고쳐야 할 구절'만 찾아 JSON 으로 알려 줍니다. 글 전체를 다시 쓰지 않습니다.
+고칠 대상은 다음뿐입니다.
+1. 사실 오류, 지어낸 분류·수치·공식, 확신할 수 없는 구체 숫자
+2. 구체적이지 않은 빈말 문장(예: '중요한 역할을 합니다'), 같은 말을 되풀이하는 문장, 내용 없는 팁 박스
+3. 질문형 소제목, 수사 의문문
+틀리지 않은 문장은 건드리지 않습니다. 고칠 곳이 없으면 빈 배열을 돌려줍니다.
 
-1. 사실 확인: 반도체 교과서·업계 상식과 어긋나는 문장, 지어낸 분류·수치·공식, 확신할 수 없는 구체 숫자를 찾아 고치거나 경향 표현으로 바꾸거나 삭제합니다.
-2. 빈말 제거: '중요한 역할을 합니다' 류의 구체적이지 않은 문장, 어느 주제에나 붙는 문장, 같은 말을 되풀이하는 문장을 구체적인 내용으로 바꾸거나 지웁니다. 빈 팁 박스(예: '~을 이해하고 설명할 수 있어야 한다')는 실제로 도움이 되는 한 줄로 바꿉니다.
-3. 읽는 흐름: 파트 사이 이음새가 자연스럽고, 같은 어미·접속어가 반복되지 않게 다듬습니다. 문체는 해요체로 통일합니다.
-
-반드시 지킬 것
-- 소제목(`### [뱃지] 제목`) 구조와 개수, 마지막 `### [암기 포인트] ...` 소제목, 표, 수식($...$, $$...$$) 문법, `> 💡 [..]` 팁 박스 형식은 그대로 유지합니다.
-- 내용을 새로 늘리거나 줄이지 않습니다. 분량은 원문의 90% 이상을 유지합니다.
-- 틀리지 않은 문장은 건드리지 않습니다."""
+출력 형식(JSON 객체 하나만):
+{"fixes": [{"find": "원문에 글자 하나 다르지 않게 그대로 있는 구절(원문에서 한 번만 나오는 길이로)", "replace": "고친 구절(삭제하려면 빈 문자열)", "reason": "한 줄 이유"}]}
+- find 는 한 줄 안에서만 고르고, '###' 소제목 표식이나 수식($...$) 기호는 find/replace 에 넣지 않습니다. (소제목 문구를 고칠 때는 ### [뱃지] 는 빼고 제목 글자만)
+- 최대 8개."""
 
 
-def polish_theory(text):
-    """완성된 이론을 한 번 더 '편집자 눈'으로 교정한다. 결과가 이상하면 원문을 그대로 쓴다."""
+def audit_theory(text):
+    """전체를 다시 쓰지 않고, 고칠 구절만 받아 파이썬이 직접 바꾼다. (토큰 절약 + 원문 훼손 방지)"""
     try:
         res = client.chat.completions.create(
-            model=CHECK_MODEL,
-            messages=[{"role": "system", "content": POLISH_SYSTEM}, {"role": "user", "content": text}],
-            temperature=0.2,
-            max_tokens=5000,
+            model=M["audit"],
+            messages=[{"role": "system", "content": AUDIT_SYSTEM}, {"role": "user", "content": text}],
+            temperature=0.1, max_tokens=1200, response_format={"type": "json_object"},
         )
-        choice = res.choices[0]
-        if choice.finish_reason == "length":
-            raise ValueError("교정본이 잘림")
-        new = normalize_markdown(choice.message.content or "")
-        old_h, new_h = HEADING_RE.findall(text), HEADING_RE.findall(new)
-        if len(new) < len(text) * 0.85:
-            raise ValueError("교정본이 너무 짧아짐")
-        if len(new_h) != len(old_h) or "[암기 포인트]" not in new_h[-1]:
-            raise ValueError("소제목 구조가 바뀜")
-        if new.count("$$") % 2 or new.replace("$$", "").count("$") % 2:
-            raise ValueError("수식 짝이 깨짐")
-        print(f"   ✨ 편집 교정 완료 (상투 표현 {cliche_hits(text)} → {cliche_hits(new)})")
-        return new
+        fixes = json.loads(clean_json_string(res.choices[0].message.content or "")).get("fixes") or []
+        out, applied = text, 0
+        for f in fixes[:8]:
+            if not isinstance(f, dict):
+                continue
+            find, rep_ = str(f.get("find", "")), str(f.get("replace", ""))
+            if len(find) < 4 or "\n" in find or "###" in find or "$" in find or "$" in rep_ or out.count(find) != 1:
+                continue
+            out = out.replace(find, rep_)
+            applied += 1
+        out = re.sub(r"[ \t]{2,}", " ", out); out = re.sub(r"\n{3,}", "\n\n", out)
+        if len(out) < len(text) * 0.8 or len(HEADING_RE.findall(out)) != len(HEADING_RE.findall(text)):
+            raise ValueError("교정 결과가 구조를 해쳐서 취소")
+        print(f"   ✨ 편집 교정: 제안 {len(fixes)}개 중 {applied}개 적용")
+        return out
     except Exception as e:
         print(f"   ⚠️ 편집 교정을 건너뜁니다(원문 유지): {e}")
         return text
@@ -473,7 +504,7 @@ def generate_theory():
         print(f"   📖 이론 {part['no']}/3 「{part['name']}」 생성 중...")
         previous = "\n\n".join(sections)
         sections.append(ask_markdown(build_part_prompt(part, previous, outline), part))
-    return polish_theory("\n\n".join(sections))
+    return audit_theory("\n\n".join(sections))
 
 
 # ====================================================================
@@ -622,12 +653,12 @@ def compose_quiz(it, theory_id):
 
 
 def generate_quiz(theory, theory_id):
-    drafts = (call_json(WRITE_MODEL, QUIZ_SYSTEM, build_quiz_prompt(theory), 0.8).get("questions") or [])[:3]
+    drafts = (call_json(M["qa"], QUIZ_SYSTEM, build_quiz_prompt(theory), 0.8).get("questions") or [])[:3]
     if not drafts:
         raise ValueError("초안 문제가 비어 있음")
     final = []
     try:
-        reviews = call_json(CHECK_MODEL, QUIZ_REVIEW_SYSTEM, build_quiz_review_prompt(theory, drafts), 0.2, 4000).get("reviews") or []
+        reviews = call_json(M["review"], QUIZ_REVIEW_SYSTEM, build_quiz_review_prompt(theory, drafts), 0.2, 4000).get("reviews") or []
         by_idx = {r.get("index"): r for r in reviews if isinstance(r, dict)}
         for n, it in enumerate(drafts):
             r = by_idx.get(n)
@@ -753,12 +784,12 @@ def compose_interview(it, theory_id):
 
 
 def generate_interview(theory, theory_id):
-    drafts = (call_json(WRITE_MODEL, INTERVIEW_SYSTEM, build_interview_prompt(theory), 0.7).get("interviews") or [])[:2]
+    drafts = (call_json(M["qa"], INTERVIEW_SYSTEM, build_interview_prompt(theory), 0.7).get("interviews") or [])[:2]
     if not drafts:
         raise ValueError("초안 면접이 비어 있음")
     final = []
     try:
-        reviews = call_json(CHECK_MODEL, INTERVIEW_REVIEW_SYSTEM, build_interview_review_prompt(theory, drafts), 0.2, 4000).get("reviews") or []
+        reviews = call_json(M["review"], INTERVIEW_REVIEW_SYSTEM, build_interview_review_prompt(theory, drafts), 0.2, 4000).get("reviews") or []
         by_idx = {r.get("index"): r for r in reviews if isinstance(r, dict)}
         for n, it in enumerate(drafts):
             r = by_idx.get(n)
