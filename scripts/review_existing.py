@@ -41,15 +41,29 @@ def find_theory(item, theories):
     return None
 
 
+def parse_composed_explanation(expl, answer_idx):
+    """새 형식 해설("정답 해설 / 오답 체크 / 기억 포인트")을 다시 부품(정답 이유·오답별 이유·기억 포인트)으로 쪼갠다."""
+    e = str(expl or "")
+    if not e.startswith("정답 해설"):
+        return None
+    body = re.sub(r"^정답 해설\s*\n", "", e)
+    why_correct = re.split(r"\n\s*오답 체크\s*\n", body)[0].split("\n💡 기억 포인트")[0].strip()
+    wrong = {int(n) - 1: w.strip() for n, w in re.findall(r"·\s*(\d+)번:\s*(.+)", e)}
+    m = re.search(r"💡 기억 포인트:\s*(.+)", e)
+    return why_correct, wrong, (m.group(1).strip() if m else "")
+
+
 def quiz_to_review(q):
     opts, ans = q.get("options") or [], q.get("answer")
     if not isinstance(ans, int) or not (0 <= ans < len(opts)):
         raise ValueError("answer/options 형식 오류")
+    parsed = parse_composed_explanation(q.get("explanation"), ans)
+    why_correct, wrong, takeaway = parsed if parsed else (q.get("explanation", ""), {}, "")
     return {
-        "type": "concept", "difficulty": q.get("difficulty", "중급"), "question": q["question"],
+        "type": q.get("type", "concept"), "difficulty": q.get("difficulty", "중급"), "question": q["question"],
         "correct": opts[ans],
-        "distractors": [{"text": o, "why_wrong": ""} for n, o in enumerate(opts) if n != ans],
-        "why_correct": q.get("explanation", ""), "takeaway": "",
+        "distractors": [{"text": o, "why_wrong": wrong.get(n, "")} for n, o in enumerate(opts) if n != ans],
+        "why_correct": why_correct, "takeaway": takeaway,
     }
 
 
