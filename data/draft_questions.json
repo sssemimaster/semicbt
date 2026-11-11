@@ -1,21 +1,5 @@
 [
   {
-    "id": "Q-cdce4d95",
-    "category": "반도체 8대 공정",
-    "topic": "EUV 리소그래피",
-    "difficulty": "중급",
-    "question": "EUV 리소그래피에서 사용하는 극자외선의 파장은 몇 nm인가요?",
-    "options": [
-      "365nm",
-      "13.5nm",
-      "248nm",
-      "193nm"
-    ],
-    "answer": 1,
-    "explanation": "EUV 리소그래피는 약 13.5nm의 파장을 가진 극자외선을 사용합니다.",
-    "theory_id": "TH-8fee3eb5"
-  },
-  {
     "id": "Q-d6bd5a06",
     "category": "반도체 8대 공정",
     "topic": "EUV 리소그래피",
