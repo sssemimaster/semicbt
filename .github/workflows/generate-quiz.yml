@@ -5,6 +5,12 @@ on:
     # 6시간마다 (UTC 기준). 더 자주/덜 자주 돌리고 싶으면 이 줄만 바꾸세요.
       - cron: '*/30 * * * *'
   workflow_dispatch:
+    inputs:
+      preset:
+        description: "품질/비용 프리셋 (비워두면 저장소 Variables의 QUALITY_PRESET, 그것도 없으면 balanced)"
+        default: ""
+        type: choice
+        options: ["", high, balanced, economy]
 
 # 같은 워크플로가 동시에 두 개 돌지 않도록 한 줄로 세움
 concurrency:
@@ -38,6 +44,7 @@ jobs:
     - name: Run Unified Generator
       env:
         OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        QUALITY_PRESET: ${{ github.event.inputs.preset || vars.QUALITY_PRESET || 'balanced' }}
       run: python scripts/generate_all.py
 
     - name: Commit and Push changes
