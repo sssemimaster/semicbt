@@ -19,6 +19,33 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import generate_all as g  # noqa: E402  (같은 프롬프트·규칙을 그대로 재사용)
 
 BATCH = 4
+LOG_PATH = "data/review_log.json"   # 이미 점검한 문항 ID 기록 (같은 문항을 다시 점검·재등록하지 않기 위함)
+MAX_SKIPS = 2                        # 규칙 위반 등으로 2번 건너뛴 문항은 더 이상 시도하지 않음
+
+
+def load_log():
+    try:
+        with open(LOG_PATH, "r", encoding="utf-8") as f:
+            d = json.load(f)
+        return d if isinstance(d, dict) else {}
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {}
+
+
+def save_log(log):
+    os.makedirs(os.path.dirname(LOG_PATH), exist_ok=True)
+    with open(LOG_PATH, "w", encoding="utf-8") as f:
+        json.dump(log, f, ensure_ascii=False, indent=1, sort_keys=True)
+
+
+def already_checked(item, log, kind):
+    """새 파이프라인으로 만든 문항(검수 거친 문항)이거나, 이미 점검 기록이 있으면 건너뛴다."""
+    if kind == "quiz" and item.get("type"):
+        return True
+    if kind == "interview" and item.get("follow_up"):
+        return True
+    rec = log.get(item.get("id"))
+    return bool(rec) and (rec.get("v") in ("ok", "fix", "drop") or rec.get("n", 0) >= MAX_SKIPS)
 NO_THEORY = "(연결된 이론 글이 없습니다. 반도체 교과서·업계 상식으로 판단하고, 확실하지 않은 내용은 drop 하세요.)"
 
 
@@ -75,6 +102,13 @@ def interview_to_review(i):
     }
 
 
+def mark(log, item_id, verdict):
+    if verdict == "skip":
+        rec = log.get(item_id, {}); log[item_id] = {"v": "skip", "n": rec.get("n", 0) + 1}
+    else:
+        log[item_id] = {"v": verdict}
+
+
 def groups_of(items, theories):
     """같은 이론에 묶이는 문항끼리 BATCH 개씩 나눈다."""
     by = {}
@@ -86,14 +120,15 @@ def groups_of(items, theories):
             yield th, lst[k:k + BATCH]
 
 
-def run_kind(kind, limit, theories):
+def run_kind(kind, limit, theories, log):
     live_path = "data/questions.json" if kind == "quiz" else "data/interviews.json"
     draft_path = g.draft_q_path if kind == "quiz" else g.draft_i_path
     live = g.load_json_list(live_path)
     queued = {d.get("replaces") for d in g.load_json_list(draft_path) if d.get("replaces")}
-    todo = [x for x in live if isinstance(x, dict) and x.get("id") not in queued][:limit]
+    pool = [x for x in live if isinstance(x, dict) and x.get("id") not in queued and not already_checked(x, log, kind)]
+    todo = pool[:limit]
     label = "객관식" if kind == "quiz" else "면접"
-    print(f"[{label}] 정식 {len(live)}개 중 이번에 점검할 문항 {len(todo)}개 (이미 대기열에 있는 {len(queued)}개 제외)")
+    print(f"[{label}] 정식 {len(live)}개 중 아직 점검 안 한 문항 {len(pool)}개 → 이번에 {len(todo)}개 점검 (대기열 {len(queued)}개·기록된 문항·새 형식 문항은 제외)")
     out, stats = [], {"ok": 0, "fix": 0, "drop": 0, "skip": 0}
 
     for th, batch in groups_of(todo, theories):
@@ -103,7 +138,7 @@ def run_kind(kind, limit, theories):
             try:
                 conv.append(quiz_to_review(old) if kind == "quiz" else interview_to_review(old)); olds.append(old)
             except Exception as e:
-                print(f"   ⚠️ {old.get('id')} 변환 실패, 건너뜀: {e}"); stats["skip"] += 1
+                print(f"   ⚠️ {old.get('id')} 변환 실패, 건너뜀: {e}"); stats["skip"] += 1; mark(log, old["id"], "skip")
         if not conv:
             continue
         try:
@@ -113,7 +148,7 @@ def run_kind(kind, limit, theories):
                 prompt, system = g.build_interview_review_prompt(theory_text, conv), g.INTERVIEW_REVIEW_SYSTEM
             reviews = g.call_json(g.M["review"], system, prompt, 0.2, 4500).get("reviews") or []
         except Exception as e:
-            print(f"   ⚠️ 검수 호출 실패, 이 묶음은 다음에 다시 시도됩니다: {e}"); stats["skip"] += len(olds); continue
+            print(f"   ⚠️ 검수 호출 실패, 이 묶음은 다음에 다시 시도됩니다: {e}"); stats["skip"] += len(olds); continue  # 호출 자체가 실패하면 기록하지 않음
         by_idx = {r.get("index"): r for r in reviews if isinstance(r, dict)}
 
         for n, old in enumerate(olds):
@@ -121,21 +156,21 @@ def run_kind(kind, limit, theories):
             verdict, issues = r.get("verdict"), "; ".join(map(str, r.get("issues") or []))[:300]
             before = str(old.get("question", ""))[:160]
             if verdict == "ok" or verdict not in ("fix", "drop"):
-                stats["ok"] += 1; continue
+                stats["ok"] += 1; mark(log, old["id"], "ok"); continue
             if verdict == "drop":
-                stats["drop"] += 1
+                stats["drop"] += 1; mark(log, old["id"], "drop")
                 out.append(dict(old, replaces=old["id"], before=before, report_note=f"삭제 권장 — {issues or '고쳐서 살리기 어려움'}"))
                 print(f"   🗑️ {old['id']} 삭제 권장: {issues[:80]}"); continue
             cand = r.get("final")
             probs = (g.check_quiz_item(cand) if kind == "quiz" else g.check_interview_item(cand)) if isinstance(cand, dict) else ["final 없음"]
             if probs:
-                print(f"   ⚠️ {old['id']} 수정안이 규칙 위반이라 건너뜀: {probs}"); stats["skip"] += 1; continue
+                print(f"   ⚠️ {old['id']} 수정안이 규칙 위반이라 건너뜀: {probs}"); stats["skip"] += 1; mark(log, old["id"], "skip"); continue
             g.sel_cat, g.target_keyword = old.get("category", ""), old.get("topic", "")
             new = g.compose_quiz(cand, old.get("theory_id")) if kind == "quiz" else g.compose_interview(cand, old.get("theory_id"))
             if not old.get("theory_id"):
                 new.pop("theory_id", None)
             new.update(replaces=old["id"], before=before, report_note=issues or "표현·해설 보강")
-            out.append(new); stats["fix"] += 1
+            out.append(new); stats["fix"] += 1; mark(log, old["id"], "fix")
             print(f"   🔧 {old['id']} 수정안 생성: {issues[:80]}")
 
     if out:
@@ -150,9 +185,10 @@ def main():
     ap.add_argument("--limit", type=int, default=12, help="종류별로 한 번에 점검할 문항 수")
     a = ap.parse_args()
     theories = [t for t in g.load_json_list("data/theories.json") if isinstance(t, dict) and "채워질 예정" not in str(t.get("content", ""))]
-    total = 0
+    total, log = 0, load_log()
     for kind in (["quiz", "interview"] if a.kind == "all" else [a.kind]):
-        total += run_kind(kind, a.limit, theories)
+        total += run_kind(kind, a.limit, theories, log)
+        save_log(log)
     print(f"✅ 검수 대기열에 {total}개를 넣었습니다. 검수소에서 확인하세요." if total else "✅ 새로 넣을 문항이 없습니다.")
 
 
