@@ -9,11 +9,11 @@ client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
 # 품질/비용 프리셋. GitHub 저장소 Variables 의 QUALITY_PRESET (또는 수동 실행 시 입력)으로 고릅니다.
 #   high     : 전부 gpt-4o            (품질 최고, 비용 최대)
-#   balanced : 이론 본문·검수만 gpt-4o, 구성안·문제/면접 초안은 gpt-4o-mini  (기본값)
+#   balanced : 이론 본문·이론 교정만 gpt-4o, 구성안·문제/면접 초안·검수는 gpt-4o-mini  (기본값)
 #   economy  : 전부 gpt-4o-mini       (비용 최소)
 PRESETS = {
     "high":     {"plan": "gpt-4o",      "theory": "gpt-4o",      "audit": "gpt-4o",      "qa": "gpt-4o",      "review": "gpt-4o"},
-    "balanced": {"plan": "gpt-4o-mini", "theory": "gpt-4o",      "audit": "gpt-4o",      "qa": "gpt-4o-mini", "review": "gpt-4o"},
+    "balanced": {"plan": "gpt-4o-mini", "theory": "gpt-4o",      "audit": "gpt-4o",      "qa": "gpt-4o-mini", "review": "gpt-4o-mini"},
     "economy":  {"plan": "gpt-4o-mini", "theory": "gpt-4o-mini", "audit": "gpt-4o-mini", "qa": "gpt-4o-mini", "review": "gpt-4o-mini"},
 }
 PRESET = (os.environ.get("QUALITY_PRESET") or "balanced").strip().lower()
