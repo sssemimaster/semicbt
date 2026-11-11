@@ -1,20 +1,5 @@
 [
   {
-    "id": "Q-2a24b4f8",
-    "category": "차세대 첨단 기술",
-    "topic": "HBM 구조",
-    "difficulty": "중급",
-    "question": "HBM의 주된 특징은 무엇인가요?",
-    "options": [
-      "낮은 대역폭과 높은 전력 소비",
-      "저비용과 간단한 공정",
-      "단일 DRAM 다이 구조",
-      "고대역폭과 낮은 전력 소비"
-    ],
-    "answer": 3,
-    "explanation": "HBM은 고대역폭과 낮은 전력 소비가 특징입니다."
-  },
-  {
     "id": "Q-ed770b2c",
     "category": "차세대 첨단 기술",
     "topic": "HBM 구조",
