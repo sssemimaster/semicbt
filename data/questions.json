@@ -1,5 +1,21 @@
 [
   {
+    "id": "Q-aa76d119",
+    "category": "반도체 8대 공정",
+    "topic": "습식 산화",
+    "difficulty": "중급",
+    "question": "산화막 두께 측정에 사용되지 않는 방법은 무엇인가요?",
+    "options": [
+      "SEM",
+      "Ellipsometry",
+      "FTIR",
+      "X-ray Reflectometry"
+    ],
+    "answer": 2,
+    "explanation": "Ellipsometry, X-ray Reflectometry, SEM는 산화막 두께 측정에 사용되지만, FTIR은 해당 방법이 아닙니다.",
+    "theory_id": "TH-131b1f3a"
+  },
+  {
     "id": "Q-080962d7",
     "category": "반도체 8대 공정",
     "topic": "습식 산화",
