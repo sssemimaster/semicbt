@@ -1,5 +1,21 @@
 [
   {
+    "id": "Q-172ec9fc",
+    "category": "차세대 첨단 기술",
+    "topic": "TSV 공정",
+    "difficulty": "중급",
+    "question": "TSV 공정의 주요 이점 중 하나는 무엇인가요?",
+    "options": [
+      "구조적 결함을 증가시킨다",
+      "전력 소모를 줄인다",
+      "비용을 증가시킨다",
+      "패키징을 단순화한다"
+    ],
+    "answer": 1,
+    "explanation": "TSV 공정은 전력 소모를 줄이는 데 기여하여 효율성을 높입니다.",
+    "theory_id": "TH-5f46b72f"
+  },
+  {
     "id": "Q-aa76d119",
     "category": "반도체 8대 공정",
     "topic": "습식 산화",
