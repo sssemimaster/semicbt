@@ -742,6 +742,16 @@ verdict: ok(final 에 원본) / fix(고친 완성본을 final 에, 같은 스키
 {{"reviews": [{{"index": 0, "verdict": "ok|fix|drop", "issues": ["발견한 문제 요약"], "final": {{...같은 item 스키마...}} 또는 null}}]}}"""
 
 
+def compose_interview(it, theory_id):
+    return {
+        "id": new_id("INT"), "category": sel_cat, "topic": target_keyword, "theory_id": theory_id,
+        "difficulty": it.get("difficulty") if it.get("difficulty") in ("중급", "고급") else "고급",
+        "question": str(it["question"]).strip(), "follow_up": str(it["follow_up"]).strip(),
+        "follow_up_answer": str(it["follow_up_answer"]).strip(),
+        "key_points": [k.strip() for k in it["key_points"]], "interview_answer": str(it["interview_answer"]).strip(),
+    }
+
+
 def generate_interview(theory, theory_id):
     drafts = (call_json(WRITE_MODEL, INTERVIEW_SYSTEM, build_interview_prompt(theory), 0.7).get("interviews") or [])[:2]
     if not drafts:
@@ -770,16 +780,7 @@ def generate_interview(theory, theory_id):
         final = [it for it in drafts if not check_interview_item(it)]
     if not final:
         raise ValueError("검수를 통과한 면접이 없음")
-    out = []
-    for it in final:
-        out.append({
-            "id": new_id("INT"), "category": sel_cat, "topic": target_keyword, "theory_id": theory_id,
-            "difficulty": it.get("difficulty") if it.get("difficulty") in ("중급", "고급") else "고급",
-            "question": str(it["question"]).strip(), "follow_up": str(it["follow_up"]).strip(),
-            "follow_up_answer": str(it["follow_up_answer"]).strip(),
-            "key_points": [k.strip() for k in it["key_points"]], "interview_answer": str(it["interview_answer"]).strip(),
-        })
-    return out
+    return [compose_interview(it, theory_id) for it in final]
 
 
 def generate_unified_content():
