@@ -97,7 +97,7 @@ def run_kind(kind, limit, theories):
                 prompt, system = g.build_quiz_review_prompt(theory_text, conv), g.QUIZ_REVIEW_SYSTEM
             else:
                 prompt, system = g.build_interview_review_prompt(theory_text, conv), g.INTERVIEW_REVIEW_SYSTEM
-            reviews = g.call_json(g.CHECK_MODEL, system, prompt, 0.2, 4500).get("reviews") or []
+            reviews = g.call_json(g.M["review"], system, prompt, 0.2, 4500).get("reviews") or []
         except Exception as e:
             print(f"   ⚠️ 검수 호출 실패, 이 묶음은 다음에 다시 시도됩니다: {e}"); stats["skip"] += len(olds); continue
         by_idx = {r.get("index"): r for r in reviews if isinstance(r, dict)}
