@@ -1,5 +1,21 @@
 [
   {
+    "id": "Q-6aafcfba",
+    "category": "반도체 8대 공정",
+    "topic": "습식 산화",
+    "difficulty": "중급",
+    "question": "습식 산화 공정에서 형성되는 산화막의 주 성분은 무엇인가요?",
+    "options": [
+      "Si₃N₄",
+      "SiO₂",
+      "O₂",
+      "H₂O"
+    ],
+    "answer": 1,
+    "explanation": "습식 산화 공정에서는 실리콘(Si)과 수증기(H₂O) 반응을 통해 실리콘 산화물(SiO₂)이 형성됩니다.",
+    "theory_id": "TH-131b1f3a"
+  },
+  {
     "id": "Q-3b159e5d",
     "category": "차세대 첨단 기술",
     "topic": "GAA 나노시트",
