@@ -285,6 +285,9 @@
       <section id="homeDash" class="grid lg:grid-cols-3 gap-4"></section>
     </div>
 
+    <!-- ↩ 이론에서 풀던 화면으로 돌아가는 버튼 -->
+    <button id="returnBtn" onclick="returnToOrigin()" class="hidden fixed bottom-5 left-4 z-40 pbtn rounded-full shadow-xl px-5 py-3 text-sm font-bold flex items-center gap-2"><span>↩</span><span id="returnBtnText">풀던 문제로 돌아가기</span></button>
+
     <!-- ⚙️ 공통 설정 화면 -->
     <div id="view-setup" class="hidden w-full flex flex-col">
       <button onclick="goBack()" class="back-link mb-5">← 뒤로</button>
@@ -492,6 +495,7 @@
     const FIXED_SUBJECTS = Object.values(CATEGORY_TREE).flat().concat(["일반"]);
     
     let currentViewId = 'view-lobby'; let learnState = { level: 'home', category: '', subject: '', theoryId: '' };
+    let navLog = [], navIdx = 0, returnCtx = null;
 
     async function initApp() {
       try {
@@ -503,21 +507,73 @@
           allTheories = raw.filter(t => !String(t.content || '').includes('채워질 예정')).map((t, idx) => ({ ...t, id: t.id || "T-" + idx, category: t.category || "기타", subject: t.subject || "일반" }));
         }
         applyState('view-lobby', learnState);
+        try { history.scrollRestoration = 'manual'; } catch (e) {}
+        navLog = [{ v: 'view-lobby', l: { ...learnState } }]; navIdx = 0; history.replaceState({ i: 0 }, '');
       } catch (e) {}
     }
 
+    // ===== 브라우저 히스토리 연동: 크롬 뒤로가기/앞으로가기가 화면 이동을 그대로 따라간다 =====
     function navTo(viewId, newLearnState = null) {
-      if (newLearnState) learnState = { ...learnState, ...newLearnState }; applyState(viewId, learnState);
+      if (navLog[navIdx]) navLog[navIdx].y = window.scrollY;   // 떠나는 화면의 스크롤 위치 기억
+      if (newLearnState) learnState = { ...learnState, ...newLearnState };
+      applyState(viewId, learnState); pushNav(viewId);
     }
+    function pushNav(viewId) {
+      const s = { v: viewId, l: { ...learnState } }, cur = navLog[navIdx];
+      if (cur && cur.v === s.v && JSON.stringify(cur.l) === JSON.stringify(s.l)) return;
+      navIdx++; navLog = navLog.slice(0, navIdx); navLog[navIdx] = s;
+      history.pushState({ i: navIdx }, '');
+    }
+    window.addEventListener('popstate', (e) => {
+      const i = e.state && Number.isInteger(e.state.i) ? e.state.i : 0, s = navLog[i];
+      // 시험 중에 뒤로가기를 누르면 실수로 시험이 날아가지 않게 확인
+      if (currentViewId === 'view-exam' && exam && !(s && s.v === 'view-exam')) {
+        if (!confirm('시험을 중단할까요? 지금까지의 답안은 채점되지 않아요.')) { history.go(navIdx - i); return; }
+        stopExamTimer(); exam = null;
+      }
+      navIdx = i;
+      if (!s) { applyState('view-lobby', learnState); return; }
+      learnState = { ...s.l };
+      let v = s.v;
+      if ((v === 'view-quiz' || v === 'view-interview') && !filteredSession.length) v = 'view-lobby';
+      if (v === 'view-exam' && !exam) v = 'view-lobby';
+      applyState(v, learnState);
+      if (s.y) requestAnimationFrame(() => window.scrollTo({ top: s.y }));
+    });
+    const prevNav = () => navLog[navIdx - 1];
+    function backOrLobby() { const p = prevNav(); if (p) history.back(); else navTo('view-lobby'); }
+    // 앱 안의 ← 뒤로: 이론 화면에서는 폴더를 한 단계씩 거슬러 올라간다
     function goBack() {
-      if (currentViewId === 'view-learning' && document.getElementById('theorySearchInput').value.trim() !== '') {
-        document.getElementById('theorySearchInput').value = ''; applyState('view-learning', learnState);
-      } else { navTo('view-lobby'); }
+      if (currentViewId === 'view-learning') {
+        const si = document.getElementById('theorySearchInput');
+        if (si.value.trim() !== '') { si.value = ''; applyState('view-learning', learnState); return; }
+        const lv = learnState.level;
+        if (lv === 'home') { const p = prevNav(); if (p && p.v === 'view-lobby') history.back(); else navTo('view-lobby'); return; }
+        const up = lv === 'detail' ? { level: 'subject' } : lv === 'subject' ? { level: 'category' } : { level: 'home' };
+        const want = { ...learnState, ...up }, p = prevNav();
+        if (p && p.v === 'view-learning' && p.l.level === want.level && (want.level === 'home' || p.l.category === want.category) && (want.level !== 'subject' || p.l.subject === want.subject)) history.back();
+        else navTo('view-learning', up);
+        return;
+      }
+      if (['view-quiz', 'view-interview', 'view-exam', 'view-result'].includes(currentViewId)) return navTo('view-lobby');
+      backOrLobby();
+    }
+    // 이론 화면에서 '풀던 화면'으로 되돌아가기
+    function returnToOrigin() {
+      const c = returnCtx; if (!c) return;
+      const p = prevNav(); if (p && p.v === c.view) history.back(); else navTo(c.view);
+    }
+    const RETURN_LABEL = { 'view-quiz': '풀던 문제로 돌아가기', 'view-interview': '풀던 면접으로 돌아가기', 'view-result': '결과로 돌아가기', 'view-exam': '시험으로 돌아가기', 'view-note': '오답 노트로 돌아가기', 'view-search': '검색 결과로 돌아가기', 'view-stats': '통계로 돌아가기' };
+    function updateReturnBtn() {
+      const btn = document.getElementById('returnBtn'), show = !!returnCtx && currentViewId === 'view-learning';
+      btn.classList.toggle('hidden', !show); document.getElementById('view-learning').classList.toggle('pb-24', show);
+      if (show) document.getElementById('returnBtnText').textContent = returnCtx.label;
     }
     function applyState(viewId, state) {
       ['view-lobby', 'view-setup', 'view-quiz', 'view-interview', 'view-learning', 'view-note', 'view-result', 'view-stats', 'view-exam', 'view-search'].forEach(id => document.getElementById(id).classList.add('hidden'));
       const vEl = document.getElementById(viewId); vEl.classList.remove('hidden'); currentViewId = viewId; vEl.classList.remove('view-enter'); void vEl.offsetWidth; vEl.classList.add('view-enter');
       if (viewId !== 'view-exam') stopExamTimer();
+      if (viewId !== 'view-learning') returnCtx = null;
       if (viewId === 'view-lobby') { renderResumeBanner(); renderHome(); }
       updateNav(); window.scrollTo({ top: 0 });
       if (viewId === 'view-search') { const si = document.getElementById('globalSearchInput'); runGlobalSearch(); setTimeout(() => si.focus(), 50); }
@@ -525,7 +581,7 @@
         document.getElementById('theorySearchInput').value = '';
         if (state.level === 'home') renderHomeDOM(); else if (state.level === 'category') renderSubjectsDOM(state.category); else if (state.level === 'subject') renderTitlesDOM(state.category, state.subject); else if (state.level === 'detail') renderDetailDOM(state.theoryId);
       } else if (viewId === 'view-note') renderNoteDOM(); else if (viewId === 'view-stats') renderStats();
-      applyMathRendering();
+      updateReturnBtn(); applyMathRendering();
     }
 
     // 📖 백과사전 뷰 (max-w-2xl 사이즈에 맞춘 레이아웃)
@@ -860,6 +916,7 @@
     }
     function openTheory(id) {
       const t = allTheories.find(x => x.id === id); if (!t) return;
+      if (currentViewId !== 'view-learning' && RETURN_LABEL[currentViewId]) returnCtx = { view: currentViewId, label: RETURN_LABEL[currentViewId] };
       navTo('view-learning', { level: 'detail', category: t.category, subject: t.subject, theoryId: t.id });
     }
     const theoryLinkHtml = (q) => { const t = theoryFor(q); return t ? `<button onclick="openTheory('${escH(t.id)}')" class="mt-3 w-full bg-indigo-50 dark:bg-[#0f2233] border border-indigo-200 dark:border-emerald-900/60 text-indigo-700 dark:text-[#67e8f9] py-2 rounded-lg text-xs font-bold">📖 관련 이론 보기: ${escH(t.title)}</button>` : ''; };
