@@ -335,11 +335,24 @@
       applyMathRendering();
     }
 
-    // 키워드와 관련된 문제/면접 문항 찾기 (분류·주제·지문 어디든 포함되면 매칭)
+    // 이론과 관련된 문제/면접 문항 찾기
+    //  1순위: theory_id 로 직접 연결된 문항 (새로 생성되는 문항은 모두 이쪽)
+    //  2순위: 예전 문항 — 제목이 포함되거나, 제목이 영문 약어로 시작하면(DRAM, EDS …) 같은 대분류 안에서 약어가 단어로 등장하는 문항
     function matchItems(data, keyword) {
-      const k = String(keyword || '').toLowerCase();
+      const k = String(keyword || '').trim();
       if (!k) return [];
-      return (data || []).filter(x => [x.category, x.topic, x.question].some(v => String(v || '').toLowerCase().includes(k)));
+      const th = allTheories.find(t => t.title === k);
+      const linked = th ? (data || []).filter(x => x.theory_id && x.theory_id === th.id) : [];
+      if (linked.length) return linked;
+      const low = k.toLowerCase();
+      const head = k.split(/\s+/)[0];
+      const acro = /^[A-Za-z][A-Za-z0-9\-\/.]*$/.test(head) && head.length >= 2 ? new RegExp('(^|[^a-z0-9])' + head.toLowerCase().replace(/[.*+?^${}()|[\]\\\/]/g, '\\$&') + '([^a-z0-9]|$)') : null;
+      return (data || []).filter(x => {
+        if (x.theory_id) return false; // 다른 이론에 연결된 문항은 제외
+        if ([x.category, x.topic, x.question].some(v => String(v || '').toLowerCase().includes(low))) return true;
+        const sameCat = !th || !x.category || x.category === th.category;
+        return !!acro && sameCat && [x.topic, x.question].some(v => acro.test(String(v || '').toLowerCase()));
+      });
     }
     function startMiniQuiz(keyword) {
       const list = matchItems(allQuizData, keyword);
