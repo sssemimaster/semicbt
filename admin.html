@@ -4,12 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SemiCBT - 통합 관리자 대시보드</title>
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <meta name="referrer" content="no-referrer">
+  <!-- 토큰이 외부로 새지 않도록 통신 대상을 GitHub API / Supabase 로만 제한 -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src https://cdn.jsdelivr.net data:; img-src 'self' data:; connect-src https://api.github.com https://hyqsrajudsymexxuekfb.supabase.co; object-src 'none'; base-uri 'none'; form-action 'none'">
   
   <!-- ✨ Tailwind & Typography 플러그인 (마크다운 렌더링용) -->
   <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
   <!-- ✨ marked.js (마크다운 변환) -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
 
   <!-- 수식 렌더링 (KaTeX) : 사용자 페이지와 동일하게 보이도록 -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
@@ -29,6 +34,7 @@
 
   <header class="bg-slate-900 text-white p-4 shadow-md flex justify-between items-center flex-wrap gap-2">
     <h1 class="text-xl font-bold">🛠️ SemiCBT 통합 검수소 (Admin)</h1>
+    <button id="logoutBtn" onclick="logoutAdmin()" class="hidden text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-lg transition">로그아웃</button>
     <div class="text-xs text-slate-300 bg-slate-800 px-3 py-1.5 rounded-lg flex gap-3">
       <span>📝 시험: <span id="draftQCount" class="font-bold text-indigo-400">0</span></span>
       <span>🗣️ 면접: <span id="draftICount" class="font-bold text-rose-400">0</span></span>
@@ -38,17 +44,19 @@
 
   <main class="max-w-2xl w-full mx-auto p-4 py-8">
     
-    <!-- 1차 보안 -->
+    <!-- 1차 보안: Supabase 계정 로그인 (서버에서 검증) -->
     <div id="loginSection" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 mb-6 text-center mt-10">
-      <h2 class="text-xl font-bold mb-4">1차 보안: 관리자 비밀번호</h2>
-      <input type="password" id="adminPin" placeholder="비밀번호 입력" class="w-full bg-slate-50 border border-slate-200 p-4 rounded-xl mb-4 text-center text-xl tracking-[0.5em] outline-none focus:border-indigo-500">
-      <button onclick="checkAdmin()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3.5 rounded-xl font-bold transition shadow-md">1차 인증하기</button>
+      <h2 class="text-xl font-bold mb-4">1차 보안: 관리자 로그인</h2>
+      <input type="email" id="adminEmail" autocomplete="username" placeholder="이메일" class="w-full bg-slate-50 border border-slate-200 p-4 rounded-xl mb-3 outline-none focus:border-indigo-500">
+      <input type="password" id="adminPin" autocomplete="current-password" placeholder="비밀번호" onkeydown="if(event.key==='Enter')checkAdmin()" class="w-full bg-slate-50 border border-slate-200 p-4 rounded-xl mb-4 outline-none focus:border-indigo-500">
+      <button id="loginBtn" onclick="checkAdmin()" class="w-full bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white py-3.5 rounded-xl font-bold transition shadow-md">로그인</button>
+      <p id="loginMsg" class="text-xs text-rose-600 font-bold mt-3 min-h-[1rem]"></p>
     </div>
 
     <!-- 2차 보안 (GitHub 토큰) -->
     <div id="authSection" class="hidden bg-white p-6 rounded-2xl shadow-sm border border-slate-200 mb-6 mt-10 text-center">
       <h2 class="text-xl font-bold mb-4">2차 보안: GitHub 토큰 검증</h2>
-      <input type="password" id="ghToken" placeholder="ghp_ 토큰 입력..." class="w-full bg-slate-50 border border-slate-200 p-4 rounded-xl mb-4 text-center tracking-wide outline-none focus:border-indigo-500">
+      <input type="password" id="ghToken" placeholder="GitHub 토큰 (github_pat_ / ghp_)" autocomplete="off" class="w-full bg-slate-50 border border-slate-200 p-4 rounded-xl mb-4 text-center tracking-wide outline-none focus:border-indigo-500">
       <button onclick="loadAdminData()" class="w-full bg-slate-800 hover:bg-slate-900 text-white py-3.5 rounded-xl font-bold transition shadow-md">대시보드 입장</button>
     </div>
 
@@ -98,10 +106,10 @@
     const REPO_NAME = "semicbt";
     const SUPABASE_URL = "https://hyqsrajudsymexxuekfb.supabase.co"; 
     const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh5cXNyYWp1ZHN5bWV4eHVla2ZiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQxMzA0MDEsImV4cCI6MjEwOTcwNjQwMX0.6OPx9ClxjCnIfGcCFwYhgbWICcpgBI1cvx1QcAyVvIY"; 
-    const ADMIN_HASH = "a0fb59cbf3a0f758247bd19c2907df0c50bc718e91328ca82095a64f1bcb42da";
     
     let supabaseClient;
-    try { supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY); } catch(e) {}
+    // 세션은 탭을 닫으면 사라지도록 sessionStorage 에만 보관
+    try { supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { storage: window.sessionStorage, persistSession: true, autoRefreshToken: true } }); } catch(e) {}
 
     let token = "";
     let draftQuizzes = [];
@@ -112,26 +120,59 @@
     let currentInterviewIndex = 0;
     let currentTheoryIndex = 0; // ✨ 이론 인덱스
 
-    async function sha256(message) {
-      if (!window.crypto || !window.crypto.subtle) { alert('보안 연결(HTTPS)에서만 로그인할 수 있습니다.'); return ''; }
-      const msgBuffer = new TextEncoder().encode(message);
-      const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-      return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
-    }
+    // ---- 로그인 시도 제한 (같은 브라우저에서 5회 실패 시 5분 잠금) ----
+    const LOCK_KEY = 'adminLock';
+    function lockState() { try { return JSON.parse(localStorage.getItem(LOCK_KEY) || '{"n":0,"until":0}'); } catch (e) { return { n: 0, until: 0 }; } }
+    function saveLock(v) { try { localStorage.setItem(LOCK_KEY, JSON.stringify(v)); } catch (e) {} }
+    function setLoginMsg(t) { document.getElementById('loginMsg').textContent = t || ''; }
 
     async function checkAdmin() {
-      const inputPin = document.getElementById('adminPin').value;
+      const email = document.getElementById('adminEmail').value.trim();
+      const pw = document.getElementById('adminPin').value;
+      if (!supabaseClient) return setLoginMsg('서버 연결에 실패했어요. 새로고침 해 주세요.');
+      if (!email || !pw) return setLoginMsg('이메일과 비밀번호를 입력해 주세요.');
+      const st = lockState();
+      if (st.until > Date.now()) return setLoginMsg(`너무 많이 틀렸어요. ${Math.ceil((st.until - Date.now()) / 60000)}분 뒤에 다시 시도하세요.`);
+      const btn = document.getElementById('loginBtn'); btn.disabled = true; setLoginMsg('확인 중...');
       try {
-        if (await sha256(inputPin) === ADMIN_HASH) {
-          document.getElementById('loginSection').classList.add('hidden');
-          document.getElementById('authSection').classList.remove('hidden');
-        } else { alert("비밀번호가 틀렸습니다."); document.getElementById('adminPin').value = ""; }
-      } catch (e) { console.error(e); }
+        const { error } = await supabaseClient.auth.signInWithPassword({ email, password: pw });
+        if (error) {
+          const n = (st.n || 0) + 1;
+          saveLock({ n: n >= 5 ? 0 : n, until: n >= 5 ? Date.now() + 5 * 60000 : 0 });
+          document.getElementById('adminPin').value = '';
+          return setLoginMsg(n >= 5 ? '5회 실패: 5분간 잠겼어요.' : `로그인 정보가 맞지 않아요. (${n}/5)`);
+        }
+        saveLock({ n: 0, until: 0 }); setLoginMsg(''); document.getElementById('adminPin').value = '';
+        showTokenStep();
+      } catch (e) { console.error(e); setLoginMsg('로그인 중 오류가 발생했어요.'); }
+      finally { btn.disabled = false; }
     }
+    function showTokenStep() {
+      document.getElementById('loginSection').classList.add('hidden');
+      document.getElementById('authSection').classList.remove('hidden');
+      document.getElementById('logoutBtn').classList.remove('hidden');
+      armIdleLogout();
+    }
+    async function logoutAdmin() {
+      token = ""; try { await supabaseClient.auth.signOut(); } catch (e) {}
+      try { sessionStorage.clear(); } catch (e) {}
+      location.reload();
+    }
+    // 15분 동안 아무 조작이 없으면 자동 로그아웃
+    let idleTimer = null;
+    function armIdleLogout() {
+      const reset = () => { clearTimeout(idleTimer); idleTimer = setTimeout(() => { alert('15분 동안 조작이 없어 자동 로그아웃돼요.'); logoutAdmin(); }, 15 * 60 * 1000); };
+      ['click', 'keydown', 'mousemove', 'touchstart'].forEach(ev => window.addEventListener(ev, reset, { passive: true })); reset();
+    }
+    // 새로고침 시 세션이 남아 있으면 비밀번호 단계는 건너뜀 (토큰은 다시 입력)
+    (async () => {
+      try { if (supabaseClient) { const { data } = await supabaseClient.auth.getSession(); if (data && data.session) showTokenStep(); } } catch (e) {}
+    })();
 
     async function loadAdminData() {
       token = document.getElementById('ghToken').value.trim();
-      if(!token.startsWith("ghp_")) return alert("유효한 토큰이 아닙니다.");
+      if(!/^(github_pat_|ghp_)/.test(token)) return alert("유효한 토큰이 아닙니다.");
+      document.getElementById('ghToken').value = "";
       
       try {
         // 객관식 로드
@@ -186,8 +227,8 @@
       const q = draftQuizzes[currentQuizIndex];
       let html = `
         ${q.report_note ? `<div class="mb-3 p-3 rounded-lg bg-amber-50 border border-amber-200 text-xs text-amber-800">🚨 제보로 이동됨: ${escHtml(q.report_note)}</div>` : ''}
-        <div class="mb-4"><span class="bg-indigo-100 text-indigo-700 text-xs font-semibold px-2.5 py-1 rounded">${q.category} > ${q.topic}</span></div>
-        <h2 class="text-lg font-bold text-slate-900 mb-6 leading-snug">${q.question}</h2>
+        <div class="mb-4"><span class="bg-indigo-100 text-indigo-700 text-xs font-semibold px-2.5 py-1 rounded">${escHtml(q.category)} > ${escHtml(q.topic)}</span></div>
+        <h2 class="text-lg font-bold text-slate-900 mb-6 leading-snug">${escHtml(q.question)}</h2>
         <div id="adminOptContainer" class="space-y-3"></div>
         <div id="adminExpBox" class="mt-6 p-4 bg-slate-50 border border-slate-200 rounded-xl hidden">
           <div id="adminResStatus" class="font-bold text-sm mb-2"></div><p id="adminExpText" class="text-sm text-slate-600 leading-relaxed"></p>
@@ -204,7 +245,7 @@
       q.options.forEach((opt, idx) => {
         const btn = document.createElement('button');
         btn.className = "w-full text-left p-4 rounded-xl border border-slate-200 hover:bg-indigo-50 font-medium text-sm flex items-center transition";
-        btn.innerHTML = `<span class="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-xs mr-3 font-bold text-slate-500">${idx + 1}</span> <span>${opt}</span>`;
+        btn.innerHTML = `<span class="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-xs mr-3 font-bold text-slate-500">${idx + 1}</span> <span>${escHtml(opt)}</span>`;
         btn.onclick = () => {
           document.getElementById('adminExpBox').classList.remove('hidden');
           const res = document.getElementById('adminResStatus');
@@ -238,7 +279,7 @@
     function renderInterviewReview() {
       if(draftInterviews.length === 0) { document.getElementById('iBox').innerHTML = "<p class='text-center py-6 text-slate-500 font-bold'>대기 중인 면접 문항이 없습니다.</p>"; return; }
       const i = draftInterviews[currentInterviewIndex];
-      let html = `${i.report_note ? `<div class="mb-3 p-3 rounded-lg bg-amber-50 border border-amber-200 text-xs text-amber-800">🚨 제보로 이동됨: ${escHtml(i.report_note)}</div>` : ''}<div class="mb-4"><span class="bg-rose-100 text-rose-700 text-xs font-semibold px-2.5 py-1 rounded">${i.category} > ${i.topic}</span></div><h2 class="text-lg font-bold text-slate-900 mb-4">${i.question}</h2><div class="p-4 bg-slate-50 border border-slate-200 rounded-xl mb-4"><span class="text-xs font-bold text-rose-700 block mb-1">키워드: ${(i.key_points || []).join(', ')}</span><p class="text-sm text-slate-700 mt-2 leading-relaxed">${i.interview_answer}</p></div><button onclick="editDraft('interview')" class="w-full mt-4 bg-amber-50 hover:bg-amber-100 transition text-amber-800 font-bold py-3 rounded-xl border border-amber-200">✏️ 내용 수정</button>
+      let html = `${i.report_note ? `<div class="mb-3 p-3 rounded-lg bg-amber-50 border border-amber-200 text-xs text-amber-800">🚨 제보로 이동됨: ${escHtml(i.report_note)}</div>` : ''}<div class="mb-4"><span class="bg-rose-100 text-rose-700 text-xs font-semibold px-2.5 py-1 rounded">${escHtml(i.category)} > ${escHtml(i.topic)}</span></div><h2 class="text-lg font-bold text-slate-900 mb-4">${escHtml(i.question)}</h2><div class="p-4 bg-slate-50 border border-slate-200 rounded-xl mb-4"><span class="text-xs font-bold text-rose-700 block mb-1">키워드: ${(i.key_points || []).map(escHtml).join(', ')}</span><p class="text-sm text-slate-700 mt-2 leading-relaxed">${escHtml(i.interview_answer)}</p></div><button onclick="editDraft('interview')" class="w-full mt-4 bg-amber-50 hover:bg-amber-100 transition text-amber-800 font-bold py-3 rounded-xl border border-amber-200">✏️ 내용 수정</button>
         <div class="grid grid-cols-2 gap-4 mt-6"><button onclick="rejectContent('interview')" class="bg-rose-100 hover:bg-rose-200 transition text-rose-700 font-bold py-4 rounded-xl border border-rose-200">🗑️ 폐기</button><button onclick="approveInterview()" class="bg-emerald-600 hover:bg-emerald-700 transition text-white font-bold py-4 rounded-xl shadow-md">✅ 면접 등재</button></div>`;
       document.getElementById('iBox').innerHTML = html;
     }
@@ -268,16 +309,16 @@
       }
       
       const t = draftTheories[currentTheoryIndex];
-      const tagsHtml = (t.tags || []).map(tag => `<span class="inline-block bg-emerald-50 text-emerald-600 font-bold text-[10px] px-2 py-1 rounded mr-1">#${tag}</span>`).join('');
+      const tagsHtml = (t.tags || []).map(tag => `<span class="inline-block bg-emerald-50 text-emerald-600 font-bold text-[10px] px-2 py-1 rounded mr-1">#${escHtml(tag)}</span>`).join('');
       
       // 마크다운 파싱 (수식 보호 + 뱃지/팁 박스까지 사용자 페이지와 동일하게)
       const parsedMarkdown = renderTheoryMarkdown(t.content);
 
       let html = `
         <div class="mb-4">
-          <span class="bg-emerald-100 text-emerald-700 text-xs font-semibold px-2.5 py-1 rounded">${t.category} > ${t.subject}</span>
+          <span class="bg-emerald-100 text-emerald-700 text-xs font-semibold px-2.5 py-1 rounded">${escHtml(t.category)} > ${escHtml(t.subject)}</span>
         </div>
-        <h2 class="text-xl font-bold text-slate-900 mb-2">${t.title}</h2>
+        <h2 class="text-xl font-bold text-slate-900 mb-2">${escHtml(t.title)}</h2>
         <div class="mb-4">${tagsHtml}</div>
         
         <!-- 미리보기 렌더링 박스 (스크롤 적용) -->
@@ -311,8 +352,9 @@
       // '**용어(영문)**는' 처럼 괄호 뒤에 한글이 바로 붙으면 marked가 굵게 처리를 못 하므로 직접 변환
       md = md.replace(/\*\*([^*\n]+?)\*\*/g, '<strong>$1</strong>');
       md = md.replace(/>\s*💡\s*(.*?)(?=\n\n|\n###|$)/gs, (m, p1) => `<div class="custom-highlight-box">${marked.parseInline(p1.trim())}</div>\n\n`);
-      md = md.replace(/###\s*\[(.*?)\]\s*(.*)/g, (m, badge, title) => `<div class="custom-badge-heading"><span class="custom-badge">${badge}</span>${title}</div>`);
-      return math.restore(marked.parse(md));
+      md = md.replace(/###\s*\[(.*?)\]\s*(.*)/g, (m, badge, title) => `<div class="custom-badge-heading"><span class="custom-badge">${escHtml(badge)}</span>${escHtml(title)}</div>`);
+      const clean = (window.DOMPurify ? DOMPurify.sanitize(marked.parse(md), { FORBID_TAGS: ['style', 'form', 'iframe', 'object', 'embed'], FORBID_ATTR: ['style'] }) : escHtml(md));
+      return math.restore(clean);
     }
     function renderAdminMath() {
       const run = () => {
