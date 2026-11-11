@@ -66,6 +66,45 @@
     .back-link { display: inline-flex; align-items: center; gap: .45rem; font-size: .72rem; letter-spacing: .06em; font-weight: 700; color: #64748b; transition: color .15s; width: fit-content; }
     .back-link:hover { color: #4f46e5; } html.dark .back-link:hover { color: #67e8f9; }
     h1, h2, h3, h4 { letter-spacing: -.02em; }
+    /* --- 아이콘 (이모지 → 라인 SVG) --- */
+    .ic { display: inline-flex; width: 1.15em; height: 1.15em; vertical-align: -.2em; flex-shrink: 0; }
+    .ic svg { width: 100%; height: 100%; }
+    .custom-highlight-box::before { content: '' !important; width: 1.35rem; height: 1.35rem; flex: none; background: var(--hl-accent);
+      -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z'/%3E%3C/svg%3E") center/contain no-repeat;
+      mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z'/%3E%3C/svg%3E") center/contain no-repeat; }
+    /* --- 모션 --- */
+    @keyframes viewIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+    @keyframes riseIn { from { opacity: 0; transform: translateY(16px) scale(.985); } to { opacity: 1; transform: none; } }
+    @keyframes drift { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(28px,-22px) scale(1.12); } }
+    @keyframes shimmer { to { background-position: 200% 0; } }
+    @keyframes pop { 0% { transform: scale(1); } 45% { transform: scale(1.025); } 100% { transform: scale(1); } }
+    @keyframes shake { 0%,100% { transform: translateX(0); } 20% { transform: translateX(-6px); } 40% { transform: translateX(5px); } 60% { transform: translateX(-4px); } 80% { transform: translateX(3px); } }
+    @keyframes sheen { 0% { transform: translateX(-260px) rotate(24deg); } 55%,100% { transform: translateX(260px) rotate(24deg); } }
+    @keyframes confetti { 0% { transform: translate(0,0) rotate(0); opacity: 1; } 100% { transform: translate(var(--dx), 110vh) rotate(var(--rot)); opacity: .9; } }
+    .view-enter { animation: viewIn .38s cubic-bezier(.2,.7,.2,1) both; }
+    .stagger > *, #learningContainer > *, #qOptions > *, #noteContainer > *, #globalSearchResults > *, #reviewList > * { animation: riseIn .45s cubic-bezier(.2,.7,.2,1) both; }
+    .stagger > *:nth-child(1), #learningContainer > *:nth-child(1), #qOptions > *:nth-child(1), #noteContainer > *:nth-child(1), #reviewList > *:nth-child(1) { animation-delay: .02s; }
+    .stagger > *:nth-child(2), #learningContainer > *:nth-child(2), #qOptions > *:nth-child(2), #noteContainer > *:nth-child(2), #reviewList > *:nth-child(2) { animation-delay: .07s; }
+    .stagger > *:nth-child(3), #learningContainer > *:nth-child(3), #qOptions > *:nth-child(3), #noteContainer > *:nth-child(3), #reviewList > *:nth-child(3) { animation-delay: .12s; }
+    .stagger > *:nth-child(4), #learningContainer > *:nth-child(4), #qOptions > *:nth-child(4), #noteContainer > *:nth-child(4), #reviewList > *:nth-child(4) { animation-delay: .17s; }
+    .stagger > *:nth-child(5), #learningContainer > *:nth-child(5), #noteContainer > *:nth-child(5), #reviewList > *:nth-child(5) { animation-delay: .22s; }
+    .stagger > *:nth-child(n+6), #learningContainer > *:nth-child(n+6), #noteContainer > *:nth-child(n+6), #reviewList > *:nth-child(n+6) { animation-delay: .27s; }
+    .float-slow { animation: drift 14s ease-in-out infinite; } .float-slower { animation: drift 19s ease-in-out infinite reverse; }
+    .prism-text { background-size: 200% 100% !important; animation: shimmer 7s linear infinite; background-image: linear-gradient(90deg, #67e8f9, #a78bfa 25%, #f472b6 50%, #a78bfa 75%, #67e8f9) !important; }
+    .wafer-sheen { animation: sheen 7s ease-in-out infinite; }
+    .opt.opt-correct { animation: pop .4s ease; } .opt.opt-wrong { animation: shake .45s ease; }
+    .pbtn:active:not(:disabled), .opt:active:not(:disabled), .feature-card:active, .chip:active { transform: scale(.98); }
+    .chip { transition: border-color .15s, background-color .15s, transform .12s, box-shadow .15s, color .15s; }
+    .chip:hover { transform: translateY(-1px); }
+    .chip-on { border-color: #6366f1 !important; background: rgba(99,102,241,.08) !important; box-shadow: 0 0 0 3px rgba(99,102,241,.12); }
+    html.dark .chip-on { border-color: #67e8f9 !important; background: rgba(103,232,249,.08) !important; box-shadow: 0 0 0 3px rgba(103,232,249,.10); }
+    .sw { position: relative; width: 2.75rem; height: 1.5rem; border-radius: 9999px; background: #cbd5e1; transition: background .2s; flex: none; }
+    html.dark .sw { background: rgba(255,255,255,.15); }
+    .sw::after { content: ''; position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; border-radius: 50%; background: #fff; transition: transform .22s cubic-bezier(.3,.7,.2,1); box-shadow: 0 1px 3px rgba(0,0,0,.3); }
+    input:checked + .sw { background: #6366f1; } html.dark input:checked + .sw { background: #67e8f9; }
+    input:checked + .sw::after { transform: translateX(20px); } html.dark input:checked + .sw::after { background: #0a1020; }
+    .confetti-piece { position: fixed; top: -12px; width: 8px; height: 14px; border-radius: 2px; z-index: 80; pointer-events: none; animation: confetti 2.3s cubic-bezier(.2,.6,.3,1) forwards; }
+    @media (prefers-reduced-motion: reduce) { .view-enter, .stagger > *, #learningContainer > *, #qOptions > *, #noteContainer > *, #globalSearchResults > *, #reviewList > *, .float-slow, .float-slower, .prism-text, .wafer-sheen, .opt.opt-correct, .opt.opt-wrong { animation: none !important; } .confetti-piece { display: none; } }
     select { appearance: none; -webkit-appearance: none; padding-right: 2.5rem !important; background-repeat: no-repeat; background-position: right .9rem center; background-size: 1rem;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 8l5 5 5-5'/%3E%3C/svg%3E"); }
     input[type=checkbox] { accent-color: #6366f1; }
@@ -164,8 +203,8 @@
     <div id="view-lobby" class="w-full flex flex-col gap-6 lg:gap-8">
       <!-- 히어로 -->
       <section class="hero relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#0a1124] via-[#0c1a3a] to-[#141a3a] text-white border border-white/10 shadow-xl">
-        <div class="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-indigo-500/20 blur-3xl pointer-events-none"></div>
-        <div class="absolute -bottom-28 -left-16 w-72 h-72 rounded-full bg-cyan-400/10 blur-3xl pointer-events-none"></div>
+        <div class="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-indigo-500/20 blur-3xl pointer-events-none float-slow"></div>
+        <div class="absolute -bottom-28 -left-16 w-72 h-72 rounded-full bg-cyan-400/10 blur-3xl pointer-events-none float-slower"></div>
         <div class="relative grid lg:grid-cols-2 gap-8 items-center p-6 sm:p-10 lg:p-12">
           <div>
             <p class="font-mono text-[11px] tracking-[.28em] font-bold text-cyan-200/80 mb-5 flex items-center gap-3"><span class="w-8 h-px bg-gradient-to-r from-cyan-300 to-transparent"></span>MY LEARNING WAFER</p>
@@ -193,30 +232,30 @@
       <!-- 학습 메뉴 -->
       <section>
         <div class="flex items-end justify-between mb-4"><h3 class="text-lg font-bold text-slate-900 dark:text-white">무엇을 공부할까요?</h3><span class="text-xs text-slate-400 dark:text-slate-500">가입 없이 바로 시작</span></div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="stagger grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <button onclick="navTo('view-learning', {level:'home'})" class="feature-card text-left bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-white/10 rounded-2xl p-5 shadow-sm">
-            <span class="w-11 h-11 rounded-xl bg-indigo-50 dark:bg-[#0f2a2e] border border-indigo-100 dark:border-teal-900/60 flex items-center justify-center mb-4 text-teal-600 dark:text-teal-300 "><svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z"/></svg></span>
+            <span class="w-11 h-11 rounded-xl bg-indigo-50 text-indigo-600 dark:text-indigo-300 dark:bg-[#0f2a2e] border border-indigo-100 dark:border-teal-900/60 flex items-center justify-center mb-4 text-teal-600 dark:text-teal-300 "><svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z"/></svg></span>
             <h4 class="font-bold text-slate-900 dark:text-white">이론 백과사전</h4><p class="text-sm text-slate-500 dark:text-slate-400 mt-1">소자 · 8대 공정 · 첨단 기술을 폴더별로 정리</p>
             <span class="inline-block mt-4 text-sm font-bold text-indigo-700 dark:text-[#67e8f9]">이론 보기 →</span></button>
           <button onclick="openSetup('quiz')" class="feature-card relative text-left bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-white/10 rounded-2xl p-5 shadow-sm">
             <span class="absolute top-4 right-4 text-[10px] font-bold bg-indigo-100 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 px-2 py-0.5 rounded-full">추천</span>
-            <span class="w-11 h-11 rounded-xl bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-100 dark:border-indigo-500/20 flex items-center justify-center mb-4 text-indigo-600 dark:text-indigo-300 "><svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h3"/></svg></span>
+            <span class="w-11 h-11 rounded-xl bg-indigo-50 text-indigo-600 dark:text-indigo-300 dark:bg-indigo-500/10 border border-indigo-100 dark:border-indigo-500/20 flex items-center justify-center mb-4 text-indigo-600 dark:text-indigo-300 "><svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h3"/></svg></span>
             <h4 class="font-bold text-slate-900 dark:text-white">문제 풀이</h4><p class="text-sm text-slate-500 dark:text-slate-400 mt-1">과목과 문항 수를 골라 한 문제씩 즉시 채점</p>
             <span class="inline-block mt-4 text-sm font-bold text-indigo-700 dark:text-indigo-300">시작하기 →</span></button>
           <button onclick="openSetup('quiz', true)" class="feature-card text-left bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-white/10 rounded-2xl p-5 shadow-sm">
-            <span class="w-11 h-11 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-100 dark:border-amber-500/20 flex items-center justify-center mb-4 text-amber-600 dark:text-amber-300 "><svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/></svg></span>
+            <span class="w-11 h-11 rounded-xl bg-amber-50 text-amber-600 dark:text-amber-300 dark:bg-amber-500/10 border border-amber-100 dark:border-amber-500/20 flex items-center justify-center mb-4 text-amber-600 dark:text-amber-300 "><svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/></svg></span>
             <h4 class="font-bold text-slate-900 dark:text-white">실전 모의고사</h4><p class="text-sm text-slate-500 dark:text-slate-400 mt-1">문항당 90초 타이머 · 마지막에 한꺼번에 채점</p>
             <span class="inline-block mt-4 text-sm font-bold text-amber-700 dark:text-amber-400">응시하기 →</span></button>
           <button onclick="openSetup('interview')" class="feature-card text-left bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-white/10 rounded-2xl p-5 shadow-sm">
-            <span class="w-11 h-11 rounded-xl bg-rose-50 dark:bg-rose-500/10 border border-rose-100 dark:border-rose-500/20 flex items-center justify-center mb-4 text-rose-600 dark:text-rose-300 "><svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.5 7.2L4 20l1.1-4.2A8 8 0 1 1 21 12z"/><path d="M8.5 11h7M8.5 14h4"/></svg></span>
+            <span class="w-11 h-11 rounded-xl bg-rose-50 text-rose-600 dark:text-rose-300 dark:bg-rose-500/10 border border-rose-100 dark:border-rose-500/20 flex items-center justify-center mb-4 text-rose-600 dark:text-rose-300 "><svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.5 7.2L4 20l1.1-4.2A8 8 0 1 1 21 12z"/><path d="M8.5 11h7M8.5 14h4"/></svg></span>
             <h4 class="font-bold text-slate-900 dark:text-white">실무 면접 대비</h4><p class="text-sm text-slate-500 dark:text-slate-400 mt-1">핵심 키워드와 모범 답안으로 말하기 연습</p>
             <span class="inline-block mt-4 text-sm font-bold text-rose-700 dark:text-rose-400">연습하기 →</span></button>
           <button onclick="navTo('view-note')" class="feature-card text-left bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-white/10 rounded-2xl p-5 shadow-sm">
-            <span class="w-11 h-11 rounded-xl bg-orange-50 dark:bg-orange-500/10 border border-orange-100 dark:border-orange-500/20 flex items-center justify-center mb-4 text-orange-600 dark:text-orange-300 "><svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H6z"/><path d="M6 3v18M10 8h5M10 12h5"/></svg></span>
+            <span class="w-11 h-11 rounded-xl bg-orange-50 text-orange-600 dark:text-orange-300 dark:bg-orange-500/10 border border-orange-100 dark:border-orange-500/20 flex items-center justify-center mb-4 text-orange-600 dark:text-orange-300 "><svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H6z"/><path d="M6 3v18M10 8h5M10 12h5"/></svg></span>
             <h4 class="font-bold text-slate-900 dark:text-white">오답 노트</h4><p id="homeNoteDesc" class="text-sm text-slate-500 dark:text-slate-400 mt-1">틀린 문제는 자동으로 모이고 메모도 남길 수 있어요</p>
             <span class="inline-block mt-4 text-sm font-bold text-orange-700 dark:text-orange-400">복습하기 →</span></button>
           <button onclick="navTo('view-stats')" class="feature-card text-left bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-white/10 rounded-2xl p-5 shadow-sm">
-            <span class="w-11 h-11 rounded-xl bg-sky-50 dark:bg-sky-500/10 border border-sky-100 dark:border-sky-500/20 flex items-center justify-center mb-4 text-sky-600 dark:text-sky-300 "><svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span>
+            <span class="w-11 h-11 rounded-xl bg-sky-50 text-sky-600 dark:text-sky-300 dark:bg-sky-500/10 border border-sky-100 dark:border-sky-500/20 flex items-center justify-center mb-4 text-sky-600 dark:text-sky-300 "><svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span>
             <h4 class="font-bold text-slate-900 dark:text-white">학습 통계 · 약점</h4><p class="text-sm text-slate-500 dark:text-slate-400 mt-1">과목별 정답률과 약한 주제를 한눈에</p>
             <span class="inline-block mt-4 text-sm font-bold text-sky-700 dark:text-sky-400">분석 보기 →</span></button>
         </div>
@@ -229,22 +268,26 @@
     <!-- ⚙️ 공통 설정 화면 -->
     <div id="view-setup" class="hidden w-full flex flex-col">
       <button onclick="goBack()" class="back-link mb-5">← 뒤로</button>
-      <div class="bg-white dark:bg-[#0f1729] rounded-2xl border border-slate-200 dark:border-white/10 p-6">
-        <p id="setupEyebrow" class="eyebrow mb-2">PRACTICE</p><h2 id="setupTitle" class="page-title text-slate-900 dark:text-white mb-7">설정</h2>
-        <label class="block text-xs font-bold text-slate-400 dark:text-slate-500 mb-1.5">과목</label>
-        <div class="mb-4">
-          <select id="select-subject" onchange="updateSetupHint()" class="w-full bg-slate-50 dark:bg-[#0a1020] border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-200 rounded-lg p-3 outline-none"><option value="ALL">✨ 전체 과목 통합</option><option value="반도체 기초 이론">반도체 기초 이론</option><option value="반도체 8대 공정">반도체 8대 공정</option><option value="차세대 첨단 기술">차세대 첨단 기술</option></select>
+      <div class="qcard bg-white dark:bg-[#0f1729] rounded-2xl border border-slate-200 dark:border-white/10 p-6 sm:p-8">
+        <div class="qbar-wrap" style="margin:-2rem -2rem 1.6rem"><div class="qbar" style="width:34%"></div></div>
+        <p id="setupEyebrow" class="eyebrow mb-2">PRACTICE</p>
+        <h2 id="setupTitle" class="page-title text-slate-900 dark:text-white mb-1">설정</h2>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mb-7">과목과 문항 수를 고르면 바로 시작할 수 있어요.</p>
+        <select id="select-subject" class="hidden" onchange="updateSetupHint()"><option value="ALL">전체 과목</option><option value="반도체 기초 이론">반도체 기초 이론</option><option value="반도체 8대 공정">반도체 8대 공정</option><option value="차세대 첨단 기술">차세대 첨단 기술</option></select>
+        <select id="select-count" class="hidden" onchange="updateSetupHint()"></select>
+        <p class="eyebrow mb-3" style="color:#94a3b8">01 · 과목</p>
+        <div id="subjectChips" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-7"></div>
+        <p class="eyebrow mb-3" style="color:#94a3b8">02 · 문항 수</p>
+        <div id="countChips" class="grid grid-cols-3 gap-2.5 mb-6"></div>
+        <div class="rounded-xl bg-slate-50 dark:bg-[#0a1020] border border-slate-100 dark:border-white/10 p-4 mb-5">
+          <div class="flex justify-between gap-3 text-xs mb-2.5"><span id="setupHint" class="text-slate-500 dark:text-slate-400"></span><span id="setupTime" class="font-mono font-bold text-slate-600 dark:text-slate-300 shrink-0"></span></div>
+          <div class="h-1.5 rounded-full bg-slate-200 dark:bg-white/10 overflow-hidden"><div id="setupMeter" class="qbar" style="width:0%"></div></div>
         </div>
-        <label class="block text-xs font-bold text-slate-400 dark:text-slate-500 mb-1.5">문항 수</label>
-        <div class="mb-2">
-          <select id="select-count" onchange="updateSetupHint()" class="w-full bg-slate-50 dark:bg-[#0a1020] border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-200 rounded-lg p-3 outline-none"></select>
-        </div>
-        <p id="setupHint" class="text-xs text-slate-400 dark:text-slate-500 mb-8 min-h-[1rem]"></p>
-        <label id="examRow" class="hidden items-start gap-3 mb-6 p-3 rounded-lg border border-slate-200 dark:border-white/15 bg-slate-50 dark:bg-[#0a1020] cursor-pointer">
-          <input type="checkbox" id="examToggle" class="mt-1 w-4 h-4 accent-indigo-600">
-          <span class="text-sm text-slate-700 dark:text-slate-200"><b>⏱️ 모의고사 모드</b><br><span class="text-xs text-slate-400 dark:text-slate-500">문항당 90초 타이머 · 풀이 중 정답 비공개 · 마지막에 한꺼번에 채점</span></span>
+        <label id="examRow" class="hidden items-center justify-between gap-4 mb-6 p-4 rounded-xl border border-slate-200 dark:border-white/10 cursor-pointer hover:border-indigo-300 dark:hover:border-cyan-300/40 transition">
+          <span><b class="text-sm text-slate-800 dark:text-white">모의고사 모드</b><br><span class="text-xs text-slate-400 dark:text-slate-500">문항당 90초 타이머 · 풀이 중 정답 비공개 · 마지막에 채점</span></span>
+          <input type="checkbox" id="examToggle" class="sr-only" onchange="updateSetupHint()"><span class="sw"></span>
         </label>
-        <button onclick="startSession()" class="w-full pbtn font-bold py-3.5 rounded-xl shadow-md">시작하기</button>
+        <button onclick="startSession()" class="w-full pbtn font-bold py-3.5 rounded-xl shadow-md text-[15px]">시작하기 →</button>
       </div>
     </div>
 
@@ -321,7 +364,8 @@
     <div id="view-search" class="hidden w-full flex flex-col">
       <button onclick="goBack()" class="back-link mb-5">← 뒤로</button>
       <div class="mb-5"><p class="eyebrow mb-1.5">SEARCH</p><h2 class="page-title text-slate-900 dark:text-white">통합 검색</h2></div>
-      <input type="text" id="globalSearchInput" oninput="debouncedSearch()" placeholder="🔍 이론 · 문제 · 면접 통합 검색 (예: 식각, DRAM)" class="w-full bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-200 rounded-xl p-4 shadow-sm outline-none focus:border-[#67e8f9] transition font-medium mb-4">
+      <div class="relative mb-4"><span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">🔍</span>
+      <input type="text" id="globalSearchInput" oninput="debouncedSearch()" placeholder="이론 · 문제 · 면접 통합 검색 (예: 식각, DRAM)" class="pl-11 w-full bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-200 rounded-xl p-4 shadow-sm outline-none focus:border-[#67e8f9] transition font-medium mb-4"></div>
       <div id="globalSearchResults" class="space-y-5"></div>
     </div>
 
@@ -360,7 +404,7 @@
       <button onclick="goBack()" class="back-link mb-5">← 돌아가기</button>
       <div class="mb-6"><div class="mb-5"><p class="eyebrow mb-1.5">ENCYCLOPEDIA</p><h2 class="page-title text-slate-900 dark:text-white">이론 백과사전</h2><p class="text-sm text-slate-500 dark:text-slate-400 mt-1.5">소자부터 공정, 첨단 기술까지 폴더별로 정리했어요.</p></div></div>
       <div class="mb-6 relative">
-        <input type="text" id="theorySearchInput" onkeyup="handleTheorySearch()" placeholder="🔍 키워드, 기술명 검색..." class="w-full bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-200 rounded-xl p-4 shadow-sm outline-none focus:border-[#67e8f9] transition font-medium">
+        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">🔍</span><input type="text" id="theorySearchInput" onkeyup="handleTheorySearch()" placeholder="키워드, 기술명 검색..." class="pl-11 w-full bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-200 rounded-xl p-4 shadow-sm outline-none focus:border-[#67e8f9] transition font-medium">
       </div>
       <div id="breadcrumbContainer" class="bg-indigo-50 dark:bg-[#0f2233] rounded-xl border border-indigo-200 dark:border-emerald-900/60 px-4 py-3 mb-6 flex flex-wrap items-center shadow-sm gap-y-2 text-sm hidden"></div>
       <div id="learningContainer" class="grid grid-cols-1 gap-4"></div>
@@ -451,7 +495,7 @@
     }
     function applyState(viewId, state) {
       ['view-lobby', 'view-setup', 'view-quiz', 'view-interview', 'view-learning', 'view-note', 'view-result', 'view-stats', 'view-exam', 'view-search'].forEach(id => document.getElementById(id).classList.add('hidden'));
-      document.getElementById(viewId).classList.remove('hidden'); currentViewId = viewId;
+      const vEl = document.getElementById(viewId); vEl.classList.remove('hidden'); currentViewId = viewId; vEl.classList.remove('view-enter'); void vEl.offsetWidth; vEl.classList.add('view-enter');
       if (viewId !== 'view-exam') stopExamTimer();
       if (viewId === 'view-lobby') { renderResumeBanner(); renderHome(); }
       updateNav(); window.scrollTo({ top: 0 });
@@ -471,7 +515,7 @@
         const btn = document.createElement('button');
         btn.className = "group bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-white/10 hover:border-indigo-400 dark:hover:border-[#67e8f9] hover:shadow-md p-5 rounded-2xl text-left transition flex items-center gap-4 shadow-sm";
         btn.onclick = () => navTo('view-learning', { level: 'category', category: cat });
-        btn.innerHTML = `<span class="w-12 h-12 shrink-0 rounded-xl bg-indigo-50 dark:bg-[#0f2233] border border-indigo-100 dark:border-[#1e3a5f] flex items-center justify-center text-2xl">📁</span><div class="min-w-0 flex-1"><h3 class="text-base font-bold text-slate-900 dark:text-white leading-snug">${cat}</h3><span class="text-xs text-slate-500 dark:text-slate-400 mt-1 block">문서 ${allTheories.filter(t => t.category === cat).length}개</span></div><span class="text-slate-300 dark:text-slate-600 group-hover:text-indigo-500 dark:group-hover:text-[#67e8f9] text-2xl leading-none transition">›</span>`;
+        btn.innerHTML = `<span class="w-12 h-12 shrink-0 rounded-xl text-indigo-600 dark:text-cyan-300 bg-indigo-50 dark:bg-[#0f2233] border border-indigo-100 dark:border-[#1e3a5f] flex items-center justify-center text-2xl">📁</span><div class="min-w-0 flex-1"><h3 class="text-base font-bold text-slate-900 dark:text-white leading-snug">${cat}</h3><span class="text-xs text-slate-500 dark:text-slate-400 mt-1 block">문서 ${allTheories.filter(t => t.category === cat).length}개</span></div><span class="text-slate-300 dark:text-slate-600 group-hover:text-indigo-500 dark:group-hover:text-[#67e8f9] text-2xl leading-none transition">›</span>`;
         container.appendChild(btn);
       });
     }
@@ -484,7 +528,7 @@
         const btn = document.createElement('button');
         btn.className = "group bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-white/10 hover:border-indigo-400 dark:hover:border-[#67e8f9] hover:shadow-md p-5 rounded-2xl text-left transition flex items-center gap-4 shadow-sm";
         btn.onclick = () => navTo('view-learning', { level: 'subject', category: category, subject: sub });
-        btn.innerHTML = `<span class="w-12 h-12 shrink-0 rounded-xl bg-indigo-50 dark:bg-[#0f2233] border border-indigo-100 dark:border-[#1e3a5f] flex items-center justify-center text-2xl">📂</span><div class="min-w-0 flex-1"><h3 class="text-base font-bold text-slate-900 dark:text-white leading-snug">${sub}</h3><span class="text-xs text-slate-500 dark:text-slate-400 mt-1 block">문서 ${allTheories.filter(t => t.category === category && t.subject === sub).length}개</span></div><span class="text-slate-300 dark:text-slate-600 group-hover:text-indigo-500 dark:group-hover:text-[#67e8f9] text-2xl leading-none transition">›</span>`;
+        btn.innerHTML = `<span class="w-12 h-12 shrink-0 rounded-xl text-indigo-600 dark:text-cyan-300 bg-indigo-50 dark:bg-[#0f2233] border border-indigo-100 dark:border-[#1e3a5f] flex items-center justify-center text-2xl">📂</span><div class="min-w-0 flex-1"><h3 class="text-base font-bold text-slate-900 dark:text-white leading-snug">${sub}</h3><span class="text-xs text-slate-500 dark:text-slate-400 mt-1 block">문서 ${allTheories.filter(t => t.category === category && t.subject === sub).length}개</span></div><span class="text-slate-300 dark:text-slate-600 group-hover:text-indigo-500 dark:group-hover:text-[#67e8f9] text-2xl leading-none transition">›</span>`;
         container.appendChild(btn);
       });
     }
@@ -616,6 +660,7 @@
             <span class="font-bold text-slate-900 dark:text-white leading-none mt-1"><span class="font-display text-4xl">${pct}</span><span class="text-base text-slate-400 dark:text-slate-500">/100%</span></span>
           </div>
         </div>`;
+        if (pct >= 80) setTimeout(confetti, 500);
         requestAnimationFrame(() => requestAnimationFrame(() => { const a = document.getElementById('gaugeArc'); if (a && pct > 0) a.style.strokeDashoffset = C * (1 - pct / 100); }));
         set('scoreDetail', `${total}문제 중 ${correctCount}문제를 맞혔어요.` + (em ? ` (소요 ${fmtTime(em.used)} / 제한 ${fmtTime(em.limit)}${em.blank ? ' · 미응답 ' + em.blank + '개' : ''}${em.auto ? ' · 시간 종료' : ''})` : ''));
       } else {
@@ -661,6 +706,7 @@
       sel.innerHTML = COUNT_OPTIONS[mode].map(n => `<option value="${n}" ${n === COUNT_DEFAULT[mode] ? 'selected' : ''}>${n}개</option>`).join('');
       const ex = document.getElementById('examRow'); document.getElementById('examToggle').checked = !!preExam && mode === 'quiz';
       ex.classList.toggle('hidden', mode !== 'quiz'); ex.classList.toggle('flex', mode === 'quiz');
+      document.getElementById('select-subject').value = 'ALL';
       updateSetupHint();
       navTo('view-setup');
     }
@@ -669,11 +715,21 @@
       const data = currentMode === 'quiz' ? allQuizData : allInterviewData;
       return data.filter(q => sub === "ALL" || (q.category && q.category.includes(sub)));
     }
+    const SUBJECT_CHIPS = [['ALL', '전체 과목', '모든 분야를 섞어서'], ['반도체 기초 이론', '기초 이론', '소자 · 물리 · 메모리'], ['반도체 8대 공정', '8대 공정', '웨이퍼부터 패키징까지'], ['차세대 첨단 기술', '첨단 기술', '차세대 소자 · 패키징']];
     function updateSetupHint() {
-      const n = setupPool().length, want = parseInt(document.getElementById('select-count').value || '0');
-      const unit = currentMode === 'quiz' ? '문제' : '면접 문항';
-      document.getElementById('setupHint').textContent = n === 0 ? `선택한 과목에 등록된 ${unit}가 아직 없어요.` : (n < want ? `현재 ${unit} ${n}개가 있어서 ${n}개를 모두 출제해요.` : `현재 ${unit} ${n}개 중에서 무작위로 출제해요.`);
+      const n = setupPool().length, want = parseInt(document.getElementById('select-count').value || '0'), real = Math.min(n, want);
+      const unit = currentMode === 'quiz' ? '문제' : '면접 문항', exam = currentMode === 'quiz' && document.getElementById('examToggle').checked;
+      document.getElementById('setupHint').textContent = n === 0 ? `선택한 과목에 등록된 ${unit}가 아직 없어요.` : (n < want ? `${unit} ${n}개뿐이라 모두 출제해요.` : `${unit} ${n}개 중 ${want}개를 무작위로 출제해요.`);
+      const min = exam ? Math.ceil(real * 1.5) : Math.max(1, Math.round(real * (currentMode === 'quiz' ? 1 : 2)));
+      document.getElementById('setupTime').textContent = real ? `${exam ? '제한' : '약'} ${min}분` : '–';
+      document.getElementById('setupMeter').style.width = (want ? Math.min(100, real / want * 100) : 0) + '%';
+      const data = currentMode === 'quiz' ? allQuizData : allInterviewData, cur = document.getElementById('select-subject').value, cnt = document.getElementById('select-count').value;
+      document.getElementById('subjectChips').innerHTML = SUBJECT_CHIPS.map(([v, name, sub]) => { const c = v === 'ALL' ? data.length : data.filter(q => q.category && q.category.includes(v)).length;
+        return `<button data-sub="${v}" class="chip text-left p-4 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0a1020] ${cur === v ? 'chip-on' : ''}"><span class="flex items-center justify-between"><b class="text-sm text-slate-900 dark:text-white">${name}</b><span class="font-mono text-xs font-bold ${c ? 'text-indigo-600 dark:text-cyan-300' : 'text-slate-400'}">${c}</span></span><span class="block text-xs text-slate-400 dark:text-slate-500 mt-1">${sub}</span></button>`; }).join('');
+      document.getElementById('countChips').innerHTML = COUNT_OPTIONS[currentMode].map(c => `<button data-cnt="${c}" class="chip py-4 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0a1020] text-center ${String(c) === cnt ? 'chip-on' : ''}"><span class="font-display text-2xl font-bold text-slate-900 dark:text-white">${c}</span><span class="block text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">${unit}</span></button>`).join('');
     }
+    document.getElementById('subjectChips').addEventListener('click', (e) => { const b = e.target.closest('[data-sub]'); if (b) { document.getElementById('select-subject').value = b.dataset.sub; updateSetupHint(); } });
+    document.getElementById('countChips').addEventListener('click', (e) => { const b = e.target.closest('[data-cnt]'); if (b) { document.getElementById('select-count').value = b.dataset.cnt; updateSetupHint(); } });
     function startSession() {
       const cnt = parseInt(document.getElementById('select-count').value) || COUNT_DEFAULT[currentMode];
       filteredSession = setupPool();
@@ -965,6 +1021,7 @@
       let h = `<svg id="waferSvg" viewBox="-163 -163 326 326" class="w-full h-full" role="img" aria-label="나의 학습 웨이퍼 ${info.d}/30"><defs>
         <radialGradient id="wBase" cx="35%" cy="30%" r="85%"><stop offset="0" stop-color="#3d4968"/><stop offset=".55" stop-color="#1b2542"/><stop offset="1" stop-color="#0b1122"/></radialGradient>
         <linearGradient id="prism" gradientUnits="userSpaceOnUse" x1="-120" y1="-120" x2="120" y2="120"><stop offset="0" stop-color="#67e8f9"/><stop offset=".5" stop-color="#a78bfa"/><stop offset="1" stop-color="#f472b6"/></linearGradient>
+        <clipPath id="wClip"><circle r="138"/></clipPath><linearGradient id="sheenG" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".13"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
         <filter id="glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>`;
       RING_CATS.forEach(([k, c], i) => { const op = (.2 + .8 * ((stats.cats[k] || { t: 0 }).t / max)).toFixed(2); h += `<path d="${arcPath(155, -90 + i * 120 + 5, -90 + (i + 1) * 120 - 5)}" fill="none" stroke="${c}" stroke-opacity="${op}" stroke-width="4" stroke-linecap="round"/>`; });
       h += `<circle r="140" fill="url(#wBase)" stroke="#94a3b8" stroke-opacity=".5"/><circle r="134" fill="none" stroke="#fff" stroke-opacity=".06"/>`;
@@ -974,7 +1031,7 @@
       for (let i = earned; i < 30 && i < cells.length; i++) h += `<path d="${cells[i].d}" fill="none" stroke="#64748b" stroke-opacity=".38" stroke-width="1"/>`;
       if (lvl >= 3) for (let i = 0; i < earned - 1; i++) { const a = cells[i].end, b = cells[i + 1].start; h += `<path d="M${a[0]} ${a[1]} H${b[0]} V${b[1]}" fill="none" stroke="url(#prism)" stroke-opacity=".7" stroke-width=".9" stroke-dasharray="2 2"/>`; }
       for (let i = 0; i < earned && i < cells.length; i++) h += `<path ${i === earned - 1 ? 'class="wafer-latest"' : ''} d="${cells[i].d}" fill="none" stroke="url(#prism)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)"/><circle cx="${cells[i].end[0]}" cy="${cells[i].end[1]}" r="1.9" fill="url(#prism)"/>`;
-      h += `<circle cx="0" cy="140" r="7" fill="#0b1226"/><g id="waferFx"></g></svg>`;
+      h += `<circle cx="0" cy="140" r="7" fill="#0b1226"/><g clip-path="url(#wClip)" style="pointer-events:none"><rect class="wafer-sheen" x="-30" y="-200" width="60" height="400" fill="url(#sheenG)"/></g><g id="waferFx"></g></svg>`;
       return { svg: h, cells };
     }
     function renderWaferPanel(animate) {
@@ -1029,17 +1086,17 @@
       document.querySelectorAll('[data-nav]').forEach(b => b.classList.toggle('active', b.dataset.nav === map[v]));
     }
     function renderHome() {
-      document.getElementById('heroTheories').textContent = allTheories.length; document.getElementById('heroQuizzes').textContent = allQuizData.length; document.getElementById('heroInterviews').textContent = allInterviewData.length;
+      [['heroTheories', allTheories.length], ['heroQuizzes', allQuizData.length], ['heroInterviews', allInterviewData.length]].forEach(([id, v]) => { const e = document.getElementById(id); if (e.dataset.cu !== String(v)) { e.dataset.cu = v; countUp(e); } });
       const wc = allQuizData.filter(q => wrongNotes[q.id]).length;
       document.getElementById('homeNoteDesc').textContent = wc ? `복습할 오답 ${wc}문제가 기다리고 있어요` : '틀린 문제는 자동으로 모이고 메모도 남길 수 있어요';
-      if (!attendBusy) renderWaferPanel(false); renderHomeDash(); updateHeaderChip();
+      if (!attendBusy) renderWaferPanel(false); renderHomeDash(); runCountUps(document.getElementById('homeDash')); updateHeaderChip();
     }
     function renderHomeDash() {
       const el = document.getElementById('homeDash'); if (!el) return;
       const T = stats.total, pct = T.t ? Math.round(T.r / T.t * 100) : 0, wc = allQuizData.filter(q => wrongNotes[q.id]).length;
       const card = 'bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-white/10 rounded-2xl p-5 sm:p-6 shadow-sm';
       const col = (p) => p >= 80 ? '#10b981' : p >= 50 ? '#f59e0b' : '#f43f5e';
-      const tile = (label, val, sub) => `<div class="rounded-xl bg-slate-50 dark:bg-[#0a1020] border border-slate-100 dark:border-white/5 p-4"><div class="text-xs text-slate-400 dark:text-slate-500 mb-1">${label}</div><div class="text-2xl font-bold text-slate-900 dark:text-white">${val}<span class="text-xs font-bold text-slate-400 ml-0.5">${sub}</span></div></div>`;
+      const tile = (label, val, sub) => `<div class="rounded-xl bg-slate-50 dark:bg-[#0a1020] border border-slate-100 dark:border-white/5 p-4"><div class="text-xs text-slate-400 dark:text-slate-500 mb-1">${label}</div><div class="font-display text-2xl font-bold text-slate-900 dark:text-white">${typeof val === 'number' ? `<span data-cu="${val}">0</span>` : val}<span class="text-xs font-bold text-slate-400 ml-0.5">${sub}</span></div></div>`;
       const cats = RING_CATS.map(([k]) => [k, stats.cats[k]]).filter(x => x[1]);
       const bars = cats.length ? cats.map(([k, v]) => { const p = Math.round(v.r / v.t * 100); return `<div class="mb-3"><div class="flex justify-between text-xs mb-1"><span class="font-bold text-slate-700 dark:text-slate-200">${escH(k)}</span><span class="text-slate-400">${v.r}/${v.t} · ${p}%</span></div><div class="h-2 rounded-full bg-slate-200 dark:bg-white/10 overflow-hidden"><div class="h-full rounded-full" style="width:${p}%;background:${col(p)}"></div></div></div>`; }).join('') : `<p class="text-sm text-slate-400 py-2">문제를 풀면 과목별 정답률이 여기에 쌓여요.</p>`;
       const t = todayData(), pts = Math.min(DAILY_GOAL, t.pts), N = attendDays.length;
@@ -1050,6 +1107,79 @@
           <div class="h-2 rounded-full bg-slate-200 dark:bg-white/10 overflow-hidden mb-4"><div class="h-full rounded-full pbtn" style="width:${pts / DAILY_GOAL * 100}%"></div></div>
           <ul class="text-sm text-slate-600 dark:text-slate-300 space-y-1.5 mb-5"><li>📝 문제 1개 풀기 <b class="text-slate-400">+1</b></li><li>🗣️ 면접 문항 확인 <b class="text-slate-400">+1</b></li><li>📖 이론 1개 읽기 <b class="text-slate-400">+2</b></li></ul>
           <div class="grid grid-cols-2 gap-2"><button onclick="navTo('view-learning',{level:'home'})" class="py-2.5 rounded-xl text-sm font-bold border border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/5 text-slate-700 dark:text-slate-200">이론 읽기</button><button onclick="openSetup('quiz')" class="py-2.5 rounded-xl text-sm font-bold pbtn hover:opacity-90">문제 풀기</button></div></div>`;
+    }
+
+    // =====================================================
+    // 아이콘 시스템: 텍스트 속 이모지를 사이트 톤에 맞는 라인 SVG로 자동 교체
+    // =====================================================
+    const ICON = {
+      search: '<circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>',
+      folder: '<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
+      layers: '<path d="M12 3 3 8l9 5 9-5-9-5zM3 12.5l9 5 9-5M3 16.5l9 5 9-5"/>',
+      book: '<path d="M2 5.5C4 4 8 4 12 6c4-2 8-2 10-.5V19c-2-1.5-6-1.5-10 .5-4-2-8-2-10-.5z"/><path d="M12 6v13.5"/>',
+      pencil: '<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/>',
+      chat: '<path d="M21 12a8 8 0 0 1-11.5 7.2L4 20l1-4.4A8 8 0 1 1 21 12z"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01" stroke-width="2.6"/>',
+      timer: '<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/>',
+      home: '<path d="M3 11l9-8 9 8M5 10v10h14V10M10 20v-6h4v6"/>',
+      chart: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+      notebook: '<path d="M6 3h12a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H6z"/><path d="M9 3v18M12 8h4M12 12h4"/>',
+      moon: '<path d="M20 14.5A8.5 8.5 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5z"/>',
+      sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+      sparkle: '<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 15l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z"/>',
+      xcircle: '<circle cx="12" cy="12" r="9"/><path d="M15 9l-6 6M9 9l6 6"/>',
+      check: '<circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.7 2.7L16 9.5"/>',
+      alert: '<path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18h.01" stroke-width="2.2"/>',
+      repeat: '<path d="M17 2l4 4-4 4"/><path d="M3 11V9a3 3 0 0 1 3-3h15"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a3 3 0 0 1-3 3H3"/>',
+      grid: '<path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/>',
+      bulb: '<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/>',
+      target: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1" fill="currentColor"/>',
+      trophy: '<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM7 6H4v2a3 3 0 0 0 3 3M17 6h3v2a3 3 0 0 1-3 3"/>',
+      file: '<path d="M6 3h8l5 5v13H6zM14 3v5h5M9 13h7M9 17h7"/>',
+      pin: '<path d="M12 17v5M8 3h8l-1 7 3 3H6l3-3z"/>',
+      link: '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
+      x: '<path d="M6 6l12 12M18 6L6 18"/>',
+      menu: '<path d="M4 7h16M4 12h16M4 17h16"/>',
+      chevron: '<path d="M9 6l6 6-6 6"/>',
+      star: '<path d="M12 3l2.7 5.8 6.3.8-4.6 4.4 1.2 6.3L12 17.3l-5.6 3 1.2-6.3L3 9.6l6.3-.8z"/>',
+      starfill: '<path d="M12 3l2.7 5.8 6.3.8-4.6 4.4 1.2 6.3L12 17.3l-5.6 3 1.2-6.3L3 9.6l6.3-.8z" fill="currentColor"/>',
+      none: ''
+    };
+    const EMOJI_ICON = { '🔍': 'search', '📁': 'folder', '📂': 'folder', '📚': 'layers', '📖': 'book', '📝': 'pencil', '✏': 'pencil', '🗣': 'chat', '⏱': 'timer', '🏠': 'home', '📊': 'chart', '📒': 'notebook', '🌙': 'moon', '☀': 'sun', '✨': 'sparkle', '❌': 'xcircle', '✅': 'check', '⭕': 'check', '🚨': 'alert', '🔁': 'repeat', '🧩': 'grid', '💡': 'bulb', '🎯': 'target', '🏆': 'trophy', '📄': 'file', '📌': 'pin', '🔗': 'link', '✕': 'x', '☰': 'menu', '❯': 'chevron', '★': 'starfill', '☆': 'star', '🎉': 'none', '💪': 'none', '👍': 'none' };
+    const EMO_RE = new RegExp('(' + Object.keys(EMOJI_ICON).join('|') + ')\\uFE0F?', 'g');
+    const SKIP_TAGS = new Set(['SCRIPT', 'STYLE', 'TEXTAREA', 'OPTION', 'TITLE', 'INPUT']);
+    function iconHTML(name) { return `<span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ICON[name]}</svg></span>`; }
+    function iconize(root) {
+      if (!root) return;
+      const nodes = [];
+      if (root.nodeType === 3) nodes.push(root);
+      else if (root.nodeType === 1 && !SKIP_TAGS.has(root.tagName)) { const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT); let n; while ((n = w.nextNode())) nodes.push(n); }
+      nodes.forEach(n => {
+        const par = n.parentNode; if (!par || SKIP_TAGS.has(par.tagName) || !n.nodeValue) return;
+        EMO_RE.lastIndex = 0; if (!EMO_RE.test(n.nodeValue)) return;
+        const html = n.nodeValue.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(EMO_RE, (m, ch) => { const k = EMOJI_ICON[ch]; return k === 'none' ? '' : iconHTML(k); });
+        const tpl = document.createElement('template'); tpl.innerHTML = html; par.replaceChild(tpl.content, n);
+      });
+    }
+    const emoObserver = new MutationObserver((muts) => {
+      emoObserver.disconnect();
+      muts.forEach(m => { if (m.type === 'characterData') iconize(m.target); else m.addedNodes.forEach(iconize); });
+      emoObserver.observe(document.body, { childList: true, subtree: true, characterData: true });
+    });
+    iconize(document.body); emoObserver.observe(document.body, { childList: true, subtree: true, characterData: true });
+
+    // ✨ 모션: 숫자 올라가기 / 보기 화면 전환 / 축하 효과
+    const REDUCE = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function countUp(el) {
+      const to = parseFloat(el.dataset.cu); if (isNaN(to)) return; if (REDUCE || to === 0) { el.textContent = to; return; }
+      const t0 = performance.now(), dur = 900;
+      const f = (t) => { const p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - p, 3); el.textContent = Math.round(to * e); if (p < 1) requestAnimationFrame(f); }; requestAnimationFrame(f);
+    }
+    function runCountUps(root) { (root || document).querySelectorAll('[data-cu]').forEach(countUp); }
+    function confetti() {
+      if (REDUCE) return; const colors = ['#67e8f9', '#818cf8', '#e879f9', '#fbbf24', '#34d399'];
+      for (let i = 0; i < 46; i++) { const d = document.createElement('i'); d.className = 'confetti-piece'; d.style.left = (Math.random() * 100) + 'vw'; d.style.background = colors[i % colors.length];
+        d.style.setProperty('--dx', ((Math.random() - .5) * 240) + 'px'); d.style.setProperty('--rot', (Math.random() * 900 - 450) + 'deg'); d.style.animationDelay = (Math.random() * .5) + 's'; d.style.animationDuration = (1.8 + Math.random() * 1.2) + 's';
+        document.body.appendChild(d); setTimeout(() => d.remove(), 3500); }
     }
     // ===== 🚨 오류 제보 =====
     let reportTarget = null;
