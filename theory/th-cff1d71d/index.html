@@ -19,7 +19,16 @@
 
   <script>if(!/(\/|\.html)$/.test(location.pathname)){location.replace(location.pathname+'/'+location.search+location.hash)}window.DEPTH=2;window.BOOT_THEORY="TH-cff1d71d";</script>
   <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
-  <script>tailwind.config = { darkMode: 'class', }</script>
+  <script>
+    tailwind.config = { darkMode: 'class', }
+    // Tailwind CDN 은 화면이 한꺼번에 그려질 때 초반에 읽은 클래스를 드물게 놓친다(그러면 그 클래스는 다시 시도되지 않는다).
+    // 페이지가 다 그려진 뒤 설정을 다시 넣어 전체를 처음부터 한 번 더 만들게 해 둔다.
+    (function () {
+      const nudge = () => { try { tailwind.config = { darkMode: 'class' }; } catch (e) {} };
+      document.addEventListener('DOMContentLoaded', () => setTimeout(nudge, 60));
+      window.addEventListener('load', () => setTimeout(nudge, 400));
+    })();
+  </script>
   
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -133,6 +142,12 @@
     html.dark .hero .pbtn { background: linear-gradient(90deg, #22d3ee, #818cf8 58%, #e879f9); color: #0a1020; }
     @media (min-width:1024px){ .wf-body{display:flex;align-items:center;gap:1.5rem} .wf-svg{flex:none;width:176px;margin:.5rem 0} .wf-legend{flex-wrap:wrap;row-gap:.25rem} .wf-legend>span{white-space:nowrap} .wf-info{flex:1;min-width:0} .wf-step{text-align:left} }
     @media (min-width:1200px){ .wf-svg{width:210px} }
+    /* 상단 바의 뼈대는 Tailwind CDN 이 느린 환경에서 초반 클래스를 놓쳐도 무너지지 않게 일반 CSS 로도 한 번 더 고정해 둔다 */
+    .app-bar { display: flex; align-items: center; justify-content: space-between; gap: .75rem; height: 4rem; max-width: 72rem; margin: 0 auto; padding: 0 1rem; }
+    .app-l { display: flex; align-items: center; gap: .75rem; } .app-r { display: flex; align-items: center; gap: .5rem; }
+    .app-nav { display: none; } #navAttend { display: none; }
+    @media (min-width: 640px) { .app-bar { padding: 0 1.5rem; } #navAttend { display: flex; } }
+    @media (min-width: 1024px) { .app-nav { display: flex; align-items: center; gap: .375rem; } .app-burger { display: none; } }
     .nav-btn { padding: .55rem .9rem; border-radius: .8rem; font-size: .9375rem; font-weight: 600; color: #475569; white-space: nowrap; transition: background .15s, color .15s, box-shadow .15s; }
     .nav-btn:hover { background: rgba(255,255,255,.7); color: #0f172a; }
     .nav-btn.active { background: #fff; color: #4338ca; font-weight: 700; box-shadow: 0 1px 2px rgba(15,23,42,.08), 0 0 0 1px rgba(15,23,42,.05); }
@@ -236,9 +251,9 @@
   </div>
 
   <header class="sticky top-0 z-30 bg-white/85 dark:bg-[#0a1020]/90 backdrop-blur border-b border-slate-200 dark:border-white/10 text-slate-800 dark:text-white">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
-      <div class="flex items-center gap-3">
-        <button onclick="toggleSidebar()" aria-label="메뉴" class="lg:hidden text-2xl hover:text-indigo-600 dark:hover:text-cyan-300 transition outline-none">☰</button>
+    <div class="app-bar max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
+      <div class="app-l flex items-center gap-3">
+        <button onclick="toggleSidebar()" aria-label="메뉴" class="app-burger lg:hidden text-2xl hover:text-indigo-600 dark:hover:text-cyan-300 transition outline-none">☰</button>
         <button onclick="navTo('view-lobby')" class="flex items-center gap-2.5 outline-none" aria-label="반도체 새김 홈">
           <svg viewBox="0 0 36 36" class="w-8 h-8" aria-hidden="true"><defs><linearGradient id="lg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#67e8f9"/><stop offset=".5" stop-color="#a78bfa"/><stop offset="1" stop-color="#f472b6"/></linearGradient></defs>
             <circle class="logo-disc" cx="18" cy="18" r="16" stroke="url(#lg1)" stroke-width="1.4"/><circle cx="18" cy="18" r="12.5" fill="none" stroke="#fff" stroke-opacity=".08"/>
@@ -247,7 +262,7 @@
           <span class="text-[21px] leading-none tracking-[-.05em] text-slate-900 dark:text-white"><span class="font-medium">반도체</span> <span class="font-extrabold text-indigo-600 dark:text-cyan-300">새김</span></span>
         </button>
       </div>
-      <nav class="hidden lg:flex items-center gap-1.5 p-1 rounded-2xl bg-slate-100 dark:bg-white/[.06]" aria-label="주 메뉴">
+      <nav class="app-nav hidden lg:flex items-center gap-1.5 p-1 rounded-2xl bg-slate-100 dark:bg-white/[.06]" aria-label="주 메뉴">
         <button data-nav="home" onclick="navTo('view-lobby')" class="nav-btn">홈</button>
         <button data-nav="theory" onclick="navTo('view-learning', {level:'home'})" class="nav-btn">이론</button>
         <button data-nav="quiz" onclick="openSetup('quiz')" class="nav-btn">문제</button>
@@ -256,7 +271,7 @@
         <button data-nav="note" onclick="navTo('view-note')" class="nav-btn">오답노트</button>
         <button data-nav="stats" onclick="navTo('view-stats')" class="nav-btn">통계</button>
       </nav>
-      <div class="flex items-center gap-2">
+      <div class="app-r flex items-center gap-2">
         <button id="navAttend" onclick="navTo('view-lobby'); setTimeout(()=>document.getElementById('waferPanel').scrollIntoView({behavior:'smooth',block:'center'}),60)" class="hidden sm:flex items-center gap-1.5 text-xs font-bold bg-slate-900/5 hover:bg-slate-900/10 border border-slate-200 dark:bg-white/10 dark:hover:bg-white/15 dark:border-white/10 px-3 h-9 rounded-full transition"><span class="w-2 h-2 rounded-full bg-indigo-500 dark:bg-cyan-300"></span><span id="navAttendText">출석 0일</span></button>
         <button onclick="navTo('view-search')" aria-label="검색" class="text-lg bg-slate-900/5 hover:bg-slate-900/10 dark:bg-white/10 dark:hover:bg-white/15 w-8 h-9 rounded-full flex items-center justify-center transition">🔍</button>
         <button onclick="toggleTheme()" id="themeToggleBtn" aria-label="테마 전환" class="text-lg bg-slate-900/5 hover:bg-slate-900/10 dark:bg-white/10 dark:hover:bg-white/15 w-8 h-9 rounded-full flex items-center justify-center transition">🌙</button>
