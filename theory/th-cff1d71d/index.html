@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>페르미 준위 정리 — 반도체 물리 | 반도체 새김</title>
-  <meta name="description" content="페르미 준위는 반도체 물질의 전기적 특성을 이해하는 데 필수적이다. 반도체의 도전성은 전자의 에너지 상태에 따라 달라지며, 페르미 준위는 이러한 에너지 상태의 분포를 이해하는 데 도움을 준다."><link rel="canonical" href="https://sssemimaster.github.io/semicbt/theory/th-cff1d71d/"><meta property="og:type" content="article"><meta property="og:site_name" content="반도체 새김"><meta property="og:locale" content="ko_KR"><meta property="og:title" content="페르미 준위 정리 — 반도체 물리 | 반도체 새김"><meta property="og:description" content="페르미 준위는 반도체 물질의 전기적 특성을 이해하는 데 필수적이다. 반도체의 도전성은 전자의 에너지 상태에 따라 달라지며, 페르미 준위는 이러한 에너지 상태의 분포를 이해하는 데 도움을 준다."><meta name="twitter:card" content="summary"><meta property="og:url" content="https://sssemimaster.github.io/semicbt/theory/th-cff1d71d/">
+  <meta name="description" content="f(E) = \frac{1}{1 + e^{(E-E_F)/kT}} 절대영도(0K)에서는 아래의 상태는 모두 채워지고 위의 상태는 모두 비어 있다."><link rel="canonical" href="https://sssemimaster.github.io/semicbt/theory/th-cff1d71d/"><meta property="og:type" content="article"><meta property="og:site_name" content="반도체 새김"><meta property="og:locale" content="ko_KR"><meta property="og:title" content="페르미 준위 정리 — 반도체 물리 | 반도체 새김"><meta property="og:description" content="f(E) = \frac{1}{1 + e^{(E-E_F)/kT}} 절대영도(0K)에서는 아래의 상태는 모두 채워지고 위의 상태는 모두 비어 있다."><meta name="twitter:card" content="summary"><meta property="og:url" content="https://sssemimaster.github.io/semicbt/theory/th-cff1d71d/">
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Sora:wght@500;600;700;800&display=swap">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%230f1729' stroke='%2367e8f9' stroke-width='2'/%3E%3Cpath d='M9 18h5v-5h4v8h5' fill='none' stroke='%23a78bfa' stroke-width='2'/%3E%3C/svg%3E">
@@ -338,7 +338,7 @@ html.dark .cs-frame{
 .cj-n{flex:none;width:1.5rem;height:1.5rem;margin-top:.22rem;border-radius:999px;background:var(--badge-bg);color:var(--badge-fg);font-size:.72rem;font-weight:800;display:flex;align-items:center;justify-content:center}
 #cDetail .custom-highlight-box{margin:0;font-size:1rem;line-height:1.75;border-radius:16px;border-left-width:5px}
 </style>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "페르미 준위", "description": "페르미 준위는 반도체 물질의 전기적 특성을 이해하는 데 필수적이다. 반도체의 도전성은 전자의 에너지 상태에 따라 달라지며, 페르미 준위는 이러한 에너지 상태의 분포를 이해하는 데 도움을 준다.", "inLanguage": "ko", "articleSection": "반도체 기초 이론", "dateModified": "2026-11-12", "publisher": {"@type": "Organization", "name": "반도체 새김"}, "mainEntityOfPage": "https://sssemimaster.github.io/semicbt/theory/th-cff1d71d/"}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "반도체 새김", "item": "https://sssemimaster.github.io/semicbt/"}, {"@type": "ListItem", "position": 2, "name": "이론 백과사전", "item": "https://sssemimaster.github.io/semicbt/theory/"}, {"@type": "ListItem", "position": 3, "name": "페르미 준위"}]}</script></head>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "페르미 준위", "description": "f(E) = \\frac{1}{1 + e^{(E-E_F)/kT}} 절대영도(0K)에서는 아래의 상태는 모두 채워지고 위의 상태는 모두 비어 있다.", "inLanguage": "ko", "articleSection": "반도체 기초 이론", "dateModified": "2026-11-12", "publisher": {"@type": "Organization", "name": "반도체 새김"}, "mainEntityOfPage": "https://sssemimaster.github.io/semicbt/theory/th-cff1d71d/"}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "반도체 새김", "item": "https://sssemimaster.github.io/semicbt/"}, {"@type": "ListItem", "position": 2, "name": "이론 백과사전", "item": "https://sssemimaster.github.io/semicbt/theory/"}, {"@type": "ListItem", "position": 3, "name": "페르미 준위"}]}</script></head>
 <body class="bg-slate-50 dark:bg-[#0a1020] text-slate-800 dark:text-slate-200 antialiased min-h-screen flex flex-col relative transition-colors duration-200">
 
   <!-- 좌측 슬라이드 사이드바 -->
@@ -663,80 +663,72 @@ html.dark .cs-frame{
       <div id="breadcrumbContainer" class="bg-indigo-50/70 dark:bg-[#0f2233] rounded-xl border border-indigo-100 dark:border-white/10 px-4 py-3 mb-6 flex flex-wrap items-center gap-y-2 text-sm hidden"></div>
       <div id="learningContainer" class="flex flex-col space-y-4"><div class="bg-white dark:bg-[#0f1729] rounded-2xl shadow-sm border border-slate-200 dark:border-white/10 overflow-hidden"><div class="p-6 md:p-8"><p class="eyebrow mb-2">반도체 기초 이론 <span class="opacity-50">/</span> 반도체 물리 <span class="opacity-50">·</span> 약 5분 읽기</p><h1 class="page-title text-slate-900 dark:text-white mb-3">페르미 준위</h1><div class="flex flex-wrap gap-1.5 mb-6 pb-6 border-b border-slate-100 dark:border-white/10"><span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#페르미준위</span><span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#핵심이론</span></div><div class="custom-table-container theory-body prose prose-slate dark:prose-invert max-w-none"><div class="custom-badge-heading"><span class="custom-badge">📘 정의</span>페르미 준위란?</div>
 
-<p><strong>페르미 준위(Fermi level)</strong>는 반도체 내에서 전자의 에너지 상태 분포를 나타내는 기준 에너지 레벨이다. 이는 온도가 0K일 때, 전자가 가질 수 있는 최대 에너지 상태를 의미하며, 전자와 정공의 농도를 결정짓는 중요한 요소이다.</p>
+<p><strong>페르미 준위</strong>(Fermi level, $E_F$)는 전자가 에너지 상태를 채우는 정도를 나타내는 기준 에너지이다. 열평형 상태에서 어떤 에너지 상태를 전자가 차지할 확률은 <strong>페르미-디랙 분포</strong>를 따르며, $E = E_F$인 상태를 전자가 차지할 확률은 정확히 50%이다.</p>
+<p>$$
+f(E) = \frac{1}{1 + e^{(E-E_F)/kT}}
+$$</p>
+<p>절대영도(0K)에서는 $E_F$ 아래의 상태는 모두 채워지고 위의 상태는 모두 비어 있다. 온도가 오르면 $E_F$ 근처의 경계가 흐려지면서 일부 전자가 위로 올라간다. 반도체에서 $E_F$ 자리는 밴드갭 안에 있을 수 있어서, 그 자리에 전자가 실제로 존재하지 않아도 기준 에너지로서 의미가 있다.</p>
 <div class="custom-badge-heading"><span class="custom-badge">🌱 등장 배경</span>페르미 준위의 필요성</div>
 
-<p>페르미 준위는 반도체 물질의 전기적 특성을 이해하는 데 필수적이다. 반도체의 도전성은 전자의 에너지 상태에 따라 달라지며, 페르미 준위는 이러한 에너지 상태의 분포를 이해하는 데 도움을 준다. 또한, 반도체 소자의 설계 및 분석에 있어 전자 이동, 전도도, 그리고 불순물의 영향을 평가하는 데 사용된다.</p>
-<div class="custom-badge-heading"><span class="custom-badge">⚙️ 원리</span>페르미 준위의 동작 원리</div>
+<p>반도체의 전기적 성질은 전도대에 전자가 얼마나 있는지, 가전자대에 정공이 얼마나 있는지로 정해진다. 페르미 준위는 이 두 농도를 한꺼번에 알려 주는 기준이다. 또한 서로 다른 재료를 붙였을 때 전자가 어느 쪽으로 옮겨 가는지(접합의 밴드 휘어짐)를 이해하는 출발점이 되므로, 소자 설계와 분석에 필수적이다.</p>
+<div class="custom-badge-heading"><span class="custom-badge">⚙️ 원리</span>페르미 준위의 위치와 의미</div>
 
 <ol>
-<li>
-<p><strong>전자 분포</strong>: 페르미 준위는 전자의 에너지 분포를 결정한다. 온도가 상승하면 전자는 더 높은 에너지 상태로 이동할 수 있다.</p>
-</li>
-<li>
-<p><strong>정공 생성</strong>: 페르미 준위가 높은 경우, 전자는 쉽게 정공을 생성하여 전도성을 증가시킨다. 반대로, 페르미 준위가 낮으면 정공의 생성이 감소한다.</p>
-</li>
-<li>
-<p><strong>온도 의존성</strong>: 온도가 증가함에 따라 페르미 준위는 약간 상승하며, 이는 전자의 에너지 상태가 변화하는 것을 반영한다. 따라서 반도체의 전기적 특성은 온도에 따라 변화한다.</p>
-</li>
+<li><strong>진성 반도체</strong>: 도핑하지 않은 반도체에서는 전자와 정공 수가 같으므로 $E_F$가 밴드갭의 거의 가운데에 있다($E_i$라고도 한다).</li>
+<li><strong>N형 반도체</strong>: 도너 불순물로 전자가 많아지므로 $E_F$가 전도대($E_c$) 쪽으로 올라간다. 도핑 농도가 높을수록 더 가까워진다.</li>
+<li><strong>P형 반도체</strong>: 억셉터 불순물로 정공이 많아지므로 $E_F$가 가전자대($E_v$) 쪽으로 내려간다.</li>
+<li><strong>열평형에서의 일치</strong>: 서로 접촉한 물질은 열평형에서 $E_F$가 하나로 같아진다. PN 접합에서 밴드가 휘어지는 이유가 이것이다.</li>
 </ol>
 <figure class="dg" data-dg="band-doping" data-cap="물질별 밴드 구조와 도핑에 따른 페르미 준위의 위치"></figure>
 
-<div class="custom-highlight-box">[면접 팁] 페르미 준위의 역할과 중요성을 명확히 이해하고, 반도체의 전기적 특성과의 관계를 설명할 수 있어야 한다.</div>
+<div class="custom-highlight-box">[면접 팁] 'N형은 $E_F$가 전도대 쪽, P형은 가전자대 쪽, 진성은 가운데'라는 그림을 그려 가며 설명하면 가장 전달이 잘된다.</div>
 
-<div class="custom-badge-heading"><span class="custom-badge">🔬 메커니즘</span>페르미 준위의 세부 메커니즘</div>
+<div class="custom-badge-heading"><span class="custom-badge">🔬 메커니즘</span>페르미 준위와 캐리어 농도</div>
 
-<ol>
-<li><strong>전자와 정공의 농도</strong>: 페르미 준위는 전자($n$)와 정공($p$)의 농도에 영향을 미친다. 전자 농도는 다음과 같이 표현된다:
-   $$ n = N_c e^{-\frac{E_c - E_f}{kT}} $$
-   정공 농도는 다음과 같다:
-   $$ p = N_v e^{-\frac{E_f - E_v}{kT}} $$</li>
-</ol>
-<p>여기서,
-   - $N_c$: 전도대의 밀도 상태
-   - $N_v$: 가전자대의 밀도 상태
-   - $E_c$: 전도대의 에너지
-   - $E_v$: 가전자대의 에너지
-   - $E_f$: 페르미 준위
-   - $k$: 볼츠만 상수
-   - $T$: 절대 온도</p>
-<ol start="2">
-<li><strong>온도 변화에 따른 페르미 준위의 이동</strong>: 온도가 상승하면 전자의 에너지 상태가 증가하고, 이는 페르미 준위의 위치를 변화시킨다. 고온에서는 페르미 준위가 전도대 쪽으로 이동하며, 이로 인해 전도성이 증가한다.</li>
-</ol>
-<div class="custom-badge-heading"><span class="custom-badge">🗂️ 분류</span>페르미 준위의 종류</div>
+<p>$E_F$가 밴드 끝에서 $kT$보다 충분히 멀리 있으면(비축퇴) 캐리어 농도는 다음과 같이 근사한다.</p>
+<p>$$ n = N_c\, e^{-\frac{E_c - E_F}{kT}} $$</p>
+<p>$$ p = N_v\, e^{-\frac{E_F - E_v}{kT}} $$</p>
+<ul>
+<li>$n$, $p$: 전도대의 전자 농도, 가전자대의 정공 농도</li>
+<li>$N_c$, $N_v$: 전도대와 가전자대의 유효 상태 밀도</li>
+<li>$E_c$, $E_v$: 전도대 바닥, 가전자대 꼭대기 에너지</li>
+<li>$E_F$: 페르미 준위, $k$: 볼츠만 상수, $T$: 절대 온도</li>
+</ul>
+<p>$E_F$가 $E_c$에 가까울수록 $n$이 커지고 $E_v$에 가까울수록 $p$가 커진다. 두 식을 곱하면 $np = n_i^2$로, 도핑을 해도 $n$과 $p$의 곱은 같은 온도에서 일정하다.</p>
+<div class="custom-badge-heading"><span class="custom-badge">🗂️ 분류</span>반도체 종류에 따른 페르미 준위</div>
 
 <div class="table-wrap"><table>
 <thead>
 <tr>
 <th>종류</th>
-<th>설명</th>
-<th>특징</th>
+<th>페르미 준위의 위치</th>
+<th>다수 캐리어</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><strong>내부 페르미 준위</strong></td>
-<td>반도체 내부에서의 페르미 준위</td>
-<td>불순물에 의해 영향을 받음</td>
+<td><strong>진성 반도체</strong></td>
+<td>밴드갭의 거의 가운데</td>
+<td>전자와 정공이 같은 수</td>
 </tr>
 <tr>
-<td><strong>외부 페르미 준위</strong></td>
-<td>반도체와 금속 접합에서의 페르미 준위</td>
-<td>전자 이동과 전도성에 중요한 역할</td>
+<td><strong>N형 반도체</strong></td>
+<td>전도대 쪽으로 올라감</td>
+<td>전자</td>
 </tr>
 <tr>
-<td><strong>정적 페르미 준위</strong></td>
-<td>온도가 일정할 때의 페르미 준위</td>
-<td>온도에 따라 변화하지 않음</td>
+<td><strong>P형 반도체</strong></td>
+<td>가전자대 쪽으로 내려감</td>
+<td>정공</td>
 </tr>
 <tr>
-<td><strong>동적 페르미 준위</strong></td>
-<td>온도 변화에 따른 페르미 준위</td>
-<td>온도에 따라 지속적으로 변화함</td>
+<td><strong>축퇴 반도체</strong> (아주 높은 도핑)</td>
+<td>전도대 또는 가전자대 안쪽으로 들어감</td>
+<td>금속처럼 많은 캐리어</td>
 </tr>
 </tbody>
 </table></div>
-<div class="custom-highlight-box">[실무 코멘트] 페르미 준위의 종류를 이해하면 반도체 소자 설계 시 유용하다. 각 종류의 특성을 고려하여 최적의 성능을 이끌어낼 수 있다.</div>
+<div class="custom-highlight-box">[실무 코멘트] 소스·드레인 같은 곳은 아주 높게 도핑해서 페르미 준위가 밴드 안으로 들어가도록 만들고, 금속과의 접촉 저항을 낮춘다.</div>
 
 <div class="custom-badge-heading"><span class="custom-badge">🎚️ 변수 영향</span>페르미 준위에 영향을 미치는 변수</div>
 
@@ -749,50 +741,45 @@ html.dark .cs-frame{
 </thead>
 <tbody>
 <tr>
-<td><strong>온도 (T)</strong></td>
-<td>온도가 상승하면 페르미 준위가 상승하여 전도성이 증가함</td>
-</tr>
-<tr>
 <td><strong>불순물 농도</strong></td>
-<td>불순물의 농도가 높을수록 페르미 준위가 이동하여 전자/정공 농도에 영향을 미침</td>
+<td>N형은 도핑이 많을수록 $E_F$가 $E_c$에 가까워지고, P형은 많을수록 $E_v$에 가까워진다.</td>
 </tr>
 <tr>
-<td><strong>압력</strong></td>
-<td>압력이 증가하면 반도체의 에너지 밴드 구조가 변화하여 페르미 준위에 영향을 미침</td>
+<td><strong>온도 (T)</strong></td>
+<td>상온 이상에서 온도가 오르면 열로 생기는 전자-정공 쌍이 늘어, 도핑된 반도체의 $E_F$는 밴드갭 가운데($E_i$) 쪽으로 이동한다. 아주 높은 온도에서는 진성 반도체처럼 행동한다.</td>
+</tr>
+<tr>
+<td><strong>물질의 밴드 구조</strong></td>
+<td>밴드갭과 상태 밀도가 달라지면 $E_F$의 위치도 달라진다.</td>
 </tr>
 </tbody>
 </table></div>
-<p>페르미 준위는 반도체의 전기적 특성에 중대한 영향을 미치며, 이를 통해 반도체 소자의 특성을 최적화할 수 있다.</p>
-<div class="custom-badge-heading"><span class="custom-badge">⚖️ 장단점</span>페르미 준위의 장단점 및 한계</div>
+<p>온도가 올라간다고 해서 $E_F$가 단순히 올라가는 것이 아니다. 상온 이상에서 도핑된 반도체의 $E_F$는 온도가 높아질수록 가운데로 다가간다.</p>
+<div class="custom-badge-heading"><span class="custom-badge">⚖️ 장단점</span>페르미 준위 개념의 장단점 및 한계</div>
 
-<p><strong>장점</strong>: 
-- 페르미 준위는 반도체의 전기적 특성을 이해하는 데 필수적이며, 전자와 정공의 농도를 예측할 수 있다.
-- 소자의 설계 및 분석에 있어 불순물의 영향을 평가하는 데 유용하다.</p>
-<p><strong>단점</strong>: 
-- 페르미 준위는 이상적인 모델을 기반으로 하며, 실제 반도체에서는 다양한 외부 요인에 의해 영향을 받을 수 있다.
-- 고온 또는 고압 환경에서는 페르미 준위의 정확한 위치를 예측하기 어려운 경우가 발생한다.</p>
+<p><strong>장점</strong>:
+- 도핑과 온도에 따른 전자·정공 농도를 한눈에 설명한다.
+- 접합이나 금속-반도체 접촉에서 밴드가 어떻게 휘는지 이해하게 해 준다.</p>
+<p><strong>한계</strong>:
+- 열평형 상태를 전제로 한다. 전압을 걸어 전류가 흐르는 상태에서는 전자와 정공에 각각 따로 준(準)페르미 준위를 쓴다.
+- 앞의 근사식은 도핑이 지나치게 높은 축퇴 상태에서는 맞지 않는다.</p>
 <div class="custom-badge-heading"><span class="custom-badge">🛠️ 실무 이슈</span>페르미 준위 관련 문제 및 해결 방향</div>
 
 <ul>
-<li><strong>문제</strong>: 불순물 농도가 높을 경우 페르미 준위가 비정상적으로 이동하여 전도성을 저하시킬 수 있다.</li>
-<li>
-<p><strong>해결 방향</strong>: 불순물 농도를 정확히 제어하고, 정밀한 도핑 기술을 적용하여 원하는 전기적 특성을 유지해야 한다.</p>
-</li>
-<li>
-<p><strong>문제</strong>: 온도 변화에 따른 페르미 준위의 이동이 예측과 다를 수 있다.</p>
-</li>
-<li><strong>해결 방향</strong>: 온도 보상을 위한 설계 및 실시간 모니터링 시스템을 도입하여 성능 저하를 방지해야 한다.</li>
+<li><strong>문제</strong>: 도핑 농도가 목표와 다르면 $E_F$ 위치가 달라져 문턱 전압과 저항이 설계와 어긋난다.</li>
+<li><strong>해결 방향</strong>: 이온 주입의 에너지와 도즈, 열처리 조건을 정밀하게 제어하고 측정(4점 탐침, C-V)으로 확인한다.</li>
+<li><strong>문제</strong>: 온도가 변하면 캐리어 농도가 달라져 소자 특성이 변한다.</li>
+<li><strong>해결 방향</strong>: 온도 변화에도 동작이 유지되도록 설계 여유를 두고 온도 보상 회로를 쓴다.</li>
 </ul>
 <div class="custom-badge-heading"><span class="custom-badge">🧠 암기 포인트</span>시험·면접 직전 체크</div>
 
 <ul>
-<li><strong>페르미 준위</strong>: 전자의 최대 에너지 상태를 나타내며, 전도성과 밀접한 관계.</li>
-<li><strong>온도</strong>: 상승 시 페르미 준위가 상승하여 전도성이 증가함.</li>
-<li><strong>불순물</strong>: 농도 변화에 따라 페르미 준위가 이동하여 전자/정공 농도에 영향.</li>
-<li><strong>장단점</strong>: 이상적 모델 기반, 외부 요인에 민감함.</li>
-<li><strong>문제 해결</strong>: 정밀 도핑 및 온도 보상 설계 필요. </li>
-</ul>
-<div class="custom-highlight-box">[면접 팁] 페르미 준위의 장단점 및 실무에서의 문제를 명확히 이해하고, 해결 방안을 제시할 수 있어야 한다.</div></div></div></div><nav aria-label="같이 보면 좋은 이론" class="mt-2"><p class="text-xs font-bold text-slate-400 dark:text-slate-500 mb-3">같이 보면 좋은 이론</p><ul class="grid gap-2 sm:grid-cols-2"><li><a href="../th-18535/" class="block rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0f1729] px-4 py-3 hover:border-indigo-300 dark:hover:border-cyan-400/40 transition"><span class="font-bold text-sm text-slate-900 dark:text-white">PN 접합</span><span class="block text-xs text-slate-500 dark:text-slate-400 mt-0.5">반도체 기초 이론 · 반도체 물리</span></a></li></ul></nav></div>
+<li>페르미 준위: 열평형에서 전자 점유 확률이 50%가 되는 에너지</li>
+<li>진성은 밴드갭 가운데, N형은 전도대 쪽, P형은 가전자대 쪽</li>
+<li>도핑이 많을수록 $E_F$는 더 밴드 끝에 가까워진다.</li>
+<li>상온 이상에서 온도가 오르면 도핑된 반도체의 $E_F$는 가운데($E_i$)로 다가간다.</li>
+<li>열평형에서 접촉한 물질의 $E_F$는 하나로 같아진다.</li>
+</ul></div></div></div><nav aria-label="같이 보면 좋은 이론" class="mt-2"><p class="text-xs font-bold text-slate-400 dark:text-slate-500 mb-3">같이 보면 좋은 이론</p><ul class="grid gap-2 sm:grid-cols-2"><li><a href="../th-18535/" class="block rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0f1729] px-4 py-3 hover:border-indigo-300 dark:hover:border-cyan-400/40 transition"><span class="font-bold text-sm text-slate-900 dark:text-white">PN 접합</span><span class="block text-xs text-slate-500 dark:text-slate-400 mt-0.5">반도체 기초 이론 · 반도체 물리</span></a></li></ul></nav></div>
       <button onclick="navTo('view-search')" class="mt-10 w-full flex items-center justify-between gap-3 rounded-2xl border border-dashed border-slate-300 dark:border-white/15 px-5 py-4 text-left text-sm text-slate-500 dark:text-slate-400 hover:border-indigo-400 dark:hover:border-cyan-300/60 transition">
         <span>🔍 <b class="text-slate-700 dark:text-slate-200">찾는 주제가 안 보이나요?</b> 이론 · 문제 · 면접을 한 번에 검색해 보세요</span><span class="text-indigo-600 dark:text-cyan-300 font-bold shrink-0">통합 검색 →</span></button>
     </div>

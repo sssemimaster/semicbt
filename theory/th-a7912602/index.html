@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>수율(Yield) 정리 — 7. EDS 공정 (Testing) | 반도체 새김</title>
-  <meta name="description" content="반도체 제조 공정에서 수율이 낮아지면 생산 비용이 급격히 증가해요. 웨이퍼 한 장에서 얻을 수 있는 칩의 수가 줄어들면, 같은 수의 완성품을 만들기 위해 더 많은 웨이퍼와 자원을 소모하게 되거든요."><link rel="canonical" href="https://sssemimaster.github.io/semicbt/theory/th-a7912602/"><meta property="og:type" content="article"><meta property="og:site_name" content="반도체 새김"><meta property="og:locale" content="ko_KR"><meta property="og:title" content="수율(Yield) 정리 — 7. EDS 공정 (Testing) | 반도체 새김"><meta property="og:description" content="반도체 제조 공정에서 수율이 낮아지면 생산 비용이 급격히 증가해요. 웨이퍼 한 장에서 얻을 수 있는 칩의 수가 줄어들면, 같은 수의 완성품을 만들기 위해 더 많은 웨이퍼와 자원을 소모하게 되거든요."><meta name="twitter:card" content="summary"><meta property="og:url" content="https://sssemimaster.github.io/semicbt/theory/th-a7912602/">
+  <meta name="description" content="수율은 반도체 업체의 수익성과 직결된다. 수율이 높으면 같은 비용으로 더 많은 제품을 만들 수 있어 가격 경쟁력이 생긴다."><link rel="canonical" href="https://sssemimaster.github.io/semicbt/theory/th-a7912602/"><meta property="og:type" content="article"><meta property="og:site_name" content="반도체 새김"><meta property="og:locale" content="ko_KR"><meta property="og:title" content="수율(Yield) 정리 — 7. EDS 공정 (Testing) | 반도체 새김"><meta property="og:description" content="수율은 반도체 업체의 수익성과 직결된다. 수율이 높으면 같은 비용으로 더 많은 제품을 만들 수 있어 가격 경쟁력이 생긴다."><meta name="twitter:card" content="summary"><meta property="og:url" content="https://sssemimaster.github.io/semicbt/theory/th-a7912602/">
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Sora:wght@500;600;700;800&display=swap">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%230f1729' stroke='%2367e8f9' stroke-width='2'/%3E%3Cpath d='M9 18h5v-5h4v8h5' fill='none' stroke='%23a78bfa' stroke-width='2'/%3E%3C/svg%3E">
@@ -338,7 +338,7 @@ html.dark .cs-frame{
 .cj-n{flex:none;width:1.5rem;height:1.5rem;margin-top:.22rem;border-radius:999px;background:var(--badge-bg);color:var(--badge-fg);font-size:.72rem;font-weight:800;display:flex;align-items:center;justify-content:center}
 #cDetail .custom-highlight-box{margin:0;font-size:1rem;line-height:1.75;border-radius:16px;border-left-width:5px}
 </style>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "수율(Yield)", "description": "반도체 제조 공정에서 수율이 낮아지면 생산 비용이 급격히 증가해요. 웨이퍼 한 장에서 얻을 수 있는 칩의 수가 줄어들면, 같은 수의 완성품을 만들기 위해 더 많은 웨이퍼와 자원을 소모하게 되거든요.", "inLanguage": "ko", "articleSection": "반도체 8대 공정", "dateModified": "2026-11-12", "publisher": {"@type": "Organization", "name": "반도체 새김"}, "mainEntityOfPage": "https://sssemimaster.github.io/semicbt/theory/th-a7912602/"}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "반도체 새김", "item": "https://sssemimaster.github.io/semicbt/"}, {"@type": "ListItem", "position": 2, "name": "이론 백과사전", "item": "https://sssemimaster.github.io/semicbt/theory/"}, {"@type": "ListItem", "position": 3, "name": "수율(Yield)"}]}</script></head>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "수율(Yield)", "description": "수율은 반도체 업체의 수익성과 직결된다. 수율이 높으면 같은 비용으로 더 많은 제품을 만들 수 있어 가격 경쟁력이 생긴다.", "inLanguage": "ko", "articleSection": "반도체 8대 공정", "dateModified": "2026-11-12", "publisher": {"@type": "Organization", "name": "반도체 새김"}, "mainEntityOfPage": "https://sssemimaster.github.io/semicbt/theory/th-a7912602/"}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "반도체 새김", "item": "https://sssemimaster.github.io/semicbt/"}, {"@type": "ListItem", "position": 2, "name": "이론 백과사전", "item": "https://sssemimaster.github.io/semicbt/theory/"}, {"@type": "ListItem", "position": 3, "name": "수율(Yield)"}]}</script></head>
 <body class="bg-slate-50 dark:bg-[#0a1020] text-slate-800 dark:text-slate-200 antialiased min-h-screen flex flex-col relative transition-colors duration-200">
 
   <!-- 좌측 슬라이드 사이드바 -->
@@ -663,30 +663,30 @@ html.dark .cs-frame{
       <div id="breadcrumbContainer" class="bg-indigo-50/70 dark:bg-[#0f2233] rounded-xl border border-indigo-100 dark:border-white/10 px-4 py-3 mb-6 flex flex-wrap items-center gap-y-2 text-sm hidden"></div>
       <div id="learningContainer" class="flex flex-col space-y-4"><div class="bg-white dark:bg-[#0f1729] rounded-2xl shadow-sm border border-slate-200 dark:border-white/10 overflow-hidden"><div class="p-6 md:p-8"><p class="eyebrow mb-2">반도체 8대 공정 <span class="opacity-50">/</span> 7. EDS 공정 (Testing) <span class="opacity-50">·</span> 약 4분 읽기</p><h1 class="page-title text-slate-900 dark:text-white mb-3">수율(Yield)</h1><div class="flex flex-wrap gap-1.5 mb-6 pb-6 border-b border-slate-100 dark:border-white/10"><span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#수율(Yield)</span><span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#핵심이론</span></div><div class="custom-table-container theory-body prose prose-slate dark:prose-invert max-w-none"><div class="custom-badge-heading"><span class="custom-badge">📘 정의</span>수율의 개념</div>
 
-<p>반도체 제조 공정에서 <strong>수율</strong>이 낮아지면 생산 비용이 급격히 증가해요. 웨이퍼 한 장에서 얻을 수 있는 칩의 수가 줄어들면, 같은 수의 완성품을 만들기 위해 더 많은 웨이퍼와 자원을 소모하게 되거든요. 수율은 특정 공정에서 양질의 칩을 얻을 수 있는 비율입니다. 제조 과정에서 발생할 수 있는 결함들을 최소화하여 최종 제품의 수율을 높이는 것이 중요한 이유입니다.</p>
+<p><strong>수율</strong>(Yield)은 만든 칩 가운데 정상적으로 동작하는 칩의 비율이다. 웨이퍼 한 장에서 쓸 수 있는 칩이 줄면 같은 수의 제품을 만들기 위해 웨이퍼와 자원을 더 써야 하므로 수율이 낮을수록 생산 비용이 급격히 늘어난다. 제조 과정의 결함을 줄여 수율을 높이는 것이 중요한 이유이다.</p>
 <div class="custom-badge-heading"><span class="custom-badge">📘 핵심 개념</span>수율의 중요성</div>
 
-<p>수율은 반도체 제조업체의 수익성과 직결돼요. 높은 수율을 달성한다는 것은 동일한 자원으로 더 많은 제품을 생산할 수 있음을 의미하죠. 따라서, 반도체 시장에서 경쟁력을 유지하기 위해서는, 높은 수율을 통해 제품의 가격 경쟁력을 확보하는 것이 필수적이라고 할 수 있습니다.</p>
-<blockquote></blockquote>
+<p>수율은 반도체 업체의 수익성과 직결된다. 수율이 높으면 같은 비용으로 더 많은 제품을 만들 수 있어 가격 경쟁력이 생긴다. 특히 새 공정을 도입한 초기에는 수율이 낮기 때문에, 얼마나 빨리 수율을 끌어올리느냐가 경쟁력을 가른다.</p>
+<div class="custom-highlight-box">[면접 팁] 수율을 '원가'와 연결해서 설명하면 좋다. 수율이 오르면 칩 한 개당 원가가 내려간다.</div>
+
 <div class="custom-badge-heading"><span class="custom-badge">📘 핵심 개념</span>수율과 품질의 관계</div>
 
-<p>수율은 제품의 품질과도 밀접한 관련이 있어요. 수율이 높다는 것은 그만큼 결함이 적고 품질이 우수한 제품이 많이 생산된다는 뜻이죠. 반면, 수율이 낮으면 결함이 많은 제품이 많아지게 되고, 이는 곧 품질 저하로 이어질 수 있어요. 따라서, 수율을 높이는 것은 단순히 양을 늘리는 것이 아니라, 제품의 품질을 보장하는 길이기도 합니다. </p>
+<p>수율이 높다는 것은 규격에 맞는 칩이 많다는 뜻이고, 이는 공정이 안정적이고 결함이 적다는 신호이다. 다만 수율은 '규격을 통과한 비율'이므로, 출하 후 신뢰성은 별도로 번인 같은 시험으로 확인한다. 수율을 높이는 일은 단순히 생산량을 늘리는 것이 아니라 공정 품질을 관리하는 일이다.</p>
 <div class="custom-badge-heading"><span class="custom-badge">✏️ 측정 방법</span>수율 측정 방법</div>
 
-<p>반도체 제조에서 <strong>수율</strong>은 생산된 칩 중에서 정상적으로 작동하는 칩의 비율을 말해요. 수율을 측정하기 위해서는 먼저 웨이퍼 단위에서 결함이 있는 칩을 식별해야 해요. 일반적으로 자동화된 테스트 장비를 사용해 전기적 특성을 검사하고, 기준에 부합하지 않는 칩을 불량으로 분류합니다. 이 과정을 통해 전체 칩 중에서 불량 칩의 비율을 파악하고, 이를 바탕으로 수율을 계산합니다.</p>
-<p>수율은 다음과 같은 방식으로 계산돼요:</p>
+<p>수율은 웨이퍼 상태에서 각 칩(다이)을 전기적으로 검사하는 <strong>EDS 공정</strong>에서 처음 확인한다. 자동화된 검사 장비가 칩마다 전기적 특성을 시험해 기준을 통과하지 못한 칩을 불량으로 분류하고, 그 결과를 웨이퍼 맵으로 기록한다. 이를 바탕으로 다음과 같이 계산한다.</p>
 <p>$$
 \text{Yield} = \frac{\text{Number of Good Dies}}{\text{Total Number of Dies}}
 $$</p>
 <ul>
 <li>$\text{Yield}$: 수율</li>
 <li>$\text{Number of Good Dies}$: 정상적으로 작동하는 칩의 개수</li>
-<li>$\text{Total Number of Dies}$: 전체 생산된 칩의 개수</li>
+<li>$\text{Total Number of Dies}$: 웨이퍼에서 검사한 전체 칩의 개수</li>
 </ul>
+<p>실제 총 수율은 웨이퍼 제조 수율, 조립(패키징) 수율, 최종 테스트 수율을 곱한 값으로 본다.</p>
 <div class="custom-badge-heading"><span class="custom-badge">🎚️ 변수 영향</span>수율에 영향을 미치는 변수</div>
 
-<p>수율에 영향을 미치는 변수는 다양해요. 첫 번째로, 공정의 <strong>결함 밀도</strong>가 중요한 역할을 합니다. 결함 밀도가 높으면 불량 칩의 수가 증가해 수율이 낮아져요. 두 번째로, 설계의 복잡성도 영향을 미칩니다. 복잡한 설계일수록 제조 과정에서의 오류 가능성이 커져 수율이 떨어질 수 있어요. 세 번째로, <strong>공정의 일관성</strong>도 무시할 수 없습니다. 공정이 일관되지 않다면 같은 조건에서도 다른 결과가 나올 수 있어 수율이 변동할 수 있어요.</p>
-<p>아래 표는 변수에 따른 수율의 변화를 정리한 것이에요:</p>
+<p>수율은 여러 변수로 정해진다. 첫째는 공정의 <strong>결함 밀도</strong>이다. 먼지(입자)나 결정 결함이 많을수록 불량 칩이 늘어난다. 둘째는 <strong>칩 면적</strong>이다. 면적이 클수록 결함이 하나라도 걸릴 확률이 커져 수율이 떨어진다. 셋째는 설계의 복잡성이다. 설계 규칙의 여유가 작거나 구조가 복잡하면 공정 변동에 민감해져 수율이 떨어질 수 있다. 넷째는 <strong>공정의 일관성</strong>이다. 같은 조건에서도 결과가 흔들리면 수율이 변동한다.</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -697,11 +697,15 @@ $$</p>
 <tbody>
 <tr>
 <td>결함 밀도</td>
-<td>결함 밀도가 높을수록 수율 감소</td>
+<td>높을수록 수율 감소</td>
+</tr>
+<tr>
+<td>칩 면적</td>
+<td>클수록 수율 감소</td>
 </tr>
 <tr>
 <td>설계 복잡성</td>
-<td>복잡할수록 수율 감소</td>
+<td>복잡할수록 수율 감소 가능</td>
 </tr>
 <tr>
 <td>공정의 일관성</td>
@@ -709,38 +713,39 @@ $$</p>
 </tr>
 </tbody>
 </table></div>
-<blockquote></blockquote>
+<div class="custom-highlight-box">[실무 코멘트] 같은 결함 밀도에서도 면적이 큰 칩(대형 GPU 등)이 작은 칩보다 수율이 훨씬 낮다. 그래서 큰 칩을 작은 칩 여러 개로 나누는 방식(칩렛)이 주목받는다.</div>
+
 <div class="custom-badge-heading"><span class="custom-badge">✏️ 수식</span>수율 계산식의 이해</div>
 
-<p>수율 계산식은 간단해 보이지만, 각 요소가 의미하는 바를 정확히 이해하는 것이 중요해요. <strong>결함 밀도 모델</strong>을 적용해 수율을 예측할 때는 결함의 발생 확률을 고려해야 합니다. 예를 들어, 포아송 분포를 사용해 결함을 모델링할 수 있어요. 포아송 분포를 적용하면 다음과 같은 수식을 사용하게 됩니다:</p>
+<p>결함이 무작위로 퍼져 있다고 보고 <strong>포아송 분포</strong>로 수율을 예측하는 모델이 있다.</p>
 <p>$$
 Y = e^{-AD}
 $$</p>
 <ul>
 <li>$Y$: 수율</li>
 <li>$A$: 다이의 면적</li>
-<li>$D$: 결함 밀도</li>
+<li>$D$: 결함 밀도(단위 면적당 결함 수)</li>
 </ul>
-<p>여기서 $e^{-AD}$는 다이 하나에 결함이 전혀 없을 확률을 의미합니다. 결함 밀도가 높아지면 $e^{-AD}$ 값이 작아져 수율이 감소하게 돼요.</p>
-<blockquote></blockquote>
+<p>$e^{-AD}$는 다이 하나에 결함이 전혀 없을 확률이다. 결함 밀도 $D$나 면적 $A$가 커지면 지수 값이 작아져 수율이 급격히 떨어진다. 그래서 면적이 큰 칩일수록 결함 밀도를 낮추는 것이 훨씬 중요하다.</p>
 <div class="custom-badge-heading"><span class="custom-badge">🛠️ 실무 이슈</span>현업에서의 수율 문제</div>
 
-<p>반도체 제조 현장에서 <strong>수율</strong>은 생산성과 직결되기 때문에 늘 주의 깊게 관리해야 하는 요소예요. 수율이 낮으면 생산 비용이 증가하고, 이는 곧바로 수익성에 영향을 미치거든요. 특히, <strong>결함 밀도</strong>가 높은 경우 수율이 급격히 떨어질 수 있으므로, 공정 단계마다 결함을 줄이기 위한 노력이 필요해요. 또, <strong>공정의 일관성</strong>이 확보되지 않으면 수율 변동이 심해져서 안정적인 생산이 어려워지죠.</p>
+<p>수율은 생산성과 원가에 직결되므로 항상 관리해야 한다. 수율이 낮으면 비용이 늘고 수익성이 나빠진다. 특히 <strong>결함 밀도</strong>가 높으면 수율이 급격히 떨어지므로 공정 단계마다 결함을 줄이는 노력이 필요하다. <strong>공정의 일관성</strong>이 확보되지 않으면 수율이 들쭉날쭉해 안정적인 생산이 어렵다. 웨이퍼 맵에서 불량이 특정 위치(가장자리, 중앙, 특정 샷)에 몰리는 패턴은 원인 공정을 찾는 단서가 된다.</p>
 <div class="custom-badge-heading"><span class="custom-badge">✏️ 개선 방법</span>수율 개선 방법</div>
 
-<p>수율을 개선하기 위해서는 여러 가지 전략이 활용됩니다. 첫째, 공정에서 발생할 수 있는 결함을 사전에 예측하고 방지하는 <strong>결함 예방 시스템</strong>을 도입하는 것이 중요해요. 둘째, 공정 도중 발생한 결함을 빠르게 감지하고 수정할 수 있는 <strong>실시간 모니터링 시스템</strong>을 구축하면 수율 향상에 큰 도움이 됩니다. 마지막으로, 공정 최적화와 정밀한 <strong>공정 제어</strong>를 통해 일관성을 강화하면 수율을 높일 수 있어요.</p>
-<blockquote></blockquote>
-<div class="custom-badge-heading"><span class="custom-badge">✏️ 개선 방법</span>수율 최적화 사례</div>
-
-<p>실제로, 많은 반도체 기업들이 수율을 최적화하기 위해 다양한 시도를 하고 있어요. 예를 들어, A사는 결함 밀도를 줄이기 위해 <strong>클린룸 환경</strong>을 강화하고, <strong>자동화 검사 시스템</strong>을 도입했어요. 이 결과로 수율이 대폭 개선되었고, 생산 비용도 절감할 수 있었죠. 또 다른 사례로, B사는 <strong>머신러닝 알고리즘</strong>을 활용해 결함 발생 패턴을 분석하고, 이를 바탕으로 공정 조건을 최적화했어요. 이러한 노력들은 수율을 높이는 데 실질적인 효과를 발휘합니다.</p>
+<ul>
+<li><strong>결함 예방</strong>: 클린룸 관리, 장비 청정도 유지, 오염원 차단으로 입자를 줄인다.</li>
+<li><strong>실시간 모니터링</strong>: 공정 중 이상을 빨리 감지해 불량이 퍼지기 전에 조치한다.</li>
+<li><strong>공정 제어와 최적화</strong>: 장비 간 편차를 줄이고 조건을 안정시켜 일관성을 높인다.</li>
+<li><strong>데이터 기반 분석</strong>: 웨이퍼 맵과 공정 데이터를 분석해 불량 패턴의 원인을 찾는다. 머신러닝 같은 기법도 이런 분석에 쓰인다.</li>
+</ul>
 <div class="custom-badge-heading"><span class="custom-badge">🧠 암기 포인트</span>시험·면접 직전 체크</div>
 
 <ul>
-<li>수율은 생산성과 수익성에 직접적 영향을 미친다.</li>
-<li>결함 예방, 모니터링, 공정 제어가 수율 개선의 핵심.</li>
-<li>클린룸과 자동화 시스템이 수율 최적화에 기여한다.</li>
-<li>머신러닝으로 결함 패턴 분석, 공정 조건 최적화 사례.</li>
-<li>수율 문제는 결함 밀도와 공정 일관성 문제로 귀결.</li>
+<li>수율 = 정상 칩 수 ÷ 전체 칩 수. 웨이퍼 상태의 EDS에서 처음 확인한다.</li>
+<li>결함 밀도와 칩 면적이 클수록 수율이 떨어진다($Y = e^{-AD}$).</li>
+<li>총 수율은 단계별 수율(웨이퍼, 조립, 최종 테스트)의 곱이다.</li>
+<li>웨이퍼 맵의 불량 분포는 원인 공정을 찾는 단서이다.</li>
+<li>개선: 결함 예방, 실시간 모니터링, 공정 제어, 데이터 분석</li>
 </ul></div></div></div><nav aria-label="같이 보면 좋은 이론" class="mt-2"><p class="text-xs font-bold text-slate-400 dark:text-slate-500 mb-3">같이 보면 좋은 이론</p><ul class="grid gap-2 sm:grid-cols-2"><li><a href="../th-cc0d3a71/" class="block rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0f1729] px-4 py-3 hover:border-indigo-300 dark:hover:border-cyan-400/40 transition"><span class="font-bold text-sm text-slate-900 dark:text-white">EDS 테스트 흐름</span><span class="block text-xs text-slate-500 dark:text-slate-400 mt-0.5">반도체 8대 공정 · 7. EDS 공정 (Testing)</span></a></li></ul></nav></div>
       <button onclick="navTo('view-search')" class="mt-10 w-full flex items-center justify-between gap-3 rounded-2xl border border-dashed border-slate-300 dark:border-white/15 px-5 py-4 text-left text-sm text-slate-500 dark:text-slate-400 hover:border-indigo-400 dark:hover:border-cyan-300/60 transition">
         <span>🔍 <b class="text-slate-700 dark:text-slate-200">찾는 주제가 안 보이나요?</b> 이론 · 문제 · 면접을 한 번에 검색해 보세요</span><span class="text-indigo-600 dark:text-cyan-300 font-bold shrink-0">통합 검색 →</span></button>

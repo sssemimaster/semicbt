@@ -674,8 +674,8 @@ html.dark .cs-frame{
 
 <div class="custom-badge-heading"><span class="custom-badge">⚙️ 동작 원리</span>TSV 공정의 작동 방식</div>
 
-<p><strong>TSV 공정</strong>은 실리콘 웨이퍼에 수직 구멍을 뚫고, 그 구멍에 금속을 채워 전기적 연결을 형성하는 방식으로 작동한다. 이 과정은 주로 <strong>식각(Etching)</strong>과 <strong>메탈 증착(Metal Deposition)</strong> 단계로 나뉜다. 식각 단계에서, 웨이퍼의 특정 부분을 제거하여 TSV를 형성하고, 이후 메탈 증착을 통해 구멍 내부에 전도성 물질을 채운다.</p>
-<p>이러한 구조는 전기적 신호가 수직으로 전달될 수 있도록 하며, 여러 층의 칩이 서로 연결될 수 있는 경로를 제공한다. TSV의 직경은 일반적으로 수십 마이크로미터 수준으로, 고해상도의 패턴을 요구한다.</p>
+<p><strong>TSV 공정</strong>은 실리콘 웨이퍼에 수직 구멍을 뚫고, 그 구멍에 금속을 채워 전기적 연결을 형성하는 방식으로 작동한다. 이 과정은 대략 깊은 식각(DRIE)으로 구멍을 뚫고, 구멍 안쪽에 절연막과 배리어·시드층을 입힌 뒤, 구리를 도금해 채우고, 표면을 CMP로 평탄하게 한 다음 웨이퍼를 얇게 갈아 뒷면에서 구리가 드러나게 하는 순서로 진행된다.</p>
+<p>이러한 구조는 전기적 신호가 수직으로 전달될 수 있도록 하며, 여러 층의 칩이 서로 연결될 수 있는 경로를 제공한다. TSV의 직경은 용도에 따라 다르지만 수 마이크로미터에서 수십 마이크로미터 수준이며, 깊이에 비해 매우 좁아 정밀한 식각과 균일한 충전을 요구한다.</p>
 <figure class="dg" data-dg="hbm-tsv" data-cap="HBM 스택과 프로세서를 인터포저 위에서 연결한 단면"></figure>
 
 <div class="custom-badge-heading"><span class="custom-badge">✏️ 측정 방법</span>TSV 특성 측정</div>
@@ -721,7 +721,7 @@ html.dark .cs-frame{
 </tr>
 <tr>
 <td>구멍 깊이</td>
-<td>깊이 증가 → 제조 난이도 증가</td>
+<td>깊이 증가 → 저항 증가, 제조 난이도 증가</td>
 </tr>
 </tbody>
 </table></div>
