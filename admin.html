@@ -340,7 +340,13 @@
       // 마크다운 파싱 (수식 보호 + 뱃지/팁 박스까지 사용자 페이지와 동일하게)
       const parsedMarkdown = renderTheoryMarkdown(t.content);
 
+      // 이 이론에 연결된 문제·면접이 목표(문제 3, 면접 2)보다 적으면 눈에 띄게 알린다 (재검수/문체 변환 초안은 기존 문항이 정식 목록에 있으므로 제외)
+      const nQ = draftQuizzes.filter(x => x.theory_id === t.id).length, nI = draftInterviews.filter(x => x.theory_id === t.id).length;
+      const shortWarn = (!t.replaces && (nQ < 3 || nI < 2))
+        ? `<div class="mb-3 p-3 rounded-lg bg-rose-50 border border-rose-300 text-xs text-rose-800 font-bold">⚠️ 연결된 문항이 모자랍니다 — 문제 ${nQ}/3, 면접 ${nI}/2<br><span class="font-normal">등재하기 전에 Fill Missing Items 워크플로를 실행하면 모자란 만큼 채워집니다.</span></div>` : '';
+
       let html = `
+        ${shortWarn}
         ${t.report_note ? `<div class="mb-3 p-3 rounded-lg bg-amber-50 border border-amber-200 text-xs text-amber-800">${t.replaces ? '🔍 기존 이론 재검수 (승인하면 기존 이론이 이 내용으로 교체됩니다)' : '🔍 검수 메모'}<br>${escHtml(t.report_note)}</div>` : ''}
         <div class="mb-4">
           <span class="bg-emerald-100 text-emerald-700 text-xs font-semibold px-2.5 py-1 rounded">${escHtml(t.category)} > ${escHtml(t.subject)}</span>
@@ -395,6 +401,8 @@
     }
 
     async function approveTheory() {
+      { const cur = draftTheories[currentTheoryIndex] || {}; const nQ = draftQuizzes.filter(x => x.theory_id === cur.id).length, nI = draftInterviews.filter(x => x.theory_id === cur.id).length;
+        if (!cur.replaces && (nQ < 3 || nI < 2) && !confirm(`⚠️ 이 이론에 연결된 문항이 모자랍니다 (문제 ${nQ}/3, 면접 ${nI}/2).\n그래도 등재하시겠습니까?`)) return; }
       if(!confirm("이 이론을 정식 백과사전에 등재하시겠습니까?")) return;
       try {
         const t = { ...draftTheories[currentTheoryIndex] }; const repId = t.replaces; delete t.report_note; delete t.replaces; delete t.before;
