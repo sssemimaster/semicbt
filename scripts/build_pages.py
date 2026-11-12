@@ -121,7 +121,7 @@ def must_replace(text, old, new, what):
     return text.replace(old, new, 1)
 
 
-def make_shell(tpl, *, title, desc, canonical, ld, root, boot_js, container_html, og_type="article"):
+def make_shell(tpl, *, title, desc, canonical, ld, root, depth, boot_js, container_html, og_type="article"):
     h = tpl
     if not re.search(r"<title>.*?</title>", h, re.S) or not re.search(r'<meta name="description" content="[^"]*">', h):
         sys.exit("index.html 의 <title> 또는 description 자리를 찾지 못했습니다.")
@@ -132,12 +132,12 @@ def make_shell(tpl, *, title, desc, canonical, ld, root, boot_js, container_html
     can = f'<link rel="canonical" href="{esc(canonical)}">' if canonical else ""
     h = re.sub(r'<meta name="description" content="[^"]*">', lambda m: f'<meta name="description" content="{esc(desc)}">{can}{og}', h, count=1)
     h = must_replace(h, "</head>", "".join(f'<script type="application/ld+json">{json.dumps(x, ensure_ascii=False)}</script>' for x in ld) + "</head>", "</head>")
-    h = must_replace(h, '<script src="https://cdn.tailwindcss.com', f"<script>window.ROOT={json.dumps(root)};{boot_js}</script>\n  <script src=\"https://cdn.tailwindcss.com", "Tailwind 스크립트")
+    h = must_replace(h, '<script src="https://cdn.tailwindcss.com', f"<script>if(!/(\\/|\\.html)$/.test(location.pathname)){{location.replace(location.pathname+'/'+location.search+location.hash)}}window.DEPTH={depth};{boot_js}</script>\n  <script src=\"https://cdn.tailwindcss.com", "Tailwind 스크립트")
     # 처음부터 홈이 아니라 이론 화면이 보이게 (검색엔진은 숨겨진 글을 낮게 본다)
     h = must_replace(h, '<div id="view-lobby" class="w-full flex flex-col gap-6 lg:gap-7">', '<div id="view-lobby" class="hidden w-full flex flex-col gap-6 lg:gap-7">', "홈 화면(view-lobby)")
     h = must_replace(h, '<div id="view-learning" class="hidden w-full flex flex-col">', '<div id="view-learning" class="w-full flex flex-col">', "이론 화면(view-learning)")
     h = must_replace(h, '<div id="learningContainer" class="grid grid-cols-1 gap-4"></div>', f'<div id="learningContainer" class="flex flex-col space-y-4">{container_html}</div>', "이론 영역(learningContainer)")
-    h = must_replace(h, 'href="theory/"', f'href="{root}theory/"', "푸터의 이론 목록 링크")
+    h = must_replace(h, 'id="theoryHubLink" href="theory/"', f'id="theoryHubLink" href="{root}theory/"', "푸터의 이론 목록 링크")
     return h
 
 
@@ -210,7 +210,7 @@ def main():
                   {"@type": "ListItem", "position": 3, "name": t["title"]}]}]
         if url:
             ld[0]["mainEntityOfPage"] = url
-        page = make_shell(tpl, title=f'{t["title"]} 정리 — {it["sub"] if it["sub"] != "일반" else it["cat"]} | {SITE_NAME}', desc=it["desc"], canonical=url, ld=ld, root="../../",
+        page = make_shell(tpl, title=f'{t["title"]} 정리 — {it["sub"] if it["sub"] != "일반" else it["cat"]} | {SITE_NAME}', desc=it["desc"], canonical=url, ld=ld, root="../../", depth=2,
                           boot_js=f"window.BOOT_THEORY={json.dumps(str(it['id']), ensure_ascii=False)};",
                           container_html=detail_html(it, render_markdown(str(t.get("content", ""))), minutes, rel))
         d = os.path.join(OUT_DIR, slug); os.makedirs(d, exist_ok=True)
@@ -223,7 +223,7 @@ def main():
                "hasPart": [{"@type": "Article", "headline": i["t"]["title"], **({"url": f"{base}/{OUT_DIR}/{i['slug']}/"} if base else {})} for i in items]}]
     hub = make_shell(tpl, title=f"반도체 이론 백과사전 — 기초·소자·8대 공정·첨단 기술 | {SITE_NAME}",
                      desc=f"반도체 기초 이론부터 소자, 8대 공정, 차세대 첨단 기술까지 {len(items)}편. 하루 5분, 쉬운 말로 정리한 반도체 학습 노트.",
-                     canonical=hub_url, ld=hub_ld, root="../", boot_js="window.BOOT_HUB=true;", container_html=hub_html(items, cats), og_type="website")
+                     canonical=hub_url, ld=hub_ld, root="../", depth=1, boot_js="window.BOOT_HUB=true;", container_html=hub_html(items, cats), og_type="website")
     with open(os.path.join(OUT_DIR, "index.html"), "w", encoding="utf-8") as f:
         f.write(hub)
 
