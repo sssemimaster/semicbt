@@ -161,7 +161,7 @@
   },
   {
     "id": "TH-00391f63",
-    "category": "반도체 기초 이론",
+    "category": "반도체 소자",
     "subject": "메모리 반도체",
     "title": "DRAM 동작 원리",
     "tags": [
@@ -227,7 +227,7 @@
   },
   {
     "id": "TH-002",
-    "category": "반도체 기초 이론",
+    "category": "반도체 소자",
     "subject": "트랜지스터 소자",
     "title": "트랜지스터 소자 개요",
     "tags": [
