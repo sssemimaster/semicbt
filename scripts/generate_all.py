@@ -591,7 +591,7 @@ QUIZ_COMPOSITION = """1번: 개념 이해(concept) 또는 비교·구분(compare
 
 
 def build_quiz_prompt(theory, n=3, existing=None):
-    comp = QUIZ_COMPOSITION if n >= 3 else f"서로 다른 유형(concept/compare/cause/scenario)으로 {n}문제. 상황 적용(scenario)은 응용 난이도로, 공정·소자에서 관측되는 상황을 2~3문장으로 제시하고 가장 타당한 원인·판단·조치를 묻기."
+    comp = (QUIZ_COMPOSITION + ("\n나머지 문제: 위 유형과 겹치지 않는 다른 각도로" if n > 3 else "")) if n >= 3 else f"서로 다른 유형(concept/compare/cause/scenario)으로 {n}문제. 상황 적용(scenario)은 응용 난이도로, 공정·소자에서 관측되는 상황을 2~3문장으로 제시하고 가장 타당한 원인·판단·조치를 묻기."
     have = ("\n[이미 확보한 문제 - 이것과 겹치지 않는 다른 내용·다른 각도로 출제]\n" + "\n".join(f"- {str(e.get('question', ''))[:80]}" for e in existing) + "\n") if existing else ""
     return f"""아래 이론 글만을 근거로 객관식 {n}문제를 만드세요.
 
@@ -728,25 +728,28 @@ def review_drafts(label, drafts, review_system, build_review):
     return out
 
 
-def collect_items(label, want, make_drafts, review_system, build_review, check, max_rounds=2):
-    """초안 → AI 검수 → 규칙 검사를 거쳐 want 개를 채운다. 탈락해서 모자라면 부족한 만큼만 한 번 더 만든다."""
+def collect_items(label, want, make_drafts, review_system, build_review, check, max_rounds=5, existing=()):
+    """초안 → AI 검수 → 규칙 검사를 거쳐 want 개를 '반드시' 채운다. 탈락해서 모자라면 부족한 만큼 다시 만든다(최대 max_rounds 번).
+    끝내 못 채우면 예외를 던진다 → 호출한 쪽은 모자란 채로 저장하지 않는다.
+    existing: 이미 있는 문항(겹치지 않게 만들기 위해 참고만 하고 개수에는 세지 않는다)."""
     final = []
     for rnd in range(max_rounds):
         need = want - len(final)
         if need <= 0:
             break
+        ask = need + 1 if rnd == 0 else need   # 첫 라운드는 탈락분을 감안해 한 개 더 받는다
         if rnd:
-            print(f"   ➕ 통과한 {label}이(가) {len(final)}개뿐이라 부족한 {need}개를 더 만듭니다.")
+            print(f"   ➕ 통과한 {label}이(가) {len(final)}개뿐이라 부족한 {need}개를 더 만듭니다. ({rnd + 1}/{max_rounds}번째 시도)")
         drafts = []
         try:
-            drafts = make_drafts(need, final)[:need]
+            drafts = make_drafts(ask, list(existing) + final)[:ask]
         except Exception as e:
             print(f"   ⚠️ {label} 초안 생성 실패: {e}")
             if need > 1:   # 여러 개를 한꺼번에 받다가 실패(출력 잘림 등)했으면 한 개씩 나눠서 받는다
                 print(f"   ↪ {label}을(를) 한 개씩 나눠서 다시 만듭니다.")
                 for _ in range(need):
                     try:
-                        drafts += make_drafts(1, final + drafts)[:1]
+                        drafts += make_drafts(1, list(existing) + final + drafts)[:1]
                     except Exception as e2:
                         print(f"   ⚠️ {label} 초안 1개 생성 실패: {e2}")
         if not drafts:
@@ -754,6 +757,8 @@ def collect_items(label, want, make_drafts, review_system, build_review, check, 
         try:
             by_idx = review_drafts(label, drafts, review_system, build_review)
             for n, it in enumerate(drafts):
+                if len(final) >= want:
+                    break
                 r = by_idx.get(n)
                 if r is None:                      # 검수 누락 → 규칙만 통과하면 사용
                     cand = it
@@ -772,10 +777,8 @@ def collect_items(label, want, make_drafts, review_system, build_review, check, 
         except Exception as e:
             print(f"   ⚠️ {label} AI 검수 실패 → 규칙 검사만 통과한 초안 사용: {e}")
             final += [it for it in drafts if not check(it)]
-    if not final:
-        raise ValueError(f"검수를 통과한 {label}이(가) 없음")
     if len(final) < want:
-        print(f"   ⚠️ {label}이(가) 목표 {want}개 중 {len(final)}개만 통과했습니다.")
+        raise ValueError(f"검수를 통과한 {label}이(가) {len(final)}개뿐 (목표 {want}개, {max_rounds}번 시도)")
     return final[:want]
 
 
@@ -783,11 +786,11 @@ QUIZ_PER_THEORY = 3
 INTERVIEW_PER_THEORY = 2
 
 
-def generate_quiz(theory, theory_id):
+def generate_quiz(theory, theory_id, want=QUIZ_PER_THEORY, existing=()):
     final = collect_items(
-        "문제", QUIZ_PER_THEORY,
+        "문제", want,
         lambda need, have: call_json(M["qa"], QUIZ_SYSTEM, build_quiz_prompt(theory, need, have), 0.8, 8000).get("questions") or [],
-        QUIZ_REVIEW_SYSTEM, lambda drafts: build_quiz_review_prompt(theory, drafts), check_quiz_item)
+        QUIZ_REVIEW_SYSTEM, lambda drafts: build_quiz_review_prompt(theory, drafts), check_quiz_item, existing=existing)
     return [compose_quiz(it, theory_id) for it in final]
 
 
@@ -812,7 +815,7 @@ INTERVIEW_COMPOSITION = """1번 (개념 설명형): 핵심 개념을 지원자 �
 
 
 def build_interview_prompt(theory, n=2, existing=None):
-    comp = INTERVIEW_COMPOSITION if n >= 2 else "개념 설명형 또는 상황·판단형 중 하나. 꼬리 질문으로 한 단계 더 파고듭니다."
+    comp = (INTERVIEW_COMPOSITION + ("\n나머지 질문: 위 둘과 겹치지 않는 다른 각도로" if n > 2 else "")) if n >= 2 else "개념 설명형 또는 상황·판단형 중 하나. 꼬리 질문으로 한 단계 더 파고듭니다."
     have = ("\n[이미 확보한 질문 - 이것과 겹치지 않는 다른 각도로 출제]\n" + "\n".join(f"- {str(e.get('question', ''))[:80]}" for e in existing) + "\n") if existing else ""
     return f"""아래 이론 글을 바탕으로, 실제 면접장에서 나올 법한 면접 질문 {n}개를 만드세요. 질문은 이론 범위에서 출제하되, 면접관의 말투와 맥락을 살립니다.
 
@@ -896,11 +899,11 @@ def compose_interview(it, theory_id):
     }
 
 
-def generate_interview(theory, theory_id):
+def generate_interview(theory, theory_id, want=INTERVIEW_PER_THEORY, existing=()):
     final = collect_items(
-        "면접", INTERVIEW_PER_THEORY,
+        "면접", want,
         lambda need, have: call_json(M["qa"], INTERVIEW_SYSTEM, build_interview_prompt(theory, need, have), 0.7, 8000).get("interviews") or [],
-        INTERVIEW_REVIEW_SYSTEM, lambda drafts: build_interview_review_prompt(theory, drafts), check_interview_item)
+        INTERVIEW_REVIEW_SYSTEM, lambda drafts: build_interview_review_prompt(theory, drafts), check_interview_item, existing=existing)
     return [compose_interview(it, theory_id) for it in final]
 
 
@@ -914,51 +917,50 @@ def generate_unified_content():
         return
 
     print(f"[{target_keyword}] 기반 통합 콘텐츠 생성 시작...")
-    theory_content = ""
 
-    # ----------------------------------------------------
-    # 1. 📖 이론 백과사전 생성 및 저장 (3단계 분할)
-    # ----------------------------------------------------
+    # 이론 + 객관식 + 면접이 '모두' 만들어졌을 때만 한꺼번에 저장한다.
+    # (하나라도 모자라면 아무것도 저장하지 않는다 → 검수소에 문항이 모자란 이론이 올라가지 않고, 이 키워드는 다음 실행에서 다시 시도된다)
+
+    # 1. 📖 이론 백과사전 생성 (3단계 분할)
     try:
         theory_content = generate_theory()
         theory_content, auto_dg = ensure_diagrams(target_keyword, theory_content)   # AI 가 빼먹어도 제목에 맞는 그림은 넣는다
         if auto_dg:
             print(f"   🖼 눌러 보는 그림 자동 삽입: {', '.join(auto_dg)}")
-        theory_id = new_id("TH")
-        theory_json = [{
-            "id": theory_id,
-            "category": sel_cat,
-            "subject": sel_sub,
-            "title": target_keyword,
-            "tags": [target_keyword.replace(" ", ""), "핵심이론"],
-            "content": theory_content,
-        }]
-        save_draft(draft_t_path, theory_json)
-        print("✅ 1/3 이론 백과사전 생성 및 저장 성공! (3단계 분할 생성)")
     except Exception as e:
-        # 3파트 중 하나라도 실패하면 미완성 이론을 저장하지 않고 종료
-        print(f"⚠️ 이론 생성 실패 (이후 단계 취소됨): {e}")
+        print(f"⚠️ 이론 생성 실패 → 아무것도 저장하지 않고 종료합니다: {e}")
         return
+    theory_id = new_id("TH")
+    print("✅ 1/3 이론 생성 완료 (아직 저장 전)")
 
-    # ----------------------------------------------------
-    # 2. 📝 이론 기반 객관식 (초안 → 규칙 검사 → AI 검수 → 조립)
-    # ----------------------------------------------------
+    # 2. 📝 객관식
     try:
         quiz_json = generate_quiz(theory_content, theory_id)
-        save_draft(draft_q_path, quiz_json)
-        print(f"✅ 2/3 이론 연계 객관식 {len(quiz_json)}개 생성 및 저장 성공!")
+        print(f"✅ 2/3 이론 연계 객관식 {len(quiz_json)}개 준비 완료")
     except Exception as e:
-        print(f"⚠️ 객관식 생성 실패 (건너뜀): {e}")
+        print(f"⚠️ 객관식을 목표만큼 만들지 못했습니다 → 아무것도 저장하지 않고 종료합니다 (다음 실행에서 다시 시도): {e}")
+        return
 
-    # ----------------------------------------------------
-    # 3. 🗣️ 이론 기반 면접 (초안 → 규칙 검사 → AI 검수 → 조립)
-    # ----------------------------------------------------
+    # 3. 🗣️ 면접
     try:
         interview_json = generate_interview(theory_content, theory_id)
-        save_draft(draft_i_path, interview_json)
-        print(f"✅ 3/3 이론 연계 실무 면접 {len(interview_json)}개 생성 및 저장 성공!")
+        print(f"✅ 3/3 이론 연계 실무 면접 {len(interview_json)}개 준비 완료")
     except Exception as e:
-        print(f"⚠️ 면접 생성 실패 (건너뜀): {e}")
+        print(f"⚠️ 면접을 목표만큼 만들지 못했습니다 → 아무것도 저장하지 않고 종료합니다 (다음 실행에서 다시 시도): {e}")
+        return
+
+    # 4. 💾 한꺼번에 저장 (문항 → 이론 순서: 도중에 끊겨도 '문항만 있고 이론이 없는' 쪽으로 남아 고아 문항은 fill/정리로 처리 가능)
+    save_draft(draft_q_path, quiz_json)
+    save_draft(draft_i_path, interview_json)
+    save_draft(draft_t_path, [{
+        "id": theory_id,
+        "category": sel_cat,
+        "subject": sel_sub,
+        "title": target_keyword,
+        "tags": [target_keyword.replace(" ", ""), "핵심이론"],
+        "content": theory_content,
+    }])
+    print(f"💾 저장 완료: 이론 1 + 객관식 {len(quiz_json)} + 면접 {len(interview_json)}")
 
 
 if __name__ == "__main__":
