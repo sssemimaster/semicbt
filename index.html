@@ -130,6 +130,8 @@
     html.dark .pbtn { background: linear-gradient(90deg, #22d3ee, #818cf8 58%, #e879f9); color: #0a1020; }
     .pbtn:hover:not(:disabled) { filter: brightness(1.08); }
     html.dark .hero .pbtn { background: linear-gradient(90deg, #22d3ee, #818cf8 58%, #e879f9); color: #0a1020; }
+    @media (min-width:1024px){ .wf-body{display:flex;align-items:center;gap:1.5rem} .wf-svg{flex:none;width:176px;margin:.5rem 0} .wf-legend{flex-wrap:wrap;row-gap:.25rem} .wf-legend>span{white-space:nowrap} .wf-info{flex:1;min-width:0} .wf-step{text-align:left} }
+    @media (min-width:1200px){ .wf-svg{width:210px} }
     .nav-btn { padding: .55rem .9rem; border-radius: .8rem; font-size: .9375rem; font-weight: 600; color: #475569; white-space: nowrap; transition: background .15s, color .15s, box-shadow .15s; }
     .nav-btn:hover { background: rgba(255,255,255,.7); color: #0f172a; }
     .nav-btn.active { background: #fff; color: #4338ca; font-weight: 700; box-shadow: 0 1px 2px rgba(15,23,42,.08), 0 0 0 1px rgba(15,23,42,.05); }
@@ -226,27 +228,55 @@
       <section class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
         <div>
           <p id="homeDate" class="eyebrow mb-2"></p>
-          <h2 class="text-[26px] sm:text-[30px] font-bold tracking-[-.03em] text-slate-900 dark:text-white leading-tight">오늘은 무엇을 공부할까요?</h2>
+          <h2 class="text-[26px] sm:text-[30px] font-bold tracking-[-.03em] text-slate-900 dark:text-white leading-tight" style="text-wrap:balance"><span class="text-indigo-600 dark:text-cyan-300">하루 5분,</span> 오늘의 학습을 새겨보세요</h2>
           <p id="homeSummary" class="mt-2 text-sm text-slate-500 dark:text-slate-400"></p>
         </div>
         <button onclick="navTo('view-search')" class="flex items-center gap-2.5 w-full sm:w-72 px-4 h-11 rounded-xl bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-white/10 text-sm text-slate-400 hover:border-indigo-400 dark:hover:border-cyan-300/60 transition text-left">🔍 <span>이론 · 문제 · 면접 검색</span></button>
       </section>
 
-      <!-- 학습 방식 -->
-      <section id="homeModes" class="stagger grid grid-cols-2 lg:grid-cols-4 gap-3"></section>
-
-      <div class="grid lg:grid-cols-[minmax(0,1fr)_340px] gap-6 items-start">
-        <!-- 과목별 학습 -->
-        <section>
+      <!-- 과목별 학습 + 웨이퍼 -->
+      <div class="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] gap-6 items-stretch">
+        <section class="flex flex-col">
           <div class="flex items-end justify-between mb-3"><h3 class="text-lg font-bold text-slate-900 dark:text-white">과목별 학습</h3><button onclick="navTo('view-stats')" class="text-sm font-semibold text-indigo-600 dark:text-cyan-300 hover:underline">전체 통계 →</button></div>
-          <div id="homeSubjects" class="rounded-2xl bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-white/10 divide-y divide-slate-100 dark:divide-white/5 overflow-hidden"></div>
+          <div id="homeSubjects" class="flex-1 flex flex-col rounded-2xl bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-white/10 divide-y divide-slate-100 dark:divide-white/5 overflow-hidden"></div>
         </section>
-        <!-- 오늘의 학습 -->
-        <aside class="flex flex-col gap-4">
-          <div id="waferPanel"></div>
-          <div id="homeReview"></div>
-        </aside>
+        <section class="flex flex-col">
+          <div class="mb-3"><h3 class="text-lg font-bold text-slate-900 dark:text-white">웨이퍼 키우기</h3></div>
+          <div id="waferPanel" class="flex-1"></div>
+        </section>
       </div>
+
+      <!-- 학습 메뉴 -->
+      <section>
+        <div class="flex items-end justify-between mb-4"><h3 class="text-lg font-bold text-slate-900 dark:text-white">원하는 방식으로 학습하기</h3><span class="text-xs text-slate-400 dark:text-slate-500">가입 없이 바로 시작</span></div>
+        <div class="stagger grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <button onclick="navTo('view-learning', {level:'home'})" class="feature-card text-left bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-white/10 rounded-2xl p-5 shadow-sm">
+            <span class="w-11 h-11 rounded-xl bg-indigo-50 text-indigo-600 dark:text-indigo-300 dark:bg-[#0f2a2e] border border-indigo-100 dark:border-teal-900/60 flex items-center justify-center mb-4 text-teal-600 dark:text-teal-300 "><svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z"/></svg></span>
+            <h4 class="font-bold text-slate-900 dark:text-white">이론 백과사전</h4><p class="text-sm text-slate-500 dark:text-slate-400 mt-1">소자 · 8대 공정 · 첨단 기술을 폴더별로 정리</p>
+            <span class="inline-block mt-4 text-sm font-bold text-indigo-700 dark:text-[#67e8f9]">이론 보기 →</span></button>
+          <button onclick="openSetup('quiz')" class="feature-card relative text-left bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-white/10 rounded-2xl p-5 shadow-sm">
+            <span class="absolute top-4 right-4 text-[10px] font-bold bg-indigo-100 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 px-2 py-0.5 rounded-full">추천</span>
+            <span class="w-11 h-11 rounded-xl bg-indigo-50 text-indigo-600 dark:text-indigo-300 dark:bg-indigo-500/10 border border-indigo-100 dark:border-indigo-500/20 flex items-center justify-center mb-4 text-indigo-600 dark:text-indigo-300 "><svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h3"/></svg></span>
+            <h4 class="font-bold text-slate-900 dark:text-white">문제 풀이</h4><p class="text-sm text-slate-500 dark:text-slate-400 mt-1">과목과 문항 수를 골라 한 문제씩 즉시 채점</p>
+            <span class="inline-block mt-4 text-sm font-bold text-indigo-700 dark:text-indigo-300">시작하기 →</span></button>
+          <button onclick="openSetup('quiz', true)" class="feature-card text-left bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-white/10 rounded-2xl p-5 shadow-sm">
+            <span class="w-11 h-11 rounded-xl bg-amber-50 text-amber-600 dark:text-amber-300 dark:bg-amber-500/10 border border-amber-100 dark:border-amber-500/20 flex items-center justify-center mb-4 text-amber-600 dark:text-amber-300 "><svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/></svg></span>
+            <h4 class="font-bold text-slate-900 dark:text-white">실전 모의고사</h4><p class="text-sm text-slate-500 dark:text-slate-400 mt-1">문항당 90초 타이머 · 마지막에 한꺼번에 채점</p>
+            <span class="inline-block mt-4 text-sm font-bold text-amber-700 dark:text-amber-400">응시하기 →</span></button>
+          <button onclick="openSetup('interview')" class="feature-card text-left bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-white/10 rounded-2xl p-5 shadow-sm">
+            <span class="w-11 h-11 rounded-xl bg-rose-50 text-rose-600 dark:text-rose-300 dark:bg-rose-500/10 border border-rose-100 dark:border-rose-500/20 flex items-center justify-center mb-4 text-rose-600 dark:text-rose-300 "><svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.5 7.2L4 20l1.1-4.2A8 8 0 1 1 21 12z"/><path d="M8.5 11h7M8.5 14h4"/></svg></span>
+            <h4 class="font-bold text-slate-900 dark:text-white">실무 면접 대비</h4><p class="text-sm text-slate-500 dark:text-slate-400 mt-1">핵심 키워드와 모범 답안으로 말하기 연습</p>
+            <span class="inline-block mt-4 text-sm font-bold text-rose-700 dark:text-rose-400">연습하기 →</span></button>
+          <button onclick="navTo('view-note')" class="feature-card text-left bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-white/10 rounded-2xl p-5 shadow-sm">
+            <span class="w-11 h-11 rounded-xl bg-orange-50 text-orange-600 dark:text-orange-300 dark:bg-orange-500/10 border border-orange-100 dark:border-orange-500/20 flex items-center justify-center mb-4 text-orange-600 dark:text-orange-300 "><svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H6z"/><path d="M6 3v18M10 8h5M10 12h5"/></svg></span>
+            <h4 class="font-bold text-slate-900 dark:text-white">오답 노트</h4><p id="homeNoteDesc" class="text-sm text-slate-500 dark:text-slate-400 mt-1">틀린 문제는 자동으로 모이고 메모도 남길 수 있어요</p>
+            <span class="inline-block mt-4 text-sm font-bold text-orange-700 dark:text-orange-400">복습하기 →</span></button>
+          <button onclick="navTo('view-stats')" class="feature-card text-left bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-white/10 rounded-2xl p-5 shadow-sm">
+            <span class="w-11 h-11 rounded-xl bg-sky-50 text-sky-600 dark:text-sky-300 dark:bg-sky-500/10 border border-sky-100 dark:border-sky-500/20 flex items-center justify-center mb-4 text-sky-600 dark:text-sky-300 "><svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span>
+            <h4 class="font-bold text-slate-900 dark:text-white">학습 통계 · 약점</h4><p class="text-sm text-slate-500 dark:text-slate-400 mt-1">과목별 정답률과 약한 주제를 한눈에</p>
+            <span class="inline-block mt-4 text-sm font-bold text-sky-700 dark:text-sky-400">분석 보기 →</span></button>
+        </div>
+      </section>
 
     </div>
 
@@ -1095,18 +1125,20 @@
         : ready ? `<button onclick="attendToday()" class="w-full pbtn font-bold py-3 rounded-xl shadow-lg hover:opacity-90 transition">✨ 오늘의 회로 새기기</button>`
         : `<button disabled class="w-full font-bold py-3 rounded-xl bg-slate-100 text-slate-400 dark:bg-white/10 cursor-not-allowed">학습 완료 후 출석 기록하기 (${pts}/${DAILY_GOAL})</button>`;
       const next = info.nextAt ? `${info.nextIn}일 후 · ${info.nextName}` : (info.d >= 30 ? '다음 출석에 새 웨이퍼 개방' : '');
-      panel.innerHTML = `<div class="rounded-2xl bg-white/80 border border-slate-200 shadow-sm dark:shadow-none dark:bg-white/[.04] dark:border-white/10 p-5 sm:p-6 backdrop-blur">
+      panel.innerHTML = `<div class="rounded-2xl bg-white/80 border border-slate-200 shadow-sm dark:shadow-none dark:bg-white/[.04] dark:border-white/10 p-5 sm:p-6 backdrop-blur h-full flex flex-col">
         <div class="flex justify-between items-start gap-3">
           <div><p class="font-mono text-[10px] tracking-[.22em] text-indigo-500 dark:text-cyan-200/70 font-bold">CURRENT WAFER${info.cycle ? ' #' + (info.cycle + 1) : ''}</p><p class="text-sm font-bold mt-1">PATTERN LEVEL ${pad2(info.level)} <span class="text-slate-400 font-medium">· ${info.name[1]}</span></p></div>
           <div class="text-right shrink-0"><span id="waferDays" class="font-display text-3xl font-bold">${info.d}</span><span class="text-slate-400 font-bold"> / 30</span><p class="text-[10px] text-slate-400">출석 누적 일수</p></div>
         </div>
-        <div class="relative mx-auto my-3 w-full max-w-[230px] aspect-square">${svg}</div>
-        <p id="waferStep" class="text-center text-xs font-mono h-4 text-indigo-600 dark:text-cyan-200">${escH(waferMsg)}</p>
+        <div class="wf-body flex-1">
+        <div class="wf-svg relative mx-auto my-3 w-full max-w-[230px] aspect-square">${svg}</div>
+        <div class="wf-info">
+        <p id="waferStep" class="wf-step text-center text-xs font-mono h-4 text-indigo-600 dark:text-cyan-200">${escH(waferMsg)}</p>
         <div class="mt-3 flex justify-between text-[11px] text-slate-400"><span class="font-mono tracking-widest font-bold">NEXT UPGRADE</span><span>${next}</span></div>
         <div class="mt-2 mb-4"><div class="flex justify-between text-[11px] text-slate-600 dark:text-slate-300 mb-1"><span>오늘의 학습</span><span>${pts} / ${DAILY_GOAL}</span></div><div class="h-1.5 rounded-full bg-slate-200 dark:bg-white/10 overflow-hidden"><div class="h-full rounded-full pbtn" style="width:${pts / DAILY_GOAL * 100}%"></div></div>
           <p class="text-[10px] text-slate-500 mt-1.5">문제 1개 +1 · 면접 문항 확인 +1 · 이론 1개 읽기 +2</p></div>
         ${btn}
-        <div class="mt-3 flex items-center justify-between text-[10px] text-slate-400"><span class="flex items-center gap-2"><i class="w-2 h-2 rounded-full inline-block" style="background:#22d3ee"></i>기초 <i class="w-2 h-2 rounded-full inline-block ml-1" style="background:#a78bfa"></i>공정 <i class="w-2 h-2 rounded-full inline-block ml-1" style="background:#f472b6"></i>차세대</span><span>수집한 웨이퍼 ${info.collected}장</span></div></div>`;
+        <div class="wf-legend mt-3 flex items-center justify-between gap-x-3 text-[10px] text-slate-400"><span class="flex items-center gap-2"><i class="w-2 h-2 rounded-full inline-block" style="background:#22d3ee"></i>기초 <i class="w-2 h-2 rounded-full inline-block ml-1" style="background:#a78bfa"></i>공정 <i class="w-2 h-2 rounded-full inline-block ml-1" style="background:#f472b6"></i>차세대</span><span>수집한 웨이퍼 ${info.collected}장</span></div></div></div></div>`;
       if (animate) runAttendAnimation(cells[info.d - 1], info);
     }
     const tween = (ms, fn) => new Promise(res => { const t0 = performance.now(); const f = (t) => { const p = Math.min(1, (t - t0) / ms); fn(p); p < 1 ? requestAnimationFrame(f) : res(); }; requestAnimationFrame(f); });
@@ -1138,18 +1170,14 @@
       document.querySelectorAll('[data-nav]').forEach(b => b.classList.toggle('active', b.dataset.nav === map[v]));
     }
     function renderHome() {
-      const el = (id) => document.getElementById(id); if (!el('homeModes')) return;
+      const el = (id) => document.getElementById(id); if (!el('homeSubjects')) return;
       const now = new Date(), wd = ['일', '월', '화', '수', '목', '금', '토'][now.getDay()];
       el('homeDate').textContent = `${now.getMonth() + 1}월 ${now.getDate()}일 ${wd}요일`;
       const T = stats.total, pct = T.t ? Math.round(T.r / T.t * 100) : 0, wc = allQuizData.filter(q => wrongNotes[q.id]).length, t = todayData();
-      el('homeSummary').textContent = T.t ? `오늘 ${Math.min(DAILY_GOAL, t.pts)}/${DAILY_GOAL} 포인트 · 누적 ${T.t}문제 · 정답률 ${pct}%${wc ? ` · 복습할 오답 ${wc}문제` : ''}` : '처음이라면 이론을 한 편 읽고, 문제를 몇 개 풀어 보세요.';
-      const mode = (onclick, icon, title, desc, meta, cls) => `<button onclick="${onclick}" class="feature-card text-left bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-white/10 rounded-2xl p-4 sm:p-5 flex flex-col"><span class="w-10 h-10 rounded-xl flex items-center justify-center text-lg mb-3 ${cls}">${icon}</span><h4 class="font-bold text-slate-900 dark:text-white">${title}</h4><p class="text-[13px] text-slate-500 dark:text-slate-400 mt-1 leading-snug flex-1">${desc}</p><span class="mt-3 text-xs font-semibold text-slate-400 dark:text-slate-500">${meta}</span></button>`;
-      el('homeModes').innerHTML =
-        mode("navTo('view-learning',{level:'home'})", '📖', '이론 읽기', '개념을 폴더별로 차근차근', `이론 ${allTheories.length}편`, 'bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-300') +
-        mode("openSetup('quiz')", '📝', '문제 풀이', '과목·문항 수를 골라 바로 채점', `${allQuizData.length}문항`, 'bg-sky-50 text-sky-600 dark:bg-sky-500/10 dark:text-sky-300') +
-        mode("openSetup('quiz', true)", '⏱️', '모의고사', '시간을 재고 한 번에 채점', '문항당 90초', 'bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-300') +
-        mode("openSetup('interview')", '🗣️', '면접 대비', '키워드와 모범 답안으로 연습', `${allInterviewData.length}문항`, 'bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-300');
-      renderHomeSubjects(); renderHomeReview();
+      el('homeSummary').textContent = T.t ? `오늘 ${Math.min(DAILY_GOAL, t.pts)}/${DAILY_GOAL} 포인트 · 누적 ${T.t}문제 · 정답률 ${pct}%${wc ? ` · 복습할 오답 ${wc}문제` : ''}` : '이론 한 편과 문제 몇 개면 충분해요. 어려운 용어도 쉬운 말로 풀어 드려요.';
+      const nd = el('homeNoteDesc'); if (nd && !nd.dataset.def) nd.dataset.def = nd.textContent;
+      if (nd) nd.textContent = wc ? `복습할 오답 ${wc}문제가 기다리고 있어요` : nd.dataset.def;
+      renderHomeSubjects();
       if (!attendBusy) renderWaferPanel(false);
       updateHeaderChip();
     }
@@ -1162,19 +1190,11 @@
         const th = allTheories.filter(t => t.category === cat).length, qn = allQuizData.filter(q => q.category === cat).length, st = stats.cats[cat];
         const p = st && st.t ? Math.round(st.r / st.t * 100) : null;
         const e = escH(cat).replace(/'/g, '&#39;');
-        return `<div class="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
+        return `<div class="flex-1 p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
           <div class="min-w-0 flex-1"><div class="flex items-center gap-2"><h4 class="font-bold text-slate-900 dark:text-white">${escH(cat)}</h4><span class="text-xs text-slate-400">이론 ${th} · 문제 ${qn}</span></div>
             <div class="mt-2.5 flex items-center gap-3"><div class="flex-1 h-1.5 rounded-full bg-slate-100 dark:bg-white/10 overflow-hidden"><div class="h-full rounded-full" style="width:${p === null ? 0 : p}%;background:${p === null ? '#cbd5e1' : col(p)}"></div></div><span class="text-xs font-semibold w-24 text-right ${p === null ? 'text-slate-400' : 'text-slate-600 dark:text-slate-300'}">${p === null ? '아직 안 풀었어요' : `정답률 ${p}%`}</span></div></div>
           <div class="flex gap-2 shrink-0"><button onclick="navTo('view-learning',{level:'category',category:'${e}'})" class="px-4 h-9 rounded-lg text-sm font-semibold border border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/5 text-slate-700 dark:text-slate-200">이론</button><button onclick="startCategory('quiz','${e}')" ${qn ? '' : 'disabled'} class="px-4 h-9 rounded-lg text-sm font-semibold bg-indigo-600 hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed text-white">문제 풀기</button></div></div>`;
       }).join('') || '<div class="p-6 text-sm text-slate-400 text-center">콘텐츠를 불러오는 중이에요.</div>';
-    }
-    function renderHomeReview() {
-      const box = document.getElementById('homeReview'); if (!box) return;
-      const wc = allQuizData.filter(q => wrongNotes[q.id]).length, weak = weakTopics().slice(0, 3);
-      const row = 'w-full flex items-center justify-between gap-3 px-4 py-3 text-left hover:bg-slate-50 dark:hover:bg-white/5 transition';
-      box.innerHTML = `<div class="bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-white/10 rounded-2xl overflow-hidden divide-y divide-slate-100 dark:divide-white/5">
-        <button onclick="navTo('view-note')" class="${row}"><span><span class="block text-sm font-bold text-slate-900 dark:text-white">오답 노트</span><span class="text-xs text-slate-500 dark:text-slate-400">${wc ? `복습할 문제 ${wc}개` : '틀린 문제가 자동으로 모여요'}</span></span><span class="text-slate-300">›</span></button>
-        <button onclick="${weak.length ? 'practiceWeak()' : "navTo('view-stats')"}" class="${row}"><span><span class="block text-sm font-bold text-slate-900 dark:text-white">${weak.length ? '약점 주제 집중 연습' : '학습 통계'}</span><span class="text-xs text-slate-500 dark:text-slate-400">${weak.length ? weak.map(w => escH(w.topic)).join(' · ') : '과목별 정답률과 약한 주제'}</span></span><span class="text-slate-300">›</span></button></div>`;
     }
 
     // =====================================================
