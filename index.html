@@ -252,7 +252,7 @@
         <div class="stagger grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <button onclick="navTo('view-learning', {level:'home'})" class="feature-card text-left bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-white/10 rounded-2xl p-5 shadow-sm">
             <span class="w-11 h-11 rounded-xl bg-indigo-50 text-indigo-600 dark:text-indigo-300 dark:bg-[#0f2a2e] border border-indigo-100 dark:border-teal-900/60 flex items-center justify-center mb-4 text-teal-600 dark:text-teal-300 "><svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z"/></svg></span>
-            <h4 class="font-bold text-slate-900 dark:text-white">이론 백과사전</h4><p class="text-sm text-slate-500 dark:text-slate-400 mt-1">소자 · 8대 공정 · 첨단 기술을 폴더별로 정리</p>
+            <h4 class="font-bold text-slate-900 dark:text-white">이론 백과사전</h4><p class="text-sm text-slate-500 dark:text-slate-400 mt-1">기초 · 소자 · 8대 공정 · 첨단 기술을 폴더별로 정리</p>
             <span class="inline-block mt-4 text-sm font-bold text-indigo-700 dark:text-[#67e8f9]">이론 보기 →</span></button>
           <button onclick="openSetup('quiz')" class="feature-card relative text-left bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-white/10 rounded-2xl p-5 shadow-sm">
             <span class="absolute top-4 right-4 text-[10px] font-bold bg-indigo-100 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 px-2 py-0.5 rounded-full">추천</span>
@@ -291,7 +291,7 @@
         <p id="setupEyebrow" class="eyebrow mb-2">PRACTICE</p>
         <h2 id="setupTitle" class="page-title text-slate-900 dark:text-white mb-1">설정</h2>
         <p class="text-sm text-slate-500 dark:text-slate-400 mb-7">과목과 문항 수를 고르면 바로 시작할 수 있어요.</p>
-        <select id="select-subject" class="hidden" onchange="updateSetupHint()"><option value="ALL">전체 과목</option><option value="반도체 기초 이론">반도체 기초 이론</option><option value="반도체 8대 공정">반도체 8대 공정</option><option value="차세대 첨단 기술">차세대 첨단 기술</option></select>
+        <select id="select-subject" class="hidden" onchange="updateSetupHint()"><option value="ALL">전체 과목</option><option value="반도체 기초 이론">반도체 기초 이론</option><option value="반도체 소자">반도체 소자</option><option value="반도체 8대 공정">반도체 8대 공정</option><option value="차세대 첨단 기술">차세대 첨단 기술</option></select>
         <select id="select-count" class="hidden" onchange="updateSetupHint()"></select>
         <p class="eyebrow mb-3" style="color:#94a3b8">01 · 과목</p>
         <div id="subjectChips" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-7"></div>
@@ -480,10 +480,11 @@
     function saveWrong() { try { localStorage.setItem('semiCbtWrong', JSON.stringify(wrongNotes)); } catch (e) {} }
     const escH = (v) => String(v == null ? '' : v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     
-    const FIXED_CATEGORIES = ["반도체 기초 이론", "반도체 8대 공정", "차세대 첨단 기술", "기타"];
+    const FIXED_CATEGORIES = ["반도체 기초 이론", "반도체 소자", "반도체 8대 공정", "차세대 첨단 기술", "기타"];
     // 📁 백과사전 폴더 구조 (문서가 없어도 항상 보임 / 새 이론은 category·subject 가 일치하는 폴더에 들어감)
     const CATEGORY_TREE = {
-      "반도체 기초 이론": ["반도체 물리", "트랜지스터 소자", "메모리 반도체"],
+      "반도체 기초 이론": ["반도체 물리"],
+      "반도체 소자": ["트랜지스터 소자", "메모리 반도체"],
       "반도체 8대 공정": ["1. 웨이퍼 제조 공정", "2. 산화 공정 (Oxidation)", "3. 포토 공정 (Photo)", "4. 식각 공정 (Etching)", "5. 박막 증착 공정 (Deposition)", "6. 금속 배선 공정 (Metallization)", "7. EDS 공정 (Testing)", "8. 패키징 공정 (Packaging)"],
       "차세대 첨단 기술": ["차세대 소자 기술", "어드밴스드 패키징"]
     };
@@ -794,7 +795,7 @@
       const data = currentMode === 'quiz' ? allQuizData : allInterviewData;
       return data.filter(q => sub === "ALL" || (q.category && q.category.includes(sub)));
     }
-    const SUBJECT_CHIPS = [['ALL', '전체 과목', '모든 분야를 섞어서'], ['반도체 기초 이론', '기초 이론', '소자 · 물리 · 메모리'], ['반도체 8대 공정', '8대 공정', '웨이퍼부터 패키징까지'], ['차세대 첨단 기술', '첨단 기술', '차세대 소자 · 패키징']];
+    const SUBJECT_CHIPS = [['ALL', '전체 과목', '모든 분야를 섞어서'], ['반도체 기초 이론', '기초 이론', '밴드 · 캐리어 · 접합'], ['반도체 소자', '소자', '트랜지스터 · 메모리'], ['반도체 8대 공정', '8대 공정', '웨이퍼부터 패키징까지'], ['차세대 첨단 기술', '첨단 기술', '차세대 소자 · 패키징']];
     function updateSetupHint() {
       const n = setupPool().length, want = parseInt(document.getElementById('select-count').value || '0'), real = Math.min(n, want);
       const unit = currentMode === 'quiz' ? '문제' : '면접 문항', exam = currentMode === 'quiz' && document.getElementById('examToggle').checked;
@@ -1092,7 +1093,7 @@
       });
       return order;
     }
-    const RING_CATS = [['반도체 기초 이론', '#22d3ee'], ['반도체 8대 공정', '#a78bfa'], ['차세대 첨단 기술', '#f472b6']];
+    const RING_CATS = [['반도체 기초 이론', '#22d3ee'], ['반도체 소자', '#34d399'], ['반도체 8대 공정', '#a78bfa'], ['차세대 첨단 기술', '#f472b6']];
     function arcPath(r, a0, a1) {
       const pt = (a) => [r * Math.cos(a * Math.PI / 180), r * Math.sin(a * Math.PI / 180)];
       const [x0, y0] = pt(a0), [x1, y1] = pt(a1); return `M${x0.toFixed(2)} ${y0.toFixed(2)} A${r} ${r} 0 0 1 ${x1.toFixed(2)} ${y1.toFixed(2)}`;
@@ -1105,7 +1106,7 @@
         <linearGradient id="prism" gradientUnits="userSpaceOnUse" x1="-120" y1="-120" x2="120" y2="120">${dk ? '<stop offset="0" stop-color="#67e8f9"/><stop offset=".5" stop-color="#a78bfa"/><stop offset="1" stop-color="#f472b6"/>' : '<stop offset="0" stop-color="#0891b2"/><stop offset=".5" stop-color="#6d28d9"/><stop offset="1" stop-color="#db2777"/>'}</linearGradient>
         <clipPath id="wClip"><circle r="138"/></clipPath><linearGradient id="sheenG" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity="${dk ? .13 : .7}"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
         <filter id="glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>`;
-      RING_CATS.forEach(([k, c], i) => { const op = (.2 + .8 * ((stats.cats[k] || { t: 0 }).t / max)).toFixed(2); h += `<path d="${arcPath(155, -90 + i * 120 + 5, -90 + (i + 1) * 120 - 5)}" fill="none" stroke="${c}" stroke-opacity="${op}" stroke-width="4" stroke-linecap="round"/>`; });
+      RING_CATS.forEach(([k, c], i) => { const op = (.2 + .8 * ((stats.cats[k] || { t: 0 }).t / max)).toFixed(2); h += `<path d="${arcPath(155, -90 + i * 360 / RING_CATS.length + 5, -90 + (i + 1) * 360 / RING_CATS.length - 5)}" fill="none" stroke="${c}" stroke-opacity="${op}" stroke-width="4" stroke-linecap="round"/>`; });
       h += `<circle r="140" fill="url(#wBase)" stroke="#94a3b8" stroke-opacity=".5"/><circle r="134" fill="none" stroke="${dk ? '#fff' : '#64748b'}" stroke-opacity="${dk ? .06 : .18}"/>`;
       if (lvl >= 2) h += `<circle r="124" fill="none" stroke="url(#prism)" stroke-opacity=".35" stroke-width=".7"/>`;
       if (lvl >= 4) h += `<circle r="140" fill="none" stroke="url(#prism)" stroke-width="2.2" filter="url(#glow)"/>`;
