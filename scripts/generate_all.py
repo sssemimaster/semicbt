@@ -26,8 +26,8 @@ print(f"⚙️ 품질 프리셋: {PRESET} {M}")
 
 topics = [
     {"category": "반도체 기초 이론", "subject": "반도체 물리", "keywords": ["에너지 밴드", "페르미 준위", "캐리어 농도", "PN 접합", "유효 질량"]},
-    {"category": "반도체 기초 이론", "subject": "트랜지스터 소자", "keywords": ["MOSFET", "채널 길이 변조", "단채널 효과 (SCE)", "누설 전류", "문턱 전압"]},
-    {"category": "반도체 기초 이론", "subject": "메모리 반도체", "keywords": ["DRAM 동작 원리", "NAND 플래시 구조", "SRAM 셀 구조", "리프레시 동작"]},
+    {"category": "반도체 소자", "subject": "트랜지스터 소자", "keywords": ["MOSFET", "채널 길이 변조", "단채널 효과 (SCE)", "누설 전류", "문턱 전압"]},
+    {"category": "반도체 소자", "subject": "메모리 반도체", "keywords": ["DRAM 동작 원리", "NAND 플래시 구조", "SRAM 셀 구조", "리프레시 동작"]},
     {"category": "반도체 8대 공정", "subject": "1. 웨이퍼 제조 공정", "keywords": ["초크랄스키 공정", "웨이퍼 연마(CMP)", "에피택시 성장", "실리콘 잉곳"]},
     {"category": "반도체 8대 공정", "subject": "2. 산화 공정 (Oxidation)", "keywords": ["건식 산화", "습식 산화", "Deal-Grove 모델", "게이트 산화막"]},
     {"category": "반도체 8대 공정", "subject": "3. 포토 공정 (Photo)", "keywords": ["노광 공정", "포토레지스트", "해상도와 초점 심도", "EUV 리소그래피"]},
