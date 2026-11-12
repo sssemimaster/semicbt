@@ -728,10 +728,12 @@ def review_drafts(label, drafts, review_system, build_review):
     return out
 
 
-def collect_items(label, want, make_drafts, review_system, build_review, check, max_rounds=5, existing=()):
+def collect_items(label, want, make_drafts, review_system, build_review, check, max_rounds=5, existing=(), repair=None, allow_partial=False):
     """초안 → AI 검수 → 규칙 검사를 거쳐 want 개를 '반드시' 채운다. 탈락해서 모자라면 부족한 만큼 다시 만든다(최대 max_rounds 번).
     끝내 못 채우면 예외를 던진다 → 호출한 쪽은 모자란 채로 저장하지 않는다.
-    existing: 이미 있는 문항(겹치지 않게 만들기 위해 참고만 하고 개수에는 세지 않는다)."""
+    existing: 이미 있는 문항(겹치지 않게 만들기 위해 참고만 하고 개수에는 세지 않는다).
+    repair: (문항, 위반 목록) -> 고친 문항 또는 None. 규칙 위반이 '고칠 수 있는 종류'(예: 답변이 짧음)일 때 버리지 않고 한 번 고쳐 본다.
+    allow_partial: True 면 끝내 want 개를 못 채워도 1개 이상이면 그만큼 돌려준다(이미 있는 문항에 보태는 용도)."""
     final = []
     for rnd in range(max_rounds):
         need = want - len(final)
@@ -768,6 +770,16 @@ def collect_items(label, want, make_drafts, review_system, build_review, check, 
                 else:
                     cand = r.get("final") or it
                 probs = check(cand)
+                if probs and repair:                # 버리기 전에 한 번 고쳐 본다 (예: 짧은 답변 늘리기)
+                    try:
+                        fixed = repair(cand, probs)
+                    except Exception as e:
+                        fixed = None
+                        print(f"   ⚠️ {label} {n + 1} 자동 수정 실패: {e}")
+                    if fixed:
+                        again = check(fixed)
+                        print(f"   🔧 {label} {n + 1} 규칙 위반을 자동 수정: {probs} → {'통과' if not again else again}")
+                        cand, probs = fixed, again
                 if probs:
                     print(f"   🗑️ {label} {n + 1} 제외(검수 후에도 규칙 위반): {probs}")
                     continue
@@ -778,6 +790,9 @@ def collect_items(label, want, make_drafts, review_system, build_review, check, 
             print(f"   ⚠️ {label} AI 검수 실패 → 규칙 검사만 통과한 초안 사용: {e}")
             final += [it for it in drafts if not check(it)]
     if len(final) < want:
+        if allow_partial and final:
+            print(f"   ⚠️ {label}을(를) {len(final)}/{want}개만 채웠어요. 모자란 만큼은 다시 실행하면 이어서 채웁니다.")
+            return final
         raise ValueError(f"검수를 통과한 {label}이(가) {len(final)}개뿐 (목표 {want}개, {max_rounds}번 시도)")
     return final[:want]
 
@@ -786,11 +801,11 @@ QUIZ_PER_THEORY = 3
 INTERVIEW_PER_THEORY = 2
 
 
-def generate_quiz(theory, theory_id, want=QUIZ_PER_THEORY, existing=()):
+def generate_quiz(theory, theory_id, want=QUIZ_PER_THEORY, existing=(), allow_partial=False):
     final = collect_items(
         "문제", want,
         lambda need, have: call_json(M["qa"], QUIZ_SYSTEM, build_quiz_prompt(theory, need, have), 0.8, 8000).get("questions") or [],
-        QUIZ_REVIEW_SYSTEM, lambda drafts: build_quiz_review_prompt(theory, drafts), check_quiz_item, existing=existing)
+        QUIZ_REVIEW_SYSTEM, lambda drafts: build_quiz_review_prompt(theory, drafts), check_quiz_item, existing=existing, allow_partial=allow_partial)
     return [compose_quiz(it, theory_id) for it in final]
 
 
@@ -829,7 +844,7 @@ def build_interview_prompt(theory, n=2, existing=None):
 
 [모범 답변 규칙]
 - 지원자가 말하는 정중한 구어체(합니다/해요 혼용 금지, ~입니다/~합니다 체).
-- 구조: 결론 한 문장 → 이유·원리 2~3문장 → 한계·조건이나 실무 연결 1문장. 전체 5~8문장, 300~550자.
+- 구조: 결론 한 문장 → 이유·원리 2~3문장 → 한계·조건이나 실무 연결 1문장. 전체 5~8문장, 공백 포함 300~550자. 200자 미만이면 탈락하니 반드시 충분히 길게 씁니다(3문장 안팎의 짧은 답은 안 됩니다).
 - 이론에 없는 구체 수치, 지어낸 사례, 해 본 적 없는 경험담("제가 현장에서 ~했을 때")은 금지입니다. 모르는 것을 아는 척하지 않고, 조건부로 신중하게 말합니다.
 - 정확성이 최우선입니다. 단정하기 어려운 부분은 '일반적으로', '조건에 따라'로 범위를 밝힙니다.
 
@@ -840,6 +855,40 @@ def build_interview_prompt(theory, n=2, existing=None):
 
 아래 JSON 형식으로만 답하세요.
 {INTERVIEW_SCHEMA}"""
+
+
+INTERVIEW_MIN_CHARS = 150   # 이 아래면 탈락 (프롬프트는 300자 이상을 요구하지만 모델이 자주 짧게 쓰므로, 바닥선은 낮추고 아래 repair 로 늘린다)
+
+
+def repair_interview_length(theory, it, probs):
+    """모범 답변이 너무 짧다는 위반만 있을 때, 그 답변만 같은 결론·같은 내용으로 늘려 쓴다. 다른 위반이 섞여 있으면 손대지 않는다(None)."""
+    if not probs or any(not p.startswith("모범 답변 길이 부적절") for p in probs):
+        return None
+    ans = str(it.get("interview_answer", "")).strip()
+    if len(ans) >= INTERVIEW_MIN_CHARS or not ans:
+        return None
+    system = "당신은 반도체 면접 코치입니다. 반드시 유효한 JSON 객체 하나만 출력합니다. 수식 기호(백슬래시)는 쓰지 않습니다."
+    user = f"""아래 면접 모범 답변이 너무 짧습니다. 질문, 결론, 핵심 내용은 그대로 두고 {INTERVIEW_MIN_CHARS + 120}~500자(공백 포함)가 되게 늘려 쓰세요.
+
+[늘리는 방법]
+- 구조: 결론 한 문장 → 이유·원리를 인과로 2~3문장 → 한계·조건이나 실무 연결 1문장. ~입니다/~합니다 체.
+- 늘어난 분량은 아래 [이론 글]에 있는 내용에서만 가져옵니다. 이론에 없는 수치, 지어낸 사례, 경험담은 쓰지 않습니다.
+- 같은 말을 되풀이하거나 '매우 중요합니다' 같은 빈말로 채우지 않습니다.
+
+[질문] {it.get("question")}
+[기존 답변] {ans}
+
+[이론 글]
+<<<
+{theory}
+>>>
+
+아래 JSON 으로만 답하세요.
+{{"interview_answer": "늘려 쓴 답변"}}"""
+    new = str(call_json(M["review"], system, user, 0.3, 2000).get("interview_answer", "")).strip()
+    if len(new) <= len(ans):
+        return None
+    return {**it, "interview_answer": new}
 
 
 def check_interview_item(it):
@@ -855,7 +904,7 @@ def check_interview_item(it):
     if len(q) < 10 or len(q) > 160: probs.append("질문 길이가 부적절")
     if q.count("?") > 1: probs.append("한 질문에 여러 가지를 묻고 있음")
     if len(fu) < 8: probs.append("꼬리 질문이 너무 짧음")
-    if not (200 <= len(ans) <= 800): probs.append(f"모범 답변 길이 부적절({len(ans)}자)")
+    if not (INTERVIEW_MIN_CHARS <= len(ans) <= 800): probs.append(f"모범 답변 길이 부적절({len(ans)}자)")
     if len(fua) < 40: probs.append("꼬리 질문 답변이 너무 짧음")
     if cliche_hits(ans + fua) >= 3: probs.append("상투적 표현이 많음")
     if re.search(r"제가 (?:현장|실무|회사|인턴)에서", ans): probs.append("지어낸 경험담")
@@ -899,11 +948,12 @@ def compose_interview(it, theory_id):
     }
 
 
-def generate_interview(theory, theory_id, want=INTERVIEW_PER_THEORY, existing=()):
+def generate_interview(theory, theory_id, want=INTERVIEW_PER_THEORY, existing=(), allow_partial=False):
     final = collect_items(
         "면접", want,
         lambda need, have: call_json(M["qa"], INTERVIEW_SYSTEM, build_interview_prompt(theory, need, have), 0.7, 8000).get("interviews") or [],
-        INTERVIEW_REVIEW_SYSTEM, lambda drafts: build_interview_review_prompt(theory, drafts), check_interview_item, existing=existing)
+        INTERVIEW_REVIEW_SYSTEM, lambda drafts: build_interview_review_prompt(theory, drafts), check_interview_item, existing=existing,
+        repair=lambda it, probs: repair_interview_length(theory, it, probs), allow_partial=allow_partial)
     return [compose_interview(it, theory_id) for it in final]
 
 
