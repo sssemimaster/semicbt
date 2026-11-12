@@ -469,7 +469,7 @@
   },
   {
     "id": "Q-58a92287",
-    "category": "반도체 기초 이론",
+    "category": "반도체 소자",
     "topic": "DRAM의 장점",
     "difficulty": "중급",
     "question": "DRAM의 장점으로 옳은 것은 무엇인가요?",
@@ -484,7 +484,7 @@
   },
   {
     "id": "Q-86df6113",
-    "category": "반도체 기초 이론",
+    "category": "반도체 소자",
     "topic": "DRAM의 리프레시",
     "difficulty": "중급",
     "question": "DRAM에서 주기적인 리프레시가 필요한 이유는 무엇인가요?",
@@ -499,7 +499,7 @@
   },
   {
     "id": "Q-2986471e",
-    "category": "반도체 기초 이론",
+    "category": "반도체 소자",
     "topic": "DRAM의 구성 요소",
     "difficulty": "중급",
     "question": "DRAM은 어떤 두 가지 기본 요소로 구성되어 있습니까?",
@@ -679,7 +679,7 @@
   },
   {
     "id": "Q-1d1cbc7f",
-    "category": "반도체 기초 이론",
+    "category": "반도체 소자",
     "topic": "누설 전류",
     "difficulty": "중급",
     "question": "온도가 상승하면 누설 전류는 어떻게 되나요?",
@@ -694,7 +694,7 @@
   },
   {
     "id": "Q-002",
-    "category": "반도체 기초 이론",
+    "category": "반도체 소자",
     "topic": "누설 전류",
     "difficulty": "중급",
     "question": "누설 전류의 장점 중 하나는 무엇인가요?",
@@ -709,7 +709,7 @@
   },
   {
     "id": "Q-db470193",
-    "category": "반도체 기초 이론",
+    "category": "반도체 소자",
     "topic": "누설 전류",
     "difficulty": "중급",
     "question": "누설 전류가 발생하는 주된 원인은 무엇인가요?",
@@ -724,7 +724,7 @@
   },
   {
     "id": "AUTO-75084",
-    "category": "반도체 기초 이론",
+    "category": "반도체 소자",
     "topic": "메모리 반도체 내부 세부 토픽",
     "difficulty": "중급",
     "question": "NAND 플래시 메모리에서 셀의 상태를 구분하는 방식은 무엇인가요?",
@@ -744,7 +744,7 @@
   },
   {
     "id": "AUTO-75083",
-    "category": "반도체 기초 이론",
+    "category": "반도체 소자",
     "topic": "메모리 반도체 내부 세부 토픽",
     "difficulty": "초급",
     "question": "DRAM의 기본 구조에서 저장된 정보는 어떤 방식으로 유지되나요?",
@@ -954,7 +954,7 @@
   },
   {
     "id": "Q-84053855",
-    "category": "반도체 기초 이론",
+    "category": "반도체 소자",
     "topic": "메모리 반도체",
     "difficulty": "고급",
     "question": "SRAM과 DRAM의 차이점 중 가장 중요한 것은 무엇인가?",
@@ -969,7 +969,7 @@
   },
   {
     "id": "Q-3a130854",
-    "category": "반도체 기초 이론",
+    "category": "반도체 소자",
     "topic": "메모리 반도체",
     "difficulty": "중급",
     "question": "플래시 메모리에서 데이터 저장 방식은 무엇인가?",
@@ -984,7 +984,7 @@
   },
   {
     "id": "Q-cabd2b37",
-    "category": "반도체 기초 이론",
+    "category": "반도체 소자",
     "topic": "메모리 반도체",
     "difficulty": "초급",
     "question": "DRAM의 기본 동작 원리는 무엇인가?",
@@ -1074,7 +1074,7 @@
   },
   {
     "id": "Q-ea175bfd",
-    "category": "반도체 기초 이론",
+    "category": "반도체 소자",
     "topic": "트랜지스터 소자",
     "difficulty": "고급",
     "question": "MOSFET(금속 산화물 반도체 전계 효과 트랜지스터)의 게이트 전압이 인가되었을 때의 동작 원리는 무엇인가?",
@@ -1089,7 +1089,7 @@
   },
   {
     "id": "Q-a88fe6c6",
-    "category": "반도체 기초 이론",
+    "category": "반도체 소자",
     "topic": "트랜지스터 소자",
     "difficulty": "중급",
     "question": "BJT(바이폴라 접합 트랜지스터)의 작동 원리는 무엇인가?",
@@ -1104,7 +1104,7 @@
   },
   {
     "id": "Q-48f8ea69",
-    "category": "반도체 기초 이론",
+    "category": "반도체 소자",
     "topic": "트랜지스터 소자",
     "difficulty": "초급",
     "question": "트랜지스터의 기본 구성 요소는 무엇인가?",
@@ -1209,7 +1209,7 @@
   },
   {
     "id": "Q-620d91cd",
-    "category": "반도체 기초 이론",
+    "category": "반도체 소자",
     "topic": "메모리 반도체",
     "difficulty": "중급",
     "question": "NAND 플래시 메모리의 구조적 특징은 무엇인가?",
@@ -1224,7 +1224,7 @@
   },
   {
     "id": "Q-18ba39c5",
-    "category": "반도체 기초 이론",
+    "category": "반도체 소자",
     "topic": "메모리 반도체",
     "difficulty": "초급",
     "question": "DRAM의 주요 기능은 무엇인가?",
