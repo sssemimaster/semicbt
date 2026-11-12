@@ -672,7 +672,7 @@ html.dark .cs-frame{
 <p>EUV 리소그래피는 고도로 집중된 극자외선 빛을 사용하여 감광재(포토레지스트)에 패턴을 형성한다. 이 과정은 다음과 같이 진행된다:</p>
 <ol>
 <li><strong>광원</strong>: 플라즈마를 이용해 EUV 빛을 생성.</li>
-<li><strong>광학 시스템</strong>: EUV 빛을 렌즈를 통해 조정하여 웨이퍼에 전사.</li>
+<li><strong>광학 시스템</strong>: EUV 빛을 반사 거울로 모아 조정하여 웨이퍼에 전사.</li>
 <li><strong>패턴 형성</strong>: 감광재에 EUV 빛이 노출되어 화학적 변화 발생.</li>
 </ol>
 <p>이러한 방식으로, EUV 리소그래피는 미세한 회로를 정밀하게 형성할 수 있다. </p>
@@ -682,7 +682,7 @@ html.dark .cs-frame{
 
 <p>EUV 리소그래피는 고에너지 극자외선 빛을 사용하여 감광재에 패턴을 형성하는 과정으로 이루어진다. 이 과정은 다음과 같은 단계로 진행된다:</p>
 <ol>
-<li><strong>EUV 광원</strong>: 고온 플라즈마에서 발생한 EUV 빛을 생성. 이때, 주로 <strong>레이저</strong>를 사용하여 주입된 가스를 플라즈마 상태로 만들어 EUV를 방출한다.</li>
+<li><strong>EUV 광원</strong>: 고온 플라즈마에서 발생한 EUV 빛을 생성. 이때, 주로 CO₂ <strong>레이저</strong>로 주석(Sn) 액적을 쳐서 플라즈마 상태로 만들어 EUV를 방출한다. EUV는 공기에도 흡수되므로 장비 내부를 진공으로 유지한다.</li>
 <li><strong>광학 시스템</strong>: EUV 빛은 <strong>거울</strong>을 통해 조정되며, 렌즈 대신 반사형 광학 시스템을 사용하여 웨이퍼에 집중된다.</li>
 <li><strong>패턴 노출</strong>: 웨이퍼에 코팅된 감광재가 EUV 빛에 노출되어 화학적 변화를 일으킴. 이 변화는 감광재의 용해도 차이를 만들어내어 패턴을 형성한다.</li>
 </ol>
@@ -692,7 +692,7 @@ html.dark .cs-frame{
 <p>EUV 리소그래피의 성능을 평가하기 위한 주요 측정 방법은 다음과 같다:</p>
 <ul>
 <li><strong>해상도</strong>: 패턴의 최소 크기를 측정. 일반적으로 <strong>Line/Space</strong>(L/S) 비율로 표현.</li>
-<li><strong>선택비</strong>: 패턴과 비패턴 영역의 감광재 용해도 차이를 측정. 높은 선택비는 우수한 패턴 형성을 의미.</li>
+<li><strong>대비(콘트라스트)</strong>: 노광된 영역과 노광되지 않은 영역의 감광재 용해도 차이를 측정. 대비가 높을수록 패턴 경계가 선명하다.</li>
 <li><strong>노광 균일성</strong>: 웨이퍼 전체에 걸쳐 패턴의 일관성을 평가. 이는 제조 공정의 신뢰성을 높이는 데 중요.</li>
 </ul>
 <p>이러한 측정 결과는 공정의 최적화 및 품질 관리를 위한 기초 자료로 활용된다.</p>
@@ -711,9 +711,9 @@ html.dark .cs-frame{
 <td>미세 회로 형성 가능성</td>
 </tr>
 <tr>
-<td>선택비</td>
-<td>패턴과 비패턴 영역의 용해도 차이</td>
-<td>패턴 정밀도 향상</td>
+<td>대비</td>
+<td>노광/비노광 영역의 용해도 차이</td>
+<td>패턴 경계 선명도 향상</td>
 </tr>
 <tr>
 <td>노광 균일성</td>
@@ -726,10 +726,10 @@ html.dark .cs-frame{
 
 <div class="custom-badge-heading"><span class="custom-badge">🛠️ 실무 이슈</span>EUV 리소그래피의 현업 문제</div>
 
-<p>EUV 리소그래피는 높은 해상도를 제공하지만, <strong>비용</strong>이 매우 높은 것이 문제이다. EUV 장비의 가격은 수십억 달러에 달하며, 유지보수 비용도 만만치 않다. 또한, EUV 공정에서 발생하는 <strong>결함</strong> 문제는 생산성을 저하시킬 수 있다. 이러한 결함은 패턴의 정밀도와 균일성을 떨어뜨리며, 결과적으로 생산 비용을 증가시킨다.</p>
+<p>EUV 리소그래피는 높은 해상도를 제공하지만, <strong>비용</strong>이 매우 높은 것이 문제이다. EUV 장비는 한 대의 가격이 수천억 원 수준에 이르며, 유지보수 비용도 만만치 않다. 또한, EUV 공정에서 발생하는 <strong>결함</strong> 문제는 생산성을 저하시킬 수 있다. 특히 광자 수가 적어 패턴 가장자리가 거칠어지거나 일부가 끊기는 확률적 결함과, 마스크 위의 입자 오염이 문제가 된다. 이러한 결함은 패턴의 정밀도와 균일성을 떨어뜨리며, 결과적으로 생산 비용을 증가시킨다.</p>
 <div class="custom-badge-heading"><span class="custom-badge">✏️ 개선 방법</span>EUV 리소그래피의 발전 방향</div>
 
-<p>EUV 리소그래피의 개선 방향으로는 <strong>광원 기술</strong>의 발전이 있다. 더 강력하고 안정적인 EUV 광원을 개발하면 패턴 형성의 신뢰성을 높일 수 있다. 또한, <strong>감광재</strong>의 특성을 개선하여 선택비를 높이고, 패턴 형성을 더욱 정밀하게 할 수 있다. 마지막으로, 공정의 <strong>자동화</strong>와 <strong>AI 기반 최적화</strong>를 통해 생산성을 높이고 결함률을 줄이는 것이 중요하다.</p>
+<p>EUV 리소그래피의 개선 방향으로는 <strong>광원 기술</strong>의 발전이 있다. 더 강력하고 안정적인 EUV 광원을 개발하면 패턴 형성의 신뢰성을 높일 수 있다. 또한, <strong>감광재</strong>의 특성을 개선하여 대비를 높이고, 패턴 형성을 더욱 정밀하게 할 수 있다. 마지막으로, 공정의 <strong>자동화</strong>와 <strong>AI 기반 최적화</strong>를 통해 생산성을 높이고 결함률을 줄이는 것이 중요하다.</p>
 <div class="custom-highlight-box">[면접 팁] EUV 리소그래피의 비용 문제를 언급할 때, 기술 발전과 비용 절감의 상관관계를 강조하는 것이 좋다.</div>
 
 <div class="custom-badge-heading"><span class="custom-badge">🧠 암기 포인트</span>시험·면접 직전 체크</div>

@@ -661,7 +661,7 @@ html.dark .cs-frame{
       <div class="mb-6"><div class="mb-5"><p class="eyebrow mb-1.5">ENCYCLOPEDIA</p><h2 class="page-title text-slate-900 dark:text-white">이론 백과사전</h2><p class="text-sm text-slate-500 dark:text-slate-400 mt-1.5">소자부터 공정, 첨단 기술까지 폴더별로 정리했어요.</p></div></div>
       <input type="text" id="theorySearchInput" class="hidden" onkeyup="handleTheorySearch()">
       <div id="breadcrumbContainer" class="bg-indigo-50/70 dark:bg-[#0f2233] rounded-xl border border-indigo-100 dark:border-white/10 px-4 py-3 mb-6 flex flex-wrap items-center gap-y-2 text-sm hidden"></div>
-      <div id="learningContainer" class="flex flex-col space-y-4"><div class="bg-white dark:bg-[#0f1729] rounded-2xl shadow-sm border border-slate-200 dark:border-white/10 overflow-hidden"><div class="p-6 md:p-8"><p class="eyebrow mb-2">반도체 8대 공정 <span class="opacity-50">/</span> 6. 금속 배선 공정 (Metallization) <span class="opacity-50">·</span> 약 4분 읽기</p><h1 class="page-title text-slate-900 dark:text-white mb-3">RC 지연</h1><div class="flex flex-wrap gap-1.5 mb-6 pb-6 border-b border-slate-100 dark:border-white/10"><span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#RC지연</span><span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#핵심이론</span></div><div class="custom-table-container theory-body prose prose-slate dark:prose-invert max-w-none"><div class="custom-badge-heading"><span class="custom-badge">📘 핵심 개념</span>RC 지연의 문제점</div>
+      <div id="learningContainer" class="flex flex-col space-y-4"><div class="bg-white dark:bg-[#0f1729] rounded-2xl shadow-sm border border-slate-200 dark:border-white/10 overflow-hidden"><div class="p-6 md:p-8"><p class="eyebrow mb-2">반도체 8대 공정 <span class="opacity-50">/</span> 6. 금속 배선 공정 (Metallization) <span class="opacity-50">·</span> 약 5분 읽기</p><h1 class="page-title text-slate-900 dark:text-white mb-3">RC 지연</h1><div class="flex flex-wrap gap-1.5 mb-6 pb-6 border-b border-slate-100 dark:border-white/10"><span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#RC지연</span><span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#핵심이론</span></div><div class="custom-table-container theory-body prose prose-slate dark:prose-invert max-w-none"><div class="custom-badge-heading"><span class="custom-badge">📘 핵심 개념</span>RC 지연의 문제점</div>
 
 <p>반도체 회로에서 데이터 전송 속도가 느려지면 시스템 전체의 성능이 떨어진다. 이는 주로 <strong>RC 지연</strong> 때문인데, 이 지연이 커지면 신호 전달 시간이 늘어나고, 그 결과로 회로의 작동이 지연된다. 특히, 고속 데이터 전송이 필요한 환경에서는 이러한 지연이 더욱 문제가 된다. RC 지연을 관리하지 않으면 회로의 응답 속도가 느려져 전체 시스템의 효율성이 저하된다.</p>
 <div class="custom-badge-heading"><span class="custom-badge">📘 정의</span>RC 지연의 정의</div>
@@ -670,16 +670,16 @@ html.dark .cs-frame{
 <div class="custom-badge-heading"><span class="custom-badge">📘 핵심 개념</span>회로 성능에 미치는 영향</div>
 
 <p>RC 지연은 회로의 전반적인 성능에 직접적인 영향을 미친다. 신호가 지연되면, 회로의 스위칭 속도가 느려지고, 이는 전체적인 처리 속도를 감소시킨다. 고속 회로에서는 이 지연이 문제의 원인이 되며, 신호의 타이밍이 어긋나거나 데이터 전송이 실패할 수 있다. 따라서, RC 지연을 최소화하는 것이 고성능 반도체 설계에서 중요한 과제가 된다.</p>
-<div class="custom-highlight-box">[면접 팁]</div>
+<div class="custom-highlight-box">[면접 팁] RC 지연은 배선 길이의 제곱에 비례하고, 미세화될수록 트랜지스터 지연보다 배선 지연이 전체 속도를 좌우한다는 점을 함께 설명하면 좋다.</div>
 
 <div class="custom-badge-heading"><span class="custom-badge">✏️ 측정 방법</span>RC 지연의 측정</div>
 
-<p>RC 지연은 반도체 회로에서 신호 전파 속도를 결정하는 중요한 요소이다. 이를 측정하기 위해 <strong>타임 디메인 리플렉토미터</strong>(Time Domain Reflectometer, TDR)와 같은 장비를 사용한다. TDR은 신호를 회로에 주입하고 반사되는 시간을 측정하여 저항과 커패시턴스에 의한 지연을 계산한다. 이 장비는 회로의 특정 지점에서 신호가 얼마나 늦게 도달하는지를 시각적으로 보여 주기 때문에, 지연의 정확한 값을 파악하는 데 유용하다.</p>
-<div class="custom-highlight-box">[실무 코멘트] TDR은 고주파 신호를 사용하므로, 저주파에서 나타나는 지연 특성과 다를 수 있다. 실제 회로 환경에서의 특성을 고려해야 한다.</div>
+<p>RC 지연은 반도체 회로에서 신호 전파 속도를 결정하는 중요한 요소이다. 이를 확인하기 위해 저항과 커패시턴스를 따로 재고 지연을 직접 확인한다. 배선 저항은 테스트용 배선 패턴에 전류를 흘려 4단자(켈빈) 방식으로 재고, 배선 사이의 커패시턴스는 LCR 미터나 C-V 측정으로 구한다. 그리고 링 오실레이터처럼 배선이 포함된 회로의 발진 주파수를 재면 실제 신호 지연이 어느 정도인지 직접 확인할 수 있다.</p>
+<div class="custom-highlight-box">[실무 코멘트] 측정 구조와 실제 회로는 배선 길이와 주변 환경이 다르므로, 측정값을 그대로 쓰지 말고 실제 환경에 맞게 해석해야 한다.</div>
 
 <div class="custom-badge-heading"><span class="custom-badge">🎚️ 변수 영향</span>RC 지연에 영향을 미치는 요인</div>
 
-<p>RC 지연은 저항($R$)과 커패시턴스($C$)에 의해 결정된다. 하지만 이 두 가지 요소는 여러 물리적 변수에 의해 변한다. 예를 들어, <strong>배선 길이</strong>가 길어질수록 저항이 증가하고, 이에 따라 RC 지연도 커진다. 또한, <strong>배선의 폭</strong>이나 <strong>두께</strong>가 얇아지면 저항이 커질 수 있다. 커패시턴스는 배선 간의 거리와 절연층의 두께에 의해 영향을 받는다. 절연층이 얇으면 커패시턴스가 커지고, 결과적으로 RC 지연이 증가한다.</p>
+<p>RC 지연은 저항($R$)과 커패시턴스($C$)에 의해 결정된다. 하지만 이 두 가지 요소는 여러 물리적 변수에 의해 변한다. 예를 들어, <strong>배선 길이</strong>가 길어질수록 저항이 증가하고, 이에 따라 RC 지연도 커진다. 또한, <strong>배선의 폭</strong>이나 <strong>두께</strong>가 얇아지면 단면적이 줄어 저항이 커진다. 커패시턴스는 배선 사이의 간격, 배선이 마주 보는 면적, 절연막의 유전율에 의해 영향을 받는다. 배선 사이 간격이 좁거나 유전율이 높으면 커패시턴스가 커지고, 결과적으로 RC 지연이 증가한다. 또한 저항과 커패시턴스가 모두 배선 길이에 비례하므로, RC 지연은 배선 길이의 제곱에 비례해 커진다.</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -691,27 +691,27 @@ html.dark .cs-frame{
 </thead>
 <tbody>
 <tr>
-<td>배선 길이</td>
+<td>배선 길이 증가</td>
 <td>증가</td>
-<td>-</td>
 <td>증가</td>
+<td>크게 증가(길이의 제곱에 비례)</td>
 </tr>
 <tr>
-<td>배선 폭/두께</td>
+<td>배선 폭·두께 증가</td>
 <td>감소</td>
+<td>간격이 좁아지면 증가</td>
+<td>대체로 감소</td>
+</tr>
+<tr>
+<td>절연막 유전율 감소(low-k)</td>
 <td>-</td>
+<td>감소</td>
 <td>감소</td>
 </tr>
 <tr>
-<td>절연층 두께</td>
+<td>배선 사이 간격 증가</td>
 <td>-</td>
 <td>감소</td>
-<td>감소</td>
-</tr>
-<tr>
-<td>배선 간 거리</td>
-<td>-</td>
-<td>증가</td>
 <td>감소</td>
 </tr>
 </tbody>
@@ -723,18 +723,18 @@ html.dark .cs-frame{
 
 <div class="custom-badge-heading"><span class="custom-badge">🛠️ 실무 이슈</span>RC 지연의 실무 문제</div>
 
-<p>RC 지연은 반도체 회로의 성능을 저하시킬 수 있는 주요 원인 중 하나이다. 특히, 배선의 길이와 폭이 증가하면서 RC 지연은 더 심각한 문제가 된다. 이로 인해 신호 전송 속도가 느려지고, 회로의 동작 주파수 한계가 낮아질 수 있다. 이러한 문제는 고속 동작이 요구되는 반도체 소자에서 더욱 두드러진다. 결과적으로, RC 지연은 반도체 공정에서 회로 설계와 배선 최적화의 중요한 고려 사항이 된다.</p>
+<p>RC 지연은 반도체 회로의 성능을 저하시킬 수 있는 주요 원인 중 하나이다. 특히, 미세화로 배선의 폭이 좁아져 저항이 커지고 배선 사이 간격도 좁아져 커패시턴스가 커지면서 RC 지연은 더 심각한 문제가 된다. 트랜지스터의 지연은 줄어드는 반면 배선 지연은 줄지 않아, 미세 공정에서는 배선 지연이 전체 속도를 좌우한다. 이로 인해 신호 전송 속도가 느려지고, 회로의 동작 주파수 한계가 낮아질 수 있다. 이러한 문제는 고속 동작이 요구되는 반도체 소자에서 더욱 두드러진다. 결과적으로, RC 지연은 반도체 공정에서 회로 설계와 배선 최적화의 중요한 고려 사항이 된다.</p>
 <div class="custom-badge-heading"><span class="custom-badge">✏️ 개선 방법</span>RC 지연 감소를 위한 기술적 접근</div>
 
-<p>RC 지연을 줄이기 위해 다양한 기술적 접근이 필요하다. 첫째, <strong>배선 재료</strong>의 변경을 고려할 수 있다. 구리와 같은 저저항 재료를 사용하면 $R$을 줄일 수 있다. 둘째, <strong>배선 구조</strong>의 최적화가 필요하다. 배선의 두께를 증가시키거나 멀티 레이어 구조를 활용하면 $C$를 줄일 수 있다. 셋째, <strong>신호 무결성</strong>을 높이는 방법으로, 신호 간섭을 줄이는 배치 설계가 중요하다. 이러한 개선은 모두 RC 지연을 효과적으로 줄일 수 있는 방법이다.</p>
-<div class="custom-highlight-box">[면접 팁]</div>
+<p>RC 지연을 줄이기 위해 다양한 기술적 접근이 필요하다. 첫째, <strong>배선 재료</strong>의 변경을 고려할 수 있다. 구리와 같은 저저항 재료를 사용하면 $R$을 줄일 수 있다. 둘째, <strong>절연 재료</strong>를 바꿔 $C$를 줄인다. 층간 절연막에 SiO₂보다 유전율이 낮은 low-k 물질이나 에어갭을 쓰면 배선 사이 커패시턴스가 줄어든다. 셋째, <strong>배선 구조</strong>를 최적화한다. 긴 배선은 두껍고 넓은 상위 금속층에 배치하고 필요하면 중간에 리피터(버퍼)를 넣어 지연을 나눈다. 넷째, <strong>신호 무결성</strong>을 높이는 방법으로, 신호 간섭을 줄이는 배치 설계가 중요하다. 이러한 개선은 모두 RC 지연을 효과적으로 줄일 수 있는 방법이다.</p>
+<div class="custom-highlight-box">[면접 팁] 저항 $R$은 구리 배선으로, 커패시턴스 $C$는 low-k 절연막으로 줄인다는 식으로 R과 C를 나누어 답하면 깔끔하다.</div>
 
 <div class="custom-badge-heading"><span class="custom-badge">🧠 암기 포인트</span>시험·면접 직전 체크</div>
 
 <ul>
-<li>RC 지연은 배선의 길이와 폭에 크게 영향을 받는다.</li>
+<li>RC 지연은 배선 길이(길이의 제곱에 비례)와 배선 단면적에 크게 영향을 받는다.</li>
 <li>구리 사용은 배선 저항($R$)을 줄이는 방법 중 하나이다.</li>
-<li>배선 두께 증가 또는 멀티 레이어 구조는 배선 용량($C$)을 줄인다.</li>
+<li>low-k 절연막과 에어갭은 배선 용량($C$)을 줄인다.</li>
 <li>신호 무결성을 높이는 설계는 RC 지연을 줄이는 데 도움이 된다.</li>
 <li>RC 지연 최적화는 회로 성능 향상에 필수적이다.</li>
 </ul></div></div></div><nav aria-label="같이 보면 좋은 이론" class="mt-2"><p class="text-xs font-bold text-slate-400 dark:text-slate-500 mb-3">같이 보면 좋은 이론</p><ul class="grid gap-2 sm:grid-cols-2"><li><a href="../th-d2cc8f76/" class="block rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0f1729] px-4 py-3 hover:border-indigo-300 dark:hover:border-cyan-400/40 transition"><span class="font-bold text-sm text-slate-900 dark:text-white">플립칩 패키지</span><span class="block text-xs text-slate-500 dark:text-slate-400 mt-0.5">반도체 8대 공정 · 8. 패키징 공정 (Packaging)</span></a></li><li><a href="../th-f360b13a/" class="block rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0f1729] px-4 py-3 hover:border-indigo-300 dark:hover:border-cyan-400/40 transition"><span class="font-bold text-sm text-slate-900 dark:text-white">ALD 공정</span><span class="block text-xs text-slate-500 dark:text-slate-400 mt-0.5">반도체 8대 공정 · 5. 박막 증착 공정 (Deposition)</span></a></li><li><a href="../th-3345b97f/" class="block rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0f1729] px-4 py-3 hover:border-indigo-300 dark:hover:border-cyan-400/40 transition"><span class="font-bold text-sm text-slate-900 dark:text-white">노광 공정</span><span class="block text-xs text-slate-500 dark:text-slate-400 mt-0.5">반도체 8대 공정 · 3. 포토 공정 (Photo)</span></a></li><li><a href="../th-6aca4a19/" class="block rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0f1729] px-4 py-3 hover:border-indigo-300 dark:hover:border-cyan-400/40 transition"><span class="font-bold text-sm text-slate-900 dark:text-white">실리콘 잉곳</span><span class="block text-xs text-slate-500 dark:text-slate-400 mt-0.5">반도체 8대 공정 · 1. 웨이퍼 제조 공정</span></a></li></ul></nav></div>

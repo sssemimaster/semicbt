@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>EDS 테스트 흐름 정리 — 7. EDS 공정 (Testing) | 반도체 새김</title>
-  <meta name="description" content="EDS 테스트는 반도체 제조 공정에서 품질 관리 및 신뢰성 평가에 필수적이다. 이를 통해 제조 과정에서 발생할 수 있는 문제를 조기에 발견하고, 제품의 성능을 보장할 수 있다."><link rel="canonical" href="https://sssemimaster.github.io/semicbt/theory/th-cc0d3a71/"><meta property="og:type" content="article"><meta property="og:site_name" content="반도체 새김"><meta property="og:locale" content="ko_KR"><meta property="og:title" content="EDS 테스트 흐름 정리 — 7. EDS 공정 (Testing) | 반도체 새김"><meta property="og:description" content="EDS 테스트는 반도체 제조 공정에서 품질 관리 및 신뢰성 평가에 필수적이다. 이를 통해 제조 과정에서 발생할 수 있는 문제를 조기에 발견하고, 제품의 성능을 보장할 수 있다."><meta name="twitter:card" content="summary"><meta property="og:url" content="https://sssemimaster.github.io/semicbt/theory/th-cc0d3a71/">
+  <meta name="description" content="패키징은 비용과 시간이 드는 공정이다. 불량 칩을 모르고 그대로 패키징하면 그 비용이 모두 낭비된다. EDS로 불량을 미리 가려내면 양품만 패키징할 수 있다."><link rel="canonical" href="https://sssemimaster.github.io/semicbt/theory/th-cc0d3a71/"><meta property="og:type" content="article"><meta property="og:site_name" content="반도체 새김"><meta property="og:locale" content="ko_KR"><meta property="og:title" content="EDS 테스트 흐름 정리 — 7. EDS 공정 (Testing) | 반도체 새김"><meta property="og:description" content="패키징은 비용과 시간이 드는 공정이다. 불량 칩을 모르고 그대로 패키징하면 그 비용이 모두 낭비된다. EDS로 불량을 미리 가려내면 양품만 패키징할 수 있다."><meta name="twitter:card" content="summary"><meta property="og:url" content="https://sssemimaster.github.io/semicbt/theory/th-cc0d3a71/">
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Sora:wght@500;600;700;800&display=swap">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%230f1729' stroke='%2367e8f9' stroke-width='2'/%3E%3Cpath d='M9 18h5v-5h4v8h5' fill='none' stroke='%23a78bfa' stroke-width='2'/%3E%3C/svg%3E">
@@ -338,7 +338,7 @@ html.dark .cs-frame{
 .cj-n{flex:none;width:1.5rem;height:1.5rem;margin-top:.22rem;border-radius:999px;background:var(--badge-bg);color:var(--badge-fg);font-size:.72rem;font-weight:800;display:flex;align-items:center;justify-content:center}
 #cDetail .custom-highlight-box{margin:0;font-size:1rem;line-height:1.75;border-radius:16px;border-left-width:5px}
 </style>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "EDS 테스트 흐름", "description": "EDS 테스트는 반도체 제조 공정에서 품질 관리 및 신뢰성 평가에 필수적이다. 이를 통해 제조 과정에서 발생할 수 있는 문제를 조기에 발견하고, 제품의 성능을 보장할 수 있다.", "inLanguage": "ko", "articleSection": "반도체 8대 공정", "dateModified": "2026-11-12", "publisher": {"@type": "Organization", "name": "반도체 새김"}, "mainEntityOfPage": "https://sssemimaster.github.io/semicbt/theory/th-cc0d3a71/"}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "반도체 새김", "item": "https://sssemimaster.github.io/semicbt/"}, {"@type": "ListItem", "position": 2, "name": "이론 백과사전", "item": "https://sssemimaster.github.io/semicbt/theory/"}, {"@type": "ListItem", "position": 3, "name": "EDS 테스트 흐름"}]}</script></head>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "EDS 테스트 흐름", "description": "패키징은 비용과 시간이 드는 공정이다. 불량 칩을 모르고 그대로 패키징하면 그 비용이 모두 낭비된다. EDS로 불량을 미리 가려내면 양품만 패키징할 수 있다.", "inLanguage": "ko", "articleSection": "반도체 8대 공정", "dateModified": "2026-11-12", "publisher": {"@type": "Organization", "name": "반도체 새김"}, "mainEntityOfPage": "https://sssemimaster.github.io/semicbt/theory/th-cc0d3a71/"}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "반도체 새김", "item": "https://sssemimaster.github.io/semicbt/"}, {"@type": "ListItem", "position": 2, "name": "이론 백과사전", "item": "https://sssemimaster.github.io/semicbt/theory/"}, {"@type": "ListItem", "position": 3, "name": "EDS 테스트 흐름"}]}</script></head>
 <body class="bg-slate-50 dark:bg-[#0a1020] text-slate-800 dark:text-slate-200 antialiased min-h-screen flex flex-col relative transition-colors duration-200">
 
   <!-- 좌측 슬라이드 사이드바 -->
@@ -661,129 +661,121 @@ html.dark .cs-frame{
       <div class="mb-6"><div class="mb-5"><p class="eyebrow mb-1.5">ENCYCLOPEDIA</p><h2 class="page-title text-slate-900 dark:text-white">이론 백과사전</h2><p class="text-sm text-slate-500 dark:text-slate-400 mt-1.5">소자부터 공정, 첨단 기술까지 폴더별로 정리했어요.</p></div></div>
       <input type="text" id="theorySearchInput" class="hidden" onkeyup="handleTheorySearch()">
       <div id="breadcrumbContainer" class="bg-indigo-50/70 dark:bg-[#0f2233] rounded-xl border border-indigo-100 dark:border-white/10 px-4 py-3 mb-6 flex flex-wrap items-center gap-y-2 text-sm hidden"></div>
-      <div id="learningContainer" class="flex flex-col space-y-4"><div class="bg-white dark:bg-[#0f1729] rounded-2xl shadow-sm border border-slate-200 dark:border-white/10 overflow-hidden"><div class="p-6 md:p-8"><p class="eyebrow mb-2">반도체 8대 공정 <span class="opacity-50">/</span> 7. EDS 공정 (Testing) <span class="opacity-50">·</span> 약 5분 읽기</p><h1 class="page-title text-slate-900 dark:text-white mb-3">EDS 테스트 흐름</h1><div class="flex flex-wrap gap-1.5 mb-6 pb-6 border-b border-slate-100 dark:border-white/10"><span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#EDS테스트흐름</span><span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#핵심이론</span></div><div class="custom-table-container theory-body prose prose-slate dark:prose-invert max-w-none"><div class="custom-badge-heading"><span class="custom-badge">📘 정의</span>EDS 테스트란?</div>
+      <div id="learningContainer" class="flex flex-col space-y-4"><div class="bg-white dark:bg-[#0f1729] rounded-2xl shadow-sm border border-slate-200 dark:border-white/10 overflow-hidden"><div class="p-6 md:p-8"><p class="eyebrow mb-2">반도체 8대 공정 <span class="opacity-50">/</span> 7. EDS 공정 (Testing) <span class="opacity-50">·</span> 약 4분 읽기</p><h1 class="page-title text-slate-900 dark:text-white mb-3">EDS 테스트 흐름</h1><div class="flex flex-wrap gap-1.5 mb-6 pb-6 border-b border-slate-100 dark:border-white/10"><span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#EDS테스트흐름</span><span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#핵심이론</span></div><div class="custom-table-container theory-body prose prose-slate dark:prose-invert max-w-none"><div class="custom-badge-heading"><span class="custom-badge">📘 정의</span>EDS 테스트란?</div>
 
-<p><strong>EDS(전자기계적 분광법, Energy Dispersive Spectroscopy)</strong> 테스트는 반도체 소자의 <strong>재료 분석</strong>을 위한 기술이다. 주로 <strong>원소 조성</strong>을 파악하고, 결함이나 불순물의 존재를 확인하는 데 사용된다.</p>
+<p><strong>EDS</strong>(Electrical Die Sorting)는 웨이퍼 제조가 끝난 뒤, 웨이퍼 위에 만들어진 칩(다이)을 하나씩 전기적으로 검사해 <strong>양품과 불량으로 나누는 공정</strong>이다. 8대 공정에서 웨이퍼 가공(전공정)과 패키징(후공정) 사이에 있다. 이름이 비슷한 EDS(Energy Dispersive Spectroscopy, 일명 EDX)는 전자 현미경에서 원소 성분을 분석하는 재료 분석 기법으로, 이 공정과는 전혀 다르다.</p>
 <div class="custom-badge-heading"><span class="custom-badge">📘 핵심 개념</span>EDS 테스트의 필요성</div>
 
-<p>EDS 테스트는 반도체 제조 공정에서 <strong>품질 관리</strong> 및 <strong>신뢰성 평가</strong>에 필수적이다. 이를 통해 제조 과정에서 발생할 수 있는 문제를 조기에 발견하고, 제품의 성능을 보장할 수 있다. 또한, 새로운 소재 개발 시에도 EDS 테스트는 중요한 역할을 한다.</p>
+<p>패키징은 비용과 시간이 드는 공정이다. 불량 칩을 모르고 그대로 패키징하면 그 비용이 모두 낭비된다. EDS로 불량을 미리 가려내면 양품만 패키징할 수 있다. 또한 EDS 결과는 수율의 출발점이 되어, 어떤 공정에서 문제가 생겼는지 추적하는 데 쓰인다.</p>
 <div class="custom-badge-heading"><span class="custom-badge">⚙️ 원리</span>EDS 테스트의 동작 원리</div>
 
-<p>EDS 테스트는 다음과 같은 단계로 진행된다:</p>
+<p>EDS 장비는 크게 <strong>프로버</strong>(웨이퍼를 이동시키는 장비), <strong>프로브 카드</strong>(칩의 패드에 닿는 가는 탐침이 달린 카드), <strong>테스터</strong>(신호를 넣고 측정하는 장비)로 이루어진다.</p>
 <ol>
-<li><strong>전자빔 조사</strong>: 전자 현미경을 통해 샘플에 고에너지 전자빔을 조사한다.</li>
-<li><strong>X선 방출</strong>: 전자빔이 샘플의 원자와 상호작용하여 X선을 방출한다.</li>
-<li><strong>스펙트럼 분석</strong>: 방출된 X선을 분석하여 각 원소의 <strong>특징적인 피크</strong>를 확인한다.</li>
-<li><strong>원소 조성 결정</strong>: 피크의 위치와 강도를 통해 샘플 내 원소의 조성을 정량적으로 분석한다.</li>
+<li><strong>웨이퍼 장착</strong>: 프로버가 웨이퍼를 척 위에 올리고 칩 하나의 위치에 프로브 카드를 정렬한다.</li>
+<li><strong>탐침 접촉</strong>: 탐침이 칩의 패드에 닿아 전기적으로 연결된다.</li>
+<li><strong>신호 인가와 측정</strong>: 테스터가 전원과 신호를 넣고 칩의 출력을 측정한다.</li>
+<li><strong>판정과 이동</strong>: 결과가 기준을 통과하면 양품, 아니면 불량으로 기록하고 다음 칩으로 이동한다.</li>
 </ol>
-<p>이 과정은 원소의 전자 구조와 관련이 있으며, 각 원소는 고유한 X선 에너지를 가지므로 이를 통해 샘플의 성분을 식별할 수 있다. </p>
-<div class="custom-highlight-box">[면접 팁] EDS 테스트의 원리와 필요성을 명확히 이해하고, 실제 사례를 통해 설명할 수 있으면 좋다.</div>
+<p>이 결과는 칩 위치별로 모아 <strong>웨이퍼 맵</strong>으로 저장한다. 불량으로 표시된 칩은 패키징 단계에서 제외된다.</p>
+<div class="custom-highlight-box">[면접 팁] EDS는 '프로브 카드로 칩에 직접 접촉해 전기적으로 검사하고, 결과를 웨이퍼 맵에 기록하는 공정'이라고 한 문장으로 정리해 두면 좋다.</div>
 
-<div class="custom-badge-heading"><span class="custom-badge">🔬 메커니즘</span>EDS 테스트의 세부 메커니즘</div>
+<div class="custom-badge-heading"><span class="custom-badge">🔬 메커니즘</span>EDS 테스트의 세부 흐름</div>
 
-<p>EDS 테스트는 전자빔과 샘플 간의 상호작용을 통해 원소 조성을 분석하는 과정이다. 전자빔이 샘플의 원자에 충돌하면, 원자 내 전자가 탈출하면서 X선이 방출된다. 이 X선은 각 원소에 따라 고유한 에너지를 가지며, 이를 통해 원소를 식별할 수 있다.</p>
+<p>일반적인 EDS 흐름은 다음과 같다.</p>
 <ol>
-<li><strong>전자빔 에너지</strong>: 전자빔의 에너지가 높을수록 더 깊은 층까지 조사 가능.</li>
-<li><strong>X선 방출</strong>: 원자 내 전자 구조에 따라 방출되는 X선의 에너지가 결정됨.</li>
-<li><strong>스펙트럼 해석</strong>: 방출된 X선의 스펙트럼을 분석하여 원소의 조성을 정량적으로 평가.</li>
+<li><strong>DC(직류) 테스트</strong>: 단락·개방, 누설 전류, 동작 전압 같은 기본 전기적 특성을 확인한다.</li>
+<li><strong>기능·AC 테스트</strong>: 실제 동작 패턴을 넣어 칩이 올바르게 동작하는지, 속도 규격을 만족하는지 확인한다.</li>
+<li><strong>리페어</strong>(주로 메모리): 불량 셀을 미리 만들어 둔 여분(redundancy) 셀로 바꾸어 칩을 양품으로 살린다.</li>
+<li><strong>최종 분류</strong>: 양품을 등급별로 나누고 웨이퍼 맵을 확정한다.</li>
 </ol>
+<p>필요하면 웨이퍼 상태에서 번인(가혹 조건 시험)을 먼저 해서 초기에 고장 나는 칩을 걸러내기도 한다. 시험 온도는 상온뿐 아니라 고온·저온으로 바꾸어 칩의 동작 여유를 확인한다.</p>
 <div class="custom-badge-heading"><span class="custom-badge">🎚️ 변수 영향</span>EDS 테스트의 변수와 결과</div>
 
-<p>EDS 테스트의 결과는 여러 변수에 의해 영향을 받는다. 다음 표는 주요 변수와 그에 따른 결과를 정리한 것이다.</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
-<th><strong>변수</strong></th>
-<th><strong>결과</strong></th>
+<th>변수</th>
+<th>결과</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>전자빔 에너지</td>
-<td>더 높은 에너지 → 더 깊은 분석 가능</td>
+<td>프로브 카드 상태(탐침 마모·오염)</td>
+<td>접촉 저항이 커져 정상 칩이 불량으로 판정될 수 있다.</td>
 </tr>
 <tr>
-<td>샘플 두께</td>
-<td>두꺼운 샘플 → X선 흡수 증가, 신호 감소</td>
+<td>시험 온도</td>
+<td>온도가 높을수록 누설 전류가 늘어 불량 판정이 늘 수 있다.</td>
 </tr>
 <tr>
-<td>원소 농도</td>
-<td>농도가 높을수록 피크 강도 증가</td>
+<td>테스트 시간·항목 수</td>
+<td>많을수록 검출률은 오르지만 비용이 늘어난다.</td>
 </tr>
 <tr>
-<td>검출기 감도</td>
-<td>감도가 높을수록 미세한 원소도 검출 가능</td>
+<td>판정 기준(규격 한계)</td>
+<td>엄격할수록 수율이 낮아지지만 출하 품질은 높아진다.</td>
 </tr>
 </tbody>
 </table></div>
-<div class="custom-highlight-box">[실무 코멘트] EDS 테스트의 변수들은 실험 조건에 따라 달라질 수 있으므로, 각 변수의 영향을 잘 이해하고 조절하는 것이 중요하다.</div>
+<div class="custom-highlight-box">[실무 코멘트] 테스트 시간은 곧 비용이다. 한 장의 웨이퍼에 칩이 수천 개이므로, 여러 칩을 동시에 검사하는 병렬 테스트로 시간을 줄인다.</div>
 
-<div class="custom-badge-heading"><span class="custom-badge">🗂️ 분류</span>EDS 테스트의 원소 분석 분류</div>
+<div class="custom-badge-heading"><span class="custom-badge">🗂️ 분류</span>EDS 테스트의 구분</div>
 
-<p>EDS 테스트는 원소 분석을 위해 다양한 방법으로 분류될 수 있다. 일반적으로 다음과 같은 방식으로 구분된다.</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
-<th><strong>분류 기준</strong></th>
-<th><strong>분류 항목</strong></th>
+<th>분류 기준</th>
+<th>분류 항목</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>분석 방법</td>
-<td>정성 분석, 정량 분석</td>
+<td>테스트 종류</td>
+<td>DC 테스트, 기능 테스트, AC(속도) 테스트</td>
 </tr>
 <tr>
-<td>샘플 형태</td>
-<td>고체 샘플, 박막 샘플</td>
+<td>제품 종류</td>
+<td>메모리(리페어 중심), 시스템 반도체(스캔·자체 테스트 중심)</td>
 </tr>
 <tr>
-<td>적용 분야</td>
-<td>반도체, 금속, 세라믹 등</td>
+<td>시험 조건</td>
+<td>상온, 고온, 저온</td>
 </tr>
 </tbody>
 </table></div>
-<p>이러한 분류는 EDS 테스트의 적용 범위와 분석 방법을 이해하는 데 도움을 준다.</p>
 <div class="custom-badge-heading"><span class="custom-badge">⚖️ 장단점</span>EDS 테스트의 장단점 및 한계</div>
 
 <p><strong>장점</strong>:
-- <strong>고해상도 분석</strong>: EDS는 원소의 조성을 고해상도로 분석할 수 있어 미세 구조의 결함 탐지에 유리하다.
-- <strong>비파괴성</strong>: 샘플을 파괴하지 않고 분석할 수 있어, 후속 공정에 영향을 주지 않는다.
-- <strong>다양한 재료 분석</strong>: 금속, 세라믹, 반도체 등 다양한 재료에 적용 가능하다.</p>
-<p><strong>단점</strong>:
-- <strong>검출 한계</strong>: 미량의 원소나 가벼운 원소(예: Li, Be)는 검출이 어려운 경우가 많다.
-- <strong>표면 영향</strong>: 샘플 표면의 상태가 결과에 큰 영향을 미칠 수 있어, 전처리가 필요하다.
-- <strong>해석의 복잡성</strong>: 스펙트럼 해석이 복잡하여 경험이 부족한 경우 오류가 발생할 수 있다.</p>
+- <strong>조기 선별</strong>: 불량 칩을 패키징 전에 걸러 패키징 비용을 아낀다.
+- <strong>공정 피드백</strong>: 웨이퍼 맵의 불량 분포로 원인 공정을 추적한다.
+- <strong>리페어로 수율 향상</strong>: 메모리에서는 불량 셀을 살려 양품으로 만든다.</p>
+<p><strong>한계</strong>:
+- <strong>패키징 전 시험이라는 한계</strong>: 패키징 과정에서 생기는 불량(와이어 단선, 몰딩 문제 등)은 EDS로 찾을 수 없고 패키징 뒤 최종 테스트에서 가려낸다.
+- <strong>접촉 문제</strong>: 탐침 접촉 상태에 따라 판정이 흔들릴 수 있다.
+- <strong>시험 시간과 장비 비용</strong>: 칩 수가 많고 항목이 늘면 비용이 커진다.</p>
 <div class="custom-badge-heading"><span class="custom-badge">🛠️ 실무 이슈</span>EDS 테스트에서 겪는 문제와 해결 방향</div>
 
-<p>EDS 테스트를 수행할 때 발생할 수 있는 주요 문제는 다음과 같다:</p>
 <ol>
-<li>
-<p><strong>신호 대 잡음비(SNR) 저하</strong>: 
-   - <strong>문제</strong>: 불필요한 배경 잡음으로 인해 신호가 왜곡될 수 있다.
-   - <strong>해결</strong>: 검출기의 감도를 조정하고, 적절한 데이터 수집 시간을 설정한다.</p>
-</li>
-<li>
-<p><strong>샘플 준비 문제</strong>: 
-   - <strong>문제</strong>: 샘플 표면이 불균일하거나 오염된 경우 결과가 왜곡된다.
-   - <strong>해결</strong>: 샘플 표면을 적절히 연마하고 세척하여 균일한 상태로 만든다.</p>
-</li>
-<li>
-<p><strong>해석 오류</strong>: 
-   - <strong>문제</strong>: 스펙트럼 해석 시 잘못된 피크 식별로 인해 잘못된 원소 조성이 보고될 수 있다.
-   - <strong>해결</strong>: 경험이 풍부한 엔지니어와 협력하고, 검증된 데이터베이스를 활용하여 분석 정확도를 높인다.</p>
-</li>
+<li><strong>접촉 불량으로 인한 오판정</strong>:
+   - <strong>문제</strong>: 탐침 마모나 패드 오염으로 접촉 저항이 커져 정상 칩이 불량으로 나온다.
+   - <strong>해결</strong>: 프로브 카드를 주기적으로 청소·교체하고 접촉 저항을 모니터링한다.</li>
+<li><strong>불량 패턴 해석</strong>:
+   - <strong>문제</strong>: 웨이퍼 맵의 불량이 가장자리나 특정 위치에 몰리는데 원인을 찾기 어렵다.
+   - <strong>해결</strong>: 불량 패턴을 공정 이력과 대조해 원인 장비·공정을 좁혀 나간다.</li>
+<li><strong>테스트 비용</strong>:
+   - <strong>문제</strong>: 시험 시간이 길면 원가가 오른다.
+   - <strong>해결</strong>: 병렬 테스트와 항목 최적화로 시간을 줄인다.</li>
 </ol>
-<div class="custom-highlight-box">[면접 팁] EDS 테스트의 장단점과 실무 이슈를 명확히 이해하고, 해결 방안을 제시할 수 있으면 좋다.</div>
+<div class="custom-highlight-box">[면접 팁] 웨이퍼 맵의 불량 분포(가장자리, 중심, 반복 패턴 등)가 어떤 공정 문제를 가리키는지 사례로 말할 수 있으면 좋다.</div>
 
 <div class="custom-badge-heading"><span class="custom-badge">🧠 암기 포인트</span>시험·면접 직전 체크</div>
 
 <ul>
-<li>EDS의 <strong>장점</strong>: 고해상도, 비파괴성, 다양한 재료 분석 가능.</li>
-<li>EDS의 <strong>단점</strong>: 미량 원소 검출 한계, 표면 상태 의존성, 복잡한 해석.</li>
-<li>주요 <strong>문제</strong>: 신호 대 잡음비 저하, 샘플 준비 문제, 해석 오류.</li>
-<li>해결 방향: 감도 조정, 샘플 준비 철저, 경험자와 협력.</li>
-<li>EDS의 <strong>적용 분야</strong>: 반도체, 금속, 세라믹 등 다양한 재료.</li>
+<li>EDS = Electrical Die Sorting. 웨이퍼 위 칩을 전기적으로 검사해 양품·불량으로 나눈다.</li>
+<li>프로브 카드의 탐침을 칩 패드에 접촉해 테스터로 측정한다.</li>
+<li>결과는 웨이퍼 맵에 기록되고, 불량 칩은 패키징에서 제외된다.</li>
+<li>메모리는 여분 셀로 교체하는 리페어로 수율을 높인다.</li>
+<li>분광 분석 기법인 EDS(EDX)와 혼동하지 않는다.</li>
 </ul></div></div></div><nav aria-label="같이 보면 좋은 이론" class="mt-2"><p class="text-xs font-bold text-slate-400 dark:text-slate-500 mb-3">같이 보면 좋은 이론</p><ul class="grid gap-2 sm:grid-cols-2"><li><a href="../th-a7912602/" class="block rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0f1729] px-4 py-3 hover:border-indigo-300 dark:hover:border-cyan-400/40 transition"><span class="font-bold text-sm text-slate-900 dark:text-white">수율(Yield)</span><span class="block text-xs text-slate-500 dark:text-slate-400 mt-0.5">반도체 8대 공정 · 7. EDS 공정 (Testing)</span></a></li></ul></nav></div>
       <button onclick="navTo('view-search')" class="mt-10 w-full flex items-center justify-between gap-3 rounded-2xl border border-dashed border-slate-300 dark:border-white/15 px-5 py-4 text-left text-sm text-slate-500 dark:text-slate-400 hover:border-indigo-400 dark:hover:border-cyan-300/60 transition">
         <span>🔍 <b class="text-slate-700 dark:text-slate-200">찾는 주제가 안 보이나요?</b> 이론 · 문제 · 면접을 한 번에 검색해 보세요</span><span class="text-indigo-600 dark:text-cyan-300 font-bold shrink-0">통합 검색 →</span></button>
