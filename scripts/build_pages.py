@@ -132,7 +132,7 @@ def make_shell(tpl, *, title, desc, canonical, ld, root, depth, boot_js, contain
     can = f'<link rel="canonical" href="{esc(canonical)}">' if canonical else ""
     h = re.sub(r'<meta name="description" content="[^"]*">', lambda m: f'<meta name="description" content="{esc(desc)}">{can}{og}', h, count=1)
     h = must_replace(h, "</head>", "".join(f'<script type="application/ld+json">{json.dumps(x, ensure_ascii=False)}</script>' for x in ld) + "</head>", "</head>")
-    h = must_replace(h, '<script src="https://cdn.tailwindcss.com', f"<script>if(!/(\\/|\\.html)$/.test(location.pathname)){{location.replace(location.pathname+'/'+location.search+location.hash)}}window.DEPTH={depth};{boot_js}</script>\n  <script src=\"https://cdn.tailwindcss.com", "Tailwind 스크립트")
+    h = must_replace(h, '<script id="twLoader">', f"<script>if(!/(\\/|\\.html)$/.test(location.pathname)){{location.replace(location.pathname+'/'+location.search+location.hash)}}window.DEPTH={depth};{boot_js}</script>\n  <script id=\"twLoader\">", "스타일 로더(twLoader)")
     # 처음부터 홈이 아니라 이론 화면이 보이게 (검색엔진은 숨겨진 글을 낮게 본다)
     h = must_replace(h, '<div id="view-lobby" class="w-full flex flex-col gap-6 lg:gap-7">', '<div id="view-lobby" class="hidden w-full flex flex-col gap-6 lg:gap-7">', "홈 화면(view-lobby)")
     h = must_replace(h, '<div id="view-learning" class="hidden w-full flex flex-col">', '<div id="view-learning" class="w-full flex flex-col">', "이론 화면(view-learning)")
