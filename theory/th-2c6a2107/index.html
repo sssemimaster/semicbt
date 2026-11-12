@@ -18,11 +18,10 @@
   </script>
 
   
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   
   <!-- 수식 렌더링 (KaTeX) -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" media="print" onload="this.media='all'">
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
 
@@ -86,9 +85,9 @@
     .stagger > *:nth-child(5), #learningContainer > *:nth-child(5), #noteContainer > *:nth-child(5), #reviewList > *:nth-child(5) { animation-delay: .22s; }
     .stagger > *:nth-child(n+6), #learningContainer > *:nth-child(n+6), #noteContainer > *:nth-child(n+6), #reviewList > *:nth-child(n+6) { animation-delay: .27s; }
     .float-slow { animation: drift 14s ease-in-out infinite; } .float-slower { animation: drift 19s ease-in-out infinite reverse; }
-    .prism-text { background-size: 200% 100% !important; animation: shimmer 7s linear infinite; background-image: linear-gradient(90deg, #0891b2, #6366f1 25%, #c026d3 50%, #6366f1 75%, #0891b2) !important; }
+    .prism-text { background-size: 200% 100% !important; animation: shimmer 7s linear 2; background-image: linear-gradient(90deg, #0891b2, #6366f1 25%, #c026d3 50%, #6366f1 75%, #0891b2) !important; }
     html.dark .prism-text { background-image: linear-gradient(90deg, #67e8f9, #a78bfa 25%, #f472b6 50%, #a78bfa 75%, #67e8f9) !important; }
-    .wafer-sheen { animation: sheen 7s ease-in-out infinite; }
+    .wafer-sheen { animation: sheen 7s ease-in-out 2; }
     .opt.opt-correct { animation: pop .4s ease; } .opt.opt-wrong { animation: shake .45s ease; }
     .pbtn:active:not(:disabled), .opt:active:not(:disabled), .feature-card:active, .chip:active { transform: scale(.98); }
     .chip { transition: border-color .15s, background-color .15s, transform .12s, box-shadow .15s, color .15s; }
@@ -148,7 +147,7 @@
     .feature-card { transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease; }
     .feature-card:hover { transform: translateY(-2px); box-shadow: 0 10px 30px -12px rgba(99,102,241,.45); }
     @keyframes waferPulse { 0%,100% { opacity: .75 } 50% { opacity: 1 } }
-    .wafer-latest { animation: waferPulse 2.4s ease-in-out infinite; }
+    .wafer-latest { animation: waferPulse 2.4s ease-in-out 3; }
     /* ===== 면접 연출: 문 열고 입장 + 면접관 말풍선 ===== */
     .iv-intro { position: absolute; inset: 0; z-index: 20; border-radius: 1rem; overflow: hidden; cursor: pointer; display: flex; align-items: center; justify-content: center; background: linear-gradient(#eef2f8, #d9e2ee); transition: opacity .32s ease; }
     html.dark .iv-intro { background: linear-gradient(#0b1226, #141d38); }
@@ -226,7 +225,7 @@
     .dg-volt { fill: var(--badge-fg); font-weight: 700; }
     .dg-on { fill: #10b981; font-weight: 800; } .dg-off { fill: #ef4444; font-weight: 800; }
     .dg-charge { fill: var(--badge-fg); opacity: .55; }
-    .dg-flow { stroke: var(--hl-accent); stroke-width: 3.4; fill: none; stroke-dasharray: 7 7; stroke-linecap: round; animation: dgflow .9s linear infinite; }
+    .dg-flow { stroke: var(--hl-accent); stroke-width: 3.4; fill: none; stroke-dasharray: 7 7; stroke-linecap: round; animation: dgflow .9s linear 20; }
     .dg-flow.rev { animation-direction: reverse; }
     figure.dg .dg-title { font-weight: 700; }
     .dg-p { fill: #f87171; fill-opacity: .2; } .dg-n { fill: #60a5fa; fill-opacity: .25; } .dg-ox { fill: #a78bfa; fill-opacity: .3; } .dg-met { fill: #fbbf24; fill-opacity: .45; }
@@ -286,7 +285,7 @@
     </div>
   </div>
 
-  <header class="sticky top-0 z-30 bg-white/85 dark:bg-[#0a1020]/90 backdrop-blur border-b border-slate-200 dark:border-white/10 text-slate-800 dark:text-white">
+  <header class="sticky top-0 z-30 bg-white/95 dark:bg-[#0a1020]/95 border-b border-slate-200 dark:border-white/10 text-slate-800 dark:text-white">
     <div class="app-bar max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
       <div class="app-l flex items-center gap-3">
         <button onclick="toggleSidebar()" aria-label="메뉴" class="app-burger lg:hidden text-2xl hover:text-indigo-600 dark:hover:text-cyan-300 transition outline-none">☰</button>
@@ -658,7 +657,18 @@
 
     const SUPABASE_URL = "https://hyqsrajudsymexxuekfb.supabase.co"; 
     const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh5cXNyYWp1ZHN5bWV4eHVla2ZiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQxMzA0MDEsImV4cCI6MjEwOTcwNjQwMX0.6OPx9ClxjCnIfGcCFwYhgbWICcpgBI1cvx1QcAyVvIY"; 
-    let supabaseClient; try { supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY); } catch(e) {}
+    // 서버(Supabase) 연결은 오류 제보를 보낼 때만 필요해서, 그때 불러온다. (처음 화면을 여는 동안 스크립트를 기다리지 않도록)
+    let supabaseClient = null, supabaseLoading = null;
+    function ensureSupabase() {
+      if (supabaseClient) return Promise.resolve(supabaseClient);
+      if (!supabaseLoading) supabaseLoading = new Promise((resolve) => {
+        const make = () => { try { supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY); } catch (e) {} resolve(supabaseClient); };
+        if (window.supabase) return make();
+        const sc = document.createElement('script'); sc.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2'; sc.onload = make; sc.onerror = () => { supabaseLoading = null; resolve(null); };
+        document.head.appendChild(sc);
+      });
+      return supabaseLoading;
+    }
 
     let allQuizData = []; let allInterviewData = []; let allTheories = []; let filteredSession = [];   
     let currentIndex = 0; let correctCount = 0; let currentMode = 'quiz'; let currentKeyword = null;
@@ -712,8 +722,11 @@
     async function initApp() {
       try {
         const hubLink = document.getElementById('theoryHubLink'); if (hubLink) hubLink.href = ROOT + 'theory/';
-        const ts = new Date().getTime();
-        const [qRes, iRes, tRes, pRes] = await Promise.all([fetch(`${ROOT}data/questions.json?t=${ts}`).catch(()=>null), fetch(`${ROOT}data/interviews.json?t=${ts}`).catch(()=>null), fetch(`${ROOT}data/theories.json?t=${ts}`).catch(()=>null), fetch(`${ROOT}data/theory_pages.json?t=${ts}`).catch(()=>null)]);
+        // 지연된 스크립트(marked 등)가 모두 준비된 뒤에 시작한다.
+        if (document.readyState === 'loading') await new Promise(r => document.addEventListener('DOMContentLoaded', r, { once: true }));
+        // 파일이 바뀌었는지만 확인하고(바뀌지 않았으면 내려받지 않음), 바뀌었으면 새로 받는다.
+        const getJson = (name) => fetch(`${ROOT}data/${name}`, { cache: 'no-cache' }).catch(() => null);
+        const [qRes, iRes, tRes, pRes] = await Promise.all([getJson('questions.json'), getJson('interviews.json'), getJson('theories.json'), getJson('theory_pages.json')]);
         try { if (pRes && pRes.ok) theoryPages = await pRes.json() || {}; } catch (e) {}
         if(qRes && qRes.ok) allQuizData = await qRes.json(); if(iRes && iRes.ok) allInterviewData = await iRes.json();
         if(tRes && tRes.ok) {
@@ -1784,7 +1797,7 @@
         : ready ? `<button onclick="attendToday()" class="w-full pbtn font-bold py-3 rounded-xl shadow-lg hover:opacity-90 transition">✨ 오늘의 회로 새기기</button>`
         : `<button disabled class="w-full font-bold py-3 rounded-xl bg-slate-100 text-slate-400 dark:bg-white/10 cursor-not-allowed">학습 완료 후 출석 기록하기 (${pts}/${DAILY_GOAL})</button>`;
       const next = info.nextAt ? `${info.nextIn}일 후 · ${info.nextName}` : (info.d >= 30 ? '다음 출석에 새 웨이퍼 개방' : '');
-      panel.innerHTML = `<div class="rounded-2xl bg-white/80 border border-slate-200 shadow-sm dark:shadow-none dark:bg-white/[.04] dark:border-white/10 p-5 sm:p-6 backdrop-blur h-full flex flex-col">
+      panel.innerHTML = `<div class="rounded-2xl bg-white/80 border border-slate-200 shadow-sm dark:shadow-none dark:bg-white/[.04] dark:border-white/10 p-5 sm:p-6 h-full flex flex-col">
         <div class="flex justify-between items-start gap-3">
           <div><p class="font-mono text-[10px] tracking-[.22em] text-indigo-500 dark:text-cyan-200/70 font-bold">CURRENT WAFER${info.cycle ? ' #' + (info.cycle + 1) : ''}</p><p class="text-sm font-bold mt-1">PATTERN LEVEL ${pad2(info.level)} <span class="text-slate-400 font-medium">· ${info.name[1]}</span></p></div>
           <div class="text-right shrink-0"><span id="waferDays" class="font-display text-3xl font-bold">${info.d}</span><span class="text-slate-400 font-bold"> / 30</span><p class="text-[10px] text-slate-400">출석 누적 일수</p></div>
@@ -1955,10 +1968,10 @@
       if (content.length < 5) return setReportMsg('5자 이상 적어 주세요.', 'err');
       let last = 0; try { last = Number(localStorage.getItem('semiCbtLastReport') || 0); } catch (e) {}
       if (Date.now() - last < 15000) return setReportMsg('잠시 후 다시 제보해 주세요.', 'err');
-      if (!supabaseClient) return setReportMsg('서버 연결에 실패했습니다. 새로고침 후 다시 시도해 주세요.', 'err');
-
       const btn = document.getElementById('reportSubmitBtn');
       btn.disabled = true; setReportMsg('전송 중...', 'info');
+      await ensureSupabase();
+      if (!supabaseClient) { btn.disabled = false; return setReportMsg('서버 연결에 실패했습니다. 잠시 후 다시 시도해 주세요.', 'err'); }
       const { error } = await supabaseClient.from('error_reports').insert({
         question_id: reportTarget.id,
         question_text: reportTarget.text,
