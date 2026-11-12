@@ -341,6 +341,7 @@
       const parsedMarkdown = renderTheoryMarkdown(t.content);
 
       let html = `
+        ${t.report_note ? `<div class="mb-3 p-3 rounded-lg bg-amber-50 border border-amber-200 text-xs text-amber-800">${t.replaces ? '🔍 기존 이론 재검수 (승인하면 기존 이론이 이 내용으로 교체됩니다)' : '🔍 검수 메모'}<br>${escHtml(t.report_note)}</div>` : ''}
         <div class="mb-4">
           <span class="bg-emerald-100 text-emerald-700 text-xs font-semibold px-2.5 py-1 rounded">${escHtml(t.category)} > ${escHtml(t.subject)}</span>
         </div>
@@ -394,10 +395,12 @@
     async function approveTheory() {
       if(!confirm("이 이론을 정식 백과사전에 등재하시겠습니까?")) return;
       try {
-        const t = draftTheories[currentTheoryIndex];
+        const t = { ...draftTheories[currentTheoryIndex] }; const repId = t.replaces; delete t.report_note; delete t.replaces; delete t.before;
         const live = await fetchGitHubFile("data/theories.json");
         let data = live ? JSON.parse(live.content) : []; 
-        data.unshift(t); // 최신 이론을 맨 앞에 배치
+        const at = repId ? data.findIndex(x => String(x.id) === String(repId)) : -1;
+        if (at >= 0) data[at] = t; // 문체 변환 등 재검수 초안: 기존 이론을 같은 자리에서 교체 (id·연결된 문제 유지)
+        else data.unshift(t); // 새 이론은 맨 앞에 배치
         
         await updateGitHubFile("data/theories.json", live ? live.sha : null, JSON.stringify(data, null, 2), `Approve theory ${t.id}`);
         
@@ -420,7 +423,7 @@
         // 재검수 초안이면, 기존 정식 문항도 함께 지울지 묻는다 (취소 = 기존 문항 유지)
         const cur = type === 'quiz' ? draftQuizzes[currentQuizIndex] : type === 'interview' ? draftInterviews[currentInterviewIndex] : draftTheories[currentTheoryIndex];
         if (!cur) return;
-        if (cur && cur.replaces && confirm("기존 정식 문항도 함께 삭제할까요?\n확인 = 기존 문항까지 삭제 / 취소 = 기존 문항은 그대로 유지")) {
+        if (cur && cur.replaces && type !== 'theory' && confirm("기존 정식 문항도 함께 삭제할까요?\n확인 = 기존 문항까지 삭제 / 취소 = 기존 문항은 그대로 유지")) {
           const lp = type === 'quiz' ? "data/questions.json" : "data/interviews.json", lf = await fetchGitHubFile(lp);
           if (lf) { const arr = JSON.parse(lf.content).filter(x => String(x.id) !== String(cur.replaces)); await updateGitHubFile(lp, lf.sha, JSON.stringify(arr, null, 2), `Remove reviewed ${cur.replaces}`); }
           liveCache = null;
