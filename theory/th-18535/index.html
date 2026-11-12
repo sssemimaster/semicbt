@@ -207,6 +207,31 @@
     .theory-body li { margin: .45rem 0; padding-left: .2rem; }
     .theory-body li::marker { color: #818cf8; font-weight: 700; }
     .theory-body .custom-highlight-box { font-size: .98rem; line-height: 1.75; border-radius: 16px; border-left-width: 5px; margin: 1.6rem 0; }
+    /* ===== 이론 속 인터랙티브 그림 ({{diagram:id}}) ===== */
+    figure.dg { margin: 1.8rem 0; padding: 1rem 1rem .9rem; border-radius: 16px; border: 1px solid var(--tbl-border); background: var(--tbl-bg); color: var(--tbl-text); }
+    figure.dg .dg-head { display: flex; align-items: center; gap: .6rem; margin-bottom: .7rem; font-size: .95rem; color: var(--heading); }
+    figure.dg .dg-tag { font-size: .68rem; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: var(--badge-bg); color: var(--badge-fg); white-space: nowrap; }
+    figure.dg .dg-tabs { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: .6rem; }
+    figure.dg .dg-btn { font-size: .8rem; font-weight: 600; padding: .35rem .75rem; border-radius: 999px; border: 1px solid var(--tbl-border); background: transparent; color: inherit; cursor: pointer; transition: background .15s, color .15s, border-color .15s; }
+    figure.dg .dg-btn:hover { border-color: var(--badge-fg); }
+    figure.dg .dg-btn.on { background: var(--badge-bg); color: var(--badge-fg); border-color: var(--badge-fg); }
+    figure.dg .dg-svg { display: flex; justify-content: center; }
+    figure.dg .dg-svg svg { width: 100%; max-width: 420px; height: auto; color: var(--heading); }
+    figure.dg .dg-desc { margin: .6rem 0 .2rem !important; font-size: .9rem; line-height: 1.7; }
+    figure.dg figcaption { font-size: .75rem; opacity: .65; margin-top: .4rem; }
+    .dg-line { stroke: currentColor; stroke-width: 2.2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+    .dg-thick { stroke-width: 3.2; }
+    .dg-t { fill: currentColor; font-size: 13px; font-family: 'Sora','IBM Plex Sans KR',sans-serif; }
+    .dg-sub { opacity: .7; font-size: 11.5px; }
+    .dg-volt { fill: var(--badge-fg); font-weight: 700; }
+    .dg-on { fill: #10b981; font-weight: 800; } .dg-off { fill: #ef4444; font-weight: 800; }
+    .dg-charge { fill: var(--badge-fg); opacity: .55; }
+    .dg-flow { stroke: var(--hl-accent); stroke-width: 3.4; fill: none; stroke-dasharray: 7 7; stroke-linecap: round; animation: dgflow .9s linear infinite; }
+    .dg-flow.rev { animation-direction: reverse; }
+    figure.dg .dg-title { font-weight: 700; }
+    @media (max-width: 520px) { .dg-t { font-size: 16px; } .dg-t.dg-sub { font-size: 14px; } .dg-on, .dg-off { font-size: 18px; } }
+    @keyframes dgflow { to { stroke-dashoffset: -14; } }
+    @media (prefers-reduced-motion: reduce) { .dg-flow { animation: none; } }
     .custom-badge-heading { font-size: 1.3rem !important; margin-top: 3rem !important; margin-bottom: 1rem !important; letter-spacing: -.03em; }
     .custom-badge { font-size: .78rem !important; padding: 5px 12px !important; background: var(--badge-bg); }
     .custom-badge::before { display: none !important; }
@@ -874,6 +899,71 @@
       const m = [[/정의|개념|정체/, '📘'], [/배경|필요|왜/, '🌱'], [/원리|동작|작동/, '⚙️'], [/메커니즘|세부|상세|구조/, '🔬'], [/분류|종류|유형/, '🗂️'], [/변수|영향|요인/, '🎚️'], [/장단점|한계/, '⚖️'], [/실무|이슈|응용|활용/, '🛠️'], [/암기|체크|정리|요약/, '🧠']];
       const f = m.find(([re]) => re.test(t)); return f ? f[1] : '📌'.replace('📌', '✏️');
     }
+    // ===== 이론 속 인터랙티브 그림 =====
+    // 이론 글에 한 줄로 {{diagram:그림id|캡션}} 을 쓰면 아래 부품이 그 자리에 들어간다. (모르는 id 는 조용히 사라진다)
+    // 그림은 사람이 만든 SVG 라서 AI 가 쓰는 글과 달리 틀릴 일이 없다. 새 그림은 DIAGRAMS 에 항목을 추가하고, scripts/generate_all.py 의 DIAGRAMS 목록에도 같은 id 를 적는다.
+    const DG_RE = /^[ \t]*\{\{\s*diagram:([a-z0-9-]+)(?:\|([^}\n]*))?\}\}[ \t]*$/gm;
+    const DIAGRAMS = {
+      'dram-cell': {
+        title: 'DRAM 셀 (1T1C) 동작',
+        states: [
+          { id: 'standby', label: '대기', wl: '0V', on: false, bl: '1/2 Vcc', node: '0 또는 1', charged: null, flow: null,
+            desc: '워드라인이 0V라서 트랜지스터가 꺼져 있다. 커패시터는 전하를 가둔 채 값(0 또는 1)을 기억하고, 비트라인은 읽기에 대비해 1/2 Vcc로 미리 충전(프리차지)되어 있다.' },
+          { id: 'write1', label: '쓰기 1', wl: 'Vpp (Vcc보다 높음)', on: true, bl: 'Vcc', node: 'Vcc', charged: true, flow: 'in',
+            desc: '워드라인을 Vcc보다 높은 전압(Vpp)으로 올려 트랜지스터를 켜고, 비트라인에 Vcc를 건다. 전하가 비트라인에서 커패시터로 흘러 들어가 Vcc까지 충전되면 1이 저장된다.' },
+          { id: 'write0', label: '쓰기 0', wl: 'Vpp (Vcc보다 높음)', on: true, bl: '0V', node: '0V', charged: false, flow: 'out',
+            desc: '트랜지스터를 켜고 비트라인을 0V로 둔다. 커패시터의 전하가 비트라인으로 빠져나가 0V가 되면 0이 저장된다.' },
+          { id: 'read1', label: '읽기 (1 저장)', wl: 'Vpp (Vcc보다 높음)', on: true, bl: '1/2 Vcc + ΔV', node: 'Vcc → 전하 공유', charged: true, flow: 'out',
+            desc: '트랜지스터를 켜면 커패시터(Vcc)와 비트라인(1/2 Vcc)이 전하를 나눠 갖는다. 비트라인 전압이 1/2 Vcc보다 ΔV만큼 아주 조금 올라가고, 센스 앰프가 이 차이를 증폭해 1로 판정한다. 읽는 동안 셀 전압이 흐트러지므로(파괴 읽기) 같은 값을 다시 써 넣어야 한다.' },
+          { id: 'read0', label: '읽기 (0 저장)', wl: 'Vpp (Vcc보다 높음)', on: true, bl: '1/2 Vcc − ΔV', node: '0V → 전하 공유', charged: false, flow: 'in',
+            desc: '커패시터(0V)가 비트라인의 전하 일부를 가져가서 비트라인 전압이 1/2 Vcc보다 ΔV만큼 조금 내려간다. 센스 앰프가 이 차이를 증폭해 0으로 판정하고, 마찬가지로 값을 다시 써 넣는다.' },
+        ],
+        svg(s) {
+          const flow = s.flow ? `<path class="dg-flow ${s.flow === 'out' ? 'rev' : ''}" d="M62 140 H250 V168"/>` : '';
+          const fill = s.charged === null ? '' : (s.charged ? '<rect class="dg-charge" x="232" y="172" width="36" height="10" rx="1"/>' : '');
+          return `<svg viewBox="0 0 400 300" role="img" aria-label="DRAM 셀 회로도: ${escH(s.label)}">
+            <path class="dg-line" d="M20 62 H380"/>
+            <text class="dg-t" x="380" y="46" text-anchor="end">WL  <tspan class="dg-volt">V_WL = ${escH(s.wl)}</tspan></text>
+            <path class="dg-line" d="M62 18 V258"/>
+            <text class="dg-t" x="34" y="34">BL</text>
+            <text class="dg-t" x="62" y="282" text-anchor="middle"><tspan class="dg-volt">V_BL = ${escH(s.bl)}</tspan></text>
+            <circle cx="170" cy="62" r="4.5" fill="currentColor"/>
+            <path class="dg-line" d="M170 62 V98"/>
+            <path class="dg-line dg-thick" d="M146 98 H194"/>
+            <path class="dg-line dg-thick" d="M150 110 H190"/>
+            <path class="dg-line" d="M150 110 V140 H62 M190 110 V140 H250 V170"/>
+            <circle cx="62" cy="140" r="4.5" fill="currentColor"/>
+            <text class="${s.on ? 'dg-on' : 'dg-off'}" x="204" y="90" font-size="15">${s.on ? 'ON' : 'OFF'}</text>
+            ${fill}
+            <path class="dg-line dg-thick" d="M228 170 H272 M228 184 H272"/>
+            <path class="dg-line" d="M250 184 V214 M234 214 H266 M240 220 H260 M246 226 H254"/>
+            <text class="dg-t dg-volt" x="266" y="152">(${escH(s.node)})</text>
+            <text class="dg-t dg-sub" x="284" y="181">C</text>
+            ${flow}
+          </svg>`;
+        }
+      }
+    };
+    function dgRender(fig, sid) {
+      const D = DIAGRAMS[fig.dataset.dg]; if (!D) return;
+      const s = D.states.find(x => x.id === sid) || D.states[0];
+      fig.querySelector('.dg-svg').innerHTML = D.svg(s);
+      fig.querySelector('.dg-desc').textContent = s.desc;
+      fig.querySelectorAll('[data-dg-state]').forEach(b => { const on = b.dataset.dgState === s.id; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); });
+    }
+    function hydrateDiagrams(root) {
+      (root || document).querySelectorAll('figure.dg[data-dg]').forEach(fig => {
+        const D = DIAGRAMS[fig.dataset.dg]; if (!D) { fig.remove(); return; }
+        if (fig.dataset.ready) return; fig.dataset.ready = '1';
+        const cap = fig.dataset.cap || '';
+        fig.innerHTML = `<div class="dg-head"><span class="dg-tag">눌러 보는 그림</span><span class="dg-title">${escH(D.title)}</span></div>
+          <div class="dg-tabs" role="group" aria-label="상태 선택">${D.states.map(s => `<button type="button" class="dg-btn" data-dg-state="${s.id}">${escH(s.label)}</button>`).join('')}</div>
+          <div class="dg-svg"></div><p class="dg-desc" aria-live="polite"></p>${cap ? `<figcaption>${escH(cap)}</figcaption>` : ''}`;
+        dgRender(fig, D.states[0].id);
+      });
+    }
+    document.addEventListener('click', (e) => { const b = e.target.closest && e.target.closest('[data-dg-state]'); if (!b) return; const fig = b.closest('figure.dg'); if (fig) dgRender(fig, b.dataset.dgState); });
+
     function renderDetailDOM(theoryId) {
       const t = allTheories.find(x => x.id === theoryId); addPoints(2, theoryId);
       renderBreadcrumb();
@@ -884,6 +974,7 @@
       const math = stashMath(t.content); let rawMarkdown = math.text;
       // '**용어(영문)**는' 처럼 괄호 뒤에 한글이 바로 붙으면 marked가 굵게 처리를 못 해서 ** 가 그대로 보임 -> 직접 변환
       rawMarkdown = rawMarkdown.replace(/\*\*([^*\n]+?)\*\*/g, '<strong>$1</strong>');
+      rawMarkdown = rawMarkdown.replace(DG_RE, (m, id, cap) => `\n\n<figure class="dg" data-dg="${id}" data-cap="${escH((cap || '').trim())}"></figure>\n\n`);
       rawMarkdown = rawMarkdown.replace(/>\s*💡\s*(.*?)(?=\n\n|\n###|$)/gs, (match, p1) => `<div class="custom-highlight-box">${marked.parseInline(p1.trim())}</div>\n\n`);
       rawMarkdown = rawMarkdown.replace(/###\s*\[(.*?)\]\s*(.*)/g, (match, badgeText, titleText) => `<div class="custom-badge-heading"><span class="custom-badge">${badgeEmoji(badgeText)} ${badgeText}</span>${titleText}</div>`);
       
@@ -909,6 +1000,7 @@
         </div>
       `;
       container.appendChild(card);
+      hydrateDiagrams(card);
       applyMathRendering();
     }
 
