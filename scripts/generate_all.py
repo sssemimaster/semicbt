@@ -213,11 +213,8 @@ DEFAULT_PARTS = [  # 계획 단계가 실패했을 때만 쓰는 기본 틀
 HEADING_RE = re.compile(r"^###\s*\[[^\]]+\]", re.M)
 
 
-# 이론 글에 넣을 수 있는 '눌러 보는 그림' 목록. (그림 자체는 index.html 의 DIAGRAMS 에 사람이 만들어 둔 것이고, AI 는 id 만 고른다.)
-# 새 그림을 만들면 index.html 의 DIAGRAMS 와 여기에 같은 id 를 함께 추가한다.
-DIAGRAMS = {
-    "dram-cell": "DRAM 1T1C 셀 회로도. 대기·쓰기 1·쓰기 0·읽기(1 저장)·읽기(0 저장) 상태를 눌러 보며 워드라인/비트라인 전압, 트랜지스터 ON/OFF, 전하 이동을 보여 준다. DRAM 셀의 읽기·쓰기·리프레시·센스 앰프를 설명하는 이론에만 사용",
-}
+# 이론 글에 넣을 수 있는 '눌러 보는 그림' 목록과 자동 삽입 규칙은 scripts/diagram_rules.py 에 있다. (그림 자체는 index.html 의 DIAGRAMS)
+from diagram_rules import DIAGRAMS, ensure_diagrams
 DIAGRAM_LINE_RE = re.compile(r"^[ \t]*\{\{\s*diagram:([^|}\s]+)(?:\|([^}\n]*))?\}\}[ \t]*$", re.M)
 
 
@@ -924,6 +921,9 @@ def generate_unified_content():
     # ----------------------------------------------------
     try:
         theory_content = generate_theory()
+        theory_content, auto_dg = ensure_diagrams(target_keyword, theory_content)   # AI 가 빼먹어도 제목에 맞는 그림은 넣는다
+        if auto_dg:
+            print(f"   🖼 눌러 보는 그림 자동 삽입: {', '.join(auto_dg)}")
         theory_id = new_id("TH")
         theory_json = [{
             "id": theory_id,
