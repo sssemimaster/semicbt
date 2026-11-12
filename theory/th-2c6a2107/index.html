@@ -1,0 +1,114 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>단차 피복성 정리 — 5. 박막 증착 공정 (Deposition) | 반도체 새김</title><meta name="description" content="단차 피복성은 반도체 소자의 전기적 특성과 신뢰성에 큰 영향을 미칩니다. 피복성이 낮으면 단차 부분에서 전기적 단락(Electrical Short)이나 결함(Defect)이 발생할 가능성이 높아집니다."><link rel="canonical" href="https://sssemimaster.github.io/semicbt/theory/th-2c6a2107/"><meta property="og:type" content="article"><meta property="og:site_name" content="반도체 새김"><meta property="og:locale" content="ko_KR"><meta property="og:title" content="단차 피복성 정리 — 5. 박막 증착 공정 (Deposition) | 반도체 새김"><meta property="og:description" content="단차 피복성은 반도체 소자의 전기적 특성과 신뢰성에 큰 영향을 미칩니다. 피복성이 낮으면 단차 부분에서 전기적 단락(Electrical Short)이나 결함(Defect)이 발생할 가능성이 높아집니다."><meta property="og:url" content="https://sssemimaster.github.io/semicbt/theory/th-2c6a2107/"><meta name="twitter:card" content="summary"><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%230f1729' stroke='%2367e8f9' stroke-width='2'/%3E%3Cpath d='M9 18h5v-5h4v8h5' fill='none' stroke='%23a78bfa' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E"><script>try{var d=localStorage.theme==='dark'||(!('theme' in localStorage)&&matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.classList.toggle('dark',d)}catch(e){}</script><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700;800&display=swap"><style>
+:root{color-scheme:light;--bg:#f8fafc;--card:#fff;--text:#334155;--muted:#64748b;--line:#e2e8f0;--heading:#0f172a;--accent:#4f46e5;--accent-soft:#eef2ff;
+--hl-bg:#fffbeb;--hl-border:#fde68a;--hl-accent:#f59e0b;--hl-text:#4b3a0a;--badge-bg:#e0e7ff;--badge-fg:#4338ca;--tbl-head-bg:#eef2ff;--tbl-head-fg:#4338ca}
+html.dark{color-scheme:dark;--bg:#0a1020;--card:#0f1729;--text:#cbd5e1;--muted:#94a3b8;--line:#22314d;--heading:#f8fafc;--accent:#67e8f9;--accent-soft:#112844;
+--hl-bg:#2a2410;--hl-border:#5a4a1a;--hl-accent:#fbbf24;--hl-text:#fde9b0;--badge-bg:#14304f;--badge-fg:#67e8f9;--tbl-head-bg:#112844;--tbl-head-fg:#67e8f9}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:'IBM Plex Sans KR',system-ui,-apple-system,'Segoe UI',sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:var(--accent)}.wrap{max-width:820px;margin:0 auto;padding:0 16px}
+header.top{border-bottom:1px solid var(--line);background:var(--card)}header.top .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
+.logo{font-weight:800;font-size:1.1rem;color:var(--heading);text-decoration:none}.logo b{color:var(--accent)}
+.top-r{display:flex;gap:8px;align-items:center}.pill{display:inline-flex;align-items:center;height:38px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--heading);font-size:.875rem;font-weight:600;text-decoration:none;cursor:pointer;font-family:inherit}
+.crumb{font-size:.8rem;color:var(--muted);margin:22px 0 10px}.crumb a{color:var(--muted);text-decoration:none}.crumb a:hover{text-decoration:underline}
+article.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:28px 24px;margin-bottom:20px}
+.eyebrow{font-size:.75rem;letter-spacing:.08em;font-weight:700;color:var(--accent);margin:0 0 8px}h1{font-size:1.9rem;line-height:1.3;letter-spacing:-.03em;color:var(--heading);margin:0 0 14px;word-break:keep-all}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--line)}.tags span{background:var(--accent-soft);color:var(--accent);font-size:.7rem;font-weight:700;padding:4px 10px;border-radius:999px}
+.theory-body{font-size:1.05rem;line-height:1.9;word-break:keep-all}.theory-body p{margin:.9rem 0}.theory-body strong{font-weight:700;color:var(--heading);background:linear-gradient(transparent 62%,rgba(250,204,21,.38) 0)}
+html.dark .theory-body strong{background:linear-gradient(transparent 62%,rgba(103,232,249,.22) 0)}.theory-body ul,.theory-body ol{margin:.8rem 0;padding-left:1.4rem}.theory-body li{margin:.45rem 0}
+.theory-body h1,.theory-body h2,.theory-body h3,.theory-body h4{color:var(--heading)}.theory-body code{background:var(--accent-soft);padding:1px 6px;border-radius:6px;font-size:.9em}
+.custom-highlight-box{display:flex;gap:12px;background:var(--hl-bg);border:1px solid var(--hl-border);border-left:5px solid var(--hl-accent);border-radius:16px;padding:1.1rem 1.3rem;margin:1.6rem 0;color:var(--hl-text);font-size:.98rem;line-height:1.75}
+.custom-highlight-box::before{content:'💡';font-size:1.3rem;line-height:1;flex:none}
+.custom-badge-heading{display:flex;align-items:center;gap:10px;margin:3rem 0 1rem;font-size:1.3rem;font-weight:800;letter-spacing:-.03em;color:var(--heading);flex-wrap:wrap}
+.custom-badge{background:var(--badge-bg);color:var(--badge-fg);font-size:.78rem;padding:5px 12px;border-radius:999px;white-space:nowrap}
+.table-wrap{overflow-x:auto;margin:1.2rem 0;border:1px solid var(--line);border-radius:14px}.theory-body table{border-collapse:collapse;width:100%;font-size:.95rem}
+.theory-body th{background:var(--tbl-head-bg);color:var(--tbl-head-fg);text-align:left;padding:.65rem .9rem}.theory-body td{padding:.6rem .9rem;border-top:1px solid var(--line)}
+.katex-display{overflow-x:auto;overflow-y:hidden;padding:.35rem 0;margin:1rem 0!important}.katex-display>.katex{font-size:1.4em}
+.cta{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px 24px;margin-bottom:20px}.cta h2{font-size:1rem;margin:0 0 4px;color:var(--heading)}.cta p{margin:0 0 14px;font-size:.88rem;color:var(--muted)}
+.btns{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}.btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px 16px;border-radius:12px;font-weight:700;font-size:.95rem;text-decoration:none;border:2px solid var(--accent);color:var(--accent);background:transparent}
+.btn.primary{background:var(--accent);color:#fff}html.dark .btn.primary{color:#04121f}
+.rel{margin-bottom:28px}.rel h2{font-size:1rem;color:var(--heading);margin:0 0 10px}.rel ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}.rel a{display:block;padding:12px 14px;background:var(--card);border:1px solid var(--line);border-radius:12px;text-decoration:none;color:var(--heading);font-weight:600;font-size:.92rem}
+.rel a small{display:block;color:var(--muted);font-weight:400;margin-top:2px}
+footer.bot{border-top:1px solid var(--line);padding:22px 0 40px;font-size:.8rem;color:var(--muted)}
+.hub h2{font-size:1.15rem;color:var(--heading);margin:30px 0 4px}.hub h3{font-size:.9rem;color:var(--accent);margin:16px 0 8px}
+@media(max-width:560px){h1{font-size:1.55rem}article.card{padding:22px 16px}.top-r .pill:first-child{display:none}}
+</style><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css"><script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.querySelector('.theory-body'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],throwOnError:false})"></script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "단차 피복성", "description": "단차 피복성은 반도체 소자의 전기적 특성과 신뢰성에 큰 영향을 미칩니다. 피복성이 낮으면 단차 부분에서 전기적 단락(Electrical Short)이나 결함(Defect)이 발생할 가능성이 높아집니다.", "inLanguage": "ko", "articleSection": "반도체 8대 공정", "dateModified": "2026-11-12", "publisher": {"@type": "Organization", "name": "반도체 새김"}, "mainEntityOfPage": "https://sssemimaster.github.io/semicbt/theory/th-2c6a2107/"}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "반도체 새김", "item": "https://sssemimaster.github.io/semicbt/"}, {"@type": "ListItem", "position": 2, "name": "이론 백과사전", "item": "https://sssemimaster.github.io/semicbt/theory/"}, {"@type": "ListItem", "position": 3, "name": "단차 피복성"}]}</script></head><body><header class="top"><div class="wrap"><a class="logo" href="../../index.html">반도체 <b>새김</b></a><div class="top-r"><a class="pill" href="../../theory/">이론 목록</a><a class="pill" href="../../index.html">학습하러 가기</a><button class="pill" onclick="tt()" aria-label="화면 색 전환">🌓</button></div></div></header><script>function tt(){var h=document.documentElement,d=!h.classList.contains('dark');h.classList.toggle('dark',d);try{localStorage.theme=d?'dark':'light'}catch(e){}}</script><main class="wrap"><nav class="crumb" aria-label="경로"><a href="../../index.html">반도체 새김</a> › <a href="../">이론 백과사전</a> › 반도체 8대 공정</nav><article class="card"><p class="eyebrow">반도체 8대 공정 / 5. 박막 증착 공정 (Deposition) · 약 4분 읽기</p><h1>단차 피복성</h1><div class="tags"><span>#단차피복성</span><span>#핵심이론</span></div><div class="theory-body"><div class="custom-badge-heading"><span class="custom-badge">📘 정의</span>단차 피복성이란?</div>
+
+<p><strong>단차 피복성</strong>(Step Coverage)은 반도체 공정에서 <strong>박막</strong>(Thin Film)이 <strong>단차</strong>(Step) 구조를 얼마나 잘 덮는지를 나타내는 지표입니다. 이는 주로 <strong>박막 증착 공정</strong>(Deposition Process)에서 중요한 역할을 하며, 단차의 높이나 기울기에 따라 피복성이 달라질 수 있습니다. </p>
+<div class="custom-badge-heading"><span class="custom-badge">📘 핵심 개념</span>단차 피복성의 중요성</div>
+
+<p>단차 피복성은 반도체 소자의 <strong>전기적 특성</strong>과 <strong>신뢰성</strong>에 큰 영향을 미칩니다. 피복성이 낮으면 단차 부분에서 <strong>전기적 단락</strong>(Electrical Short)이나 <strong>결함</strong>(Defect)이 발생할 가능성이 높아집니다. 따라서, 고품질의 소자를 제조하기 위해서는 우수한 단차 피복성이 필수적입니다.</p>
+<div class="custom-badge-heading"><span class="custom-badge">📘 핵심 개념</span>직관적 이해</div>
+
+<p>단차 피복성을 이해하기 위해서는 <strong>삼각형</strong>의 개념을 생각해볼 수 있습니다. 삼각형의 높이가 높을수록, 그 위에 덮이는 <strong>막</strong>의 두께가 불균일해질 수 있습니다. 이는 단차의 각도와 높이에 따라 박막의 두께가 변화하기 때문입니다. 따라서, 단차 피복성을 개선하기 위해서는 적절한 증착 기술과 공정 조건이 필요합니다. </p>
+<div class="custom-highlight-box">[면접 팁] 단차 피복성의 중요성을 강조하며, 관련된 공정 기술에 대한 질문을 받을 수 있습니다.</div>
+
+<div class="custom-badge-heading"><span class="custom-badge">✏️ 측정 방법</span>단차 피복성 측정</div>
+
+<p>단차 피복성은 다양한 방법으로 측정할 수 있습니다. 주로 사용되는 방법은 <strong>SEM</strong>(Scanning Electron Microscopy)과 <strong>AFM</strong>(Atomic Force Microscopy)입니다. </p>
+<ul>
+<li><strong>SEM</strong>: 고해상도의 이미지를 통해 단차의 피복 상태를 시각적으로 분석합니다. </li>
+<li><strong>AFM</strong>: 표면의 미세한 구조를 측정하여 피복 두께를 정량적으로 평가합니다. </li>
+</ul>
+<p>이 외에도 <strong>XPS</strong>(X-ray Photoelectron Spectroscopy)와 같은 기술을 통해 박막의 화학적 조성을 분석하여 피복성을 간접적으로 평가할 수 있습니다.</p>
+<div class="custom-badge-heading"><span class="custom-badge">🎚️ 변수 영향</span>단차 피복성에 영향을 미치는 요인</div>
+
+<p>단차 피복성은 여러 요인에 의해 좌우됩니다. 주요 요인은 다음과 같습니다.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>요인</th>
+<th>영향</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>증착 각도</strong></td>
+<td>각도가 클수록 피복성이 감소함.</td>
+</tr>
+<tr>
+<td><strong>증착 속도</strong></td>
+<td>느릴수록 피복성이 향상됨.</td>
+</tr>
+<tr>
+<td><strong>온도</strong></td>
+<td>높은 온도에서 피복성이 개선됨.</td>
+</tr>
+<tr>
+<td><strong>막의 물성</strong></td>
+<td>물성이 우수할수록 피복성이 높아짐.</td>
+</tr>
+</tbody>
+</table></div>
+<div class="custom-highlight-box">[실무 코멘트] 단차 피복성을 높이기 위해서는 증착 조건을 최적화하는 것이 중요합니다.</div>
+
+<div class="custom-badge-heading"><span class="custom-badge">🎚️ 변수 영향</span>단차 피복성의 발생 원인</div>
+
+<p>단차 피복성이 낮아지는 원인은 다음과 같습니다.</p>
+<ul>
+<li><strong>불균일한 증착</strong>: 단차의 기울기와 높이에 따라 증착 물질이 고르게 분포되지 않음.</li>
+<li><strong>기계적 결함</strong>: 공정 중 발생하는 결함이 피복성을 저하시킴.</li>
+<li><strong>막의 응력</strong>: 응력이 큰 경우 박막이 균열을 일으키거나 떨어질 수 있음.</li>
+</ul>
+<p>이러한 원인을 이해하고 해결하는 것이 단차 피복성을 개선하는 데 필수적입니다.</p>
+<div class="custom-badge-heading"><span class="custom-badge">🛠️ 실무 이슈</span>단차 피복성 문제</div>
+
+<p>현업에서 단차 피복성 문제는 주로 <strong>결함 발생</strong>과 <strong>수율 저하</strong>로 이어집니다. 피복성이 낮은 경우, 특히 고집적 회로(IC) 제조에서 전기적 단락이나 불량이 발생할 수 있습니다. 이러한 문제는 최종 제품의 신뢰성을 저하시켜, 고객 불만이나 리콜로 이어질 수 있습니다. 따라서, 단차 피복성을 지속적으로 모니터링하고 관리하는 것이 중요합니다.</p>
+<div class="custom-badge-heading"><span class="custom-badge">✏️ 개선 방법</span>단차 피복성 향상 전략</div>
+
+<p>단차 피복성을 개선하기 위한 전략은 다음과 같습니다.</p>
+<ul>
+<li><strong>증착 기술 최적화</strong>: 물질의 증착 각도와 속도를 조절하여 피복성을 높일 수 있습니다. </li>
+<li><strong>프로세스 조건 조정</strong>: 온도를 조절하거나, 다양한 기체 환경을 활용하여 박막의 물성을 개선합니다.</li>
+<li><strong>후처리 기술 적용</strong>: 열처리 또는 플라즈마 처리를 통해 응력을 완화하고 균일한 피복성을 확보합니다.</li>
+</ul>
+<p>이러한 방법들을 통해 단차 피복성을 효과적으로 향상시킬 수 있습니다.</p>
+<div class="custom-highlight-box">[면접 팁] 단차 피복성을 개선하기 위한 구체적인 방법에 대해 질문받을 수 있습니다.</div>
+
+<div class="custom-badge-heading"><span class="custom-badge">🧠 암기 포인트</span>시험·면접 직전 체크</div>
+
+<ul>
+<li><strong>단차 피복성</strong>: 박막이 단차 구조를 얼마나 잘 덮는지.</li>
+<li><strong>피복성 저하 원인</strong>: 불균일한 증착, 기계적 결함, 막의 응력.</li>
+<li><strong>개선 방법</strong>: 증착 각도 조절, 온도 최적화, 후처리 기술.</li>
+<li><strong>측정 기법</strong>: SEM, AFM, XPS 활용.</li>
+<li><strong>신뢰성</strong>: 피복성이 낮으면 전기적 단락 및 결함 발생 가능성 증가.</li>
+</ul></div></article><section class="cta"><h2>읽은 내용을 바로 확인해 보세요</h2><p>문제와 면접 연습은 가입 없이 무료예요. 푼 기록은 이 브라우저에 저장돼요.</p><div class="btns"><a class="btn primary" href="../../index.html?theory=TH-2c6a2107&go=quiz">🧩 실전 문제 풀기</a><a class="btn" href="../../index.html?theory=TH-2c6a2107&go=interview">🗣️ 면접 연습</a><a class="btn" href="../../index.html?theory=TH-2c6a2107">📖 앱에서 이어 읽기</a></div></section><section class="rel"><h2>같이 보면 좋은 이론</h2><ul><li><a href="../th-a7912602/">수율(Yield)<small>반도체 8대 공정 · 7. EDS 공정 (Testing)</small></a></li><li><a href="../th-bf6c60f4/">건식 식각<small>반도체 8대 공정 · 4. 식각 공정 (Etching)</small></a></li><li><a href="../th-170e1b81/">건식 산화<small>반도체 8대 공정 · 2. 산화 공정 (Oxidation)</small></a></li><li><a href="../th-3345b97f/">노광 공정<small>반도체 8대 공정 · 3. 포토 공정 (Photo)</small></a></li></ul></section></main><footer class="bot"><div class="wrap">AI가 생성한 이론과 문제는 검수 후 게시돼요. 오류를 발견하면 <a href="../../index.html">앱</a>의 제보 기능으로 알려 주세요.<br>반도체 새김 · 하루 5분, 오늘의 학습을 웨이퍼에 새겨보세요</div></footer></body></html>

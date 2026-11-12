@@ -1,0 +1,113 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>수율(Yield) 정리 — 7. EDS 공정 (Testing) | 반도체 새김</title><meta name="description" content="반도체 제조 공정에서 수율이 낮아지면 생산 비용이 급격히 증가한다. 웨이퍼 한 장에서 얻을 수 있는 칩의 수가 줄어들면, 같은 수의 완성품을 만들기 위해 더 많은 웨이퍼와 자원을 소모하게 된다."><link rel="canonical" href="https://sssemimaster.github.io/semicbt/theory/th-a7912602/"><meta property="og:type" content="article"><meta property="og:site_name" content="반도체 새김"><meta property="og:locale" content="ko_KR"><meta property="og:title" content="수율(Yield) 정리 — 7. EDS 공정 (Testing) | 반도체 새김"><meta property="og:description" content="반도체 제조 공정에서 수율이 낮아지면 생산 비용이 급격히 증가한다. 웨이퍼 한 장에서 얻을 수 있는 칩의 수가 줄어들면, 같은 수의 완성품을 만들기 위해 더 많은 웨이퍼와 자원을 소모하게 된다."><meta property="og:url" content="https://sssemimaster.github.io/semicbt/theory/th-a7912602/"><meta name="twitter:card" content="summary"><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%230f1729' stroke='%2367e8f9' stroke-width='2'/%3E%3Cpath d='M9 18h5v-5h4v8h5' fill='none' stroke='%23a78bfa' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E"><script>try{var d=localStorage.theme==='dark'||(!('theme' in localStorage)&&matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.classList.toggle('dark',d)}catch(e){}</script><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700;800&display=swap"><style>
+:root{color-scheme:light;--bg:#f8fafc;--card:#fff;--text:#334155;--muted:#64748b;--line:#e2e8f0;--heading:#0f172a;--accent:#4f46e5;--accent-soft:#eef2ff;
+--hl-bg:#fffbeb;--hl-border:#fde68a;--hl-accent:#f59e0b;--hl-text:#4b3a0a;--badge-bg:#e0e7ff;--badge-fg:#4338ca;--tbl-head-bg:#eef2ff;--tbl-head-fg:#4338ca}
+html.dark{color-scheme:dark;--bg:#0a1020;--card:#0f1729;--text:#cbd5e1;--muted:#94a3b8;--line:#22314d;--heading:#f8fafc;--accent:#67e8f9;--accent-soft:#112844;
+--hl-bg:#2a2410;--hl-border:#5a4a1a;--hl-accent:#fbbf24;--hl-text:#fde9b0;--badge-bg:#14304f;--badge-fg:#67e8f9;--tbl-head-bg:#112844;--tbl-head-fg:#67e8f9}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:'IBM Plex Sans KR',system-ui,-apple-system,'Segoe UI',sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:var(--accent)}.wrap{max-width:820px;margin:0 auto;padding:0 16px}
+header.top{border-bottom:1px solid var(--line);background:var(--card)}header.top .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
+.logo{font-weight:800;font-size:1.1rem;color:var(--heading);text-decoration:none}.logo b{color:var(--accent)}
+.top-r{display:flex;gap:8px;align-items:center}.pill{display:inline-flex;align-items:center;height:38px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--heading);font-size:.875rem;font-weight:600;text-decoration:none;cursor:pointer;font-family:inherit}
+.crumb{font-size:.8rem;color:var(--muted);margin:22px 0 10px}.crumb a{color:var(--muted);text-decoration:none}.crumb a:hover{text-decoration:underline}
+article.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:28px 24px;margin-bottom:20px}
+.eyebrow{font-size:.75rem;letter-spacing:.08em;font-weight:700;color:var(--accent);margin:0 0 8px}h1{font-size:1.9rem;line-height:1.3;letter-spacing:-.03em;color:var(--heading);margin:0 0 14px;word-break:keep-all}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--line)}.tags span{background:var(--accent-soft);color:var(--accent);font-size:.7rem;font-weight:700;padding:4px 10px;border-radius:999px}
+.theory-body{font-size:1.05rem;line-height:1.9;word-break:keep-all}.theory-body p{margin:.9rem 0}.theory-body strong{font-weight:700;color:var(--heading);background:linear-gradient(transparent 62%,rgba(250,204,21,.38) 0)}
+html.dark .theory-body strong{background:linear-gradient(transparent 62%,rgba(103,232,249,.22) 0)}.theory-body ul,.theory-body ol{margin:.8rem 0;padding-left:1.4rem}.theory-body li{margin:.45rem 0}
+.theory-body h1,.theory-body h2,.theory-body h3,.theory-body h4{color:var(--heading)}.theory-body code{background:var(--accent-soft);padding:1px 6px;border-radius:6px;font-size:.9em}
+.custom-highlight-box{display:flex;gap:12px;background:var(--hl-bg);border:1px solid var(--hl-border);border-left:5px solid var(--hl-accent);border-radius:16px;padding:1.1rem 1.3rem;margin:1.6rem 0;color:var(--hl-text);font-size:.98rem;line-height:1.75}
+.custom-highlight-box::before{content:'💡';font-size:1.3rem;line-height:1;flex:none}
+.custom-badge-heading{display:flex;align-items:center;gap:10px;margin:3rem 0 1rem;font-size:1.3rem;font-weight:800;letter-spacing:-.03em;color:var(--heading);flex-wrap:wrap}
+.custom-badge{background:var(--badge-bg);color:var(--badge-fg);font-size:.78rem;padding:5px 12px;border-radius:999px;white-space:nowrap}
+.table-wrap{overflow-x:auto;margin:1.2rem 0;border:1px solid var(--line);border-radius:14px}.theory-body table{border-collapse:collapse;width:100%;font-size:.95rem}
+.theory-body th{background:var(--tbl-head-bg);color:var(--tbl-head-fg);text-align:left;padding:.65rem .9rem}.theory-body td{padding:.6rem .9rem;border-top:1px solid var(--line)}
+.katex-display{overflow-x:auto;overflow-y:hidden;padding:.35rem 0;margin:1rem 0!important}.katex-display>.katex{font-size:1.4em}
+.cta{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px 24px;margin-bottom:20px}.cta h2{font-size:1rem;margin:0 0 4px;color:var(--heading)}.cta p{margin:0 0 14px;font-size:.88rem;color:var(--muted)}
+.btns{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}.btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px 16px;border-radius:12px;font-weight:700;font-size:.95rem;text-decoration:none;border:2px solid var(--accent);color:var(--accent);background:transparent}
+.btn.primary{background:var(--accent);color:#fff}html.dark .btn.primary{color:#04121f}
+.rel{margin-bottom:28px}.rel h2{font-size:1rem;color:var(--heading);margin:0 0 10px}.rel ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}.rel a{display:block;padding:12px 14px;background:var(--card);border:1px solid var(--line);border-radius:12px;text-decoration:none;color:var(--heading);font-weight:600;font-size:.92rem}
+.rel a small{display:block;color:var(--muted);font-weight:400;margin-top:2px}
+footer.bot{border-top:1px solid var(--line);padding:22px 0 40px;font-size:.8rem;color:var(--muted)}
+.hub h2{font-size:1.15rem;color:var(--heading);margin:30px 0 4px}.hub h3{font-size:.9rem;color:var(--accent);margin:16px 0 8px}
+@media(max-width:560px){h1{font-size:1.55rem}article.card{padding:22px 16px}.top-r .pill:first-child{display:none}}
+</style><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css"><script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.querySelector('.theory-body'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],throwOnError:false})"></script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "수율(Yield)", "description": "반도체 제조 공정에서 수율이 낮아지면 생산 비용이 급격히 증가한다. 웨이퍼 한 장에서 얻을 수 있는 칩의 수가 줄어들면, 같은 수의 완성품을 만들기 위해 더 많은 웨이퍼와 자원을 소모하게 된다.", "inLanguage": "ko", "articleSection": "반도체 8대 공정", "dateModified": "2026-11-12", "publisher": {"@type": "Organization", "name": "반도체 새김"}, "mainEntityOfPage": "https://sssemimaster.github.io/semicbt/theory/th-a7912602/"}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "반도체 새김", "item": "https://sssemimaster.github.io/semicbt/"}, {"@type": "ListItem", "position": 2, "name": "이론 백과사전", "item": "https://sssemimaster.github.io/semicbt/theory/"}, {"@type": "ListItem", "position": 3, "name": "수율(Yield)"}]}</script></head><body><header class="top"><div class="wrap"><a class="logo" href="../../index.html">반도체 <b>새김</b></a><div class="top-r"><a class="pill" href="../../theory/">이론 목록</a><a class="pill" href="../../index.html">학습하러 가기</a><button class="pill" onclick="tt()" aria-label="화면 색 전환">🌓</button></div></div></header><script>function tt(){var h=document.documentElement,d=!h.classList.contains('dark');h.classList.toggle('dark',d);try{localStorage.theme=d?'dark':'light'}catch(e){}}</script><main class="wrap"><nav class="crumb" aria-label="경로"><a href="../../index.html">반도체 새김</a> › <a href="../">이론 백과사전</a> › 반도체 8대 공정</nav><article class="card"><p class="eyebrow">반도체 8대 공정 / 7. EDS 공정 (Testing) · 약 4분 읽기</p><h1>수율(Yield)</h1><div class="tags"><span>#수율(Yield)</span><span>#핵심이론</span></div><div class="theory-body"><div class="custom-badge-heading"><span class="custom-badge">📘 정의</span>수율의 개념</div>
+
+<p>반도체 제조 공정에서 <strong>수율</strong>이 낮아지면 생산 비용이 급격히 증가한다. 웨이퍼 한 장에서 얻을 수 있는 칩의 수가 줄어들면, 같은 수의 완성품을 만들기 위해 더 많은 웨이퍼와 자원을 소모하게 된다. 수율은 특정 공정에서 양질의 칩을 얻을 수 있는 비율이다. 제조 과정에서 발생할 수 있는 결함들을 최소화하여 최종 제품의 수율을 높이는 것이 중요한 이유이다.</p>
+<div class="custom-badge-heading"><span class="custom-badge">📘 핵심 개념</span>수율의 중요성</div>
+
+<p>수율은 반도체 제조업체의 수익성과 직결된다. 높은 수율을 달성한다는 것은 동일한 자원으로 더 많은 제품을 생산할 수 있음을 의미한다. 따라서, 반도체 시장에서 경쟁력을 유지하기 위해서는 높은 수율을 통해 제품의 가격 경쟁력을 확보하는 것이 필수적이라고 할 수 있다.</p>
+<blockquote></blockquote>
+<div class="custom-badge-heading"><span class="custom-badge">📘 핵심 개념</span>수율과 품질의 관계</div>
+
+<p>수율은 제품의 품질과도 밀접한 관련이 있다. 수율이 높다는 것은 그만큼 결함이 적고 품질이 우수한 제품이 많이 생산된다는 뜻이다. 반면, 수율이 낮으면 결함이 많은 제품이 많아지게 되고, 이는 곧 품질 저하로 이어질 수 있다. 따라서, 수율을 높이는 것은 단순히 양을 늘리는 것이 아니라, 제품의 품질을 보장하는 길이기도 하다.</p>
+<div class="custom-badge-heading"><span class="custom-badge">✏️ 측정 방법</span>수율 측정 방법</div>
+
+<p>반도체 제조에서 <strong>수율</strong>은 생산된 칩 중에서 정상적으로 작동하는 칩의 비율을 말한다. 수율을 측정하기 위해서는 먼저 웨이퍼 단위에서 결함이 있는 칩을 식별해야 한다. 일반적으로 자동화된 테스트 장비를 사용해 전기적 특성을 검사하고, 기준에 부합하지 않는 칩을 불량으로 분류한다. 이 과정을 통해 전체 칩 중에서 불량 칩의 비율을 파악하고, 이를 바탕으로 수율을 계산한다.</p>
+<p>수율은 다음과 같은 방식으로 계산된다:</p>
+<p>$$
+\text{Yield} = \frac{\text{Number of Good Dies}}{\text{Total Number of Dies}}
+$$</p>
+<ul>
+<li>$\text{Yield}$: 수율</li>
+<li>$\text{Number of Good Dies}$: 정상적으로 작동하는 칩의 개수</li>
+<li>$\text{Total Number of Dies}$: 전체 생산된 칩의 개수</li>
+</ul>
+<div class="custom-badge-heading"><span class="custom-badge">🎚️ 변수 영향</span>수율에 영향을 미치는 변수</div>
+
+<p>수율에 영향을 미치는 변수는 다양하다. 첫 번째로, 공정의 <strong>결함 밀도</strong>가 중요한 역할을 한다. 결함 밀도가 높으면 불량 칩의 수가 증가해 수율이 낮아진다. 두 번째로, 설계의 복잡성도 영향을 미친다. 복잡한 설계일수록 제조 과정에서의 오류 가능성이 커져 수율이 떨어질 수 있다. 세 번째로, <strong>공정의 일관성</strong>도 무시할 수 없다. 공정이 일관되지 않다면 같은 조건에서도 다른 결과가 나올 수 있어 수율이 변동할 수 있다.</p>
+<p>아래 표는 변수에 따른 수율의 변화를 정리한 것이다:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>변수</th>
+<th>수율에 미치는 영향</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>결함 밀도</td>
+<td>결함 밀도가 높을수록 수율 감소</td>
+</tr>
+<tr>
+<td>설계 복잡성</td>
+<td>복잡할수록 수율 감소</td>
+</tr>
+<tr>
+<td>공정의 일관성</td>
+<td>일관성이 떨어질수록 수율 변동</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote></blockquote>
+<div class="custom-badge-heading"><span class="custom-badge">✏️ 수식</span>수율 계산식의 이해</div>
+
+<p>수율 계산식은 간단해 보이지만, 각 요소가 의미하는 바를 정확히 이해하는 것이 중요하다. <strong>결함 밀도 모델</strong>을 적용해 수율을 예측할 때는 결함의 발생 확률을 고려해야 한다. 예를 들어, 포아송 분포를 사용해 결함을 모델링할 수 있다. 포아송 분포를 적용하면 다음과 같은 수식을 사용하게 된다:</p>
+<p>$$
+Y = e^{-AD}
+$$</p>
+<ul>
+<li>$Y$: 수율</li>
+<li>$A$: 다이의 면적</li>
+<li>$D$: 결함 밀도</li>
+</ul>
+<p>여기서 $e^{-AD}$는 다이 하나에 결함이 전혀 없을 확률을 의미한다. 결함 밀도가 높아지면 $e^{-AD}$ 값이 작아져 수율이 감소하게 된다.</p>
+<blockquote></blockquote>
+<div class="custom-badge-heading"><span class="custom-badge">🛠️ 실무 이슈</span>현업에서의 수율 문제</div>
+
+<p>반도체 제조 현장에서 <strong>수율</strong>은 생산성과 직결되기 때문에 늘 주의 깊게 관리해야 하는 요소이다. 수율이 낮으면 생산 비용이 증가하고, 이는 곧바로 수익성에 영향을 미친다. 특히, <strong>결함 밀도</strong>가 높은 경우 수율이 급격히 떨어질 수 있으므로, 공정 단계마다 결함을 줄이기 위한 노력이 필요하다. 또, <strong>공정의 일관성</strong>이 확보되지 않으면 수율 변동이 심해져서 안정적인 생산이 어려워진다.</p>
+<div class="custom-badge-heading"><span class="custom-badge">✏️ 개선 방법</span>수율 개선 방법</div>
+
+<p>수율을 개선하기 위해서는 여러 가지 전략이 활용된다. 첫째, 공정에서 발생할 수 있는 결함을 사전에 예측하고 방지하는 <strong>결함 예방 시스템</strong>을 도입하는 것이 중요하다. 둘째, 공정 도중 발생한 결함을 빠르게 감지하고 수정할 수 있는 <strong>실시간 모니터링 시스템</strong>을 구축하면 수율 향상에 큰 도움이 된다. 마지막으로, 공정 최적화와 정밀한 <strong>공정 제어</strong>를 통해 일관성을 강화하면 수율을 높일 수 있다.</p>
+<blockquote></blockquote>
+<div class="custom-badge-heading"><span class="custom-badge">✏️ 개선 방법</span>수율 최적화 사례</div>
+
+<p>실제로, 많은 반도체 기업들이 수율을 최적화하기 위해 다양한 시도를 하고 있다. 예를 들어, A사는 결함 밀도를 줄이기 위해 <strong>클린룸 환경</strong>을 강화하고, <strong>자동화 검사 시스템</strong>을 도입했다. 이 결과로 수율이 대폭 개선되었고, 생산 비용도 절감할 수 있었다. 또 다른 사례로, B사는 <strong>머신러닝 알고리즘</strong>을 활용해 결함 발생 패턴을 분석하고, 이를 바탕으로 공정 조건을 최적화했다. 이러한 노력들은 수율을 높이는 데 실질적인 효과를 발휘한다.</p>
+<div class="custom-badge-heading"><span class="custom-badge">🧠 암기 포인트</span>시험·면접 직전 체크</div>
+
+<ul>
+<li>수율은 생산성과 수익성에 직접적 영향을 미친다.</li>
+<li>결함 예방, 모니터링, 공정 제어가 수율 개선의 핵심이다.</li>
+<li>클린룸과 자동화 시스템이 수율 최적화에 기여한다.</li>
+<li>머신러닝으로 결함 패턴 분석, 공정 조건 최적화 사례이다.</li>
+<li>수율 문제는 결함 밀도와 공정 일관성 문제로 귀결된다.</li>
+</ul></div></article><section class="cta"><h2>읽은 내용을 바로 확인해 보세요</h2><p>문제와 면접 연습은 가입 없이 무료예요. 푼 기록은 이 브라우저에 저장돼요.</p><div class="btns"><a class="btn primary" href="../../index.html?theory=TH-a7912602&go=quiz">🧩 실전 문제 풀기</a><a class="btn" href="../../index.html?theory=TH-a7912602&go=interview">🗣️ 면접 연습</a><a class="btn" href="../../index.html?theory=TH-a7912602">📖 앱에서 이어 읽기</a></div></section><section class="rel"><h2>같이 보면 좋은 이론</h2><ul><li><a href="../th-a7912602-2/">수율(Yield)<small>반도체 8대 공정 · 7. EDS 공정 (Testing)</small></a></li><li><a href="../th-cc0d3a71/">EDS 테스트 흐름<small>반도체 8대 공정 · 7. EDS 공정 (Testing)</small></a></li></ul></section></main><footer class="bot"><div class="wrap">AI가 생성한 이론과 문제는 검수 후 게시돼요. 오류를 발견하면 <a href="../../index.html">앱</a>의 제보 기능으로 알려 주세요.<br>반도체 새김 · 하루 5분, 오늘의 학습을 웨이퍼에 새겨보세요</div></footer></body></html>
