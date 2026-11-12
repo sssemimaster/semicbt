@@ -510,7 +510,7 @@
   <footer class="border-t border-slate-200 dark:border-white/10 mt-10">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 text-sm">
       <div><div class="font-bold text-slate-800 dark:text-white">반도체 <span class="text-indigo-600 dark:text-cyan-300">새김</span></div><p class="text-xs text-slate-500 dark:text-slate-400 mt-1">오늘의 배움을 새기다 · LEARN · RECORD · EVOLVE</p></div>
-      <p class="text-xs text-slate-400 dark:text-slate-500 sm:max-w-sm sm:text-right leading-relaxed">AI가 생성한 문제와 이론은 검수 후 게시돼요. 오류를 발견하면 문제 풀이 중 🚨 제보를 눌러 알려 주세요.<br><a href="../theory/" class="underline underline-offset-2 hover:text-slate-600 dark:hover:text-slate-300">이론 전체 목록 보기</a></p>
+      <p class="text-xs text-slate-400 dark:text-slate-500 sm:max-w-sm sm:text-right leading-relaxed">AI가 생성한 문제와 이론은 검수 후 게시돼요. 오류를 발견하면 문제 풀이 중 🚨 제보를 눌러 알려 주세요.<br><a id="theoryHubLink" href="../theory/" class="underline underline-offset-2 hover:text-slate-600 dark:hover:text-slate-300">이론 전체 목록 보기</a></p>
     </div>
   </footer>
 
@@ -557,8 +557,16 @@
     let navLog = [], navIdx = 0, returnCtx = null;
 
     // 이론 페이지(theory/<id>/)도 이 앱 그대로(index.html 에 글을 미리 넣은 것)라서, 데이터·링크는 ROOT 기준으로 찾는다.
-    const ROOT = window.ROOT || '';
-    const APP_BASE = (() => { try { return new URL(window.ROOT || './', location.href).pathname; } catch (e) { return location.pathname; } })();
+    // 사이트 맨 위 주소(예: /저장소이름/)를 주소창에서 계산한다. theory/<id>/ 페이지는 DEPTH=2, theory/ 목록은 DEPTH=1.
+    // 주소 끝의 슬래시나 index.html 유무, 하위 경로 배포와 상관없이 항상 같은 곳의 data/ 를 찾는다.
+    const ROOT = (() => {
+      try {
+        const parts = location.pathname.replace(/index\.html$/, '').split('/').filter(Boolean), d = window.DEPTH || 0;
+        const keep = d ? parts.slice(0, Math.max(0, parts.length - d)) : parts;
+        return '/' + (keep.length ? keep.join('/') + '/' : '');
+      } catch (e) { return './'; }
+    })();
+    const APP_BASE = ROOT;
     let theoryPages = {};   // 이론 id -> 정적 페이지 주소 조각 (data/theory_pages.json). 이론을 읽는 동안 주소창이 그 이론의 고유 주소가 된다.
     function urlForState() {
       try {
@@ -569,6 +577,7 @@
 
     async function initApp() {
       try {
+        const hubLink = document.getElementById('theoryHubLink'); if (hubLink) hubLink.href = ROOT + 'theory/';
         const ts = new Date().getTime();
         const [qRes, iRes, tRes, pRes] = await Promise.all([fetch(`${ROOT}data/questions.json?t=${ts}`).catch(()=>null), fetch(`${ROOT}data/interviews.json?t=${ts}`).catch(()=>null), fetch(`${ROOT}data/theories.json?t=${ts}`).catch(()=>null), fetch(`${ROOT}data/theory_pages.json?t=${ts}`).catch(()=>null)]);
         try { if (pRes && pRes.ok) theoryPages = await pRes.json() || {}; } catch (e) {}
