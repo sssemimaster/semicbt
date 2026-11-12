@@ -228,8 +228,8 @@
       <section class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
         <div>
           <p id="homeDate" class="eyebrow mb-2"></p>
-          <h2 class="text-[26px] sm:text-[30px] font-bold tracking-[-.03em] text-slate-900 dark:text-white leading-tight" style="text-wrap:balance"><span class="text-indigo-600 dark:text-cyan-300">하루 5분,</span> 오늘의 학습을 새겨보세요</h2>
-          <p id="homeSummary" class="mt-2 text-sm text-slate-500 dark:text-slate-400"></p>
+          <h2 class="text-[26px] sm:text-[30px] font-bold tracking-[-.03em] text-slate-900 dark:text-white leading-tight" style="text-wrap:balance;word-break:keep-all"><span class="text-indigo-600 dark:text-cyan-300">하루 5분,</span> 오늘의 학습을 웨이퍼에 새겨보세요</h2>
+          <p id="homeSummary" class="mt-2 text-sm text-slate-500 dark:text-slate-400">평범한 학생이 공부하려고 만든 반도체 학습 공간</p>
         </div>
         <button onclick="navTo('view-search')" class="flex items-center gap-2.5 w-full sm:w-72 px-4 h-11 rounded-xl bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-white/10 text-sm text-slate-400 hover:border-indigo-400 dark:hover:border-cyan-300/60 transition text-left">🔍 <span>이론 · 문제 · 면접 검색</span></button>
       </section>
@@ -1174,7 +1174,6 @@
       const now = new Date(), wd = ['일', '월', '화', '수', '목', '금', '토'][now.getDay()];
       el('homeDate').textContent = `${now.getMonth() + 1}월 ${now.getDate()}일 ${wd}요일`;
       const T = stats.total, pct = T.t ? Math.round(T.r / T.t * 100) : 0, wc = allQuizData.filter(q => wrongNotes[q.id]).length, t = todayData();
-      el('homeSummary').textContent = T.t ? `오늘 ${Math.min(DAILY_GOAL, t.pts)}/${DAILY_GOAL} 포인트 · 누적 ${T.t}문제 · 정답률 ${pct}%${wc ? ` · 복습할 오답 ${wc}문제` : ''}` : '이론 한 편과 문제 몇 개면 충분해요. 어려운 용어도 쉬운 말로 풀어 드려요.';
       const nd = el('homeNoteDesc'); if (nd && !nd.dataset.def) nd.dataset.def = nd.textContent;
       if (nd) nd.textContent = wc ? `복습할 오답 ${wc}문제가 기다리고 있어요` : nd.dataset.def;
       renderHomeSubjects();
