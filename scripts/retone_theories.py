@@ -33,6 +33,7 @@ RETONE_SYSTEM = """당신은 학습서 편집자입니다. 받은 반도체 학�
 - 사실, 수치, 용어, 문장 순서, 문단 구성, 분량. 내용을 더하거나 빼거나 요약하지 않습니다.
 - 마크다운 구조: `### [뱃지] 제목` 소제목의 [뱃지], 표, 불릿, `> 💡 [..]` 인용문 형식, **굵게**, 수식($...$, $$...$$)과 LaTeX 기호.
 - 영문 병기, 괄호 표기.
+- `{{diagram:...}}` 로 시작하는 한 줄(그림 자리 표시)은 글자 하나도 바꾸지 않고 같은 위치에 그대로 둡니다.
 
 출력은 변환한 마크다운 본문만 씁니다. 설명, 인사, 코드블록 감싸기는 쓰지 않습니다."""
 
@@ -62,6 +63,7 @@ def skeleton(text):
         "inline_math": text.replace("$$", "").count("$"),
         "quotes": len(re.findall(r"^>", text, re.M)),
         "bullets": len(re.findall(r"^\s*[-*]\s", text, re.M)),
+        "diagrams": re.findall(r"^[ \t]*\{\{\s*diagram:.*\}\}[ \t]*$", text, re.M),
     }
 
 
@@ -74,7 +76,7 @@ def check_conversion(old, new):
     a, b = skeleton(old), skeleton(new)
     for k in a:
         if a[k] != b[k]:
-            probs.append(f"구조가 달라짐: {k} {a[k]} → {b[k]}" if not isinstance(a[k], list) else f"뱃지가 달라짐: {a[k]} → {b[k]}")
+            probs.append(f"구조가 달라짐: {k} {a[k]} → {b[k]}" if not isinstance(a[k], list) else f"{k} 목록이 달라짐: {a[k]} → {b[k]}")
     ratio = len(new) / max(1, len(old))
     if not 0.85 <= ratio <= 1.15:
         probs.append(f"분량이 크게 달라짐 (원문의 {ratio:.0%})")
