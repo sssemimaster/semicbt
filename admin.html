@@ -39,6 +39,7 @@
       <span>📝 시험: <span id="draftQCount" class="font-bold text-indigo-400">0</span></span>
       <span>🗣️ 면접: <span id="draftICount" class="font-bold text-rose-400">0</span></span>
       <span>📖 이론: <span id="draftTCount" class="font-bold text-emerald-400">0</span></span>
+      <span>💼 직무: <span id="draftCCount" class="font-bold text-amber-400">0</span></span>
     </div>
   </header>
 
@@ -64,10 +65,11 @@
     <div id="dashboardSection" class="hidden space-y-6">
       
       <!-- ✨ 3단 탭 전환 메뉴 -->
-      <div class="flex bg-white p-1.5 rounded-2xl border border-slate-200 shadow-sm gap-1">
+      <div class="flex bg-white p-1.5 rounded-2xl border border-slate-200 shadow-sm gap-1 flex-wrap">
         <button onclick="switchTab('quiz')" id="tabQuizBtn" class="flex-1 py-3 font-bold text-sm rounded-xl bg-indigo-600 text-white transition shadow-md">📝 객관식</button>
         <button onclick="switchTab('interview')" id="tabInterviewBtn" class="flex-1 py-3 font-bold text-sm rounded-xl text-slate-500 hover:bg-slate-50 transition">🗣️ 주관식(면접)</button>
         <button onclick="switchTab('theory')" id="tabTheoryBtn" class="flex-1 py-3 font-bold text-sm rounded-xl text-slate-500 hover:bg-slate-50 transition">📖 이론(백과)</button>
+        <button onclick="switchTab('career')" id="tabCareerBtn" class="flex-1 py-3 font-bold text-sm rounded-xl text-slate-500 hover:bg-slate-50 transition">💼 직무</button>
       </div>
 
       <div class="flex justify-end -mt-3"><button onclick="refreshDrafts()" class="text-xs bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 px-3 py-1.5 rounded-lg font-semibold transition">🔄 대기열 새로고침</button></div>
@@ -91,6 +93,12 @@
       <div id="reviewInterviewContainer" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 hidden">
         <h2 class="text-xl font-bold text-slate-800 mb-4">🗣️ 면접 시나리오 검수</h2>
         <div id="iBox"></div>
+      </div>
+
+      <!-- 💼 직무 지도 렌더러 -->
+      <div id="reviewCareerContainer" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 hidden">
+        <h2 class="text-xl font-bold text-slate-800 mb-4">💼 직무 지도 검수</h2>
+        <div id="cBox"></div>
       </div>
 
       <!-- 📖 ✨ 신규: 이론 백과사전 렌더러 ✨ -->
@@ -121,6 +129,9 @@
     let currentQuizIndex = 0;
     let currentInterviewIndex = 0;
     let currentTheoryIndex = 0; // ✨ 이론 인덱스
+    let draftCareers = [];      // 💼 직무 대기소
+    let currentCareerIndex = 0;
+    const CAREER_BLD_NAMES = { design: '설계센터', rnd: 'R&D센터', fab: 'FAB (웨이퍼 제조)', hq: '본사 사무동', sub: '서브팹·유틸리티', pkg: '후공정동', supply: '장비·소재 구역', it: 'IT·데이터센터', lab: '분석·품질 랩' };
 
     // ---- 로그인 시도 제한 (같은 브라우저에서 5회 실패 시 5분 잠금) ----
     const LOCK_KEY = 'adminLock';
@@ -189,11 +200,12 @@
     }
     async function refreshDrafts() {
       try {
-        const [q, i, t] = await Promise.all(["data/draft_questions.json", "data/draft_interviews.json", "data/draft_theories.json"].map(fetchGitHubFile));
+        const [q, i, t, c] = await Promise.all(["data/draft_questions.json", "data/draft_interviews.json", "data/draft_theories.json", "data/draft_careers.json"].map(fetchGitHubFile));
+        draftCareers = c ? JSON.parse(c.content) : []; document.getElementById('draftCCount').innerText = draftCareers.length;
         draftQuizzes = (q ? JSON.parse(q.content) : []).map(x => ({ ...x, explanation: fixExpl(x.explanation) })); draftInterviews = i ? JSON.parse(i.content) : []; draftTheories = t ? JSON.parse(t.content) : [];
         currentQuizIndex = currentInterviewIndex = currentTheoryIndex = 0;
         document.getElementById('draftQCount').innerText = draftQuizzes.length; document.getElementById('draftICount').innerText = draftInterviews.length; document.getElementById('draftTCount').innerText = draftTheories.length;
-        renderQuizReview(); renderInterviewReview(); renderTheoryReview();
+        renderQuizReview(); renderInterviewReview(); renderTheoryReview(); renderCareerReview();
       } catch (e) { console.error(e); alert('새로고침 실패 (토큰/권한 확인)'); }
     }
 
@@ -218,12 +230,18 @@
         draftTheories = tFile ? JSON.parse(tFile.content) : [];
         document.getElementById('draftTCount').innerText = draftTheories.length;
 
+        // 💼 직무 로드
+        const cFile = await fetchGitHubFile("data/draft_careers.json");
+        draftCareers = cFile ? JSON.parse(cFile.content) : [];
+        document.getElementById('draftCCount').innerText = draftCareers.length;
+
         document.getElementById('authSection').classList.add('hidden');
         document.getElementById('dashboardSection').classList.remove('hidden');
 
         renderQuizReview();
         renderInterviewReview();
         renderTheoryReview(); // ✨ 이론 렌더링 호출
+        renderCareerReview();
         
         if(supabaseClient) loadReports();
       } catch (e) { alert("데이터 접근 권한이 없거나 토큰이 만료되었습니다."); console.error(e); }
@@ -231,7 +249,7 @@
 
     // ✨ 3단 탭 전환 로직 개선
     function switchTab(tab) {
-      const tabs = ['quiz', 'interview', 'theory'];
+      const tabs = ['quiz', 'interview', 'theory', 'career'];
       tabs.forEach(t => {
         const btn = document.getElementById(`tab${t.charAt(0).toUpperCase() + t.slice(1)}Btn`);
         const container = document.getElementById(`review${t.charAt(0).toUpperCase() + t.slice(1)}Container`);
@@ -329,6 +347,61 @@
     // ==========================================
     // 📖 ✨ 신규: 이론 검수 (마크다운 렌더링) ✨
     // ==========================================
+    // ==========================================
+    // 💼 직무 지도 검수 (data/draft_careers.json -> data/careers.json)
+    // ==========================================
+    function renderCareerReview() {
+      const box = document.getElementById('cBox');
+      if (!draftCareers.length) { box.innerHTML = "<p class='text-center py-6 text-slate-500 font-bold'>대기 중인 직무가 없습니다.</p>"; return; }
+      if (currentCareerIndex >= draftCareers.length) currentCareerIndex = draftCareers.length - 1;
+      if (currentCareerIndex < 0) currentCareerIndex = 0;
+      const j = draftCareers[currentCareerIndex], bn = CAREER_BLD_NAMES[j.building] || j.building;
+      const same = draftCareers.filter(x => x.building === j.building).length;
+      const opts = draftCareers.map((x, i) => `<option value="${i}" ${i === currentCareerIndex ? 'selected' : ''}>${escHtml(CAREER_BLD_NAMES[x.building] || x.building)} · ${escHtml(x.name)}</option>`).join('');
+      const know = (j.know || []).map(k => `<span class="inline-block text-xs bg-amber-50 border border-amber-200 text-amber-800 font-semibold px-2 py-1 rounded mr-1 mb-1">${escHtml(k.label)}${k.theory_hint ? ` <span class="font-normal text-amber-600">→ 이론: ${escHtml(k.theory_hint)}</span>` : ' <span class="font-normal text-slate-400">(연결 이론 없음)</span>'}</span>`).join('');
+      const src = (j.sources || []).map(s => `<li><a href="${escHtml(s.url)}" target="_blank" rel="noopener noreferrer" class="underline text-indigo-600">${escHtml(s.title || s.url)}</a></li>`).join('');
+      const li = (a) => (a || []).map(x => `<li>${escHtml(x)}</li>`).join('');
+      box.innerHTML = `
+        <div class="flex items-center gap-2 mb-3"><select onchange="currentCareerIndex=Number(this.value);renderCareerReview()" class="flex-1 min-w-0 text-sm bg-slate-50 border border-slate-200 rounded-lg p-2">${opts}</select><span class="text-xs text-slate-400 shrink-0">${currentCareerIndex + 1} / ${draftCareers.length}</span></div>
+        <div class="mb-3 p-3 rounded-lg bg-amber-50 border border-amber-200 text-xs text-amber-800">${escHtml(j.basis || '검수 필요')}${src ? '' : '<br><b>참고 자료가 없는 초안이에요. 사실관계를 꼭 확인해 주세요.</b>'}</div>
+        <div class="mb-3"><span class="bg-amber-100 text-amber-800 text-xs font-semibold px-2.5 py-1 rounded">${escHtml(bn)}</span></div>
+        <h3 class="text-xl font-bold text-slate-900 mb-2">${escHtml(j.name)}</h3>
+        <p class="text-sm text-slate-700 mb-4 leading-relaxed">${escHtml(j.one)}</p>
+        <p class="text-xs font-bold text-indigo-600 mb-1">하는 일</p><ul class="list-disc pl-5 text-sm text-slate-700 space-y-1 mb-4">${li(j.todo)}</ul>
+        <p class="text-xs font-bold text-indigo-600 mb-1">앞뒤 직무와의 협업</p><p class="text-sm text-slate-700 mb-4 leading-relaxed">${escHtml(j.flow)}</p>
+        <p class="text-xs font-bold text-indigo-600 mb-1">알아야 할 지식 (이론 연결)</p><div class="mb-4">${know}</div>
+        <p class="text-xs font-bold text-indigo-600 mb-1">면접에서 묻는 것</p><ul class="list-disc pl-5 text-sm text-slate-700 space-y-1 mb-4">${li(j.ask)}</ul>
+        ${src ? `<p class="text-xs font-bold text-slate-400 mb-1">참고한 자료</p><ul class="text-xs text-slate-500 mb-4 space-y-0.5">${src}</ul>` : ''}
+        <button onclick="editDraft('career')" class="w-full mt-2 bg-amber-50 hover:bg-amber-100 transition text-amber-800 font-bold py-3 rounded-xl border border-amber-200">✏️ 내용 수정</button>
+        <div class="grid grid-cols-2 gap-4 mt-4">
+          <button onclick="rejectContent('career')" class="bg-rose-100 hover:bg-rose-200 transition text-rose-700 font-bold py-4 rounded-xl border border-rose-200">🗑️ 폐기</button>
+          <button onclick="approveCareer()" class="bg-emerald-600 hover:bg-emerald-700 transition text-white font-bold py-4 rounded-xl shadow-md">✅ 직무 등재</button>
+        </div>
+        ${same > 1 ? `<button onclick="approveCareerBuilding()" class="w-full mt-3 text-xs font-bold text-slate-500 hover:text-slate-800 border border-dashed border-slate-300 rounded-xl py-2.5">이 건물(${escHtml(bn)})의 대기 직무 ${same}개 한꺼번에 등재</button>` : ''}`;
+    }
+    async function publishCareers(list) {
+      const ids = new Set(list.map(x => x.id)), today = new Date().toISOString().slice(0, 10);
+      const clean = list.map(x => { const c = { ...x }; delete c.status; delete c.basis; c.reviewed_at = today; return c; });
+      const live = await fetchGitHubFile("data/careers.json");
+      let data = live ? JSON.parse(live.content) : [];
+      data = data.filter(x => !ids.has(x.id)).concat(clean).sort((a, b) => (a.order == null ? 1e9 : a.order) - (b.order == null ? 1e9 : b.order));
+      await updateGitHubFile("data/careers.json", live ? live.sha : null, JSON.stringify(data, null, 2), `Approve career ${clean.map(x => x.id).join(',')}`);
+      draftCareers = await draftMutate("data/draft_careers.json", a => a.filter(x => !ids.has(x.id)), "Remove approved career drafts");
+      currentCareerIndex = Math.min(currentCareerIndex, Math.max(0, draftCareers.length - 1));
+      document.getElementById('draftCCount').innerText = draftCareers.length; renderCareerReview();
+    }
+    async function approveCareer() {
+      const j = draftCareers[currentCareerIndex]; if (!j) return;
+      if (!confirm(`'${j.name}' 직무를 정식 등재하시겠습니까?`)) return;
+      try { await publishCareers([j]); alert("✅ 직무 등재 완료!"); } catch (e) { alert("등재 실패"); console.error(e); }
+    }
+    async function approveCareerBuilding() {
+      const j = draftCareers[currentCareerIndex]; if (!j) return;
+      const list = draftCareers.filter(x => x.building === j.building), bn = CAREER_BLD_NAMES[j.building] || j.building;
+      if (!confirm(`${bn} 건물의 대기 직무 ${list.length}개를 한꺼번에 등재할까요?\n내용을 하나씩 확인하지 않고 올리는 것이니, 이미 검토를 마친 경우에만 눌러 주세요.`)) return;
+      try { await publishCareers(list); alert(`✅ ${list.length}개 직무 등재 완료!`); } catch (e) { alert("등재 실패"); console.error(e); }
+    }
+
     function renderTheoryReview() {
       if(draftTheories.length === 0) { 
         document.getElementById('tBox').innerHTML = "<p class='text-center py-6 text-slate-500 font-bold'>대기 중인 이론 데이터가 없습니다.</p>"; return; 
@@ -431,7 +504,7 @@
       
       try {
         // 재검수 초안이면, 기존 정식 문항도 함께 지울지 묻는다 (취소 = 기존 문항 유지)
-        const cur = type === 'quiz' ? draftQuizzes[currentQuizIndex] : type === 'interview' ? draftInterviews[currentInterviewIndex] : draftTheories[currentTheoryIndex];
+        const cur = type === 'quiz' ? draftQuizzes[currentQuizIndex] : type === 'interview' ? draftInterviews[currentInterviewIndex] : type === 'career' ? draftCareers[currentCareerIndex] : draftTheories[currentTheoryIndex];
         if (!cur) return;
         if (cur && cur.replaces && type !== 'theory' && confirm("기존 정식 문항도 함께 삭제할까요?\n확인 = 기존 문항까지 삭제 / 취소 = 기존 문항은 그대로 유지")) {
           const lp = type === 'quiz' ? "data/questions.json" : "data/interviews.json", lf = await fetchGitHubFile(lp);
@@ -446,6 +519,10 @@
           draftInterviews = await draftMutate("data/draft_interviews.json", a => a.filter(x => x.id !== cur.id), "Reject interview");
           currentInterviewIndex = Math.min(currentInterviewIndex, Math.max(0, draftInterviews.length - 1));
           document.getElementById('draftICount').innerText = draftInterviews.length; renderInterviewReview();
+        } else if(type === 'career') {
+          draftCareers = await draftMutate("data/draft_careers.json", a => a.filter(x => x.id !== cur.id), "Reject career");
+          currentCareerIndex = Math.min(currentCareerIndex, Math.max(0, draftCareers.length - 1));
+          document.getElementById('draftCCount').innerText = draftCareers.length; renderCareerReview();
         } else if(type === 'theory') {
           draftTheories = await draftMutate("data/draft_theories.json", a => a.filter(x => x.id !== cur.id), "Reject theory");
           currentTheoryIndex = Math.min(currentTheoryIndex, Math.max(0, draftTheories.length - 1));
@@ -465,8 +542,11 @@
     const DRAFT = {
       quiz: { box: 'qBox', file: 'data/draft_questions.json', list: () => draftQuizzes, idx: () => currentQuizIndex, render: () => renderQuizReview() },
       interview: { box: 'iBox', file: 'data/draft_interviews.json', list: () => draftInterviews, idx: () => currentInterviewIndex, render: () => renderInterviewReview() },
-      theory: { box: 'tBox', file: 'data/draft_theories.json', list: () => draftTheories, idx: () => currentTheoryIndex, render: () => renderTheoryReview() }
+      theory: { box: 'tBox', file: 'data/draft_theories.json', list: () => draftTheories, idx: () => currentTheoryIndex, render: () => renderTheoryReview() },
+      career: { box: 'cBox', file: 'data/draft_careers.json', list: () => draftCareers, idx: () => currentCareerIndex, render: () => renderCareerReview() }
     };
+    const lines = (a) => (a || []).join('\n');
+    const toLines = (id) => val(id).split('\n').map(x => x.trim()).filter(Boolean);
     function editDraft(type) {
       const d = DRAFT[type], it = d.list()[d.idx()]; if (!it) return;
       let h = '<div class="mb-2 text-sm font-bold text-amber-700">✏️ 내용 수정 중</div>';
@@ -476,6 +556,9 @@
         h += fld('정답 번호', `<select id="e_answer" class="${INP}">${(it.options || []).map((_, n) => `<option value="${n}" ${n === it.answer ? 'selected' : ''}>${n + 1}번</option>`).join('')}</select>`) + fld('해설', tin('e_explanation', it.explanation, 5));
       } else if (type === 'interview') {
         h += fld('대분류(category)', tin('e_category', it.category)) + fld('주제(topic)', tin('e_topic', it.topic)) + fld('질문', tin('e_question', it.question, 3)) + fld('핵심 키워드 (쉼표로 구분)', tin('e_keys', (it.key_points || []).join(', '))) + fld('모범 답안', tin('e_answer', it.interview_answer, 8)) + fld('꼬리 질문', tin('e_follow', it.follow_up || '', 2)) + fld('꼬리 질문 모범 답', tin('e_followa', it.follow_up_answer || '', 4));
+      } else if (type === 'career') {
+        h += fld('직무 이름', tin('e_name', it.name)) + fld('한 줄 정의', tin('e_one', it.one, 2)) + fld('하는 일 (한 줄에 하나)', tin('e_todo', lines(it.todo), 6)) + fld('협업', tin('e_flow', it.flow, 3))
+          + fld('알아야 할 지식 (한 줄에 하나: 이름 | 연결할 이론 제목 — 연결할 이론이 없으면 | 뒤를 비움)', tin('e_know', (it.know || []).map(k => k.label + ' | ' + (k.theory_hint || '')).join('\n'), 5)) + fld('면접 질문 (한 줄에 하나)', tin('e_ask', lines(it.ask), 4));
       } else {
         h += fld('대분류(category)', tin('e_category', it.category)) + fld('소분류(subject)', tin('e_subject', it.subject)) + fld('제목', tin('e_title', it.title)) + fld('태그 (쉼표로 구분)', tin('e_tags', (it.tags || []).join(', '))) + fld('본문 (마크다운)', tin('e_content', it.content, 20));
       }
@@ -494,6 +577,10 @@
         } else if (type === 'interview') {
           if (!val('e_question') || !val('e_answer')) return alert('질문과 모범 답안을 채워 주세요.');
           Object.assign(it, { category: val('e_category'), topic: val('e_topic'), question: val('e_question'), key_points: csv('e_keys'), interview_answer: val('e_answer'), follow_up: val('e_follow'), follow_up_answer: val('e_followa') });
+        } else if (type === 'career') {
+          if (!val('e_name') || !val('e_one') || !toLines('e_todo').length) return alert('직무 이름, 한 줄 정의, 하는 일을 채워 주세요.');
+          const know = toLines('e_know').map(l => { const p = l.split('|'); return { label: p[0].trim(), theory_hint: (p[1] || '').trim() || null }; }).filter(k => k.label);
+          Object.assign(it, { name: val('e_name'), one: val('e_one'), todo: toLines('e_todo'), flow: val('e_flow'), know, ask: toLines('e_ask') });
         } else {
           if (!val('e_title') || !val('e_content')) return alert('제목과 본문을 채워 주세요.');
           Object.assign(it, { category: val('e_category'), subject: val('e_subject'), title: val('e_title'), tags: csv('e_tags'), content: document.getElementById('e_content').value });
