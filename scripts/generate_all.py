@@ -679,6 +679,26 @@ def compose_quiz(it, theory_id):
     }
 
 
+def review_drafts(label, drafts, review_system, build_review):
+    """AI 검수. 한꺼번에 하다가 실패(출력 잘림 등)하면 한 개씩 나눠서 검수한다. 끝내 검수 못 한 것은 결과에 빠지고, 호출한 쪽이 규칙 검사만으로 판단한다."""
+    try:
+        reviews = call_json(M["review"], review_system, build_review(drafts), 0.2, 8000).get("reviews") or []
+        return {r.get("index"): r for r in reviews if isinstance(r, dict)}
+    except Exception as e:
+        if len(drafts) < 2:
+            raise
+        print(f"   ⚠️ {label} 검수를 한꺼번에 하지 못해 한 개씩 검수합니다: {e}")
+    out = {}
+    for n, it in enumerate(drafts):
+        try:
+            for r in call_json(M["review"], review_system, build_review([it]), 0.2, 6000).get("reviews") or []:
+                if isinstance(r, dict) and r.get("index") in (0, None):
+                    out[n] = {**r, "index": n}
+        except Exception as e:
+            print(f"   ⚠️ {label} {n + 1} 검수 실패(규칙 검사만 적용): {e}")
+    return out
+
+
 def collect_items(label, want, make_drafts, review_system, build_review, check, max_rounds=2):
     """초안 → AI 검수 → 규칙 검사를 거쳐 want 개를 채운다. 탈락해서 모자라면 부족한 만큼만 한 번 더 만든다."""
     final = []
@@ -688,16 +708,22 @@ def collect_items(label, want, make_drafts, review_system, build_review, check, 
             break
         if rnd:
             print(f"   ➕ 통과한 {label}이(가) {len(final)}개뿐이라 부족한 {need}개를 더 만듭니다.")
+        drafts = []
         try:
             drafts = make_drafts(need, final)[:need]
         except Exception as e:
             print(f"   ⚠️ {label} 초안 생성 실패: {e}")
-            continue
+            if need > 1:   # 여러 개를 한꺼번에 받다가 실패(출력 잘림 등)했으면 한 개씩 나눠서 받는다
+                print(f"   ↪ {label}을(를) 한 개씩 나눠서 다시 만듭니다.")
+                for _ in range(need):
+                    try:
+                        drafts += make_drafts(1, final + drafts)[:1]
+                    except Exception as e2:
+                        print(f"   ⚠️ {label} 초안 1개 생성 실패: {e2}")
         if not drafts:
             continue
         try:
-            reviews = call_json(M["review"], review_system, build_review(drafts), 0.2, 4000).get("reviews") or []
-            by_idx = {r.get("index"): r for r in reviews if isinstance(r, dict)}
+            by_idx = review_drafts(label, drafts, review_system, build_review)
             for n, it in enumerate(drafts):
                 r = by_idx.get(n)
                 if r is None:                      # 검수 누락 → 규칙만 통과하면 사용
@@ -731,7 +757,7 @@ INTERVIEW_PER_THEORY = 2
 def generate_quiz(theory, theory_id):
     final = collect_items(
         "문제", QUIZ_PER_THEORY,
-        lambda need, have: call_json(M["qa"], QUIZ_SYSTEM, build_quiz_prompt(theory, need, have), 0.8).get("questions") or [],
+        lambda need, have: call_json(M["qa"], QUIZ_SYSTEM, build_quiz_prompt(theory, need, have), 0.8, 8000).get("questions") or [],
         QUIZ_REVIEW_SYSTEM, lambda drafts: build_quiz_review_prompt(theory, drafts), check_quiz_item)
     return [compose_quiz(it, theory_id) for it in final]
 
@@ -844,7 +870,7 @@ def compose_interview(it, theory_id):
 def generate_interview(theory, theory_id):
     final = collect_items(
         "면접", INTERVIEW_PER_THEORY,
-        lambda need, have: call_json(M["qa"], INTERVIEW_SYSTEM, build_interview_prompt(theory, need, have), 0.7).get("interviews") or [],
+        lambda need, have: call_json(M["qa"], INTERVIEW_SYSTEM, build_interview_prompt(theory, need, have), 0.7, 8000).get("interviews") or [],
         INTERVIEW_REVIEW_SYSTEM, lambda drafts: build_interview_review_prompt(theory, drafts), check_interview_item)
     return [compose_interview(it, theory_id) for it in final]
 
