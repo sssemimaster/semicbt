@@ -265,38 +265,76 @@
     })();
   </script>
 <style id="careersCss">
-/* 💼 직무 지도: 건물 그림은 코드(CSS)로 그린다. 이미지 파일 없음. */
-.cs-frame{position:relative;width:100%;max-width:1280px;margin:0 auto;overflow:hidden;border-radius:16px;border:1px solid #1f2d4d;background:#070c1a}
-.cs-stage{position:absolute;left:0;top:0;width:1280px;height:500px;transform-origin:0 0;
-  background:radial-gradient(1px 1px at 90px 36px,#ffffffaa 50%,transparent),radial-gradient(1px 1px at 330px 70px,#ffffff88 50%,transparent),radial-gradient(1px 1px at 560px 28px,#ffffffaa 50%,transparent),radial-gradient(1px 1px at 760px 64px,#ffffff77 50%,transparent),radial-gradient(1px 1px at 980px 30px,#ffffffaa 50%,transparent),radial-gradient(1px 1px at 1180px 58px,#ffffff88 50%,transparent),linear-gradient(180deg,#070c1a 0%,#111d38 100%)}
-.cs-b{position:absolute;top:0;height:440px;pointer-events:none;transition:opacity .25s,filter .25s;
-  --base:linear-gradient(180deg,#23314f,#18223c);--pc:#2c3d63;--t1:#1d2b49;--t2:#34476f}
-.cs-b[data-b="design"]{--base:linear-gradient(180deg,#2f4f80,#1d3459)}
-.cs-b.lit{filter:drop-shadow(0 0 22px rgba(255,196,96,.65)) brightness(1.08);--base:linear-gradient(180deg,#ffe6a8,#f0b658);--pc:#f0b658;--t1:#c98f3c;--t2:#ffe0a0}
-.cs-b.dim{opacity:.28}
+/* 💼 직무 지도: 건물 그림은 코드(CSS)로 그린다. 이미지 파일 없음.
+   색은 전부 변수로 두고, 라이트(낮) / 다크(밤) 팔레트를 따로 쓴다.
+   성능: 불이 켜지는 효과는 filter 대신 '켜진 층'의 opacity 만 바꾼다 (GPU 합성만 쓰고 다시 그리지 않음). */
+.cs-frame{
+  --sc:1; --d:max(10px,calc(5px / var(--sc))); --d2:calc(var(--d) * 2);
+  /* 라이트: 맑은 낮 */
+  --sky:linear-gradient(180deg,#a9c9f2 0%,#d3e5fa 55%,#eef3f8 100%); --stars:0; --sun:1; --frame-b:#b9c9e2;
+  --b1:#eef2f9; --b2:#c9d4e7; --d1:#dbe8fb; --d2c:#aec6e8; --edge:#9db0cf; --gap:#a3b5d3; --pc:#b9c6de; --t1:#aab8d2; --t2:#dce5f3;
+  --lit1:#ffe08a; --lit2:#f6b13c; --gapL:#d38a14; --litpc:#e9a22e; --litt1:#d8901f; --litt2:#ffe7a6; --edgeL:#d9922a; --glow:rgba(245,158,11,.5); --sel:#d97706; --dim:.38;
+  --ground:linear-gradient(180deg,#d6deea,#bcc8db); --ground-b:#a3b3cf;
+  --flow:#d97706; --nd:#9fb0cc; --nd-fg:#ffffff; --nd-on:#f59e0b;
+  --lb:#334155; --lb-top:rgba(255,255,255,.88); --lb-lit:#b45309;
+  position:relative;width:100%;max-width:1280px;margin:0 auto;overflow:hidden;border-radius:16px;border:1px solid var(--frame-b);background:#d3e5fa;isolation:isolate;contain:layout paint}
+html.dark .cs-frame{
+  /* 다크: 밤 */
+  --sky:linear-gradient(180deg,#070c1a 0%,#111d38 100%); --stars:1; --sun:0; --frame-b:#1f2d4d;
+  --b1:#23314f; --b2:#18223c; --d1:#2f4f80; --d2c:#1d3459; --edge:#3a4f7a; --gap:#0b1220; --pc:#2c3d63; --t1:#1d2b49; --t2:#34476f;
+  --lit1:#dcb86a; --lit2:#bd8c3f; --gapL:#3d2b10; --litpc:#bd8c3f; --litt1:#9a7230; --litt2:#e6c887; --edgeL:#8c6a2f; --glow:rgba(236,178,84,.2); --sel:#f0c874; --dim:.3;
+  --ground:linear-gradient(180deg,#0d1426,#080d1b); --ground-b:#22335a;
+  --flow:#e2b867; --nd:#2a3b5e; --nd-fg:#8fa3c6; --nd-on:#e2b867;
+  --lb:#c0cde4; --lb-top:rgba(10,16,32,.78); --lb-lit:#f0cf8f}
+.cs-stage{position:absolute;left:0;top:0;width:1280px;height:500px;transform-origin:0 0;background:var(--sky)}
+.cs-stage::before{content:"";position:absolute;inset:0;opacity:var(--stars);pointer-events:none;
+  background:radial-gradient(1px 1px at 90px 36px,#ffffffaa 50%,transparent),radial-gradient(1px 1px at 330px 70px,#ffffff88 50%,transparent),radial-gradient(1px 1px at 560px 28px,#ffffffaa 50%,transparent),radial-gradient(1px 1px at 760px 64px,#ffffff77 50%,transparent),radial-gradient(1px 1px at 980px 30px,#ffffffaa 50%,transparent),radial-gradient(1px 1px at 1180px 58px,#ffffff88 50%,transparent)}
+.cs-stage::after{content:"";position:absolute;inset:0;opacity:var(--sun);pointer-events:none;background:radial-gradient(260px 220px at 1130px 40px,rgba(255,244,205,.95),rgba(255,244,205,0) 70%)}
+/* 건물: 어두운 층(base) 위에 '켜진 층'(on)을 겹쳐 두고 켜진 층의 투명도만 바꾼다 */
+.cs-b{position:absolute;top:0;height:440px;pointer-events:none;transition:opacity .22s}
+.cs-b[data-b="design"]{--b1:var(--d1);--b2:var(--d2c)}
+.cs-b.dim{opacity:var(--dim)}
+.cs-lay{position:absolute;left:0;top:0;width:100%;height:100%;--base:linear-gradient(180deg,var(--b1),var(--b2))}
+.cs-lay.on{opacity:0;transition:opacity .22s;will-change:opacity;
+  --base:linear-gradient(180deg,var(--lit1),var(--lit2));--pc:var(--litpc);--t1:var(--litt1);--t2:var(--litt2);--gap:var(--gapL);--edge:var(--edgeL)}
+.cs-b.lit .cs-lay.on{opacity:1}
 .cs-p{position:absolute;pointer-events:auto;cursor:pointer}
-.cs-body{background:var(--base);border-radius:2px;box-shadow:inset 0 0 0 1px #3a4f7a}
-.cs-b.sel .cs-body{box-shadow:inset 0 0 0 2px #ffcf70}
-.cs-w-glass{background:repeating-linear-gradient(0deg,transparent 0 12px,#0b1220 12px 16px),repeating-linear-gradient(90deg,transparent 0 14px,#0b1220 14px 18px),var(--base)}
-.cs-w-grid{background:repeating-linear-gradient(0deg,transparent 0 14px,#0b1220 14px 18px),repeating-linear-gradient(90deg,transparent 0 16px,#0b1220 16px 20px),var(--base)}
-.cs-w-led{background:repeating-linear-gradient(0deg,transparent 0 8px,#0b1220 8px 12px),var(--base)}
-.cs-w-band{background:repeating-linear-gradient(0deg,transparent 0 18px,#0b1220 18px 22px),var(--base)}
+.cs-lay.base .cs-p{pointer-events:none}
+.cs-body{background:var(--base);border-radius:2px;box-shadow:inset 0 0 0 1px var(--edge)}
+.cs-lay.on .cs-body{box-shadow:0 0 24px 1px var(--glow),inset 0 0 0 1px var(--edge)}
+.cs-b.sel .cs-lay .cs-body{box-shadow:inset 0 0 0 2px var(--sel)}
+.cs-b.sel .cs-lay.on .cs-body{box-shadow:0 0 24px 1px var(--glow),inset 0 0 0 2px var(--sel)}
+.cs-w-glass{background:repeating-linear-gradient(0deg,transparent 0 12px,var(--gap) 12px 16px),repeating-linear-gradient(90deg,transparent 0 14px,var(--gap) 14px 18px),var(--base)}
+.cs-w-grid{background:repeating-linear-gradient(0deg,transparent 0 14px,var(--gap) 14px 18px),repeating-linear-gradient(90deg,transparent 0 16px,var(--gap) 16px 20px),var(--base)}
+.cs-w-led{background:repeating-linear-gradient(0deg,transparent 0 8px,var(--gap) 8px 12px),var(--base)}
+.cs-w-band{background:repeating-linear-gradient(0deg,transparent 0 18px,var(--gap) 18px 22px),var(--base)}
 .cs-w-plain{background:var(--base)}
 .cs-part{background:var(--pc)}
 .cs-saw{clip-path:polygon(0 100%,0 0,25% 100%,25% 0,50% 100%,50% 0,75% 100%,75% 0,100% 100%)}
 .cs-dome{border-radius:60px 60px 0 0}
 .cs-tower{background:linear-gradient(90deg,var(--t1),var(--t2),var(--t1));border-radius:50% 50% 0 0/12px 12px 0 0}
-.cs-ground{position:absolute;left:0;top:440px;width:1280px;height:60px;background:linear-gradient(180deg,#0d1426,#080d1b);border-top:1px solid #22335a;z-index:3}
-.cs-flow{position:absolute;left:120px;top:447px;width:690px;height:3px;z-index:4;background:repeating-linear-gradient(90deg,#ffcf70 0 10px,transparent 10px 20px);background-size:20px 100%;animation:csdash 1.1s linear infinite}
-@keyframes csdash{to{background-position:20px 0}}
-@media (prefers-reduced-motion:reduce){.cs-flow{animation:none}}
-.cs-node{position:absolute;z-index:5;top:441px;width:22px;height:22px;border-radius:50%;background:#ffcf70;color:#1a1405;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center}
-.cs-lb{position:absolute;z-index:6;border:0;cursor:pointer;padding:5px 2px;font-size:13px;font-weight:700;line-height:1.3;text-align:center;border-radius:6px;color:#c0cde4;background:transparent;transition:opacity .25s,color .25s;font-family:inherit}
-.cs-lb.top{background:rgba(10,16,32,.78)}
-.cs-lb.lit{color:#ffd98a}
-.cs-lb.dim{opacity:.45}
-.cs-lb:focus-visible{outline:2px solid #ffcf70;outline-offset:2px}
+.cs-ground{position:absolute;left:0;top:440px;width:1280px;height:60px;background:var(--ground);border-top:1px solid var(--ground-b);z-index:3}
+/* ①→②, ②→③ 화살표 줄무늬: 두 건물이 함께 켜질 때만 움직인다 (평소엔 흐릿한 점선) */
+.cs-seg{position:absolute;top:447px;height:max(3px,calc(2.4px / var(--sc)));z-index:4;overflow:hidden;pointer-events:none}
+.cs-seg i{position:absolute;left:0;top:0;height:100%;width:calc(100% + var(--d2));opacity:.3;transition:opacity .22s;
+  background:repeating-linear-gradient(90deg,var(--flow) 0 var(--d),transparent var(--d) var(--d2))}
+.cs-seg.on i{opacity:1;animation:csdash 1.1s linear infinite;will-change:transform}
+@keyframes csdash{from{transform:translateX(calc(var(--d2) * -1))}to{transform:translateX(0)}}
+@media (prefers-reduced-motion:reduce){.cs-seg.on i{animation:none}}
+.cs-node{position:absolute;z-index:5;top:441px;transform:translateX(-50%);width:max(22px,calc(15px / var(--sc)));height:max(22px,calc(15px / var(--sc)));border-radius:50%;
+  background:var(--nd);color:var(--nd-fg);font-size:max(13px,calc(10px / var(--sc)));font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .22s,color .22s,opacity .22s}
+.cs-node.lit{background:var(--nd-on);color:#1a1405}
+.cs-node.dim{opacity:.45}
+.cs-lb{position:absolute;z-index:6;border:0;cursor:pointer;padding:5px 2px;font-size:13px;font-weight:700;line-height:1.3;text-align:center;border-radius:6px;color:var(--lb);background:transparent;transition:opacity .22s,color .22s;font-family:inherit}
+.cs-lb.top{background:var(--lb-top)}
+.cs-lb.lit{color:var(--lb-lit)}
+.cs-lb.dim{opacity:.5}
+.cs-lb:focus-visible{outline:2px solid var(--sel);outline-offset:2px}
 .cs-nolabel .cs-lb{display:none}
+/* 직무 상세 카드 (이론 화면과 같은 말투의 장식) */
+.cj-h{display:flex;align-items:center;gap:10px;margin:2rem 0 .9rem;font-size:1.12rem;font-weight:800;color:var(--heading);letter-spacing:-.02em}
+.cj-n{flex:none;width:1.5rem;height:1.5rem;margin-top:.22rem;border-radius:999px;background:var(--badge-bg);color:var(--badge-fg);font-size:.72rem;font-weight:800;display:flex;align-items:center;justify-content:center}
+#cDetail .custom-highlight-box{margin:0;font-size:1rem;line-height:1.75;border-radius:16px;border-left-width:5px}
 </style>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "에피택시 성장", "description": "에피택시 성장은 반도체 소자의 성능을 결정짓는 핵심 공정이다. 이 공정을 통해 높은 품질의 결정 구조를 확보할 수 있어, 전자 이동도와 같은 전기적 특성이 향상된다.", "inLanguage": "ko", "articleSection": "반도체 8대 공정", "dateModified": "2026-11-12", "publisher": {"@type": "Organization", "name": "반도체 새김"}, "mainEntityOfPage": "https://sssemimaster.github.io/semicbt/theory/th-74292fee/"}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "반도체 새김", "item": "https://sssemimaster.github.io/semicbt/"}, {"@type": "ListItem", "position": 2, "name": "이론 백과사전", "item": "https://sssemimaster.github.io/semicbt/theory/"}, {"@type": "ListItem", "position": 3, "name": "에피택시 성장"}]}</script></head>
 <body class="bg-slate-50 dark:bg-[#0a1020] text-slate-800 dark:text-slate-200 antialiased min-h-screen flex flex-col relative transition-colors duration-200">
@@ -585,22 +623,27 @@
         <p class="text-sm text-slate-500 dark:text-slate-400 mt-1.5">건물에 마우스를 올리면 불이 켜지고, 누르면 그곳에서 일하는 직무가 나와요. 회사 이름 없이 보편적인 직무만 정리했어요.</p>
       </div>
 
-      <div class="flex items-center gap-2 flex-wrap mb-2">
-        <span class="text-xs text-slate-500 dark:text-slate-400 mr-1">회사 유형으로 보기</span>
+      <div class="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0f1729] p-4 mb-4">
+        <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1 mb-3">
+          <span class="eyebrow">회사 유형으로 보기</span>
+          <span class="text-xs text-slate-500 dark:text-slate-400">유형을 고르면 그 회사에 있는 건물만 불이 켜져요</span>
+        </div>
         <div id="cTypes" class="flex items-center gap-2 flex-wrap"></div>
+        <p id="cBlurb" class="mt-3 rounded-xl border-l-[5px] border-amber-500 bg-amber-50 dark:bg-amber-400/10 text-amber-950 dark:text-amber-100 px-4 py-2.5 text-sm leading-relaxed min-h-[2.75rem]"></p>
       </div>
-      <p id="cBlurb" class="text-sm text-slate-600 dark:text-slate-300 mb-4 min-h-[1.5rem]"></p>
 
       <div id="cFrame" class="cs-frame" style="height:500px">
         <div id="cStage" class="cs-stage" role="group" aria-label="반도체 단지 지도"></div>
       </div>
       <div id="cBldChips" class="flex flex-wrap gap-2 mt-3" role="group" aria-label="건물 선택"></div>
-      <p class="text-xs text-slate-500 dark:text-slate-400 mt-3 flex items-center gap-2"><span class="inline-block w-5 h-[3px] bg-amber-400 shrink-0"></span><span>칩의 여정: ① 설계 → ② FAB(웨이퍼 제조) → ③ 후공정. 마스크 제작은 R&amp;D센터에서 맡고, 나머지 건물은 이 흐름을 받쳐 주는 조직이에요.</span></p>
+      <p class="text-xs text-slate-500 dark:text-slate-400 mt-3 flex items-start gap-2"><span class="inline-block w-5 h-[3px] bg-amber-500 shrink-0 mt-1.5"></span><span>칩의 여정: ① 설계 → ② FAB(웨이퍼 제조) → ③ 후공정. 이 세 단계를 한 회사가 다 하는 유형(메모리·IDM)을 고르면 줄무늬가 움직여요. 마스크 제작은 R&amp;D센터에서 맡고, 나머지 건물은 이 흐름을 받쳐 주는 조직이에요.</span></p>
 
-      <div class="grid grid-cols-1 lg:grid-cols-[300px_340px_minmax(0,1fr)] gap-4 mt-5">
-        <section id="cBuilding" class="rounded-2xl bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-white/10 p-5 flex flex-col gap-2.5"></section>
-        <section id="cJobs" class="rounded-2xl bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-white/10 p-5 flex flex-col gap-2"></section>
-        <section id="cDetail" class="rounded-2xl bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-white/10 p-5 md:p-6 flex flex-col gap-3 min-w-0"></section>
+      <div class="grid grid-cols-1 lg:grid-cols-[320px_minmax(0,1fr)] gap-4 mt-5 items-start">
+        <div class="flex flex-col gap-4 min-w-0">
+          <section id="cBuilding" class="rounded-2xl bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-white/10 p-5 flex flex-col gap-2.5"></section>
+          <section id="cJobs" class="rounded-2xl bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-white/10 p-5 flex flex-col gap-2"></section>
+        </div>
+        <section id="cDetail" class="bg-white dark:bg-[#0f1729] rounded-2xl shadow-sm border border-slate-200 dark:border-white/10 overflow-hidden min-w-0"></section>
       </div>
     </div>
 
@@ -868,23 +911,29 @@
       fitCareerStage(); paintCareerStage(); renderCareerTypes(); renderCareerPanels();
       loadCareers().then(() => { if (currentViewId === 'view-careers') { renderCareerPanels(); renderCareerChips(); } });
     }
+    let careerEls = null, careerLastW = 0;
     function buildCareerStage() {
       const G = CAREER_G, st = document.getElementById('cStage'); if (!st) return;
       let h = '';
       CAREER_BLD.forEach(b => {
-        h += `<div class="cs-b" data-b="${b.id}" style="left:${b.x}px;width:${b.w}px;z-index:${b.z + 1}">`;
-        h += `<div class="cs-p cs-body cs-w-${b.win}" style="top:${G - b.h}px;left:0;width:${b.w}px;height:${b.h}px"></div>`;
-        (b.parts || []).forEach(p => { h += `<div class="cs-p cs-part ${p.k ? 'cs-' + p.k : ''}" style="left:${p.dx}px;top:${G - b.h + p.dy}px;width:${p.w}px;height:${p.h}px"></div>`; });
-        h += '</div>';
+        // 같은 건물을 두 번 그린다: 꺼진 모습(base) + 그 위에 겹친 켜진 모습(on). 켜고 끌 때는 on 의 투명도만 바뀐다.
+        const lay = (cls) => `<div class="cs-lay ${cls}"><div class="cs-p cs-body cs-w-${b.win}" style="top:${G - b.h}px;left:0;width:${b.w}px;height:${b.h}px"></div>`
+          + (b.parts || []).map(p => `<div class="cs-p cs-part ${p.k ? 'cs-' + p.k : ''}" style="left:${p.dx}px;top:${G - b.h + p.dy}px;width:${p.w}px;height:${p.h}px"></div>`).join('') + '</div>';
+        h += `<div class="cs-b" data-b="${b.id}" style="left:${b.x}px;width:${b.w}px;z-index:${b.z + 1}">${lay('base')}${lay('on')}</div>`;
       });
-      h += '<div class="cs-ground"></div><div class="cs-flow"></div>';
-      CAREER_BLD.filter(b => b.no).forEach(b => { h += `<div class="cs-node" style="left:${b.x + b.w / 2 - 11}px" title="${b.no}단계">${b.no}</div>`; });
+      const cx = (id) => { const b = CAREER_BLD.find(x => x.id === id); return b.x + b.w / 2; };
+      h += '<div class="cs-ground"></div>';
+      h += `<div class="cs-seg" data-from="design" data-to="fab" style="left:${cx('design')}px;width:${cx('fab') - cx('design')}px"><i></i></div>`;
+      h += `<div class="cs-seg" data-from="fab" data-to="pkg" style="left:${cx('fab')}px;width:${cx('pkg') - cx('fab')}px"><i></i></div>`;
+      CAREER_BLD.filter(b => b.no).forEach(b => { h += `<div class="cs-node" data-b="${b.id}" style="left:${b.x + b.w / 2}px" title="${b.no}단계">${b.no}</div>`; });
       CAREER_BLD.forEach(b => {
         const up = b.tag === 'top', partH = (b.parts || []).reduce((m, p) => Math.max(m, -p.dy), 0);
         const top = up ? (CAREER_G - b.h - partH - 30) : 462, w = up ? Math.max(b.w, 100) : b.w + 20, left = up ? b.x + (b.w - w) / 2 : b.x - 10;
         h += `<button type="button" class="cs-lb ${up ? 'top' : ''}" data-b="${b.id}" style="left:${left}px;top:${top}px;width:${w}px">${escH(b.short || b.name)}</button>`;
       });
       st.innerHTML = h;
+      // 자주 쓰는 요소는 한 번만 찾아 둔다 (마우스를 올릴 때마다 문서를 뒤지지 않음)
+      careerEls = { all: Array.from(st.querySelectorAll('[data-b]')), bs: Array.from(st.querySelectorAll('.cs-b')), segs: Array.from(st.querySelectorAll('.cs-seg')) };
       const setHover = (id) => { if (careerState.hover !== id) { careerState.hover = id; paintCareerStage(); } };
       const bid = (e) => { const n = e.target.closest && e.target.closest('[data-b]'); return n ? n.dataset.b : null; };
       st.addEventListener('mouseover', e => setHover(bid(e)));
@@ -898,8 +947,9 @@
     }
     function fitCareerStage() {
       const f = document.getElementById('cFrame'), s = document.getElementById('cStage'); if (!f || !s || !f.clientWidth) return;
+      if (f.clientWidth === careerLastW) return; careerLastW = f.clientWidth;   // 폭이 그대로면 다시 계산하지 않음
       const sc = Math.min(1, f.clientWidth / 1280);
-      s.style.transform = `scale(${sc})`; f.style.height = Math.round(500 * sc) + 'px'; f.classList.toggle('cs-nolabel', sc < 0.62);
+      s.style.transform = `scale(${sc})`; f.style.height = Math.round(500 * sc) + 'px'; f.style.setProperty('--sc', sc.toFixed(3)); f.classList.toggle('cs-nolabel', sc < 0.62);
     }
     // 불이 켜지는 규칙: 마우스를 올린 건물이 있으면 그 건물만, 없으면 (회사 유형을 골랐으면 그 유형의 건물들 / 아니면 고른 건물)
     function careerLit(id) {
@@ -909,17 +959,18 @@
       return { lit: careerState.sel === id, dim: false };
     }
     function paintCareerStage() {
-      document.querySelectorAll('#cStage [data-b]').forEach(n => {
-        const s = careerLit(n.dataset.b);
-        n.classList.toggle('lit', s.lit); n.classList.toggle('dim', s.dim);
-        if (n.classList.contains('cs-b')) n.classList.toggle('sel', n.dataset.b === careerState.sel);
-      });
+      if (!careerEls) return;
+      const L = {}; CAREER_BLD.forEach(b => { L[b.id] = careerLit(b.id); });
+      careerEls.all.forEach(n => { const s = L[n.dataset.b]; n.classList.toggle('lit', s.lit); n.classList.toggle('dim', s.dim); });
+      careerEls.bs.forEach(n => n.classList.toggle('sel', n.dataset.b === careerState.sel));
+      // ①→②, ②→③ 줄무늬는 양쪽 건물이 모두 켜져 있을 때만 움직인다
+      careerEls.segs.forEach(g => g.classList.toggle('on', L[g.dataset.from].lit && L[g.dataset.to].lit));
     }
     function renderCareerTypes() {
       const box = document.getElementById('cTypes'); if (!box) return;
       box.innerHTML = CAREER_TYPES.map(t => {
         const on = careerState.type === t.id;
-        return `<button type="button" onclick="pickCareerType('${t.id}')" aria-pressed="${on}" class="px-3.5 py-1.5 rounded-full text-[13px] font-semibold border transition ${on ? 'bg-amber-400 border-amber-400 text-slate-900' : 'bg-white dark:bg-[#0f1729] border-slate-200 dark:border-white/15 text-slate-600 dark:text-slate-300 hover:border-amber-400'}">${t.label}</button>`;
+        return `<button type="button" onclick="pickCareerType('${t.id}')" aria-pressed="${on}" class="px-4 py-2 rounded-full text-sm font-bold border-2 transition ${on ? 'bg-indigo-600 border-indigo-600 text-white shadow-md dark:bg-cyan-300 dark:border-cyan-300 dark:text-slate-900' : 'bg-slate-100 dark:bg-white/[0.07] border-slate-300 dark:border-white/25 text-slate-800 dark:text-slate-100 hover:border-indigo-500 dark:hover:border-cyan-300 hover:bg-white dark:hover:bg-white/10'}">${t.label}</button>`;
       }).join('');
       const ty = CAREER_TYPES.find(t => t.id === careerState.type) || CAREER_TYPES[0];
       document.getElementById('cBlurb').textContent = ty.blurb;
@@ -929,7 +980,7 @@
       const box = document.getElementById('cBldChips'); if (!box) return;
       box.innerHTML = CAREER_BLD.map(b => {
         const on = careerState.sel === b.id, n = careersData ? careerJobs(b.id).length : null;
-        return `<button type="button" onclick="selectCareerBuilding('${b.id}', true)" aria-pressed="${on}" class="px-3 py-1.5 rounded-lg text-xs font-semibold border transition ${on ? 'bg-indigo-600 border-indigo-600 text-white dark:bg-cyan-300 dark:border-cyan-300 dark:text-slate-900' : 'bg-white dark:bg-[#0f1729] border-slate-200 dark:border-white/15 text-slate-600 dark:text-slate-300 hover:border-indigo-400'}">${escH(b.name)}${n ? ` <span class="opacity-70">${n}</span>` : ''}</button>`;
+        return `<button type="button" onclick="selectCareerBuilding('${b.id}', true)" aria-pressed="${on}" class="px-3 py-1.5 rounded-lg text-xs font-semibold border transition ${on ? 'bg-indigo-600 border-indigo-600 text-white dark:bg-cyan-300 dark:border-cyan-300 dark:text-slate-900' : 'bg-slate-100 dark:bg-white/[0.07] border-slate-300 dark:border-white/25 text-slate-800 dark:text-slate-100 hover:border-indigo-500 dark:hover:border-cyan-300'}">${escH(b.name)}${n ? ` <span class="opacity-70">${n}</span>` : ''}</button>`;
       }).join('');
     }
     function pickCareerType(id) { careerState.type = id; careerState.hover = null; paintCareerStage(); renderCareerTypes(); }
@@ -948,7 +999,7 @@
       // 1) 건물 설명
       const owners = CAREER_TYPES.filter(t => t.has && t.has.indexOf(b.id) >= 0).map(t => `<span class="text-[11px] px-2.5 py-1 rounded-full border border-slate-200 dark:border-white/15 text-slate-600 dark:text-slate-300">${t.label}</span>`).join('');
       document.getElementById('cBuilding').innerHTML = `
-        <p class="text-[11px] font-bold text-amber-600 dark:text-amber-300">${b.no ? `칩의 여정 ${b.no}단계` : '지원 조직'}</p>
+        <p class="eyebrow">${b.no ? `칩의 여정 ${b.no}단계` : '지원 조직'}</p>
         <h3 class="text-xl font-bold text-slate-900 dark:text-white">${escH(b.name)}</h3>
         <p class="text-sm leading-relaxed text-slate-600 dark:text-slate-300">${escH(b.one)}</p>
         <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">이 건물이 있는 회사 유형</p>
@@ -964,34 +1015,48 @@
       document.getElementById('cJobs').innerHTML = `<p class="text-xs text-slate-500 dark:text-slate-400">여기서 일하는 직무${ready && jobs.length ? ` ${jobs.length}개` : ''}</p>${jl}`;
       // 3) 직무 상세
       const job = jobs.find(j => j.id === jid);
-      document.getElementById('cDetail').innerHTML = job ? careerDetailHtml(job) : `<p class="text-sm text-slate-400 dark:text-slate-500">${ready && jobs.length ? '직무를 고르면 자세한 내용이 나와요.' : ''}</p>`;
+      document.getElementById('cDetail').innerHTML = job ? careerDetailHtml(job) : `<p class="p-6 text-sm text-slate-400 dark:text-slate-500">${ready && jobs.length ? '직무를 고르면 자세한 내용이 나와요.' : ''}</p>`;
     }
     function retryCareers() { careersFailed = false; careersData = null; renderCareerPanels(); loadCareers().then(() => { if (currentViewId === 'view-careers') { renderCareerPanels(); renderCareerChips(); } }); }
 
     function careerDetailHtml(j) {
-      const H = (s) => `<p class="text-xs font-bold text-indigo-600 dark:text-cyan-300 mt-2">${s}</p>`;
+      const B = (emoji, badge, title) => `<div class="cj-h"><span class="custom-badge">${emoji} ${badge}</span>${title}</div>`;
+      const body = 'text-[15px] leading-[1.8] text-slate-700 dark:text-slate-300';
+      const bname = careerBld(j.building).name;
+      const owners = CAREER_TYPES.filter(t => t.has && t.has.indexOf(j.building) >= 0).map(t => `<span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#${t.label}</span>`).join('');
       const know = (j.know || []).map(k => {
         const lab = escH(k.label || k), ref = careerTheoryRef(k.theory_hint);
-        if (!ref) return `<span class="text-xs px-2.5 py-1 rounded-full border border-slate-200 dark:border-white/15 text-slate-600 dark:text-slate-300">${lab}</span>`;
+        if (!ref) return `<span class="text-[13px] px-3 py-1.5 rounded-full border border-slate-300 dark:border-white/20 text-slate-700 dark:text-slate-200">${lab}</span>`;
         const call = ref.kind === 'theory' ? `openCareerRef('theory','${jsq(ref.id)}')` : ref.kind === 'subject' ? `openCareerRef('subject','${jsq(ref.category)}','${jsq(ref.subject)}')` : `openCareerRef('category','${jsq(ref.category)}')`;
-        return `<button type="button" onclick="${call}" class="text-xs px-2.5 py-1 rounded-full border border-indigo-300 dark:border-cyan-300/50 text-indigo-700 dark:text-cyan-300 hover:bg-indigo-50 dark:hover:bg-white/5 font-semibold">📖 ${lab}</button>`;
+        return `<button type="button" onclick="${call}" class="text-[13px] px-3 py-1.5 rounded-full border border-indigo-300 dark:border-cyan-300/50 bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 hover:border-indigo-500 dark:hover:border-cyan-300 font-semibold transition">📖 ${lab}</button>`;
       }).join('');
       let iv = '';
       for (const k of (j.know || [])) {
         const ref = careerTheoryRef(k.theory_hint); if (!ref || ref.kind !== 'theory') continue;
         const t = allTheories.find(x => x.id === ref.id), n = t ? Math.min(2, matchItems(allInterviewData, t.title).length) : 0;
-        if (n) { iv = `<button type="button" onclick="startMiniInterview('${jsq(t.title)}')" class="mt-1 self-start text-xs font-bold px-3.5 py-2 rounded-lg border-2 border-indigo-600 dark:border-cyan-300 text-indigo-700 dark:text-cyan-300 hover:bg-indigo-50 dark:hover:bg-white/5">🗣️ 관련 면접 문항 풀어 보기 (${escH(t.title)} · ${n}문항)</button>`; break; }
+        if (n) { iv = `<button type="button" onclick="startMiniInterview('${jsq(t.title)}')" class="w-full bg-white dark:bg-[#0a1020] border-2 border-indigo-600 dark:border-[#67e8f9] text-indigo-700 dark:text-[#67e8f9] hover:bg-indigo-50 dark:hover:bg-[#0f2233] font-bold text-sm py-4 rounded-xl transition flex items-center justify-center gap-2"><span class="text-lg">🗣️</span> 관련 면접 문항 풀어 보기 <span class="text-xs font-bold opacity-80">${escH(t.title)} · ${n}문항</span></button>`; break; }
       }
       const src = (j.sources || []).filter(s => s && /^https?:\/\//.test(s.url || '')).map(s => `<li><a href="${escH(s.url)}" target="_blank" rel="noopener noreferrer" class="underline hover:text-indigo-600 dark:hover:text-cyan-300">${escH(s.title || s.url)}</a></li>`).join('');
       return `
-        <h3 class="text-xl font-bold text-slate-900 dark:text-white">${escH(j.name)}</h3>
-        <p class="text-sm leading-relaxed text-slate-700 dark:text-slate-200">${escH(j.one)}</p>
-        ${H('하는 일')}<ul class="list-disc pl-5 space-y-1 text-sm leading-relaxed text-slate-600 dark:text-slate-300">${(j.todo || []).map(x => `<li>${escH(x)}</li>`).join('')}</ul>
-        ${H('앞뒤 직무와의 협업')}<p class="text-sm leading-relaxed text-slate-600 dark:text-slate-300">${escH(j.flow)}</p>
-        ${H('알아야 할 지식')}<div class="flex flex-wrap gap-1.5">${know}</div>
-        ${H('면접에서 묻는 것')}<ul class="list-disc pl-5 space-y-1 text-sm leading-relaxed text-slate-600 dark:text-slate-300">${(j.ask || []).map(x => `<li>${escH(x)}</li>`).join('')}</ul>${iv}
-        ${src ? `<p class="text-[11px] font-bold text-slate-400 mt-3">참고한 자료</p><ul class="text-[11px] text-slate-500 dark:text-slate-400 space-y-0.5">${src}</ul>` : ''}
-        <p class="text-[11px] leading-relaxed text-slate-400 dark:text-slate-500 mt-3 pt-3 border-t border-slate-100 dark:border-white/10">회사마다 직무 이름과 업무 범위는 다를 수 있어요. 여기 적힌 내용은 여러 곳에서 공통으로 쓰이는 일반적인 설명이에요.${j.asof ? ` (정리 기준일 ${escH(j.asof)})` : ''}</p>`;
+        <div class="p-5 md:p-8">
+          <p class="eyebrow mb-2">${escH(bname)} <span class="opacity-50">/</span> 직무</p>
+          <h3 class="page-title text-slate-900 dark:text-white mb-3">${escH(j.name)}</h3>
+          <div class="flex flex-wrap gap-1.5 mb-6 pb-6 border-b border-slate-100 dark:border-white/10">${owners}</div>
+          <div class="custom-highlight-box">${escH(j.one)}</div>
+          ${B('🛠️', '업무', '하는 일')}
+          <ol class="space-y-3 m-0 p-0 list-none">${(j.todo || []).map((x, i) => `<li class="flex gap-3 items-start"><span class="cj-n">${i + 1}</span><span class="${body}">${escH(x)}</span></li>`).join('')}</ol>
+          ${B('🤝', '협업', '앞뒤 직무와 이어지는 방식')}
+          <div class="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/[0.04] px-4 py-3.5 ${body}">${escH(j.flow)}</div>
+          ${B('📖', '지식', '알아야 할 지식')}
+          <div class="flex flex-wrap gap-2">${know}</div>
+          ${B('🗣️', '면접', '면접에서 묻는 것')}
+          <div class="space-y-2.5">${(j.ask || []).map(x => `<div class="flex gap-3 rounded-r-xl border-l-4 border-indigo-400 dark:border-cyan-300 bg-indigo-50/70 dark:bg-white/[0.05] px-4 py-3"><span class="font-extrabold text-indigo-600 dark:text-cyan-300 text-sm leading-[1.8]">Q</span><span class="${body}">${escH(x)}</span></div>`).join('')}</div>
+        </div>
+        <div class="bg-slate-50 dark:bg-[#0f2233] p-5 md:p-6 border-t border-slate-200 dark:border-[#1e3a5f]">
+          ${iv ? `<p class="text-xs font-bold text-slate-400 dark:text-slate-500 mb-3">📌 이어서 연습하기</p><div class="mb-4">${iv}</div>` : ''}
+          ${src ? `<p class="text-[11px] font-bold text-slate-400 dark:text-slate-500 mb-1">참고한 자료</p><ul class="text-[11px] text-slate-500 dark:text-slate-400 space-y-0.5 mb-3">${src}</ul>` : ''}
+          <p class="text-[11px] leading-relaxed text-slate-400 dark:text-slate-500">회사마다 직무 이름과 업무 범위는 다를 수 있어요. 여기 적힌 내용은 여러 곳에서 공통으로 쓰이는 일반적인 설명이에요.${j.asof ? ` (정리 기준일 ${escH(j.asof)})` : ''}</p>
+        </div>`;
     }
     // 이론 화면 아래: 이 이론의 지식이 쓰이는 직무
     function appendTheoryCareers(t, card) {
