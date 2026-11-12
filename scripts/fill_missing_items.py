@@ -3,7 +3,7 @@
 - 기본: 검수 대기 중인 이론(draft_theories.json)만 본다.  --include-published: 정식 등재된 이론도 본다.
 - 이론 하나당 목표는 객관식 3개, 면접 2개. 정식 목록 + 대기열에 이미 있는 개수를 세고, 모자란 만큼만 만든다.
 - 기존 문항과 겹치지 않게 만든다. 새로 만든 문항은 draft_questions.json / draft_interviews.json 에만 들어간다.
-- 끝내 못 채운 이론은 건너뛰고(저장 안 함) 로그에 남긴다.
+- 목표를 다 못 채워도 검수를 통과한 문항은 일단 저장한다(다음에 다시 돌리면 모자란 만큼만 이어서 채움). 하나도 못 만들면 건너뛴다.
 
 사용법 (저장소 루트에서):  python scripts/fill_missing_items.py [--include-published] [--limit 5] [--dry-run]
 """
@@ -46,14 +46,19 @@ def main():
     for t, qs, its, nq, ni in todo[:a.limit]:
         print(f"\n[{t.get('title')}] 채우는 중... (문제 +{nq}, 면접 +{ni})")
         g.sel_cat, g.target_keyword = t.get("category"), t.get("title")   # compose_* 가 쓰는 값
-        new_q = new_i = []
-        try:
-            if nq:
-                new_q = g.generate_quiz(t["content"], t["id"], want=nq, existing=qs)
-            if ni:
-                new_i = g.generate_interview(t["content"], t["id"], want=ni, existing=its)
-        except Exception as e:
-            print(f"⚠️ 건너뜀(저장 안 함): {e}")
+        new_q, new_i = [], []
+        if nq:   # 문제와 면접은 따로 시도한다 (한쪽이 실패해도 다른 쪽 성과는 저장)
+            try:
+                new_q = g.generate_quiz(t["content"], t["id"], want=nq, existing=qs, allow_partial=True)
+            except Exception as e:
+                print(f"⚠️ 문제는 못 채웠어요: {e}")
+        if ni:
+            try:
+                new_i = g.generate_interview(t["content"], t["id"], want=ni, existing=its, allow_partial=True)
+            except Exception as e:
+                print(f"⚠️ 면접은 못 채웠어요: {e}")
+        if not (new_q or new_i):
+            print("⚠️ 건너뜀(저장 안 함): 검수를 통과한 문항이 없어요")
             continue
         if new_q:
             g.save_draft(g.draft_q_path, new_q)
