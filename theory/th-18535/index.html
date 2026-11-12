@@ -671,13 +671,13 @@ html.dark .cs-frame{
 
 <ol>
 <li>
-<p><strong>접합 형성</strong>: P형과 N형 반도체가 접촉하면, 전자와 양공이 서로 재결합하여 <strong>공핍층</strong>(Depletion Region)이 형성된다. 이때 전하의 이동으로 인해 전기장(Electric Field)이 발생한다.</p>
+<p><strong>접합 형성</strong>: P형과 N형 반도체가 접촉하면, 농도 차이 때문에 P쪽 양공과 N쪽 전자가 서로 반대편으로 확산해 접합면 근처에서 재결합한다. 그 자리에는 이동할 수 없는 이온화된 불순물만 남아 캐리어가 거의 없는 <strong>공핍층</strong>(Depletion Region)이 생기고, 이 고정 전하가 내부 전기장(Electric Field)을 만들어 더 이상의 확산을 막는다.</p>
 </li>
 <li>
-<p><strong>전압 인가</strong>: 외부 전압이 가해지면, 접합의 전기장이 변화하여 전류의 흐름이 조절된다. 순방향 바이어스(Forward Bias)에서는 전류가 흐르고, 역방향 바이어스(Reverse Bias)에서는 흐름이 차단된다.</p>
+<p><strong>전압 인가</strong>: 외부 전압이 가해지면, 접합의 전기장이 변화하여 전류의 흐름이 조절된다. 순방향 바이어스(Forward Bias)에서는 전류가 흐르고, 역방향 바이어스(Reverse Bias)에서는 전류가 거의 흐르지 않는다.</p>
 </li>
 <li>
-<p><strong>전류 흐름</strong>: 순방향 바이어스에서는 P형의 양공이 N형으로 이동하고, N형의 전자가 P형으로 이동하여 전류가 흐른다. 역방향 바이어스에서는 공핍층이 확장되어 전류가 흐르지 않게 된다.</p>
+<p><strong>전류 흐름</strong>: 순방향 바이어스에서는 P형의 양공이 N형으로 이동하고, N형의 전자가 P형으로 이동하여 전류가 흐른다. 역방향 바이어스에서는 공핍층이 넓어져 전류가 거의 흐르지 않는다(아주 작은 역방향 포화 전류만 흐른다).</p>
 </li>
 </ol>
 <figure class="dg" data-dg="pn-junction" data-cap="바이어스에 따라 달라지는 공핍층과 전류"></figure>
@@ -688,13 +688,13 @@ html.dark .cs-frame{
 
 <ol>
 <li>
-<p><strong>재결합 과정</strong>: P형 반도체의 양공과 N형 반도체의 전자가 접합부에서 만나 재결합된다. 이 과정에서 에너지가 방출되며, 공핍층의 전하 농도가 감소한다.</p>
+<p><strong>재결합 과정</strong>: P형 반도체의 양공과 N형 반도체의 전자가 접합부에서 만나 재결합하면 그 자리의 이동 가능한 캐리어가 사라지고, 고정된 불순물 이온만 남아 공핍층이 만들어진다.</p>
 </li>
 <li>
-<p><strong>전기장 형성</strong>: 재결합 후, 공핍층의 전하가 남아 전기장이 생성된다. 이 전기장은 전자와 양공의 이동을 제한하며, 접합의 전기적 특성을 결정짓는다.</p>
+<p><strong>전기장 형성</strong>: 재결합 후, 공핍층에 고정 전하(이온화된 불순물)가 남아 전기장이 생성된다. 이 전기장은 전자와 양공의 이동을 제한하며, 접합의 전기적 특성을 결정짓는다.</p>
 </li>
 <li>
-<p><strong>온도 의존성</strong>: PN 접합의 전도도는 온도에 따라 변한다. 온도가 상승하면 열에너지가 증가하여 전자와 양공의 생성이 촉진된다.</p>
+<p><strong>온도 의존성</strong>: PN 접합의 전도도는 온도에 따라 변한다. 온도가 상승하면 열에너지로 전자-정공 쌍이 더 많이 생겨 역방향 누설 전류가 크게 늘어나고, 같은 순방향 전류를 흘리는 데 필요한 전압은 낮아진다.</p>
 </li>
 </ol>
 <div class="custom-badge-heading"><span class="custom-badge">🗂️ 분류</span>PN 접합의 종류</div>
@@ -720,7 +720,7 @@ html.dark .cs-frame{
 </tr>
 <tr>
 <td>쇼트키 다이오드</td>
-<td>낮은 전압 강하를 가지는 다이오드</td>
+<td>금속-반도체 접합으로 전압 강하가 낮고 빠름 (PN 접합은 아님)</td>
 <td>고속 스위칭 회로</td>
 </tr>
 <tr>
@@ -766,9 +766,9 @@ html.dark .cs-frame{
 <p><strong>해결 방향</strong>: 적절한 <strong>냉각 시스템</strong>을 설계하여 온도를 관리하고, 고온 환경에서도 안정적인 성능을 유지하도록 한다.</p>
 </li>
 <li>
-<p><strong>문제</strong>: <strong>재결합 속도</strong>가 느려 전류 흐름이 저하되는 현상.</p>
+<p><strong>문제</strong>: <strong>역방향 누설 전류</strong>가 늘거나 항복이 일찍 일어나는 현상.</p>
 </li>
-<li><strong>해결 방향</strong>: 고순도 반도체 재료를 사용하고, 불순물을 최소화하여 재결합 속도를 개선한다.</li>
+<li><strong>해결 방향</strong>: 결정 결함을 줄이고 도핑 분포를 조절하며, 항복 전압에 여유를 둔 설계를 한다.</li>
 </ul>
 <div class="custom-badge-heading"><span class="custom-badge">🧠 암기 포인트</span>시험·면접 직전 체크</div>
 
@@ -776,8 +776,8 @@ html.dark .cs-frame{
 <li><strong>PN 접합</strong>: P형과 N형 반도체의 접합으로 전류 제어.</li>
 <li><strong>장점</strong>: 전류 제어 가능, 소형화 적합.</li>
 <li><strong>단점</strong>: 온도 의존성, 전압 강하.</li>
-<li><strong>문제</strong>: 열화 및 재결합 속도 저하.</li>
-<li><strong>해결</strong>: 냉각 시스템, 고순도 재료 사용. </li>
+<li><strong>문제</strong>: 열화 및 역방향 누설·항복.</li>
+<li><strong>해결</strong>: 냉각 시스템, 결정 결함 감소와 도핑 설계. </li>
 </ul>
 <div class="custom-highlight-box">[면접 팁] PN 접합의 장단점과 실무 이슈를 명확히 이해하고 설명할 수 있어야 한다.</div></div></div></div><nav aria-label="같이 보면 좋은 이론" class="mt-2"><p class="text-xs font-bold text-slate-400 dark:text-slate-500 mb-3">같이 보면 좋은 이론</p><ul class="grid gap-2 sm:grid-cols-2"><li><a href="../th-cff1d71d/" class="block rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0f1729] px-4 py-3 hover:border-indigo-300 dark:hover:border-cyan-400/40 transition"><span class="font-bold text-sm text-slate-900 dark:text-white">페르미 준위</span><span class="block text-xs text-slate-500 dark:text-slate-400 mt-0.5">반도체 기초 이론 · 반도체 물리</span></a></li></ul></nav></div>
       <button onclick="navTo('view-search')" class="mt-10 w-full flex items-center justify-between gap-3 rounded-2xl border border-dashed border-slate-300 dark:border-white/15 px-5 py-4 text-left text-sm text-slate-500 dark:text-slate-400 hover:border-indigo-400 dark:hover:border-cyan-300/60 transition">
