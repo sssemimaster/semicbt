@@ -1,0 +1,80 @@
+name: Fill Missing Quiz/Interview Items
+
+# 문제(3개)·면접(2개)이 모자란 이론에 모자란 만큼만 채워서 검수 대기열에 넣습니다. (수동 실행, 여러 번 돌려도 안전)
+# 'dry_run' 을 true 로 두면 API 호출 없이 어떤 이론이 얼마나 모자란지 로그에만 보여 줍니다.
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "true = 목록만 확인 (API 호출·파일 변경 없음) / false = 실제로 채움"
+        default: "true"
+        type: choice
+        options: ["true", "false"]
+      include_published:
+        description: "true = 이미 등재된 이론도 확인"
+        default: "false"
+        type: choice
+        options: ["false", "true"]
+      preset:
+        description: "품질/비용 프리셋 (비워두면 저장소 Variables 의 QUALITY_PRESET, 없으면 balanced)"
+        default: ""
+        type: choice
+        options: ["", high, balanced, economy]
+
+concurrency:
+  group: auto-content-generator
+  cancel-in-progress: false
+
+jobs:
+  fill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        persist-credentials: true
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install openai
+
+    - name: Fill missing items
+      env:
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        QUALITY_PRESET: ${{ github.event.inputs.preset || vars.QUALITY_PRESET || 'balanced' }}
+      run: |
+        ARGS=""
+        if [ "${{ github.event.inputs.include_published }}" = "true" ]; then ARGS="$ARGS --include-published"; fi
+        if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then ARGS="$ARGS --dry-run"; fi
+        python scripts/fill_missing_items.py $ARGS
+
+    - name: Commit and Push changes
+      run: |
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+        git add data/draft_questions.json data/draft_interviews.json
+        if git diff --staged --quiet; then
+          echo "변경 사항 없음 - 커밋 생략"
+          exit 0
+        fi
+        git commit -m "Fill missing quiz/interview items"
+        for i in 1 2 3; do
+          if git pull --rebase && git push; then
+            exit 0
+          fi
+          echo "push 실패 ($i/3), 5초 후 재시도"
+          git rebase --abort 2>/dev/null || true
+          sleep 5
+        done
+        echo "::error::push 실패"
+        exit 1
