@@ -213,6 +213,33 @@ DEFAULT_PARTS = [  # 계획 단계가 실패했을 때만 쓰는 기본 틀
 HEADING_RE = re.compile(r"^###\s*\[[^\]]+\]", re.M)
 
 
+# 이론 글에 넣을 수 있는 '눌러 보는 그림' 목록. (그림 자체는 index.html 의 DIAGRAMS 에 사람이 만들어 둔 것이고, AI 는 id 만 고른다.)
+# 새 그림을 만들면 index.html 의 DIAGRAMS 와 여기에 같은 id 를 함께 추가한다.
+DIAGRAMS = {
+    "dram-cell": "DRAM 1T1C 셀 회로도. 대기·쓰기 1·쓰기 0·읽기(1 저장)·읽기(0 저장) 상태를 눌러 보며 워드라인/비트라인 전압, 트랜지스터 ON/OFF, 전하 이동을 보여 준다. DRAM 셀의 읽기·쓰기·리프레시·센스 앰프를 설명하는 이론에만 사용",
+}
+DIAGRAM_LINE_RE = re.compile(r"^[ \t]*\{\{\s*diagram:([^|}\s]+)(?:\|([^}\n]*))?\}\}[ \t]*$", re.M)
+
+
+def diagram_menu():
+    return "\n".join(f"  - {k}: {v}" for k, v in DIAGRAMS.items())
+
+
+def sanitize_diagrams(text, seen=None):
+    """AI 가 쓴 {{diagram:id|캡션}} 줄을 점검한다. 목록에 없는 id 와 같은 그림의 중복은 줄째로 지운다."""
+    seen = set() if seen is None else seen
+
+    def fix(m):
+        did = m.group(1).strip()
+        if did not in DIAGRAMS or did in seen:
+            return ""
+        seen.add(did)
+        cap = re.sub(r"[{}|]", "", (m.group(2) or "")).strip()
+        return "{{diagram:%s%s}}" % (did, "|" + cap if cap else "")
+    out = DIAGRAM_LINE_RE.sub(fix, text)
+    return re.sub(r"\n{3,}", "\n\n", out).strip()
+
+
 def normalize_markdown(text):
     t = text.strip()
     # 응답 전체를 감싼 ```markdown 펜스 제거 (본문 안의 코드블록은 건드리지 않음)
@@ -226,6 +253,7 @@ def normalize_markdown(text):
     t = re.sub(r"^#{1,2}\s", "### ", t, flags=re.M)
     # 과한 빈 줄 정리
     t = re.sub(r"\n{3,}", "\n\n", t)
+    t = sanitize_diagrams(t)
     return t
 
 
@@ -303,6 +331,8 @@ def build_part_prompt(part, previous_text, outline=""):
 [형식 재확인]
 - 소제목은 `### [뱃지] 제목` 형식이며, 뱃지는 내용에 맞게 다음 중에서 고르세요: {part['badges']}
 - 인라인 팁 `> 💡 {part['tip']} ...` 를 1개 포함하세요.
+- (선택) 아래 '눌러 보는 그림' 중 이 글의 설명에 꼭 맞는 것이 있을 때만, 그 그림이 필요한 소제목의 본문 뒤에 단독 한 줄로 `{{{{diagram:그림id|한 문장 캡션}}}}` 을 넣을 수 있습니다. 맞는 그림이 없으면 아무것도 넣지 않습니다. 같은 그림은 글 전체에서 한 번만 쓰고, 그림이 설명하는 내용을 글에서도 말로 설명해야 합니다.
+{diagram_menu()}
 - 이 파트 범위 밖의 내용은 쓰지 말고, 마크다운 본문만 출력하세요."""
 
 
@@ -516,6 +546,8 @@ def generate_theory():
         print(f"   📖 이론 {part['no']}/3 「{part['name']}」 생성 중...")
         previous = "\n\n".join(sections)
         sections.append(ask_markdown(build_part_prompt(part, previous, outline), part))
+    seen = set()
+    sections = [sanitize_diagrams(sec, seen) for sec in sections]   # 파트가 달라도 같은 그림은 한 번만
     return audit_theory("\n\n".join(sections))
 
 
