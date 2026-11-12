@@ -135,10 +135,10 @@ THEORY_SYSTEM = """당신은 반도체 공정·소자 분야 10년차 현직 엔
 목표는 '외워지는 글'이 아니라 '읽고 나면 이해되는 글'입니다. 이 주제만의 글이어야 하며, 다른 주제 이름만 바꿔도 통하는 글은 실패입니다.
 
 [문체]
-- 부드러운 해요체(~해요, ~예요, ~거든요)로 씁니다. 딱딱한 개조식 나열이나 사전식 정의 나열은 피합니다.
-- 항목을 나열하기 전에 '왜 그런지'를 인과로 먼저 풀어 줍니다. (A 때문에 B가 되고, 그래서 C를 신경 써야 해요)
+- 평서체(~한다, ~이다, ~된다, ~있다)로 씁니다. 해요체(~해요, ~예요, ~거든요)와 합니다체(~합니다, ~입니다)는 쓰지 않습니다. 담백하고 또렷하게 쓰되 딱딱한 개조식 나열이나 사전식 정의 나열은 피합니다.
+- 항목을 나열하기 전에 '왜 그런지'를 인과로 먼저 풀어 줍니다. (A 때문에 B가 되고, 그래서 C를 신경 써야 한다)
 - 한 문단은 3~4문장 이내. 문장 길이와 시작 표현을 다양하게 합니다. 같은 어미·접속어를 반복하지 않습니다.
-- 독자에게 질문을 던지며 시작하지 않고, 본문에서도 수사 의문문("~일까요?")을 쓰지 않습니다. 궁금할 만한 점은 평서문으로 짚고 바로 설명합니다.
+- 독자에게 질문을 던지며 시작하지 않고, 본문에서도 수사 의문문("~일까?")을 쓰지 않습니다. 궁금할 만한 점은 평서문으로 짚고 바로 설명합니다.
 - 처음 보는 용어는 쉬운 말로 먼저 풀고, 영문 용어는 처음 한 번만 괄호로 병기합니다. 예: 식각 선택비(Selectivity)
 - 핵심 용어와 꼭 기억할 문장은 **굵게** 표시하되, 문단마다 남발하지 않습니다.
 - 비유는 글 전체에서 많아야 1개, 정확히 들어맞을 때만 쓰고 어디까지 맞는지 한 줄로 한계도 말합니다.
@@ -151,11 +151,11 @@ THEORY_SYSTEM = """당신은 반도체 공정·소자 분야 10년차 현직 엔
 - 주제와 직접 상관없는 일반론으로 분량을 채우지 않습니다. 해당되지 않는 항목(예: 지표에 '동작 원리', 장단점이 없는 개념에 '장단점')은 쓰지 않습니다.
 
 [쓰지 말아야 할 상투적 표현]
-'중요한 역할을 합니다', '필수적입니다', '다양한 분야에서', '이를 통해', '뿐만 아니라', '큰 영향을 미칩니다'(어떻게 미치는지 안 밝히고 쓰는 경우), '~을 명확히 이해하고', '핵심적인 역할'. 이런 말 대신 '구체적으로 무엇이 어떻게 되는지'를 씁니다.
+'중요한 역할을 한다', '필수적이다', '다양한 분야에서', '이를 통해', '뿐만 아니라', '큰 영향을 미친다'(어떻게 미치는지 안 밝히고 쓰는 경우), '~을 명확히 이해하고', '핵심적인 역할'. 이런 말 대신 '구체적으로 무엇이 어떻게 되는지'를 씁니다.
 
 [소제목]
 - `### [뱃지] 제목` 형식. 제목은 이 주제에서만 나올 구체적인 명사구나 평서문으로 씁니다. 예: `### [핵심 개념] 식각은 '깎는 일'이 아니라 '고르는 일'이다`
-- 이론은 면접이 아니라 설명하는 글입니다. 제목에 물음표(?)나 의문형(~란?, ~일까, ~할까요)을 쓰지 않습니다.
+- 이론은 면접이 아니라 설명하는 글입니다. 제목에 물음표(?)나 의문형(~란?, ~일까, ~할까)을 쓰지 않습니다.
 - '~의 중요성' 같은 어느 주제에나 붙는 제목도 피합니다.
 
 [팁 박스]
@@ -233,6 +233,14 @@ CLICHES = [r"중요한 역할", r"핵심적인 역할", r"필수적", r"다양�
            r"매우 중요", r"큰 영향을 (?:미|끼)", r"중요성을 (?:이해|명확)", r"명확히 이해", r"효과적으로 활용"]
 
 
+# 해요체·합니다체 어미 탐지 (이론·문제는 평서체 ~한다/~이다/~된다 로 쓴다). '필요', '주요', '중요', '수요' 같은 명사는 걸리지 않도록 예외로 뺀다.
+POLITE_RE = re.compile(r"(?:(?<=[가-힣])(?<![필중주수소개긴절])요|죠|습니다|입니다|합니다|됩니다|줍니다|립니다)(?=[\s.?!,)\"'*`~]|$)")
+
+
+def polite_hits(text):
+    return len(POLITE_RE.findall(text))
+
+
 def cliche_hits(text):
     return sum(len(re.findall(p, text)) for p in CLICHES)
 
@@ -253,6 +261,9 @@ def validate_part(text, part):
     hits = cliche_hits(text)
     if hits >= 3:
         raise ValueError(f"상투적 표현이 {hits}번 쓰임 (구체적으로 다시 쓰기)")
+    ph = polite_hits(text)
+    if ph >= 2:
+        raise ValueError(f"해요체/합니다체 어미가 {ph}번 쓰임 → 모든 문장을 평서체(~한다, ~이다, ~된다)로 쓰기")
     q_heads = [h for h in re.findall(r"^###.*$", text, re.M) if "?" in h or re.search(r"(?:까|나요|니까|란)\s*$", h.strip())]
     if q_heads:
         raise ValueError(f"소제목이 질문형임 ({q_heads[0][:40]}...) → 명사구/평서문으로 바꾸기")
@@ -451,12 +462,13 @@ def parts_from_plan(plan):
 AUDIT_SYSTEM = """당신은 반도체 공정·소자 전문가이자 까다로운 학습서 편집자입니다. 받은 학습 글에서 '고쳐야 할 구절'만 찾아 JSON 으로 알려 줍니다. 글 전체를 다시 쓰지 않습니다.
 고칠 대상은 다음뿐입니다.
 1. 사실 오류, 지어낸 분류·수치·공식, 확신할 수 없는 구체 숫자
-2. 구체적이지 않은 빈말 문장(예: '중요한 역할을 합니다'), 같은 말을 되풀이하는 문장, 내용 없는 팁 박스
+2. 구체적이지 않은 빈말 문장(예: '중요한 역할을 한다'), 같은 말을 되풀이하는 문장, 내용 없는 팁 박스
 3. 질문형 소제목, 수사 의문문
+4. 평서체(~한다/~이다/~된다)가 아닌 문장 끝(~해요, ~예요, ~합니다, ~입니다)
 틀리지 않은 문장은 건드리지 않습니다. 고칠 곳이 없으면 빈 배열을 돌려줍니다.
 
 출력 형식(JSON 객체 하나만):
-{"fixes": [{"find": "원문에 글자 하나 다르지 않게 그대로 있는 구절(원문에서 한 번만 나오는 길이로)", "replace": "고친 구절(삭제하려면 빈 문자열)", "reason": "한 줄 이유"}]}
+{"fixes": [{"find": "원문에 글자 하나 다르지 않게 그대로 있는 구절(원문에서 한 번만 나오는 길이로)", "replace": "고친 구절(삭제하려면 빈 문자열, 평서체 ~한다/~이다로 씀)", "reason": "한 줄 이유"}]}
 - find 는 한 줄 안에서만 고르고, '###' 소제목 표식이나 수식($...$) 기호는 find/replace 에 넣지 않습니다. (소제목 문구를 고칠 때는 ### [뱃지] 는 빼고 제목 글자만)
 - 최대 8개."""
 
@@ -544,14 +556,19 @@ QUIZ_SCHEMA = """{
 }"""
 
 
-def build_quiz_prompt(theory):
-    return f"""아래 이론 글만을 근거로 객관식 3문제를 만드세요.
+QUIZ_COMPOSITION = """1번: 개념 이해(concept) 또는 비교·구분(compare) — 기초~중급
+2번: 원인→결과 추론(cause) — 중급
+3번: 상황 적용(scenario) — 응용. 공정·소자에서 관측되는 상황을 2~3문장으로 제시하고 가장 타당한 원인·판단·조치를 묻기. 이론에서 도출 가능한 범위만."""
+
+
+def build_quiz_prompt(theory, n=3, existing=None):
+    comp = QUIZ_COMPOSITION if n >= 3 else f"서로 다른 유형(concept/compare/cause/scenario)으로 {n}문제. 상황 적용(scenario)은 응용 난이도로, 공정·소자에서 관측되는 상황을 2~3문장으로 제시하고 가장 타당한 원인·판단·조치를 묻기."
+    have = ("\n[이미 확보한 문제 - 이것과 겹치지 않는 다른 내용·다른 각도로 출제]\n" + "\n".join(f"- {str(e.get('question', ''))[:80]}" for e in existing) + "\n") if existing else ""
+    return f"""아래 이론 글만을 근거로 객관식 {n}문제를 만드세요.
 
 [문제 구성 - 서로 다른 유형으로]
-1번: 개념 이해(concept) 또는 비교·구분(compare) — 기초~중급
-2번: 원인→결과 추론(cause) — 중급
-3번: 상황 적용(scenario) — 응용. 공정·소자에서 관측되는 상황을 2~3문장으로 제시하고 가장 타당한 원인·판단·조치를 묻기. 이론에서 도출 가능한 범위만.
-
+{comp}
+{have}
 [보기 설계 규칙 - 글만 읽어도 풀리는 문제 금지]
 - 보기 4개(정답 1 + 오답 3)는 길이, 문장 구조, 어조, 구체성 수준이 서로 비슷해야 합니다. 정답이 가장 길거나 가장 구체적이면 안 됩니다.
 - 오답은 '학습자가 실제로 헷갈리는 오개념', '정답과 인접한 개념의 특성', '원인과 결과를 뒤집은 설명'처럼 그럴듯해야 합니다. 상식만으로 걸러지는 극단적·엉뚱한 보기("비용이 많이 든다", "전력 소모가 없다" 같은 것)는 금지입니다.
@@ -560,6 +577,10 @@ def build_quiz_prompt(theory):
 - 정답은 이론으로 명백히 하나여야 하고, 오답이 부분적으로 맞아 보여 논란이 생기면 안 됩니다.
 - 문제 지문의 단어를 정답 보기에만 그대로 반복하지 않습니다.
 - 부정형("아닌 것은?", "틀린 것은?") 질문은 금지입니다. 문제는 구체적인 질문 한 개입니다.
+
+[문체 - 해요체 금지]
+- 문제 지문·보기·해설 모두 평서체로 씁니다. 지문은 "~는 무엇인가?", "~의 원인으로 가장 타당한 것은?", 보기와 해설은 "~한다", "~이다", "~된다", 명사형 종결로 씁니다.
+- "~인가요?", "~할까요?", "~해요", "~예요", "~합니다", "~입니다" 같은 어미는 쓰지 않습니다.
 
 [해설]
 - why_correct 는 '왜 맞는지'를 이론과 연결해 친절히, why_wrong 은 '어떤 오해라서 틀렸는지'를 각각 한 문장으로 씁니다.
@@ -602,6 +623,8 @@ def check_quiz_item(it):
     if len(str(it.get("why_correct", "")).strip()) < 20: probs.append("정답 해설이 너무 짧음")
     if any(len(w) < 8 for w in dw): probs.append("오답 해설이 너무 짧음")
     if not str(it.get("takeaway", "")).strip(): probs.append("기억 포인트 없음")
+    if polite_hits(" ".join([q, *texts, *dw, str(it.get("why_correct", "")), str(it.get("takeaway", ""))])) >= 1:
+        probs.append("해요체/합니다체 어미 사용 → 지문은 '~인가?', 보기·해설은 '~한다/~이다' 평서체로")
     return probs
 
 
@@ -617,6 +640,7 @@ def build_quiz_review_prompt(theory, items):
 3. 단서 노출: 반도체 지식이 없어도 정답이 드러나는가? (보기 길이·구체성 차이, 극단적이거나 엉뚱한 오답, 지문 단어 반복, 장점을 묻는데 오답이 단점뿐인 경우 등)
 4. 오답의 질: 각 오답이 실제로 헷갈릴 만한 오개념·인접 개념인가?
 5. 해설: 왜 맞고 왜 틀린지 친절하고 정확한가? 이론에 없는 사실을 지어내지 않았는가?
+6. 문체: 지문·보기·해설이 평서체(~인가?, ~한다, ~이다, ~된다)인가? '~인가요?', '~해요', '~합니다' 같은 어미는 평서체로 고칩니다. (fix 로 처리)
 rule_problems 에 적힌 문제는 반드시 해결하세요.
 
 각 문제에 대해 verdict 를 정합니다.
@@ -655,34 +679,60 @@ def compose_quiz(it, theory_id):
     }
 
 
-def generate_quiz(theory, theory_id):
-    drafts = (call_json(M["qa"], QUIZ_SYSTEM, build_quiz_prompt(theory), 0.8).get("questions") or [])[:3]
-    if not drafts:
-        raise ValueError("초안 문제가 비어 있음")
+def collect_items(label, want, make_drafts, review_system, build_review, check, max_rounds=2):
+    """초안 → AI 검수 → 규칙 검사를 거쳐 want 개를 채운다. 탈락해서 모자라면 부족한 만큼만 한 번 더 만든다."""
     final = []
-    try:
-        reviews = call_json(M["review"], QUIZ_REVIEW_SYSTEM, build_quiz_review_prompt(theory, drafts), 0.2, 4000).get("reviews") or []
-        by_idx = {r.get("index"): r for r in reviews if isinstance(r, dict)}
-        for n, it in enumerate(drafts):
-            r = by_idx.get(n)
-            if r is None:                      # 검수 누락 → 규칙만 통과하면 사용
-                cand = it
-            elif r.get("verdict") == "drop":
-                print(f"   🗑️ 문제 {n + 1} 제외: {'; '.join(map(str, r.get('issues', [])))[:120]}")
-                continue
-            else:
-                cand = r.get("final") or it
-            if check_quiz_item(cand):
-                print(f"   🗑️ 문제 {n + 1} 제외(검수 후에도 규칙 위반): {check_quiz_item(cand)}")
-                continue
-            if r and r.get("verdict") == "fix":
-                print(f"   🔧 문제 {n + 1} 수정: {'; '.join(map(str, r.get('issues', [])))[:120]}")
-            final.append(cand)
-    except Exception as e:
-        print(f"   ⚠️ 문제 AI 검수 실패 → 규칙 검사만 통과한 초안 사용: {e}")
-        final = [it for it in drafts if not check_quiz_item(it)]
+    for rnd in range(max_rounds):
+        need = want - len(final)
+        if need <= 0:
+            break
+        if rnd:
+            print(f"   ➕ 통과한 {label}이(가) {len(final)}개뿐이라 부족한 {need}개를 더 만듭니다.")
+        try:
+            drafts = make_drafts(need, final)[:need]
+        except Exception as e:
+            print(f"   ⚠️ {label} 초안 생성 실패: {e}")
+            continue
+        if not drafts:
+            continue
+        try:
+            reviews = call_json(M["review"], review_system, build_review(drafts), 0.2, 4000).get("reviews") or []
+            by_idx = {r.get("index"): r for r in reviews if isinstance(r, dict)}
+            for n, it in enumerate(drafts):
+                r = by_idx.get(n)
+                if r is None:                      # 검수 누락 → 규칙만 통과하면 사용
+                    cand = it
+                elif r.get("verdict") == "drop":
+                    print(f"   🗑️ {label} {n + 1} 제외: {'; '.join(map(str, r.get('issues', [])))[:120]}")
+                    continue
+                else:
+                    cand = r.get("final") or it
+                probs = check(cand)
+                if probs:
+                    print(f"   🗑️ {label} {n + 1} 제외(검수 후에도 규칙 위반): {probs}")
+                    continue
+                if r and r.get("verdict") == "fix":
+                    print(f"   🔧 {label} {n + 1} 수정: {'; '.join(map(str, r.get('issues', [])))[:120]}")
+                final.append(cand)
+        except Exception as e:
+            print(f"   ⚠️ {label} AI 검수 실패 → 규칙 검사만 통과한 초안 사용: {e}")
+            final += [it for it in drafts if not check(it)]
     if not final:
-        raise ValueError("검수를 통과한 문제가 없음")
+        raise ValueError(f"검수를 통과한 {label}이(가) 없음")
+    if len(final) < want:
+        print(f"   ⚠️ {label}이(가) 목표 {want}개 중 {len(final)}개만 통과했습니다.")
+    return final[:want]
+
+
+QUIZ_PER_THEORY = 3
+INTERVIEW_PER_THEORY = 2
+
+
+def generate_quiz(theory, theory_id):
+    final = collect_items(
+        "문제", QUIZ_PER_THEORY,
+        lambda need, have: call_json(M["qa"], QUIZ_SYSTEM, build_quiz_prompt(theory, need, have), 0.8).get("questions") or [],
+        QUIZ_REVIEW_SYSTEM, lambda drafts: build_quiz_review_prompt(theory, drafts), check_quiz_item)
     return [compose_quiz(it, theory_id) for it in final]
 
 
@@ -702,13 +752,18 @@ INTERVIEW_SCHEMA = """{
 }"""
 
 
-def build_interview_prompt(theory):
-    return f"""아래 이론 글을 바탕으로, 실제 면접장에서 나올 법한 면접 질문 2개를 만드세요. 질문은 이론 범위에서 출제하되, 면접관의 말투와 맥락을 살립니다.
+INTERVIEW_COMPOSITION = """1번 (개념 설명형): 핵심 개념을 지원자 자기 말로 풀게 하는 질문. 꼬리 질문으로 '왜 그런지'를 한 단계 더 파고듭니다.
+2번 (상황·판단형): 공정·소자에서 마주칠 상황이나 trade-off를 제시하고 어떻게 판단·접근할지 묻는 질문. 꼬리 질문은 조건을 바꾸거나 한계를 묻습니다."""
+
+
+def build_interview_prompt(theory, n=2, existing=None):
+    comp = INTERVIEW_COMPOSITION if n >= 2 else "개념 설명형 또는 상황·판단형 중 하나. 꼬리 질문으로 한 단계 더 파고듭니다."
+    have = ("\n[이미 확보한 질문 - 이것과 겹치지 않는 다른 각도로 출제]\n" + "\n".join(f"- {str(e.get('question', ''))[:80]}" for e in existing) + "\n") if existing else ""
+    return f"""아래 이론 글을 바탕으로, 실제 면접장에서 나올 법한 면접 질문 {n}개를 만드세요. 질문은 이론 범위에서 출제하되, 면접관의 말투와 맥락을 살립니다.
 
 [질문 구성]
-1번 (개념 설명형): 핵심 개념을 지원자 자기 말로 풀게 하는 질문. 꼬리 질문으로 '왜 그런지'를 한 단계 더 파고듭니다.
-2번 (상황·판단형): 공정·소자에서 마주칠 상황이나 trade-off를 제시하고 어떻게 판단·접근할지 묻는 질문. 꼬리 질문은 조건을 바꾸거나 한계를 묻습니다.
-
+{comp}
+{have}
 [질문 규칙]
 - 구어체 한두 문장. 예: "~에 대해 설명해 주시겠어요?", "~한 상황이라면 어떤 순서로 접근하시겠어요?" 교과서 문제처럼 항목을 줄줄이 요구하는 질문("정의, 원인, 대책을 모두 설명하라")은 금지입니다.
 - 한 질문에는 한 가지만 묻습니다.
@@ -787,33 +842,10 @@ def compose_interview(it, theory_id):
 
 
 def generate_interview(theory, theory_id):
-    drafts = (call_json(M["qa"], INTERVIEW_SYSTEM, build_interview_prompt(theory), 0.7).get("interviews") or [])[:2]
-    if not drafts:
-        raise ValueError("초안 면접이 비어 있음")
-    final = []
-    try:
-        reviews = call_json(M["review"], INTERVIEW_REVIEW_SYSTEM, build_interview_review_prompt(theory, drafts), 0.2, 4000).get("reviews") or []
-        by_idx = {r.get("index"): r for r in reviews if isinstance(r, dict)}
-        for n, it in enumerate(drafts):
-            r = by_idx.get(n)
-            if r is None:
-                cand = it
-            elif r.get("verdict") == "drop":
-                print(f"   🗑️ 면접 {n + 1} 제외: {'; '.join(map(str, r.get('issues', [])))[:120]}")
-                continue
-            else:
-                cand = r.get("final") or it
-            if check_interview_item(cand):
-                print(f"   🗑️ 면접 {n + 1} 제외(검수 후에도 규칙 위반): {check_interview_item(cand)}")
-                continue
-            if r and r.get("verdict") == "fix":
-                print(f"   🔧 면접 {n + 1} 수정: {'; '.join(map(str, r.get('issues', [])))[:120]}")
-            final.append(cand)
-    except Exception as e:
-        print(f"   ⚠️ 면접 AI 검수 실패 → 규칙 검사만 통과한 초안 사용: {e}")
-        final = [it for it in drafts if not check_interview_item(it)]
-    if not final:
-        raise ValueError("검수를 통과한 면접이 없음")
+    final = collect_items(
+        "면접", INTERVIEW_PER_THEORY,
+        lambda need, have: call_json(M["qa"], INTERVIEW_SYSTEM, build_interview_prompt(theory, need, have), 0.7).get("interviews") or [],
+        INTERVIEW_REVIEW_SYSTEM, lambda drafts: build_interview_review_prompt(theory, drafts), check_interview_item)
     return [compose_interview(it, theory_id) for it in final]
 
 
