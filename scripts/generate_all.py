@@ -853,7 +853,7 @@ def generate_unified_content():
     if target_keyword is None:
         print("✅ topics의 모든 키워드가 이미 등재/대기 중입니다. 새 키워드를 추가해 주세요. (API 호출 없이 종료)")
         return
-    pending = len(load_json_list(draft_t_path))
+    pending = len([d for d in load_json_list(draft_t_path) if not d.get("replaces")])  # 문체 변환 초안은 한도에 세지 않음
     if pending >= MAX_PENDING_DRAFTS:
         print(f"⏸️ 검수 대기 이론이 {pending}개 쌓여 있어 이번 실행은 건너뜁니다. (API 호출 없이 종료)")
         return
