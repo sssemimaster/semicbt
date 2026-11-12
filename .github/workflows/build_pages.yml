@@ -12,7 +12,6 @@ on:
       - 'data/theories.json'
       - 'index.html'
       - 'scripts/build_pages.py'
-      - 'tailwind.config.js'
   schedule:
     - cron: '17 20 * * *'
   workflow_dispatch:
@@ -51,7 +50,16 @@ jobs:
       run: |
         npm install --no-save --no-audit --no-fund tailwindcss@3.4.17 @tailwindcss/typography@0.5.15
         echo '@tailwind base; @tailwind components; @tailwind utilities;' > /tmp/tw-in.css
-        npx tailwindcss -c tailwind.config.js -i /tmp/tw-in.css -o tw.css --minify
+        # 설정 파일을 저장소에 올리는 걸 깜빡해도 되도록, 여기서 직접 만들어 쓴다.
+        cat > tw-build.config.js <<'EOF'
+        module.exports = {
+          darkMode: 'class',
+          content: ['./index.html', './scripts/build_pages.py'],
+          plugins: [require('@tailwindcss/typography')],
+        };
+        EOF
+        npx tailwindcss -c tw-build.config.js -i /tmp/tw-in.css -o tw.css --minify
+        rm -f tw-build.config.js
 
     - name: Build pages
       env:
