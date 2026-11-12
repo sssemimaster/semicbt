@@ -229,6 +229,12 @@
     .dg-flow { stroke: var(--hl-accent); stroke-width: 3.4; fill: none; stroke-dasharray: 7 7; stroke-linecap: round; animation: dgflow .9s linear infinite; }
     .dg-flow.rev { animation-direction: reverse; }
     figure.dg .dg-title { font-weight: 700; }
+    .dg-p { fill: #f87171; fill-opacity: .2; } .dg-n { fill: #60a5fa; fill-opacity: .25; } .dg-ox { fill: #a78bfa; fill-opacity: .3; } .dg-met { fill: #fbbf24; fill-opacity: .45; }
+    .dg-fsub { fill: currentColor; fill-opacity: .1; } .dg-si { fill: #94a3b8; fill-opacity: .35; } .dg-ch { fill: var(--badge-fg); fill-opacity: .55; }
+    .dg-pr { fill: #f472b6; fill-opacity: .4; } .dg-prx { fill: #f472b6; fill-opacity: .15; stroke: #f472b6; stroke-dasharray: 3 3; } .dg-film { fill: #34d399; fill-opacity: .4; }
+    .dg-cu { fill: #f59e0b; fill-opacity: .65; } .dg-mask { fill: currentColor; fill-opacity: .7; } .dg-void { fill: var(--tbl-bg); } .dg-deplf { fill: currentColor; fill-opacity: .1; }
+    .dg-depl { fill: none; stroke: currentColor; stroke-width: 1.6; stroke-dasharray: 4 4; opacity: .7; } .dg-melt { fill: #fb923c; fill-opacity: .4; } .dg-heat { fill: #f87171; fill-opacity: .5; }
+    .dg-bar { stroke: #94a3b8; stroke-width: 4; fill: none; } .dg-line.dg-hl { stroke: var(--hl-accent); stroke-width: 2.6; } rect.dg-hl { fill: none; stroke: var(--hl-accent); stroke-width: 2.4; } .dg-hlp { stroke: var(--hl-accent); stroke-width: 2.4; }
     @media (max-width: 520px) { .dg-t { font-size: 16px; } .dg-t.dg-sub { font-size: 14px; } .dg-on, .dg-off { font-size: 18px; } }
     @keyframes dgflow { to { stroke-dashoffset: -14; } }
     @media (prefers-reduced-motion: reduce) { .dg-flow { animation: none; } }
@@ -849,6 +855,17 @@ $$</p>
     // 이론 글에 한 줄로 {{diagram:그림id|캡션}} 을 쓰면 아래 부품이 그 자리에 들어간다. (모르는 id 는 조용히 사라진다)
     // 그림은 사람이 만든 SVG 라서 AI 가 쓰는 글과 달리 틀릴 일이 없다. 새 그림은 DIAGRAMS 에 항목을 추가하고, scripts/generate_all.py 의 DIAGRAMS 목록에도 같은 id 를 적는다.
     const DG_RE = /^[ \t]*\{\{\s*diagram:([a-z0-9-]+)(?:\|([^}\n]*))?\}\}[ \t]*$/gm;
+    // 공통 도우미
+    const dgT = (x, y, str, cls = '', anchor = 'middle') => `<text class="dg-t ${cls}" x="${x}" y="${y}" text-anchor="${anchor}">${escH(str)}</text>`;
+    const dgSvg = (label, body, vb = '0 0 400 300') => `<svg viewBox="${vb}" role="img" aria-label="${escH(label)}">${body}</svg>`;
+    const dgFlow = (d, rev) => `<path class="dg-flow ${rev ? 'rev' : ''}" d="${d}"/>`;
+    const dgArrow = (x1, y1, x2, y2, cls = 'dg-line') => {
+      const a = Math.atan2(y2 - y1, x2 - x1), h = 7, p = (t) => `${(x2 - h * Math.cos(a + t)).toFixed(1)},${(y2 - h * Math.sin(a + t)).toFixed(1)}`;
+      return `<path class="${cls}" d="M${x1} ${y1} L${x2} ${y2}"/><path d="M${x2} ${y2} L${p(.45)} L${p(-.45)} Z" fill="currentColor"/>`;
+    };
+    const dgDots = (xs, y, kind) => xs.map((x, i) => kind === 'e'
+      ? `<circle cx="${x}" cy="${y + (i % 2 ? 7 : -7)}" r="4.5" fill="#60a5fa"/>`
+      : `<circle cx="${x}" cy="${y + (i % 2 ? 7 : -7)}" r="4.5" fill="none" stroke="#f87171" stroke-width="2"/>`).join('');
     const DIAGRAMS = {
       'dram-cell': {
         title: 'DRAM 셀 (1T1C) 동작',
@@ -888,7 +905,319 @@ $$</p>
             ${flow}
           </svg>`;
         }
+      },
+      'mosfet': {
+        title: 'MOSFET 동작 영역 (NMOS 단면)',
+        states: [
+          { id: 'off', label: '차단', vg: 'Vgs < Vth', vd: 'Vds > 0', ch: 'none', cond: '게이트 전압이 문턱 전압보다 낮음', cur: 'Id ≈ 0 (꺼짐)',
+            desc: '게이트 전압이 문턱 전압(Vth)보다 낮아 기판 표면에 채널이 만들어지지 않는다. 소스와 드레인 사이에 n-p-n 장벽이 그대로 남아서 전류가 거의 흐르지 않는다.' },
+          { id: 'lin', label: '선형', vg: 'Vgs > Vth', vd: 'Vds 작음', ch: 'full', cond: 'Vds < Vgs − Vth', cur: 'Id ∝ Vds (저항처럼)',
+            desc: '게이트 전압이 Vth보다 높으면 기판 표면에 전자가 모여 반전층(채널)이 생긴다. 드레인 전압이 낮으면 채널이 소스에서 드레인까지 끊김 없이 이어지고, 전류는 Vds에 비례해 늘어난다. 소자가 전압으로 조절되는 저항처럼 동작한다.' },
+          { id: 'sat', label: '포화', vg: 'Vgs > Vth', vd: 'Vds 큼', ch: 'pinch', cond: 'Vds ≥ Vgs − Vth', cur: 'Id ≈ 일정',
+            desc: '드레인 전압이 Vgs − Vth 이상이 되면 드레인 쪽 채널이 끊긴 모양(핀치오프)이 된다. 전자는 핀치오프 지점에서 드레인 쪽 강한 전계에 끌려 넘어가고, Vds를 더 올려도 전류는 거의 늘지 않고 일정해진다.' },
+          { id: 'clm', label: '채널 길이 변조', vg: 'Vgs > Vth', vd: 'Vds 더 큼', ch: 'pinch2', cond: '포화 영역에서 Vds 증가', cur: 'Id 조금 증가',
+            desc: '포화 영역에서 Vds를 더 높이면 핀치오프 지점이 소스 쪽으로 이동해 실제로 전류를 만드는 채널 길이가 ΔL만큼 짧아진다. 그만큼 전류가 조금씩 늘어나는 현상이 채널 길이 변조이다. 채널이 짧을수록 두드러진다.' },
+        ],
+        svg(s) {
+          const ch = { none: `<path class="dg-depl" d="M140 140 Q200 188 260 140"/>${dgT(200, 174, '공핍층', 'dg-sub')}`,
+            full: '<rect class="dg-ch" x="140" y="140" width="120" height="12"/>',
+            pinch: `<path class="dg-ch" d="M140 140 H236 L140 154 Z"/>${dgT(236, 166, '핀치오프', 'dg-sub')}`,
+            pinch2: `<path class="dg-ch" d="M140 140 H222 L140 154 Z"/><path class="dg-line" d="M222 156 H236 M222 152 V160 M236 152 V160"/>${dgT(229, 174, 'ΔL', 'dg-sub')}` }[s.ch];
+          const flow = s.ch === 'none' ? '' : dgFlow('M92 146 H308');
+          return dgSvg('NMOS 단면: ' + s.label, `
+            <path class="dg-line" d="M100 140 V70 M200 100 V70 M300 140 V70"/>
+            ${dgT(100, 46, '소스 S')}${dgT(100, 62, '0V', 'dg-volt')}${dgT(200, 46, '게이트 G')}${dgT(200, 62, s.vg, 'dg-volt')}${dgT(300, 46, '드레인 D')}${dgT(300, 62, s.vd, 'dg-volt')}
+            <rect class="dg-p" x="40" y="140" width="320" height="110" rx="3"/>
+            <rect class="dg-n" x="60" y="140" width="80" height="44"/><rect class="dg-n" x="260" y="140" width="80" height="44"/>
+            ${dgT(100, 170, 'n+')}${dgT(300, 170, 'n+')}
+            <rect class="dg-ox" x="140" y="130" width="120" height="10"/><rect class="dg-met" x="140" y="100" width="120" height="30"/>
+            ${dgT(200, 120, '게이트 전극', 'dg-sub')}${dgT(200, 235, 'p형 기판 (Body)', 'dg-sub')}
+            ${ch}${flow}
+            ${dgT(200, 272, s.cur, 'dg-volt')}${dgT(200, 290, s.cond, 'dg-sub')}`);
+        }
+      },
+      'pn-junction': {
+        title: 'PN 접합 (공핍층과 바이어스)',
+        states: [
+          { id: 'eq', label: '평형 (전압 없음)', w: 28, e: 44, bat: null, cur: '전류 없음',
+            desc: '접합이 만들어지면 p쪽 정공과 n쪽 전자가 서로 확산해 접합 근처에서 만나 사라지고, 이온화된 도펀트(p쪽 −, n쪽 +)만 남은 공핍층이 생긴다. 이 이온들이 만드는 내부 전계가 확산을 막아 평형을 이루고, 전류는 흐르지 않는다.' },
+          { id: 'fwd', label: '순방향 바이어스', w: 14, e: 22, bat: 'fwd', cur: '큰 전류가 흐름 (확산 전류)',
+            desc: 'p쪽에 +, n쪽에 −를 걸면 외부 전압이 내부 전계(장벽)를 줄인다. 공핍층이 좁아지고, 정공과 전자가 장벽을 넘어 접합을 건너가면서 큰 전류가 흐른다. 전압이 조금만 올라도 전류가 급격히 커진다.' },
+          { id: 'rev', label: '역방향 바이어스', w: 50, e: 74, bat: 'rev', cur: '전류 ≈ 0 (아주 작은 역방향 전류)',
+            desc: 'p쪽에 −, n쪽에 +를 걸면 외부 전압이 내부 전계를 키워 공핍층이 넓어지고 장벽이 높아진다. 다수 캐리어는 접합을 넘지 못하고, 소수 캐리어가 만드는 아주 작은 역방향 전류만 흐른다.' },
+        ],
+        svg(s) {
+          const L = 200 - s.w, R = 200 + s.w, cols = Math.max(1, Math.round(s.w / 16)), st = s.w / cols;
+          const ions = [110, 140, 170].map(y => Array.from({ length: cols }, (_, c) =>
+            `${dgT(L + st * (c + .5), y + 5, '−', 'dg-volt')}${dgT(200 + st * (c + .5), y + 5, '+', 'dg-volt')}`).join('')).join('');
+          const xs = (a, b) => { const out = []; for (let x = a; x <= b; x += 26) out.push(x); return out; };
+          const holes = [110, 140, 170].map((y, i) => dgDots(xs(60 + (i % 2) * 13, L - 10), y, 'h').replace(/cy="[\d.]+"/g, `cy="${y}"`)).join('');
+          const elecs = [110, 140, 170].map((y, i) => dgDots(xs(R + 12 + (i % 2) * 13, 336), y, 'e').replace(/cy="[\d.]+"/g, `cy="${y}"`)).join('');
+          let bat = '';
+          if (s.bat) {
+            const f = s.bat === 'fwd';
+            bat = `<path class="dg-line" d="M50 190 V240 H188 M350 190 V240 H212"/>
+              <path class="dg-line dg-thick" d="M188 ${f ? '226 V254' : '233 V247'}"/><path class="dg-line dg-thick" d="M212 ${f ? '233 V247' : '226 V254'}"/>
+              ${dgT(176, 232, f ? '+' : '−', 'dg-volt')}${dgT(224, 232, f ? '−' : '+', 'dg-volt')}`;
+          } else bat = '<path class="dg-line" d="M50 190 V240 H350 V190"/>';
+          const flow = s.bat === 'fwd' ? dgFlow('M188 240 H50 V97 H350 V240 H212') : '';
+          return dgSvg('PN 접합: ' + s.label, `
+            <rect class="dg-p" x="40" y="90" width="160" height="100"/><rect class="dg-n" x="200" y="90" width="160" height="100"/>
+            <rect class="dg-deplf" x="${L}" y="90" width="${2 * s.w}" height="100"/><path class="dg-depl" d="M${L} 90 V190 M${R} 90 V190"/>
+            ${holes}${elecs}${ions}
+            ${dgT(60, 80, 'p형', 'dg-sub')}${dgT(340, 80, 'n형', 'dg-sub')}
+            ${dgArrow(200 + s.e / 2, 60, 200 - s.e / 2, 60)}${dgT(200, 50, '내부 전계 E', 'dg-sub')}
+            <path class="dg-line" d="M${L} 200 V206 M${R} 200 V206 M${L} 203 H${R}"/>${dgT(200, 222, '공핍층', 'dg-sub')}
+            ${bat}${flow}
+            ${dgT(200, 290, s.cur, 'dg-volt')}`);
+        }
+      },
+      'band-doping': {
+        title: '에너지 밴드와 도핑',
+        states: [
+          { id: 'mat', label: '금속·반도체·절연체',
+            desc: '전도는 밴드갭(Eg)이 좌우한다. 금속은 전도대와 가전자대가 겹쳐 전자가 자유롭게 움직이고, 절연체는 갭이 너무 커서 전자가 전도대로 올라가지 못한다. 반도체는 갭이 작아(Si 약 1.1 eV) 온도나 도핑으로 전도를 조절할 수 있다.' },
+          { id: 'int', label: '진성 반도체',
+            desc: '불순물이 없는 진성 반도체에서는 열에너지로 전자가 가전자대에서 전도대로 올라가며 전자와 정공이 같은 수로 생긴다. 페르미 준위(EF)는 갭의 가운데 근처에 있다.' },
+          { id: 'n', label: 'n형 도핑',
+            desc: '인(P)이나 비소(As) 같은 도너를 넣으면 전도대 바로 아래에 도너 준위(Ed)가 생겨 전자가 쉽게 전도대로 올라간다. 전자가 많아지고, 페르미 준위가 전도대 쪽으로 올라간다.' },
+          { id: 'p', label: 'p형 도핑',
+            desc: '붕소(B) 같은 억셉터를 넣으면 가전자대 바로 위에 억셉터 준위(Ea)가 생겨 가전자대의 전자를 받아 간다. 가전자대에 정공이 많아지고, 페르미 준위가 가전자대 쪽으로 내려간다.' },
+        ],
+        svg(s) {
+          if (s.id === 'mat') {
+            const col = (cx, name, sub, condY, condH, metal) => `
+              <rect class="dg-n" x="${cx - 36}" y="${condY}" width="72" height="${condH}"/><rect class="dg-p" x="${cx - 36}" y="170" width="72" height="50"/>
+              ${dgT(cx, 247, name)}${dgT(cx, 265, sub, 'dg-sub')}${metal ? dgDots([cx - 16, cx, cx + 16], 150, 'e') : ''}`;
+            return dgSvg('금속·반도체·절연체의 밴드 비교', `
+              ${col(80, '금속', '밴드가 겹침', 110, 70, true)}${col(200, '반도체', 'Eg ≈ 1.1 eV (Si)', 100, 42)}${col(320, '절연체', 'Eg ≈ 9 eV (SiO₂)', 38, 52)}
+              ${dgT(80, 104, '전도대', 'dg-sub')}${dgT(200, 94, '전도대', 'dg-sub')}${dgT(320, 32, '전도대', 'dg-sub')}
+              ${dgT(80, 214, '가전자대', 'dg-sub')}${dgT(200, 214, '가전자대', 'dg-sub')}${dgT(320, 214, '가전자대', 'dg-sub')}
+              ${dgArrow(200, 144, 200, 168)}${dgArrow(200, 168, 200, 144)}${dgT(214, 160, 'Eg', 'dg-volt', 'start')}
+              ${dgArrow(320, 92, 320, 168)}${dgArrow(320, 168, 320, 92)}${dgT(334, 135, 'Eg', 'dg-volt', 'start')}`);
+          }
+          const efY = { int: 145, n: 118, p: 172 }[s.id];
+          const lvl = s.id === 'n' ? `<path class="dg-depl" d="M150 102 H250"/>${dgT(346, 106, 'Ed', 'dg-sub', 'start')}${dgArrow(180, 100, 180, 86)}${dgArrow(220, 100, 220, 86)}`
+            : s.id === 'p' ? `<path class="dg-depl" d="M150 188 H250"/>${dgT(346, 192, 'Ea', 'dg-sub', 'start')}${dgArrow(180, 214, 180, 192)}${dgArrow(220, 214, 220, 192)}` : '';
+          const ne = { int: 3, n: 8, p: 1 }[s.id], nh = { int: 3, n: 1, p: 8 }[s.id];
+          const xs = (n) => Array.from({ length: n }, (_, i) => 92 + i * (230 / Math.max(1, n - 1)));
+          return dgSvg('에너지 밴드: ' + s.label, `
+            <rect class="dg-n" x="60" y="40" width="280" height="50"/><rect class="dg-p" x="60" y="200" width="280" height="50"/>
+            <path class="dg-line dg-thick" d="M60 90 H340 M60 200 H340"/>
+            ${dgT(346, 94, 'Ec', 'dg-sub', 'start')}${dgT(346, 204, 'Ev', 'dg-sub', 'start')}${dgT(120, 58, '전도대', 'dg-sub')}${dgT(120, 242, '가전자대', 'dg-sub')}
+            ${dgArrow(72, 96, 72, 194)}${dgArrow(72, 194, 72, 96)}${dgT(84, 140, 'Eg', 'dg-volt', 'start')}
+            <path class="dg-depl" d="M100 ${efY} H340" style="stroke:var(--hl-accent);opacity:1"/>${dgT(346, efY + 4, 'EF', 'dg-volt', 'start')}
+            ${lvl}${dgDots(xs(ne), 66, 'e')}${dgDots(xs(nh), 224, 'h')}
+            ${dgT(200, 280, { int: '전자 수 = 정공 수', n: '전자 ≫ 정공 (다수 캐리어: 전자)', p: '정공 ≫ 전자 (다수 캐리어: 정공)' }[s.id], 'dg-volt')}`);
+        }
+      },
+      'photo-process': {
+        title: '포토 공정: 패턴이 옮겨지는 과정',
+        states: [
+          { id: 'coat', label: '① 감광막 도포',
+            desc: '웨이퍼 위의 막(산화막 등) 위에 빛에 반응하는 감광막(포토레지스트, PR)을 얇고 고르게 입힌다. 보통 웨이퍼를 돌려 퍼뜨리는 스핀 코팅을 쓴다.' },
+          { id: 'expose', label: '② 노광',
+            desc: '회로 패턴이 새겨진 포토마스크를 통해 빛(UV)을 쪼인다. 빛을 받은 감광막은 화학적 성질이 바뀐다. 그림은 빛 받은 부분이 현상액에 녹는 포지티브 PR의 경우이다.' },
+          { id: 'develop', label: '③ 현상',
+            desc: '현상액으로 씻어내면 빛을 받은 부분의 감광막이 녹아 없어지고, 마스크 패턴과 같은 모양의 감광막만 남는다.' },
+          { id: 'etch', label: '④ 식각',
+            desc: '감광막이 없는 곳의 막만 식각으로 깎아낸다. 남은 감광막은 식각으로부터 아래 막을 보호하는 마스크 역할을 한다.' },
+          { id: 'strip', label: '⑤ 감광막 제거',
+            desc: '남은 감광막을 제거하면 마스크의 패턴이 웨이퍼 위의 막에 그대로 옮겨진 상태가 된다. 이 과정을 층마다 되풀이해 회로를 쌓는다.' },
+        ],
+        svg(s) {
+          const blocks = [[30, 100], [140, 200], [240, 310]], gaps = [[100, 140], [200, 240]];
+          const R = (x1, x2, y, h, c, extra = '') => `<rect class="${c}" x="${x1}" y="${y}" width="${x2 - x1}" height="${h}" ${extra}/>`;
+          const film = s.id === 'etch' || s.id === 'strip' ? blocks.map(b => R(b[0], b[1], 206, 26, 'dg-film')).join('') : R(30, 310, 206, 26, 'dg-film');
+          let pr = '', extra = '';
+          if (s.id === 'coat') pr = R(30, 310, 176, 30, 'dg-pr');
+          if (s.id === 'expose') {
+            pr = blocks.map(b => R(b[0], b[1], 176, 30, 'dg-pr')).join('') + gaps.map(g => R(g[0], g[1], 176, 30, 'dg-prx')).join('');
+            extra = blocks.map(b => R(b[0], b[1], 120, 14, 'dg-mask')).join('') + dgT(316, 132, '포토마스크', 'dg-sub', 'start') +
+              [120, 220].map(x => dgFlow(`M${x} 80 V172`)).join('') + dgT(170, 78, 'UV 빛', 'dg-volt');
+          }
+          if (s.id === 'develop' || s.id === 'etch') pr = blocks.map(b => R(b[0], b[1], 176, 30, 'dg-pr')).join('');
+          if (s.id === 'etch') extra = [120, 220].map(x => dgFlow(`M${x} 130 V204`)).join('') + dgT(170, 126, '식각', 'dg-volt');
+          if (s.id === 'coat') extra = '<path d="M170 112 q-7 12 0 17 q7 -5 0 -17 Z" fill="#f472b6"/>' + dgArrow(170, 132, 170, 172) + dgT(170, 98, '감광액을 떨어뜨리고 웨이퍼를 돌림', 'dg-volt');
+          if (s.id === 'develop') extra = [120, 220].map(x => dgFlow(`M${x} 120 V172`)).join('') + dgT(170, 108, '현상액으로 빛 받은 부분을 녹여냄', 'dg-volt');
+          if (s.id === 'strip') extra = blocks.map(b => `<rect class="dg-depl" x="${b[0]}" y="176" width="${b[1] - b[0]}" height="30"/>`).join('') + dgT(170, 150, '남은 감광막을 벗겨냄(스트립)', 'dg-volt');
+          const prLabel = s.id === 'strip' ? '' : dgT(316, 196, '감광막(PR)', 'dg-sub', 'start');
+          return dgSvg('포토 공정: ' + s.label, `
+            ${R(30, 310, 232, 30, 'dg-fsub')}${film}${pr}${extra}
+            ${prLabel}${dgT(316, 223, '막(산화막 등)', 'dg-sub', 'start')}${dgT(316, 252, '웨이퍼(Si)', 'dg-sub', 'start')}
+            ${dgT(170, 284, s.label, 'dg-volt')}`, '0 55 400 245');
+        }
+      },
+      'etch-profile': {
+        title: '식각 프로파일',
+        states: [
+          { id: 'iso', label: '등방성 식각',
+            desc: '습식 식각처럼 방향성이 없는 식각은 깊이 방향과 옆 방향으로 비슷한 속도로 진행된다. 마스크 아래까지 파고드는 언더컷이 생겨 미세한 패턴을 만들기 어렵다.' },
+          { id: 'aniso', label: '이방성 식각',
+            desc: '건식(플라즈마) 식각은 이온이 위에서 아래로 가속되어 부딪히기 때문에 주로 수직 방향으로 식각된다. 마스크 모양이 거의 그대로 전사되어 미세 패턴에 적합하다.' },
+          { id: 'bowing', label: '보잉(Bowing)',
+            desc: '깊은 홀이나 트렌치에서는 이온이 마스크 모서리나 측벽에서 산란·반사되어 측벽 중간을 때릴 수 있다. 그러면 측벽 중간이 바깥으로 불룩해지는 보잉이 생긴다.' },
+          { id: 'lowsel', label: '낮은 선택비',
+            desc: '식각 선택비는 식각할 막과 마스크·아래층의 식각 속도 비이다. 선택비가 낮으면 마스크가 빨리 닳고, 막이 뚫린 뒤에도 아래층이 함께 깎인다.' },
+        ],
+        svg(s) {
+          const cav = { iso: '<path class="dg-void" d="M95 125 A75 75 0 0 0 245 125 Z"/>',
+            aniso: '<rect class="dg-void" x="140" y="125" width="60" height="100"/>',
+            bowing: '<path class="dg-void" d="M140 125 C140 142 126 152 126 170 C126 190 145 198 146 225 H194 C195 198 214 190 214 170 C214 152 200 142 200 125 Z"/>',
+            lowsel: '<rect class="dg-void" x="140" y="125" width="60" height="125"/>' }[s.id];
+          const mTop = s.id === 'lowsel' ? 119 : 105, mH = s.id === 'lowsel' ? 6 : 20;
+          const ghost = s.id === 'lowsel' ? '<path class="dg-depl" d="M30 105 H140 V125 M200 125 V105 H310"/>' : '';
+          const arrows = s.id === 'iso'
+            ? `${dgArrow(150, 150, 108, 150)}${dgArrow(190, 150, 232, 150)}${dgArrow(170, 168, 170, 190)}${dgT(170, 88, '모든 방향으로 식각', 'dg-volt')}`
+            : [150, 170, 190].map(x => dgArrow(x, 62, x, 100)).join('') + dgT(170, 54, '이온 (수직 입사)', 'dg-volt');
+          return dgSvg('식각 프로파일: ' + s.label, `
+            <rect class="dg-fsub" x="30" y="235" width="280" height="30"/><rect class="dg-film" x="30" y="125" width="280" height="110"/>
+            ${cav}${ghost}
+            <rect class="dg-mask" x="30" y="${mTop}" width="110" height="${mH}"/><rect class="dg-mask" x="200" y="${mTop}" width="110" height="${mH}"/>
+            ${arrows}
+            ${dgT(316, 118, '마스크', 'dg-sub', 'start')}${dgT(316, 185, '식각할 막', 'dg-sub', 'start')}${dgT(316, 254, '아래층', 'dg-sub', 'start')}
+            ${dgT(200, 288, s.label, 'dg-volt')}`);
+        }
+      },
+      'step-coverage': {
+        title: '박막 증착과 단차 피복성',
+        states: [
+          { id: 'pvd', label: 'PVD (스퍼터링)', t: 26, sd: 6, b: 12, o: 16, q: '단차 피복성: 낮음', src: 'straight',
+            desc: '스퍼터링으로 튀어나온 원자가 주로 위에서 직선으로 날아와 쌓인다. 상단과 홈 입구 모서리에는 막이 두껍고, 측벽과 바닥은 얇다. 입구가 좁아지는 오버행이 생겨 깊은 홈에는 불리하다.' },
+          { id: 'cvd', label: 'CVD', t: 20, sd: 14, b: 16, o: 4, q: '단차 피복성: 중간', src: 'diffuse',
+            desc: '기체가 표면에서 반응해 막이 생긴다. 기체가 홈 속으로 퍼져 들어가므로 PVD보다 측벽과 바닥에도 잘 쌓인다. 다만 입구 쪽이 조금 더 두꺼워질 수 있다.' },
+          { id: 'ald', label: 'ALD', t: 14, sd: 14, b: 14, o: 0, q: '단차 피복성: 거의 100% (균일)', src: 'ald',
+            desc: '전구체를 번갈아 넣어 표면에 한 층씩 흡착·반응시키는 방식이다. 표면 반응이 포화되면 멈추는 자기 제한 성장이라서 상단·측벽·바닥 두께가 거의 같은 균일한 막(conformal)이 된다. 대신 성장 속도는 느리다.' },
+        ],
+        svg(s) {
+          const R = (x, y, w, h, c = 'dg-film') => `<rect class="${c}" x="${x}" y="${y}" width="${w}" height="${h}"/>`;
+          const src = s.src === 'straight' ? [80, 125, 170, 215, 260].map(x => dgArrow(x, 40, x, 82)).join('') + dgT(170, 30, '원자 (직진 입사)', 'dg-volt')
+            : s.src === 'diffuse' ? [[90, 40, 110, 84], [150, 40, 160, 84], [200, 40, 180, 84], [250, 40, 232, 84]].map(a => dgArrow(...a)).join('') + dgT(170, 30, '반응 기체 (확산)', 'dg-volt')
+            : dgT(170, 30, '전구체 A → 퍼지 → 전구체 B → 퍼지 (반복)', 'dg-volt');
+          const over = s.o ? `<rect class="dg-film" x="130" y="${110 - s.t}" width="${s.o}" height="${s.t * 1.5}" rx="4"/><rect class="dg-film" x="${210 - s.o}" y="${110 - s.t}" width="${s.o}" height="${s.t * 1.5}" rx="4"/>` : '';
+          return dgSvg('박막 증착: ' + s.label, `
+            <path class="dg-fsub" d="M30 110 H130 V230 H210 V110 H310 V270 H30 Z"/>
+            ${R(30, 110 - s.t, 100, s.t)}${R(210, 110 - s.t, 100, s.t)}${R(130, 110, s.sd, 120)}${R(210 - s.sd, 110, s.sd, 120)}${R(130, 230 - s.b, 80, s.b)}${over}
+            ${src}
+            ${dgT(316, 104, '상단', 'dg-sub', 'start')}${s.o > 8 ? dgT(316, 124, '오버행', 'dg-sub', 'start') : ''}${dgT(316, 170, '측벽', 'dg-sub', 'start')}${dgT(316, 250, '바닥', 'dg-sub', 'start')}
+            ${dgT(170, 288, s.q, 'dg-volt')}`);
+        }
+      },
+      'damascene': {
+        title: '구리 다마신 공정',
+        states: [
+          { id: 'trench', label: '① 홈 만들기',
+            desc: '구리는 건식 식각으로 깎기 어려워서, 먼저 절연막에 배선 모양의 홈(트렌치)을 파는 방식을 쓴다. 이것이 다마신 공정의 출발점이다.' },
+          { id: 'barrier', label: '② 배리어·시드층',
+            desc: '홈 안쪽과 표면 전체에 배리어 금속(Ta, TaN 등)과 얇은 구리 시드층을 입힌다. 배리어는 구리가 절연막과 실리콘 속으로 퍼져 소자를 망치는 것을 막는다.' },
+          { id: 'plate', label: '③ 구리 전기도금',
+            desc: '시드층을 전극으로 삼아 구리를 전기도금하면 홈이 구리로 채워지고, 표면에도 구리가 넘치게 쌓인다.' },
+          { id: 'cmp', label: '④ CMP 평탄화',
+            desc: '화학적 기계 연마(CMP)로 표면에 넘친 구리와 배리어를 깎아내면 홈 안의 구리만 남아 배선이 된다. 표면이 평탄해져 다음 층을 쌓기 좋다.' },
+        ],
+        svg(s) {
+          const dielec = '<path class="dg-ox" d="M30 130 H130 V190 H210 V130 H310 V250 H30 Z"/>';
+          let layers = '';
+          if (s.id === 'barrier') layers = '<path class="dg-bar" d="M30 128 H130 V188 H210 V128 H310"/>';
+          if (s.id === 'plate') layers = '<rect class="dg-cu" x="30" y="104" width="280" height="22"/><rect class="dg-cu" x="132" y="126" width="76" height="62"/><path class="dg-bar" d="M30 128 H130 V188 H210 V128 H310"/>';
+          if (s.id === 'cmp') layers = '<rect class="dg-cu" x="132" y="130" width="76" height="58"/><path class="dg-bar" d="M130 130 V190 H210 V130"/>' + dgArrow(250, 100, 290, 100) + dgArrow(290, 100, 250, 100) + dgT(270, 90, 'CMP 연마', 'dg-volt');
+          return dgSvg('구리 다마신: ' + s.label, `
+            <rect class="dg-fsub" x="30" y="250" width="280" height="20"/>${dielec}${layers}
+            ${dgT(316, 215, '절연막', 'dg-sub', 'start')}${dgT(316, 264, '하부층', 'dg-sub', 'start')}
+            ${s.id !== 'trench' ? dgT(316, 192, '배리어', 'dg-sub', 'start') : ''}${s.id === 'plate' || s.id === 'cmp' ? dgT(316, s.id === 'plate' ? 118 : 160, '구리', 'dg-sub', 'start') : ''}
+            ${dgT(170, 288, s.label, 'dg-volt')}`, '0 80 400 220');
+        }
+      },
+      'finfet-gaa': {
+        title: '게이트가 채널을 감싸는 방식',
+        states: [
+          { id: 'planar', label: '평면(Planar)', sides: '1면',
+            desc: '평면 구조에서는 게이트가 채널의 위쪽 한 면만 덮는다. 채널이 짧아지면 드레인 쪽 전계가 게이트를 거치지 않고 채널에 영향을 주어, 꺼진 상태에서도 누설 전류가 커진다.' },
+          { id: 'fin', label: 'FinFET', sides: '3면',
+            desc: 'FinFET은 채널을 얇게 세운 핀(Fin) 모양으로 만들고, 게이트가 위와 양옆 세 면을 감싼다. 게이트의 채널 제어력이 좋아져 누설이 줄고 단채널 효과가 억제된다.' },
+          { id: 'gaa', label: 'GAA 나노시트', sides: '4면(사방)',
+            desc: 'GAA(Gate-All-Around)는 가로로 쌓은 나노시트 채널을 게이트가 네 면 모두 감싼다. 제어력이 가장 좋고, 시트의 폭과 개수로 구동 전류를 조절할 수 있다.' },
+        ],
+        svg(s) {
+          let body = '';
+          if (s.id === 'planar') body = `
+            <rect class="dg-fsub" x="30" y="200" width="280" height="62"/>
+            <rect class="dg-met" x="120" y="150" width="100" height="40"/><rect class="dg-ox" x="120" y="190" width="100" height="8"/>
+            <path class="dg-line dg-hl" d="M120 200 H220"/>
+            ${dgT(316, 175, '게이트', 'dg-sub', 'start')}${dgT(316, 196, '산화막', 'dg-sub', 'start')}${dgT(316, 235, '기판(채널은 표면)', 'dg-sub', 'start')}
+            ${dgArrow(170, 132, 170, 146)}${dgT(170, 124, '게이트가 위에서만', 'dg-volt')}`;
+          if (s.id === 'fin') body = `
+            <rect class="dg-fsub" x="30" y="236" width="280" height="26"/>
+            <rect class="dg-met" x="126" y="106" width="88" height="130"/><rect class="dg-ox" x="140" y="120" width="60" height="116"/>
+            <rect class="dg-si" x="146" y="126" width="48" height="110"/>
+            <path class="dg-line dg-hl" d="M146 236 V126 H194 V236"/>
+            ${dgT(316, 150, '게이트', 'dg-sub', 'start')}${dgT(316, 175, '핀(채널)', 'dg-sub', 'start')}${dgT(316, 250, '기판', 'dg-sub', 'start')}
+            ${dgArrow(170, 78, 170, 102)}${dgArrow(104, 170, 122, 170)}${dgArrow(236, 170, 218, 170)}${dgT(170, 70, '위·양옆 3면에서 제어', 'dg-volt')}`;
+          if (s.id === 'gaa') body = `
+            <rect class="dg-fsub" x="30" y="236" width="280" height="26"/>
+            <rect class="dg-met" x="116" y="100" width="108" height="136"/>
+            ${[112, 152, 192].map(y => `<rect class="dg-ox" x="126" y="${y - 4}" width="88" height="26"/><rect class="dg-si" x="130" y="${y}" width="80" height="18"/><rect class="dg-hl" x="130" y="${y}" width="80" height="18" style="fill:none"/>`).join('')}
+            ${dgT(316, 150, '게이트', 'dg-sub', 'start')}${dgT(316, 175, '나노시트(채널)', 'dg-sub', 'start')}${dgT(316, 250, '기판', 'dg-sub', 'start')}
+            ${dgT(170, 84, '시트마다 사방을 감싸서 제어', 'dg-volt')}`;
+          return dgSvg('게이트 구조: ' + s.label, `${body}${dgT(170, 288, s.label + ' — 게이트가 감싸는 면: ' + s.sides, 'dg-volt')}`);
+        }
+      },
+      'hbm-tsv': {
+        title: 'HBM과 2.5D 패키징',
+        states: [
+          { id: 'struct', label: '구조',
+            desc: 'HBM은 DRAM 칩을 여러 층 쌓고, 칩을 수직으로 관통하는 전극(TSV)과 마이크로 범프로 층 사이를 연결한다. 이렇게 쌓은 HBM 스택은 실리콘 인터포저 위에서 GPU 같은 프로세서 바로 옆에 놓인다(2.5D 패키징).' },
+          { id: 'path', label: '데이터 경로',
+            desc: '프로세서와 HBM의 베이스 다이는 인터포저 안의 짧고 촘촘한 배선으로 연결되고, 베이스 다이에서 TSV를 타고 위쪽 DRAM 층으로 신호가 오간다. 짧은 거리와 넓은 입출력(HBM3까지 스택당 1024비트) 덕분에 대역폭이 높다.' },
+        ],
+        svg(s) {
+          const dies = [1, 2, 3, 4].map(k => `<rect class="dg-n" x="238" y="${208 - k * 16}" width="104" height="12"/>${[250, 290, 330].map(x => `<rect class="dg-fsub" x="${x - 4}" y="${204 - (k - 1) * 16}" width="8" height="4"/>`).join('')}`).join('');
+          const tsv = [252, 290, 328].map(x => `<path class="dg-line dg-hl" d="M${x} 226 V148" style="stroke-width:2"/>`).join('');
+          const ub = (x) => `<rect class="dg-fsub" x="${x - 4}" y="226" width="8" height="8"/>`;
+          const flow = s.id === 'path' ? dgFlow('M105 226 V244 H290 V150') : '';
+          return dgSvg('HBM 구조: ' + s.label, `
+            <rect class="dg-fsub" x="20" y="262" width="360" height="16"/>${dgT(200, 274, '패키지 기판', 'dg-sub')}
+            <rect class="dg-si" x="30" y="234" width="340" height="18"/><path class="dg-line" d="M105 244 H290" style="stroke-width:1.4"/>${dgT(40, 247, '인터포저', 'dg-sub', 'start')}
+            <rect class="dg-p" x="50" y="190" width="110" height="36"/>${dgT(105, 212, '프로세서 (GPU 등)')}
+            ${[75, 105, 135].map(ub).join('')}
+            <rect class="dg-n" x="236" y="208" width="108" height="18"/>${dgT(290, 221, '베이스 다이', 'dg-sub')}
+            ${[252, 290, 328].map(ub).join('')}
+            ${dies}${tsv}${flow}
+            ${dgT(290, 132, 'HBM 스택 (DRAM 4층 예)', 'dg-volt')}${dgT(356, 162, 'TSV', 'dg-sub', 'start')}
+            ${dgT(200, 292, s.label, 'dg-volt')}`, '0 112 400 190');
+        }
+      },
+      'czochralski': {
+        title: '초크랄스키(CZ) 단결정 성장',
+        states: [
+          { id: 'seed', label: '① 시드 접촉', L: [24, 0, 0, 0], hl: 0,
+            desc: '석영 도가니에서 실리콘을 녹여(녹는점 약 1,414℃) 둔 뒤, 원하는 결정 방향을 가진 종자 결정(시드)을 용융 실리콘 표면에 살짝 담근다.' },
+          { id: 'neck', label: '② 넥 성장', L: [24, 40, 0, 0], hl: 1,
+            desc: '시드를 회전시키며 천천히 끌어올리면서 먼저 가늘고 긴 목(넥)을 만든다. 시드와 접촉할 때 생긴 결함(전위)이 가는 넥을 따라 빠져나가 이후 결정이 결함 없이 자라게 한다.' },
+          { id: 'crown', label: '③ 크라운', L: [24, 40, 34, 0], hl: 2,
+            desc: '끌어올리는 속도와 온도를 조절해 결정의 지름을 목표 크기까지 서서히 넓힌다. 이 원뿔 모양 부분이 크라운이다.' },
+          { id: 'body', label: '④ 바디 성장', L: [24, 40, 34, 60], hl: 3,
+            desc: '목표 지름에서 일정한 속도로 끌어올려 원통형 단결정 잉곳(바디)을 키운다. 이 잉곳을 얇게 잘라 연마하면 웨이퍼가 된다.' },
+        ],
+        svg(s) {
+          const [a, b, c, d] = s.L, total = a + b + c + d, top = 208 - total;
+          let y = top; const parts = [];
+          const add = (h, shape, i) => { parts.push(`<path class="dg-si ${s.hl === i ? 'dg-hlp' : ''}" d="${shape(y, h)}"/>`); y += h; };
+          add(a, (y, h) => `M194 ${y} H206 V${y + h} H194 Z`, 0);
+          if (b) add(b, (y, h) => `M195 ${y} H205 V${y + h} H195 Z`, 1);
+          if (c) add(c, (y, h) => `M195 ${y} H205 L242 ${y + h} H158 Z`, 2);
+          if (d) add(d, (y, h) => `M158 ${y} H242 V${y + h} H158 Z`, 3);
+          return dgSvg('초크랄스키 공정: ' + s.label, `
+            <path class="dg-line" d="M200 16 V${top}"/>${dgArrow(222, 40, 222, 24)}${dgT(232, 36, '끌어올림', 'dg-sub', 'start')}${dgT(232, 52, '결정 회전 ↻', 'dg-sub', 'start')}
+            <rect class="dg-heat" x="104" y="205" width="12" height="70"/><rect class="dg-heat" x="284" y="205" width="12" height="70"/>${dgT(98, 228, '히터', 'dg-sub', 'end')}
+            <path class="dg-melt" d="M131 208 H269 V250 Q269 274 240 274 H160 Q131 274 131 250 Z"/>
+            <path class="dg-line" d="M130 200 V250 Q130 276 160 276 H240 Q270 276 270 250 V200"/>
+            ${parts.join('')}
+            ${dgT(200, 248, '용융 실리콘', 'dg-sub')}${dgT(200, 292, '석영 도가니 (결정과 반대 방향으로 회전)', 'dg-sub')}
+            ${dgT(272, 120, ['시드', '넥', '크라운', '바디(잉곳)'][s.hl], 'dg-volt', 'start')}`);
+        }
       }
+
     };
     function dgRender(fig, sid) {
       const D = DIAGRAMS[fig.dataset.dg]; if (!D) return;
