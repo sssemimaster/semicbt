@@ -509,7 +509,7 @@
   <footer class="border-t border-slate-200 dark:border-white/10 mt-10">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 text-sm">
       <div><div class="font-bold text-slate-800 dark:text-white">반도체 <span class="text-indigo-600 dark:text-cyan-300">새김</span></div><p class="text-xs text-slate-500 dark:text-slate-400 mt-1">오늘의 배움을 새기다 · LEARN · RECORD · EVOLVE</p></div>
-      <p class="text-xs text-slate-400 dark:text-slate-500 sm:max-w-sm sm:text-right leading-relaxed">AI가 생성한 문제와 이론은 검수 후 게시돼요. 오류를 발견하면 문제 풀이 중 🚨 제보를 눌러 알려 주세요.</p>
+      <p class="text-xs text-slate-400 dark:text-slate-500 sm:max-w-sm sm:text-right leading-relaxed">AI가 생성한 문제와 이론은 검수 후 게시돼요. 오류를 발견하면 문제 풀이 중 🚨 제보를 눌러 알려 주세요.<br><a href="theory/" class="underline underline-offset-2 hover:text-slate-600 dark:hover:text-slate-300">이론 전체 목록 보기</a></p>
     </div>
   </footer>
 
@@ -567,7 +567,19 @@
         applyState('view-lobby', learnState);
         try { history.scrollRestoration = 'manual'; } catch (e) {}
         navLog = [{ v: 'view-lobby', l: { ...learnState } }]; navIdx = 0; history.replaceState({ i: 0 }, '');
+        handleDeepLink();
       } catch (e) {}
+    }
+
+    // ===== 이론 정적 페이지(theory/…)에서 넘어오는 딥링크: ?theory=ID[&go=quiz|interview] =====
+    function handleDeepLink() {
+      const p = new URLSearchParams(location.search), id = p.get('theory'); if (!id) return;
+      try { history.replaceState(history.state, '', location.pathname + location.hash); } catch (e) {}   // 주소창을 깔끔하게
+      const t = allTheories.find(x => x.id === id); if (!t) return;
+      const go = p.get('go');
+      if (go === 'quiz' && matchItems(allQuizData, t.title).length) return startMiniQuiz(t.title);
+      if (go === 'interview' && matchItems(allInterviewData, t.title).length) return startMiniInterview(t.title);
+      openTheory(id);
     }
 
     // ===== 브라우저 히스토리 연동: 크롬 뒤로가기/앞으로가기가 화면 이동을 그대로 따라간다 =====
