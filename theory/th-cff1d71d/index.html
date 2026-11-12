@@ -685,19 +685,36 @@
     let currentViewId = 'view-lobby'; let learnState = { level: 'home', category: '', subject: '', theoryId: '' };
     let navLog = [], navIdx = 0, returnCtx = null;
 
+    // 이론 페이지(theory/<id>/)도 이 앱 그대로(index.html 에 글을 미리 넣은 것)라서, 데이터·링크는 ROOT 기준으로 찾는다.
+    const ROOT = window.ROOT || '';
+    const APP_BASE = (() => { try { return new URL(window.ROOT || './', location.href).pathname; } catch (e) { return location.pathname; } })();
+    let theoryPages = {};   // 이론 id -> 정적 페이지 주소 조각 (data/theory_pages.json). 이론을 읽는 동안 주소창이 그 이론의 고유 주소가 된다.
+    function urlForState() {
+      try {
+        const slug = currentViewId === 'view-learning' && learnState.level === 'detail' && learnState.theoryId ? theoryPages[learnState.theoryId] : '';
+        return slug ? `${APP_BASE}theory/${slug}/` : APP_BASE;
+      } catch (e) { return location.pathname; }
+    }
+
     async function initApp() {
       try {
         const ts = new Date().getTime();
-        const [qRes, iRes, tRes] = await Promise.all([fetch(`./data/questions.json?t=${ts}`).catch(()=>null), fetch(`./data/interviews.json?t=${ts}`).catch(()=>null), fetch(`./data/theories.json?t=${ts}`).catch(()=>null)]);
+        const [qRes, iRes, tRes, pRes] = await Promise.all([fetch(`${ROOT}data/questions.json?t=${ts}`).catch(()=>null), fetch(`${ROOT}data/interviews.json?t=${ts}`).catch(()=>null), fetch(`${ROOT}data/theories.json?t=${ts}`).catch(()=>null), fetch(`${ROOT}data/theory_pages.json?t=${ts}`).catch(()=>null)]);
+        try { if (pRes && pRes.ok) theoryPages = await pRes.json() || {}; } catch (e) {}
         if(qRes && qRes.ok) allQuizData = await qRes.json(); if(iRes && iRes.ok) allInterviewData = await iRes.json();
         if(tRes && tRes.ok) {
           const raw = await tRes.json();
           allTheories = raw.filter(t => !String(t.content || '').includes('채워질 예정')).map((t, idx) => ({ ...t, id: t.id || "T-" + idx, category: t.category || "기타", subject: t.subject || "일반" }));
         }
-        applyState('view-lobby', learnState);
+        // 이론 페이지(theory/<id>/)로 들어왔으면 그 이론을, 이론 목록(theory/)이면 백과사전 첫 화면을 바로 연다. 그 외에는 홈.
+        const boot = window.BOOT_THEORY && allTheories.find(x => x.id === window.BOOT_THEORY);
+        if (boot || window.BOOT_HUB) {
+          learnState = { ...learnState, ...(boot ? { level: 'detail', category: boot.category, subject: boot.subject, theoryId: boot.id } : { level: 'home' }) };
+          applyState('view-learning', learnState);
+        } else applyState('view-lobby', learnState);
         try { history.scrollRestoration = 'manual'; } catch (e) {}
-        navLog = [{ v: 'view-lobby', l: { ...learnState } }]; navIdx = 0; history.replaceState({ i: 0 }, '');
-        handleDeepLink();
+        navLog = [{ v: currentViewId, l: { ...learnState } }]; navIdx = 0; history.replaceState({ i: 0 }, '');
+        if (!boot && !window.BOOT_HUB) handleDeepLink();
       } catch (e) {}
     }
 
@@ -722,7 +739,7 @@
       const s = { v: viewId, l: { ...learnState } }, cur = navLog[navIdx];
       if (cur && cur.v === s.v && JSON.stringify(cur.l) === JSON.stringify(s.l)) return;
       navIdx++; navLog = navLog.slice(0, navIdx); navLog[navIdx] = s;
-      history.pushState({ i: navIdx }, '');
+      const st = { i: navIdx }; try { history.pushState(st, '', urlForState()); } catch (e) { history.pushState(st, ''); }
     }
     window.addEventListener('popstate', (e) => {
       const i = e.state && Number.isInteger(e.state.i) ? e.state.i : 0, s = navLog[i];
