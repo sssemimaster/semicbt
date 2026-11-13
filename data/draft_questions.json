@@ -1,22 +1,5 @@
 [
   {
-    "id": "Q-e5b8ed32",
-    "category": "차세대 첨단 기술",
-    "topic": "High-k/Metal Gate",
-    "theory_id": "TH-7de81ff2",
-    "difficulty": "중급",
-    "type": "compare",
-    "question": "High-k/Metal Gate와 SiO₂/Poly-Si Gate의 주요 차이는 무엇인가?",
-    "options": [
-      "High-k/Metal Gate는 높은 저항을 가지며 누설 전류가 증가한다.",
-      "Poly-Si 게이트는 전기적 특성이 뛰어난 반면 High-k 물질은 그렇지 않다.",
-      "High-k 물질은 높은 유전율을 가지며, EOT가 작아 소자의 성능이 향상된다.",
-      "SiO₂는 높은 유전율을 가지고 EOT가 작다."
-    ],
-    "answer": 2,
-    "explanation": "정답 해설\nHigh-k/Metal Gate는 기존의 SiO₂/Poly-Si 기술에 비해 높은 유전율과 낮은 EOT를 제공하여 소자 성능을 크게 향상시킨다. 이는 반도체 소자의 기본 성능을 결정짓는 중요한 요소이다.\n\n오답 체크\n· 1번: High-k/Metal Gate는 낮은 저항을 가지고 누설 전류를 감소시킨다.\n· 2번: High-k 물질은 전기적 특성이 뛰어나고 성능을 향상시킨다.\n· 4번: SiO₂는 낮은 유전율을 가지며, EOT가 크다.\n\n💡 기억 포인트: High-k/Metal Gate는 높은 유전율과 낮은 EOT로 성능을 향상시킨다."
-  },
-  {
     "id": "Q-f58f310a",
     "category": "반도체 8대 공정",
     "topic": "리페어와 리던던시",
