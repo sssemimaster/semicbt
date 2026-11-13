@@ -899,11 +899,11 @@ html.dark .cs-frame{
 <div class="custom-badge-heading"><span class="custom-badge">✏️ 측정 방법</span>에너지 밴드 갭 측정</div>
 
 <p>에너지 밴드 갭은 반도체의 전기적 특성을 결정하는 중요한 요소이다. 이를 측정하기 위해 일반적으로 <strong>광학적 방법</strong>과 <strong>전기적 방법</strong>을 사용한다. 광학적 방법으로는 <strong>광흡수 스펙트럼</strong>을 측정하는 방식이 있다. 특정 파장 이하의 빛이 물질에 흡수되면서 전자가 가전자대에서 전도대로 이동하는 현상을 이용한다. 이때 흡수 에지를 통해 밴드 갭을 추정할 수 있다. 전기적 방법으로는 <strong>온도에 따른 전도도 변화</strong>를 측정하는 방식이 있다. 반도체의 전도도는 온도에 따라 변하며, 이 변화를 통해 밴드 갭을 계산할 수 있다.</p>
-<div class="custom-highlight-box">[실무 코멘트] 실리콘의 경우 광학적 방법보다 전기적 방법이 더 자주 사용된다. 이는 실리콘의 밴드 갭이 좁아 광흡수 스펙트럼 분석이 어려울 수 있기 때문이다.</div>
+<div class="custom-highlight-box">[실무 코멘트] 실리콘은 간접 천이 반도체라 흡수 에지 근처의 광흡수가 약하다. 그래서 광흡수만으로 밴드 갭을 정확히 읽기 어렵고, 온도에 따른 전도도 변화 같은 전기적 방법도 함께 쓴다.</div>
 
 <div class="custom-badge-heading"><span class="custom-badge">🎚️ 변수 영향</span>밴드 갭 영향 요인</div>
 
-<p>밴드 갭은 여러 요인에 의해 변할 수 있다. <strong>온도</strong>는 대표적인 변수로, 온도가 증가하면 밴드 갭이 줄어드는 경향이 있다. 이는 격자의 열 진동이 증가하면서 에너지 상태가 변하기 때문이다. <strong>압력</strong> 또한 영향을 미치는데, 압력이 증가하면 밴드 갭이 커질 수 있다. 이는 원자 간 거리가 줄어들면서 에너지 상태의 변화가 발생하기 때문이다. 마지막으로 <strong>결정 구조</strong>와 <strong>도핑</strong>도 밴드 갭에 영향을 준다. 예를 들어, 도핑된 반도체에서는 도핑 농도에 따라 밴드 갭이 변할 수 있다.</p>
+<p>밴드 갭은 여러 요인에 의해 변할 수 있다. <strong>온도</strong>는 대표적인 변수로, 온도가 증가하면 밴드 갭이 줄어드는 경향이 있다. 이는 격자의 열 진동이 증가하면서 에너지 상태가 변하기 때문이다. <strong>압력</strong> 또한 영향을 미치는데, 압력을 가하면 원자 간 거리가 줄어 밴드 갭이 변한다. 변하는 방향은 물질과 밴드 구조에 따라 다르다. 마지막으로 <strong>결정 구조</strong>와 <strong>도핑</strong>도 밴드 갭에 영향을 준다. 도핑 농도가 매우 높으면 밴드 갭이 약간 줄어드는 밴드갭 축소가 나타나지만, 보통 수준의 도핑에서는 밴드 갭이 거의 변하지 않는다. 도핑이 바꾸는 것은 밴드 갭이 아니라 페르미 준위의 위치이다.</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -921,16 +921,16 @@ html.dark .cs-frame{
 <tr>
 <td>압력</td>
 <td>증가</td>
-<td>증가</td>
+<td>물질에 따라 다름</td>
 </tr>
 <tr>
 <td>도핑</td>
-<td>고농도</td>
-<td>감소 가능성</td>
+<td>매우 고농도</td>
+<td>약간 감소</td>
 </tr>
 </tbody>
 </table></div>
-<div class="custom-highlight-box">[흔한 오해] 에너지 밴드 갭이 클수록 항상 절연체라는 오해가 있다. 하지만 밴드 갭이 큰 반도체도 존재하며, 이는 특정 조건에서 전도성을 가질 수 있다.</div>
+<div class="custom-highlight-box">[흔한 오해] 밴드 갭이 크면 곧바로 절연체라고 오해하기 쉽다. 반도체와 절연체의 경계는 분명하지 않고, SiC(약 3.3eV)나 GaN(약 3.4eV)처럼 밴드 갭이 큰 반도체도 도핑으로 전도도를 조절해 소자로 쓴다.</div>
 
 <div class="custom-badge-heading"><span class="custom-badge">🎚️ 변수 영향</span>에너지 밴드 발생 원인</div>
 
@@ -938,20 +938,20 @@ html.dark .cs-frame{
 <p>에너지 밴드는 원자 간의 결합과 상호작용에 의해 결정되며, 이는 물질의 특성을 좌우하는 중요한 요소이다. 밴드 구조는 물질의 전기적, 광학적 성질과 밀접하게 관련되어 있다.</p>
 <div class="custom-badge-heading"><span class="custom-badge">🛠️ 실무 이슈</span>에너지 밴드 문제</div>
 
-<p>에너지 밴드는 반도체의 전기적 특성을 결정하는 핵심 요소다. 실무에서는 특히 <strong>밴드갭</strong>의 크기가 중요하다. 밴드갭이 너무 크면 전도도(conductivity)가 낮아져 소자의 효율이 떨어진다. 반대로 밴드갭이 너무 작으면 전류가 비정상적으로 흐를 수 있어 소자의 안정성이 저하된다. 이러한 문제를 해결하기 위해 <strong>도핑</strong>과 같은 방법을 사용해 에너지 밴드를 조절한다. 도핑은 반도체의 전도대와 가전자대의 위치를 바꾸어 전기적 특성을 개선하는 역할을 한다.</p>
-<div class="custom-highlight-box">[면접 팁] 에너지 밴드 문제를 물을 때는, 도핑과 온도 조절이 어떻게 밴드갭에 영향을 주는지 설명할 수 있어야 한다.</div>
+<p>에너지 밴드는 반도체의 전기적 특성을 결정하는 핵심 요소다. 실무에서는 특히 <strong>밴드갭</strong>의 크기가 중요하다. 밴드갭이 너무 크면 열로 생기는 캐리어가 거의 없어 전도도가 매우 낮고, 도핑으로 캐리어를 만들기도 어려워진다. 반대로 밴드갭이 너무 작으면 열로 생기는 캐리어(진성 캐리어)가 많아 온도가 오를 때 누설 전류가 커지고 도핑으로 정한 특성이 흐려진다. 그래서 용도에 맞는 밴드갭의 재료를 고르고, <strong>도핑</strong>으로 캐리어 농도를 조절한다. 도핑은 밴드 구조를 바꾸는 것이 아니라 전자나 정공의 수를 정하고 페르미 준위를 옮기는 역할을 한다.</p>
+<div class="custom-highlight-box">[면접 팁] 에너지 밴드 문제를 물을 때는, 온도가 밴드갭과 진성 캐리어 수에 미치는 영향과 도핑이 페르미 준위를 옮기는 원리를 구분해서 설명할 수 있어야 한다.</div>
 
 <div class="custom-badge-heading"><span class="custom-badge">✏️ 개선 방법</span>밴드갭 조절 성능 개선</div>
 
-<p>반도체 소자의 성능을 개선하려면, 에너지 밴드를 조절해야 한다. 밴드갭의 크기는 <strong>온도</strong>, <strong>결정 구조</strong>, <strong>도핑</strong> 등의 변수에 의해 영향을 받는다. 온도가 높아지면 밴드갭이 줄어들어 전도도가 증가하지만, 소자 안정성이 떨어질 수 있다. 결정 구조를 변경하거나 특정 원소를 도핑하면 밴드갭을 최적화할 수 있다. 예를 들어, 실리콘에 인(P)를 도핑하면 n형 반도체가 되어 전도대가 낮아지고 전류가 쉽게 흐를 수 있다. 이러한 조절 방법을 통해 반도체의 성능을 맞춤형으로 개선할 수 있다.</p>
+<p>반도체 소자의 성능을 개선하려면, 에너지 밴드를 조절해야 한다. 밴드갭의 크기는 <strong>온도</strong>, <strong>결정 구조</strong>, <strong>도핑</strong> 등의 변수에 의해 영향을 받는다. 온도가 높아지면 밴드갭이 약간 줄어들지만, 전도도가 늘어나는 주된 이유는 열에너지로 전도대에 올라가는 전자가 늘기 때문이다. 밴드갭 자체는 재료를 바꾸거나 SiGe 같은 합금 조성, 스트레인으로 조절하고, 도핑은 캐리어 농도를 정하는 데 쓴다. 예를 들어 실리콘에 인(P)을 도핑하면 전도대 바로 아래에 도너 준위가 생겨 전자가 쉽게 전도대로 올라가는 n형 반도체가 된다. 이러한 조절 방법을 통해 반도체의 성능을 맞춤형으로 개선할 수 있다.</p>
 <div class="custom-badge-heading"><span class="custom-badge">🧠 암기 포인트</span>시험·면접 체크</div>
 
 <ul>
 <li>에너지 밴드는 전도대와 가전자대로 나뉜다.</li>
-<li>밴드갭의 크기는 도핑과 온도에 영향을 받는다.</li>
+<li>밴드갭은 온도가 오르면 줄어들고, 보통 수준의 도핑으로는 거의 변하지 않는다.</li>
 <li>도핑은 반도체의 전기적 특성을 조절하는 방법이다.</li>
-<li>밴드갭이 크면 전도도가 낮아지고, 작으면 안정성이 떨어질 수 있다.</li>
-<li>실무에서 에너지 밴드 문제는 도핑과 구조 변경으로 해결한다.</li>
+<li>밴드갭이 크면 열로 생기는 캐리어가 적어 전도도가 낮고, 작으면 열 누설이 커진다.</li>
+<li>도핑은 밴드갭이 아니라 페르미 준위와 캐리어 수를 바꾼다.</li>
 </ul></div></div></div><nav aria-label="같이 보면 좋은 이론" class="mt-2"><p class="text-xs font-bold text-slate-400 dark:text-slate-500 mb-3">같이 보면 좋은 이론</p><ul class="grid gap-2 sm:grid-cols-2"><li><a href="../th-18535/" class="block rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0f1729] px-4 py-3 hover:border-indigo-300 dark:hover:border-cyan-400/40 transition"><span class="font-bold text-sm text-slate-900 dark:text-white">PN 접합</span><span class="block text-xs text-slate-500 dark:text-slate-400 mt-0.5">반도체 기초 이론 · 반도체 물리</span></a></li><li><a href="../th-cff1d71d/" class="block rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0f1729] px-4 py-3 hover:border-indigo-300 dark:hover:border-cyan-400/40 transition"><span class="font-bold text-sm text-slate-900 dark:text-white">페르미 준위</span><span class="block text-xs text-slate-500 dark:text-slate-400 mt-0.5">반도체 기초 이론 · 반도체 물리</span></a></li></ul></nav></div>
       <button onclick="navTo('view-search')" class="mt-10 w-full flex items-center justify-between gap-3 rounded-2xl border border-dashed border-slate-300 dark:border-white/15 px-5 py-4 text-left text-sm text-slate-500 dark:text-slate-400 hover:border-indigo-400 dark:hover:border-cyan-300/60 transition">
         <span>🔍 <b class="text-slate-700 dark:text-slate-200">찾는 주제가 안 보이나요?</b> 이론 · 문제 · 면접을 한 번에 검색해 보세요</span><span class="text-indigo-600 dark:text-cyan-300 font-bold shrink-0">통합 검색 →</span></button>
