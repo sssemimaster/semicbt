@@ -284,6 +284,8 @@ def validate_part(text, part):
     last_badge = part.get("last_badge")
     if last_badge and last_badge not in headings[-1]:
         raise ValueError(f"마지막 소제목이 {last_badge} 가 아님")
+    if re.search(r"^>\s*💡\s*\[[^\]]+\]\s*$", text, re.M):
+        raise ValueError("팁 박스(> 💡 [...])에 내용이 비어 있음 → 문장을 채우기")
     hits = cliche_hits(text)
     if hits >= 3:
         raise ValueError(f"상투적 표현이 {hits}번 쓰임 (구체적으로 다시 쓰기)")
