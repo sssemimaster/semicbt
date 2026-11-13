@@ -181,6 +181,17 @@
     .wfc-th { margin-top: .6rem; font-size: 12.5px; opacity: .8; } .wfc-ms { margin-top: .7rem; font-size: 13.5px; font-weight: 800; color: #fde68a; }
     .wfc-act { margin-top: 1.1rem; min-height: 3rem; display: flex; justify-content: center; align-items: center; }
     .wfc-skip { font-size: 12px; color: #94a3b8; padding: .5rem 1rem; } .wfc-ok { padding: .8rem 2.4rem; border-radius: .9rem; font-weight: 800; }
+    #acctBtn:not(.hidden) { display: flex; } #acctBtn.acct-on { background: transparent; padding: 0; }
+    .ac-card { max-width: 400px; } .ac-list { margin: .9rem 0 1rem; display: grid; gap: .5rem; font-size: 13px; color: #475569; } html.dark .ac-list { color: #cbd5e1; }
+    .ac-list li { display: flex; gap: .5rem; } .ac-list li::before { content: '✓'; color: #6366f1; font-weight: 800; } html.dark .ac-list li::before { color: #67e8f9; }
+    .ac-google { width: 100%; display: flex; align-items: center; justify-content: center; gap: .6rem; padding: .8rem 1rem; border-radius: .9rem; border: 1px solid #cbd5e1; background: #fff; color: #1f2937; font-weight: 700; font-size: 14px; transition: .15s; } .ac-google:hover { background: #f8fafc; box-shadow: 0 2px 10px rgba(0,0,0,.08); }
+    .ac-note { margin-top: .8rem; font-size: 11.5px; line-height: 1.6; color: #64748b; } html.dark .ac-note { color: #94a3b8; } .ac-priv { margin-top: .6rem; font-size: 11px; color: #94a3b8; text-align: center; }
+    .ac-err { margin-top: .7rem; padding: .55rem .7rem; border-radius: .6rem; background: rgba(239,68,68,.1); color: #dc2626; font-size: 12px; } html.dark .ac-err { color: #fca5a5; }
+    .ac-me { display: flex; align-items: center; gap: .8rem; margin-top: .9rem; } .ac-me img, .ac-me > span { width: 44px; height: 44px; border-radius: 50%; background: rgba(100,116,139,.15); display: flex; align-items: center; justify-content: center; font-size: 20px; } .ac-me b { font-size: 14px; } .ac-me p { font-size: 12px; color: #64748b; word-break: break-all; }
+    .ac-stat { display: flex; justify-content: space-between; margin-top: .9rem; padding: .6rem .8rem; border-radius: .7rem; background: rgba(100,116,139,.1); font-size: 12px; color: #64748b; } .ac-stat b { color: inherit; }
+    .ac-btns { display: flex; gap: .5rem; margin-top: .9rem; } .ac-btns button { flex: 1; padding: .7rem; border-radius: .8rem; font-weight: 700; font-size: 13px; } .ac-btns button:disabled { opacity: .5; }
+    .ac-ghost { border: 1px solid #cbd5e1; color: #475569; } html.dark .ac-ghost { border-color: rgba(255,255,255,.15); color: #cbd5e1; }
+    .ac-del { display: block; margin: .9rem auto 0; font-size: 11.5px; color: #94a3b8; text-decoration: underline; } .ac-del:hover { color: #dc2626; }
     @media (prefers-reduced-motion: reduce) { .wfc-day span.pop { animation: none; } .wfc-card, .wl-card { transition: none; } }
     /* 상단 바의 뼈대는 Tailwind CDN 이 느린 환경에서 초반 클래스를 놓쳐도 무너지지 않게 일반 CSS 로도 한 번 더 고정해 둔다 */
     .app-bar { display: flex; align-items: center; justify-content: space-between; gap: .75rem; height: 4rem; max-width: 72rem; margin: 0 auto; padding: 0 1rem; }
@@ -587,6 +598,7 @@ html.dark .cs-frame{
       <div class="app-r flex items-center gap-2">
         <button id="navAttend" onclick="navTo('view-lobby'); setTimeout(()=>document.getElementById('waferPanel').scrollIntoView({behavior:'smooth',block:'center'}),60)" class="hidden sm:flex items-center gap-1.5 text-xs font-bold bg-slate-900/5 hover:bg-slate-900/10 border border-slate-200 dark:bg-white/10 dark:hover:bg-white/15 dark:border-white/10 px-3 h-9 rounded-full transition"><span class="w-2 h-2 rounded-full bg-indigo-500 dark:bg-cyan-300"></span><span id="navAttendText">출석 0일</span></button>
         <button onclick="navTo('view-search')" aria-label="검색" class="text-lg bg-slate-900/5 hover:bg-slate-900/10 dark:bg-white/10 dark:hover:bg-white/15 w-8 h-9 rounded-full flex items-center justify-center transition">🔍</button>
+        <button id="acctBtn" onclick="openAcct()" aria-label="로그인 · 내 계정" class="hidden text-lg bg-slate-900/5 hover:bg-slate-900/10 dark:bg-white/10 dark:hover:bg-white/15 w-9 h-9 rounded-full flex items-center justify-center transition overflow-hidden">👤</button>
         <button onclick="toggleTheme()" id="themeToggleBtn" aria-label="테마 전환" class="text-lg bg-slate-900/5 hover:bg-slate-900/10 dark:bg-white/10 dark:hover:bg-white/15 w-8 h-9 rounded-full flex items-center justify-center transition">🌙</button>
       </div>
     </div>
@@ -2524,6 +2536,117 @@ html.dark .cs-frame{
       attendBusy = false; renderWaferPanel(); renderHome(); updateHeaderChip();
     }
     function updateHeaderChip() { const el = document.getElementById('navAttendText'); if (el) el.textContent = `출석 ${attendDays.length}일`; }
+
+    // =====================================================
+    // 계정(구글 로그인) · 기록 동기화
+    // 설정값(firebase-config.js)이 없으면 아무것도 보이지 않고, 지금처럼 이 기기에만 저장된다.
+    // 로그인하면 출석·학습 기록·오답 노트·통계·즐겨찾기가 계정에 저장돼 기기가 바뀌어도 이어진다.
+    // =====================================================
+    const SYNC_KEYS = ['semiCbtWafer', 'semiCbtDayLog', 'semiCbtWrong', 'semiCbtStats', 'semiCbtStarred'];
+    const _lsSet = Storage.prototype.setItem;
+    let acct = { user: null, ready: false, busy: false, last: 0, err: '' }, fb = null, pushTimer = null;
+    Storage.prototype.setItem = function (k, v) { _lsSet.call(this, k, v); if (this === window.localStorage && acct.user && fb && SYNC_KEYS.includes(k)) { clearTimeout(pushTimer); pushTimer = setTimeout(() => syncNow(), 2500); } };
+    const jparse = (s) => { try { return s == null ? null : JSON.parse(s); } catch (e) { return null; } };
+    function mergeDay(x, y) {
+      const mx = (p, q) => { const o = Object.assign({}, q || {}); Object.entries(p || {}).forEach(([k, v]) => { o[k] = Math.max(o[k] || 0, v); }); return o; };
+      return { w: mx(x.w, y.w), th: [...new Set([...(y.th || []), ...(x.th || [])])].slice(0, 12), q: Math.max(x.q || 0, y.q || 0), iv: Math.max(x.iv || 0, y.iv || 0), qt: mx(x.qt, y.qt) };
+    }
+    // 같은 기록이 두 기기에 있을 때 합치는 방법: 출석일·즐겨찾기는 합집합, 오답 노트는 더 최근 것, 날짜별 기록은 항목별로 큰 값, 통계는 문제 수가 더 많은 쪽
+    const MERGE = {
+      semiCbtWafer: (a, b) => ({ days: [...new Set([...(a.days || []), ...(b.days || [])])].sort() }),
+      semiCbtStarred: (a, b) => [...new Set([...(b || []), ...(a || [])])],
+      semiCbtWrong: (a, b) => { const o = Object.assign({}, b); Object.entries(a).forEach(([k, v]) => { if (!o[k] || (v.last || 0) >= (o[k].last || 0)) o[k] = v; }); return o; },
+      semiCbtDayLog: (a, b) => { const o = Object.assign({}, b); Object.entries(a).forEach(([d, e]) => { o[d] = o[d] ? mergeDay(e, o[d]) : e; }); return o; },
+      semiCbtStats: (a, b) => {
+        if (!a.cats) return b; if (!b.cats) return a;
+        const big = (p, q) => { const o = Object.assign({}, q); Object.entries(p).forEach(([k, v]) => { if (!o[k] || v.t > o[k].t) o[k] = v; }); return o; };
+        return { cats: big(a.cats, b.cats), topics: big(a.topics || {}, b.topics || {}), total: (a.total.t >= b.total.t ? a.total : b.total) };
+      },
+    };
+    function reloadFromStorage() {
+      const s = jparse(localStorage.getItem('semiCbtStarred')); if (Array.isArray(s)) starredIds = s;
+      const w = jparse(localStorage.getItem('semiCbtWrong')); if (w && typeof w === 'object') wrongNotes = w;
+      const st = jparse(localStorage.getItem('semiCbtStats')); if (st && st.cats) stats = st;
+      const wf = jparse(localStorage.getItem(WAFER_KEY)); if (wf && Array.isArray(wf.days)) attendDays = wf.days;
+      const dl = jparse(localStorage.getItem(LOG_KEY)); if (dl && typeof dl === 'object') dayLog = dl;
+      if (!attendBusy) { try { renderWaferPanel(); updateHeaderChip(); if (currentViewId === 'view-lobby') renderHome(); } catch (e) {} }
+    }
+    const ACCT_ERR = { 'auth/unauthorized-domain': '이 사이트 주소가 Firebase의 승인된 도메인에 없어요. 관리자 설정이 필요해요.', 'permission-denied': '저장 권한이 없어요. Firestore 보안 규칙 설정이 필요해요.', 'auth/network-request-failed': '네트워크 연결을 확인해 주세요.', 'unavailable': '네트워크 연결을 확인해 주세요.', 'auth/operation-not-allowed': '구글 로그인이 아직 켜져 있지 않아요. 관리자 설정이 필요해요.' };
+    const acctErr = (e) => ACCT_ERR[e && e.code] || ('동기화에 실패했어요' + (e && e.code ? ` (${e.code})` : ''));
+    async function syncNow() {
+      if (!fb || !acct.user || acct.busy) return; acct.busy = true; acct.err = ''; renderAcct();
+      try {
+        const ref = fb.doc(fb.db, 'users', acct.user.uid), snap = await fb.getDoc(ref), cloud = snap.exists() ? (snap.data().data || {}) : {};
+        let localChanged = false, remoteChanged = !snap.exists(); const out = {};
+        SYNC_KEYS.forEach((k) => {
+          const lraw = localStorage.getItem(k), l = jparse(lraw), r = jparse(cloud[k]); const m = l == null ? r : r == null ? l : MERGE[k](l, r); if (m == null) return;
+          const s = JSON.stringify(m); out[k] = s; if (s !== lraw) { _lsSet.call(localStorage, k, s); localChanged = true; } if (s !== cloud[k]) remoteChanged = true;
+        });
+        if (remoteChanged) { if (JSON.stringify(out).length > 900000) throw { code: 'too-large' }; await fb.setDoc(ref, { v: 1, updatedAt: Date.now(), data: out }); }
+        if (localChanged) reloadFromStorage();
+        acct.last = Date.now();
+      } catch (e) { acct.err = e && e.code === 'too-large' ? '저장할 기록이 너무 커서 동기화하지 못했어요.' : acctErr(e); }
+      acct.busy = false; renderAcct();
+    }
+    async function acctInit() {
+      const btn = document.getElementById('acctBtn'); if (!btn || acct.ready) return;
+      try { await new Promise((res) => { const s = document.createElement('script'); s.src = ROOT + 'firebase-config.js?v=' + Date.now(); s.onload = s.onerror = res; document.head.appendChild(s); }); } catch (e) {}
+      const cfg = window.FIREBASE_CONFIG; if (!cfg || !cfg.apiKey) return;
+      acct.ready = true; btn.classList.remove('hidden'); renderAcct();
+      try {
+        const B = 'https://www.gstatic.com/firebasejs/10.12.2/', [A, U, F] = await Promise.all([import(B + 'firebase-app.js'), import(B + 'firebase-auth.js'), import(B + 'firebase-firestore.js')]);
+        const app = A.initializeApp(cfg), auth = U.getAuth(app);
+        fb = { auth, db: F.getFirestore(app), doc: F.doc, getDoc: F.getDoc, setDoc: F.setDoc, deleteDoc: F.deleteDoc, U };
+        U.getRedirectResult(auth).catch((e) => { acct.err = acctErr(e); renderAcct(); });
+        U.onAuthStateChanged(auth, (u) => { acct.user = u; renderAcct(); if (u) syncNow(); });
+        document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && acct.user && Date.now() - acct.last > 60000) syncNow(); });
+      } catch (e) { acct.err = '로그인 모듈을 불러오지 못했어요. 네트워크를 확인해 주세요.'; renderAcct(); }
+    }
+    async function acctSignIn() {
+      if (!fb) { acct.err = '로그인 모듈을 아직 불러오는 중이에요. 잠시 뒤 다시 눌러 주세요.'; renderAcct(); return; }
+      acct.err = ''; const prov = new fb.U.GoogleAuthProvider();
+      try { await fb.U.signInWithPopup(fb.auth, prov); }
+      catch (e) {
+        if (e && (e.code === 'auth/popup-closed-by-user' || e.code === 'auth/cancelled-popup-request')) return;
+        if (e && e.code === 'auth/popup-blocked') { try { await fb.U.signInWithRedirect(fb.auth, prov); return; } catch (e2) { e = e2; } }
+        acct.err = acctErr(e); renderAcct();
+      }
+    }
+    async function acctSignOut() {
+      if (!fb) return; await syncNow();
+      const wipe = confirm('로그아웃합니다.\n\n이 기기에 저장된 학습 기록도 지울까요?\n(기록은 계정에 남아 있어서 다시 로그인하면 돌아와요. 공용 기기라면 [확인]을 누르세요.)');
+      try { await fb.U.signOut(fb.auth); } catch (e) {}
+      if (wipe) { SYNC_KEYS.concat([TODAY_KEY]).forEach((k) => { try { localStorage.removeItem(k); } catch (e) {} }); starredIds = []; wrongNotes = {}; stats = { cats: {}, topics: {}, total: { r: 0, t: 0 } }; attendDays = []; dayLog = {}; reloadFromStorage(); }
+      closeAcct();
+    }
+    async function acctDelete() {
+      if (!fb || !acct.user) return;
+      if (!confirm('계정에 저장된 학습 기록을 모두 삭제할까요?\n이 기기에 있는 기록은 그대로 남지만, 다른 기기와의 동기화는 끊겨요.\n삭제한 기록은 되돌릴 수 없어요.')) return;
+      try { await fb.deleteDoc(fb.doc(fb.db, 'users', acct.user.uid)); try { await acct.user.delete(); } catch (e) {} try { await fb.U.signOut(fb.auth); } catch (e) {} closeAcct(); alert('계정에 저장된 기록을 삭제했어요.'); }
+      catch (e) { acct.err = acctErr(e); renderAcct(); }
+    }
+    const gLogo = '<svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.5 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4.1 7.1-10.1 7.1-17.5z"/><path fill="#FBBC05" d="M10.5 28.7A14.5 14.5 0 0 1 9.5 24c0-1.6.3-3.2.8-4.7l-7.9-6.1A24 24 0 0 0 0 24c0 3.9.9 7.5 2.6 10.8l7.9-6.1z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.5-5.8c-2.1 1.4-4.9 2.3-8.4 2.3-6.3 0-11.6-4-13.5-9.8l-7.9 6.1C6.5 42.6 14.6 48 24 48z"/></svg>';
+    function openAcct() { let o = document.getElementById('acctM'); if (!o) { o = document.createElement('div'); o.id = 'acctM'; o.className = 'wl'; o.setAttribute('role', 'dialog'); o.setAttribute('aria-modal', 'true'); o.setAttribute('aria-label', '내 계정'); o.addEventListener('click', (e) => { if (e.target === o) closeAcct(); }); document.body.appendChild(o); } renderAcct(); requestAnimationFrame(() => o.classList.add('on')); }
+    function closeAcct() { const o = document.getElementById('acctM'); if (!o) return; o.classList.remove('on'); setTimeout(() => o.remove(), 220); }
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && document.getElementById('acctM')) closeAcct(); });
+    function ago(t) { if (!t) return '아직 동기화 전'; const s = Math.round((Date.now() - t) / 1000); return s < 10 ? '방금 전' : s < 60 ? `${s}초 전` : s < 3600 ? `${Math.round(s / 60)}분 전` : `${Math.round(s / 3600)}시간 전`; }
+    function renderAcct() {
+      const btn = document.getElementById('acctBtn');
+      if (btn) { const u = acct.user; btn.innerHTML = u ? (u.photoURL ? `<img src="${escH(u.photoURL)}" alt="" referrerpolicy="no-referrer" class="w-7 h-7 rounded-full">` : `<b class="text-xs">${escH((u.displayName || u.email || '?').slice(0, 1).toUpperCase())}</b>`) : '👤'; btn.title = u ? `${u.displayName || u.email} · 로그인됨` : '로그인'; btn.classList.toggle('acct-on', !!u); }
+      const o = document.getElementById('acctM'); if (!o) return;
+      const u = acct.user, priv = `<a href="${ROOT}privacy.html" target="_blank" rel="noopener" class="underline">개인정보 처리방침</a>`, err = acct.err ? `<p class="ac-err">${escH(acct.err)}</p>` : '';
+      o.innerHTML = u ? `<div class="wl-card ac-card"><div class="wl-top"><div><p class="eyebrow">MY ACCOUNT</p><h3>내 계정</h3></div><button type="button" class="wl-x" onclick="closeAcct()" aria-label="닫기">✕</button></div>
+          <div class="ac-me">${u.photoURL ? `<img src="${escH(u.photoURL)}" alt="" referrerpolicy="no-referrer">` : '<span>👤</span>'}<div><b>${escH(u.displayName || '구글 계정')}</b><p>${escH(u.email || '')}</p></div></div>
+          <div class="ac-stat"><span>${acct.busy ? '동기화 중…' : '마지막 동기화'}</span><b>${acct.busy ? '' : ago(acct.last)}</b></div>
+          <p class="ac-note">출석 ${attendDays.length}일 · 오답 노트 ${Object.keys(wrongNotes).length}개 · 즐겨찾기 ${starredIds.length}개가 이 계정과 연결돼 있어요. 기록은 이 기기와 계정에 함께 저장돼요.</p>${err}
+          <div class="ac-btns"><button type="button" class="pbtn" onclick="syncNow()" ${acct.busy ? 'disabled' : ''}>지금 동기화</button><button type="button" class="ac-ghost" onclick="acctSignOut()">로그아웃</button></div>
+          <button type="button" class="ac-del" onclick="acctDelete()">계정에 저장된 내 기록 삭제</button><p class="ac-priv">${priv}</p></div>`
+        : `<div class="wl-card ac-card"><div class="wl-top"><div><p class="eyebrow">MY ACCOUNT</p><h3>내 기록을 계정에 저장하기</h3></div><button type="button" class="wl-x" onclick="closeAcct()" aria-label="닫기">✕</button></div>
+          <ul class="ac-list"><li>폰과 PC에서 같은 출석·웨이퍼·오답 노트를 이어 쓸 수 있어요</li><li>브라우저 데이터를 지워도 기록이 남아요</li><li>지금까지 이 기기에 쌓은 기록은 그대로 계정으로 합쳐져요</li></ul>
+          <button type="button" class="ac-google" onclick="acctSignIn()">${gLogo}<span>구글로 로그인</span></button>${err}
+          <p class="ac-note">로그인하지 않아도 모든 기능을 그대로 쓸 수 있어요. 구글 이름·이메일·프로필 사진과 학습 기록만 저장해요.</p><p class="ac-priv">${priv}</p></div>`;
+    }
+    setTimeout(acctInit, 900);
     function updateNav() {
       const v = currentViewId, map = { 'view-lobby': 'home', 'view-learning': 'theory', 'view-quiz': 'quiz', 'view-result': 'quiz', 'view-interview': 'interview', 'view-exam': 'exam', 'view-note': 'note', 'view-stats': 'stats', 'view-careers': 'careers', 'view-setup': currentMode === 'interview' ? 'interview' : (document.getElementById('examToggle') && document.getElementById('examToggle').checked ? 'exam' : 'quiz') };
       document.querySelectorAll('[data-nav]').forEach(b => b.classList.toggle('active', b.dataset.nav === map[v]));
