@@ -186,7 +186,7 @@
     .wfc-ms { margin-top: .9rem; font-size: 13px; font-weight: 700; color: #fde68a; line-height: 1.5; }
     .wfc-act { margin-top: 1.4rem; min-height: 3rem; display: flex; justify-content: center; align-items: center; }
     .wfc-skip { position: absolute; top: max(14px, env(safe-area-inset-top)); right: 14px; font-size: 12px; color: #94a3b8; padding: .5rem .8rem; } .wfc-ok { padding: .8rem 2.6rem; border-radius: .9rem; font-weight: 800; }
-    #acctBtn:not(.hidden) { display: flex; } #acctBtn.acct-on { background: transparent; padding: 0; }
+    #acctBtn:not(.hidden) { display: flex; } #acctBtn.acct-on { background: transparent; padding: 0; } #acctBtn.acct-off { width: auto; padding: 0 .9rem; font-size: 13px; font-weight: 700; white-space: nowrap; } @media (max-width: 420px) { #acctBtn.acct-off { padding: 0 .65rem; font-size: 12px; } .app-l span.text-\[21px\] { white-space: nowrap; font-size: 19px; } .app-r { gap: .35rem; } } @media (max-width: 340px) { .app-l span.text-\[21px\] { font-size: 16px; } .app-l { gap: .4rem; } .app-l svg.w-8 { width: 1.5rem; height: 1.5rem; } #acctBtn.acct-off { padding: 0 .5rem; } }
     .ac-card { max-width: 400px; } .ac-list { margin: .9rem 0 1rem; display: grid; gap: .5rem; font-size: 13px; color: #475569; } html.dark .ac-list { color: #cbd5e1; }
     .ac-list li { display: flex; gap: .5rem; } .ac-list li::before { content: '✓'; color: #6366f1; font-weight: 800; } html.dark .ac-list li::before { color: #67e8f9; }
     .ac-google { width: 100%; display: flex; align-items: center; justify-content: center; gap: .6rem; padding: .8rem 1rem; border-radius: .9rem; border: 1px solid #cbd5e1; background: #fff; color: #1f2937; font-weight: 700; font-size: 14px; transition: .15s; } .ac-google:hover { background: #f8fafc; box-shadow: 0 2px 10px rgba(0,0,0,.08); }
@@ -604,7 +604,7 @@ html.dark .cs-frame{
       <div class="app-r flex items-center gap-2">
         <button id="navAttend" onclick="navTo('view-lobby'); setTimeout(()=>document.getElementById('waferPanel').scrollIntoView({behavior:'smooth',block:'center'}),60)" class="hidden sm:flex items-center gap-1.5 text-xs font-bold bg-slate-900/5 hover:bg-slate-900/10 border border-slate-200 dark:bg-white/10 dark:hover:bg-white/15 dark:border-white/10 px-3 h-9 rounded-full transition"><span class="w-2 h-2 rounded-full bg-indigo-500 dark:bg-cyan-300"></span><span id="navAttendText">출석 0일</span></button>
         <button onclick="navTo('view-search')" aria-label="검색" class="text-lg bg-slate-900/5 hover:bg-slate-900/10 dark:bg-white/10 dark:hover:bg-white/15 w-8 h-9 rounded-full flex items-center justify-center transition">🔍</button>
-        <button id="acctBtn" onclick="openAcct()" aria-label="로그인 · 내 계정" class="hidden text-lg bg-slate-900/5 hover:bg-slate-900/10 dark:bg-white/10 dark:hover:bg-white/15 w-9 h-9 rounded-full flex items-center justify-center transition overflow-hidden">👤</button>
+        <button id="acctBtn" onclick="openAcct()" aria-label="로그인 · 내 계정" class="hidden acct-off text-lg bg-slate-900/5 hover:bg-slate-900/10 dark:bg-white/10 dark:hover:bg-white/15 w-9 h-9 rounded-full flex items-center justify-center transition overflow-hidden">로그인</button>
         <button onclick="toggleTheme()" id="themeToggleBtn" aria-label="테마 전환" class="text-lg bg-slate-900/5 hover:bg-slate-900/10 dark:bg-white/10 dark:hover:bg-white/15 w-8 h-9 rounded-full flex items-center justify-center transition">🌙</button>
       </div>
     </div>
@@ -2720,7 +2720,7 @@ html.dark .cs-frame{
     function ago(t) { if (!t) return '아직 동기화 전'; const s = Math.round((Date.now() - t) / 1000); return s < 10 ? '방금 전' : s < 60 ? `${s}초 전` : s < 3600 ? `${Math.round(s / 60)}분 전` : `${Math.round(s / 3600)}시간 전`; }
     function renderAcct() {
       const btn = document.getElementById('acctBtn');
-      if (btn) { const u = acct.user; btn.innerHTML = u ? (u.photoURL ? `<img src="${escH(u.photoURL)}" alt="" referrerpolicy="no-referrer" class="w-7 h-7 rounded-full">` : `<b class="text-xs">${escH((u.displayName || u.email || '?').slice(0, 1).toUpperCase())}</b>`) : '👤'; btn.title = u ? `${u.displayName || u.email} · 로그인됨` : '로그인'; btn.classList.toggle('acct-on', !!u); }
+      if (btn) { const u = acct.user; btn.innerHTML = u ? (u.photoURL ? `<img src="${escH(u.photoURL)}" alt="" referrerpolicy="no-referrer" class="w-7 h-7 rounded-full">` : `<b class="text-xs">${escH((u.displayName || u.email || '?').slice(0, 1).toUpperCase())}</b>`) : '로그인'; btn.title = u ? `${u.displayName || u.email} · 로그인됨` : '로그인'; btn.classList.toggle('acct-on', !!u); btn.classList.toggle('acct-off', !u); }
       const o = document.getElementById('acctM'); if (!o) return;
       const u = acct.user, priv = `<a href="${ROOT}privacy.html" target="_blank" rel="noopener" class="underline">개인정보 처리방침</a>`, err = acct.err ? `<p class="ac-err">${escH(acct.err)}</p>` : '';
       o.innerHTML = u ? `<div class="wl-card ac-card"><div class="wl-top"><div><p class="eyebrow">MY ACCOUNT</p><h3>내 계정</h3></div><button type="button" class="wl-x" onclick="closeAcct()" aria-label="닫기">✕</button></div>
