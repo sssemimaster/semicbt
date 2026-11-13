@@ -377,10 +377,10 @@ html.dark .cs-frame{
   #view-lobby > section:first-of-type h2 { font-size: 22px; }
   #view-lobby > .grid { display: contents; }                 /* 과목 + 웨이퍼 묶음을 풀어서 각각 순서를 준다 */
   #view-lobby > section:nth-of-type(1) { order: 1; }          /* 인사·검색 */
-  #view-lobby > .grid > section:first-child { order: 2; }     /* 과목별 학습 */
-  #view-lobby > section:nth-of-type(2) { order: 3; }          /* 학습 방식 카드 */
+  #view-lobby > .grid > section:last-child { order: 2; }      /* 웨이퍼 새기기 (맨 위) */
+  #view-lobby > .grid > section:first-child { order: 3; }     /* 과목별 학습 */
   #view-lobby > section:nth-of-type(3) { order: 4; }          /* 직무 지도 */
-  #view-lobby > .grid > section:last-child { order: 5; }      /* 웨이퍼 키우기 */
+  #view-lobby > section:nth-of-type(2) { order: 5; }          /* 학습 방식 카드 (맨 아래) */
   #view-lobby h3 { font-size: 16px; }
   #view-lobby section > .mb-4 > span { display: none; }
   #homeSubjects { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: #e2e8f0; }
@@ -536,7 +536,7 @@ html.dark .cs-frame{
           <div id="homeSubjects" class="flex-1 flex flex-col rounded-2xl bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-white/10 divide-y divide-slate-100 dark:divide-white/5 overflow-hidden"></div>
         </section>
         <section class="flex flex-col">
-          <div class="mb-3"><h3 class="text-lg font-bold text-slate-900 dark:text-white">웨이퍼 키우기</h3></div>
+          <div class="mb-3"><h3 class="text-lg font-bold text-slate-900 dark:text-white">웨이퍼 새기기</h3></div>
           <div id="waferPanel" class="flex-1"></div>
         </section>
       </div>
