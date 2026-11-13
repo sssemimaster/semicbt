@@ -248,7 +248,8 @@ def normalize_markdown(text):
     t = re.sub(r"\\\((.+?)\\\)", lambda mo: "$" + mo.group(1) + "$", t, flags=re.DOTALL)
     # 모델이 #, ## 제목을 쓴 경우 ### 로 강등
     t = re.sub(r"^#{1,2}\s", "### ", t, flags=re.M)
-    # 과한 빈 줄 정리
+    # 내용 없는 빈 인용 줄('> ') 제거 후 과한 빈 줄 정리
+    t = re.sub(r"^[ \t]*>[ \t]*$\n?", "", t, flags=re.M)
     t = re.sub(r"\n{3,}", "\n\n", t)
     t = sanitize_diagrams(t)
     return t
@@ -518,7 +519,9 @@ def audit_theory(text):
                 continue
             out = out.replace(find, rep_)
             applied += 1
-        out = re.sub(r"[ \t]{2,}", " ", out); out = re.sub(r"\n{3,}", "\n\n", out)
+        out = re.sub(r"[ \t]{2,}", " ", out)
+        out = re.sub(r"^[ \t]*>[ \t]*$\n?", "", out, flags=re.M)   # 교정이 팁 박스 내용을 지우면 빈 '> ' 만 남는다 → 빈 인용 줄 제거
+        out = re.sub(r"\n{3,}", "\n\n", out)
         if len(out) < len(text) * 0.8 or len(HEADING_RE.findall(out)) != len(HEADING_RE.findall(text)):
             raise ValueError("교정 결과가 구조를 해쳐서 취소")
         print(f"   ✨ 편집 교정: 제안 {len(fixes)}개 중 {applied}개 적용")
