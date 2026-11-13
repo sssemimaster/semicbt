@@ -426,7 +426,8 @@ html.dark .cs-frame{
   #view-learning > .mb-6 { margin-bottom: .9rem; }
   #view-learning > .mb-6 .mb-5 { margin-bottom: 0; }
   #view-learning > .mb-6 p.text-sm { display: none; }
-  body:not([data-lvl="home"]) #view-learning > .mb-6 { display: none; }
+  /* 폴더를 들어가도 카드가 같은 높이에 오도록 머리글·현재 위치 바를 그대로 두고, 글을 읽는 화면(detail)에서만 머리글을 접는다 */
+  body[data-lvl="detail"] #view-learning > .mb-6:not(#breadcrumbContainer) { display: none; }
   #breadcrumbContainer { flex-wrap: nowrap; overflow-x: auto; white-space: nowrap; padding: .55rem .8rem; margin-bottom: .9rem; scrollbar-width: none; }
   #learningContainer.grid { gap: .5rem; }
   #learningContainer > button { padding: .7rem .85rem; gap: .75rem; border-radius: 1rem; }
@@ -1979,6 +1980,7 @@ $$</p>
       bc.innerHTML = `<button onclick="navTo('view-learning', {level:'home'})" class="text-indigo-700 dark:text-[#67e8f9] font-bold px-2 hover:underline">📚 백과사전</button>`;
       if (learnState.level !== 'home') bc.innerHTML += `<span class="text-indigo-200 dark:text-[#1e3a5f]">❯</span><button onclick="navTo('view-learning', {level:'category', category: '${learnState.category}'})" class="text-slate-600 dark:text-white font-bold px-2 hover:underline">${learnState.category}</button>`;
       if (learnState.level === 'subject' || learnState.level === 'detail') bc.innerHTML += `<span class="text-indigo-200 dark:text-[#1e3a5f]">❯</span><button onclick="navTo('view-learning', {level:'subject', category: '${learnState.category}', subject: '${learnState.subject}'})" class="text-slate-600 dark:text-white font-bold px-2 hover:underline">${learnState.subject}</button>`;
+      bc.scrollLeft = bc.scrollWidth;   // 좁은 화면에서 경로가 길면 현재 위치(오른쪽 끝)가 보이게
     }
 
     function handleTheorySearch() {
