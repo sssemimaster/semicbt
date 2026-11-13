@@ -357,8 +357,11 @@ html.dark .cs-frame{
   main.flex-1 { padding-top: .9rem; padding-bottom: .5rem; }
   header .app-bar { height: 52px; }
   header.sticky { padding-top: env(safe-area-inset-top); }
-  body > footer.border-t { margin-top: 1rem; }
-  body > footer .py-8 { padding-top: 1.25rem; padding-bottom: 1.25rem; }
+  body > footer.border-t { margin-top: .75rem; }
+  /* 하단 안내: 브랜드 문구는 감추고 안내문만 작게 */
+  body > footer .py-8 { padding-top: .9rem; padding-bottom: .9rem; gap: 0; }
+  body > footer .py-8 > div:first-child { display: none; }
+  body > footer .py-8 > p { font-size: 11px; line-height: 1.6; }
   #returnBtn { bottom: calc(72px + env(safe-area-inset-bottom)); }
   #cBuilding, #cDetail, .cj-h { scroll-margin-top: 64px; }
 
@@ -431,6 +434,14 @@ html.dark .cs-frame{
   #learningContainer.space-y-3 > button { align-items: flex-start; }
   #learningContainer.space-y-3 > button > span:first-child { margin-right: .75rem; width: auto; height: auto; border: 0; }
   #view-learning > button.mt-10 { margin-top: 1.25rem; padding: .8rem 1rem; }
+  /* 폴더 목록 아래 '이 분류로 연습하기': 가운데 떠 보이지 않게 목록 바로 밑에 붙이고, 두 버튼을 한 줄에 */
+  #learningContainer > .col-span-full { margin-top: .75rem; padding-top: .8rem; }
+  #learningContainer > .col-span-full .eyebrow { font-size: .62rem; letter-spacing: .14em; margin-bottom: .5rem; }
+  #learningContainer > .col-span-full > div { flex-direction: row; gap: .5rem; }
+  #learningContainer > .col-span-full button { padding: .7rem .25rem; font-size: 13px; white-space: nowrap; }
+  #learningContainer > .col-span-full button .text-xs { font-size: 11px; }
+  #view-learning > button.mt-10 { font-size: 12px; line-height: 1.5; }
+  #view-learning > button.mt-10 > span:first-child { min-width: 0; }
   /* 이론 본문: 화면 폭을 꽉 쓰는 읽기 화면 */
   #learningContainer > div.rounded-2xl { margin-left: -1rem; margin-right: -1rem; border-radius: 0; border-left-width: 0; border-right-width: 0; box-shadow: none; }
   #learningContainer > div.rounded-2xl > .p-6 { padding: 1.1rem 1.1rem 1.25rem; }
