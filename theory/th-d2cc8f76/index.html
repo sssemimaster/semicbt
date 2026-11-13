@@ -300,6 +300,7 @@
     figure.dg .dg-title { font-weight: 700; }
     .dg-p { fill: #f87171; fill-opacity: .2; } .dg-n { fill: #60a5fa; fill-opacity: .25; } .dg-ox { fill: #a78bfa; fill-opacity: .3; } .dg-met { fill: #fbbf24; fill-opacity: .45; }
     .dg-fsub { fill: currentColor; fill-opacity: .1; } .dg-si { fill: #94a3b8; fill-opacity: .35; } .dg-ch { fill: var(--badge-fg); fill-opacity: .55; }
+    .dg-hk { fill: #38bdf8; fill-opacity: .42; }
     .dg-pr { fill: #f472b6; fill-opacity: .4; } .dg-prx { fill: #f472b6; fill-opacity: .15; stroke: #f472b6; stroke-dasharray: 3 3; } .dg-film { fill: #34d399; fill-opacity: .4; }
     .dg-cu { fill: #f59e0b; fill-opacity: .65; } .dg-mask { fill: currentColor; fill-opacity: .7; } .dg-void { fill: var(--tbl-bg); } .dg-deplf { fill: currentColor; fill-opacity: .1; }
     .dg-depl { fill: none; stroke: currentColor; stroke-width: 1.6; stroke-dasharray: 4 4; opacity: .7; } .dg-melt { fill: #fb923c; fill-opacity: .4; } .dg-heat { fill: #f87171; fill-opacity: .5; }
@@ -1743,6 +1744,202 @@ html.dark .cs-frame{
             ${src}
             ${dgT(316, 104, '상단', 'dg-sub', 'start')}${s.o > 8 ? dgT(316, 124, '오버행', 'dg-sub', 'start') : ''}${dgT(316, 170, '측벽', 'dg-sub', 'start')}${dgT(316, 250, '바닥', 'dg-sub', 'start')}
             ${dgT(170, 288, s.q, 'dg-volt')}`);
+        }
+      },
+      'channel-length-mod': {
+        title: '채널 길이 변조',
+        states: [
+          { id: 'lin', label: '선형 영역', pin: null, q: 'V_DS가 작음 · 채널이 소스에서 드레인까지 이어짐',
+            desc: 'V_DS가 작으면 게이트 아래 채널이 소스에서 드레인까지 거의 균일하게 이어지고, 전류는 V_DS에 거의 비례해 늘어난다.' },
+          { id: 'sat', label: '핀치오프 (포화 시작)', pin: 246, q: 'V_DS = V_GS − V_th · 드레인 쪽 끝에서 채널이 끊김',
+            desc: 'V_DS가 V_GS − V_th에 이르면 드레인 쪽 끝에서 게이트와 드레인 사이 전압차가 문턱 전압만큼으로 줄어 채널이 사라진다(핀치오프). 이때부터 전류가 포화된다.' },
+          { id: 'clm', label: '채널 길이 변조', pin: 214, q: 'V_DS > V_GS − V_th · 핀치오프점이 소스 쪽으로 이동',
+            desc: 'V_DS를 더 올리면 핀치오프점이 소스 쪽으로 밀려나 채널이 끊기는 구간(공핍 영역)이 길어지고, 전류가 흐르는 유효 채널 길이는 L에서 L − ΔL로 짧아진다. 전류는 유효 채널 길이에 반비례하므로 포화 영역에서도 V_DS가 오르면 전류가 조금씩 증가한다. 채널이 짧은 소자일수록 ΔL/L이 커서 영향이 크다.' },
+        ],
+        svg(s) {
+          const S = 150, D = 250, p = s.pin, y = 110;
+          const ch = p === null ? `<path class="dg-ch" d="M${S} ${y} H${D} V${y + 9} H${S} Z"/>` : `<path class="dg-ch" d="M${S} ${y} H${p} L${p - 2} ${y + 3} L${S} ${y + 10} Z"/>`;
+          const clm = s.id === 'clm';
+          const depl = p !== null ? `<rect class="dg-deplf" x="${p}" y="${y}" width="${D + 10 - p}" height="44"/><path class="dg-depl" d="M${p} ${y} V${y + 44} H${D + 10}"/>` : '';
+          const flowEnd = p === null ? D : D + 30;
+          const bot = clm
+            ? `${dgArrow(S + 2, 226, p, 226)}${dgArrow(p, 226, S + 2, 226)}${dgT((S + p) / 2, 244, "유효 길이 L′", 'dg-volt')}${dgArrow(p + 2, 226, D + 10, 226)}${dgArrow(D + 10, 226, p + 2, 226)}${dgT((p + D + 10) / 2, 244, 'ΔL', 'dg-volt')}`
+            : '';
+          return dgSvg('채널 길이 변조: ' + s.label, `
+            <rect class="dg-p" x="50" y="${y}" width="300" height="100"/>
+            <rect class="dg-n" x="90" y="${y}" width="${S - 90}" height="44"/><rect class="dg-n" x="${D}" y="${y}" width="${340 - D}" height="44"/>
+            ${depl}${ch}
+            <rect class="dg-ox" x="${S}" y="${y - 8}" width="${D - S}" height="8"/><rect class="dg-met" x="${S}" y="70" width="${D - S}" height="${y - 8 - 70}"/>
+            ${dgFlow(`M${S - 40} ${y + 5} H${flowEnd}`)}
+            ${dgT(200, 62, '게이트', 'dg-sub')}${dgT(120, y + 28, 'n+ 소스', 'dg-sub')}${dgT(295, y + 28, 'n+ 드레인', 'dg-sub')}${dgT(120, y + 78, 'p형 기판', 'dg-sub')}
+            ${p === null ? '' : `<path class="dg-line" d="M${p} ${y + 8} V${y + 60}" style="stroke-dasharray:3 3"/>` + dgT(p, y + 74, '핀치오프점', 'dg-volt')}
+            ${bot || `${dgArrow(S + 2, 226, D - 2, 226)}${dgArrow(D - 2, 226, S + 2, 226)}${dgT(200, 244, '채널 길이 L', 'dg-sub')}`}
+            ${dgT(200, 280, s.q, 'dg-volt')}`);
+        }
+      },
+      'gate-oxide': {
+        title: '게이트 산화막과 누설 전류',
+        states: [
+          { id: 'thick', label: '두꺼운 SiO₂', t: 30, leak: 0, e: 2, q: '게이트 제어 약함 · 누설 전류 거의 없음',
+            desc: '산화막이 두꺼우면 게이트 전압이 채널에 약하게 전해져 같은 전압으로 모을 수 있는 채널 전하(반전층 전하)가 적다. 대신 전자가 산화막을 뚫고 새는 누설은 거의 없다.' },
+          { id: 'thin', label: '얇은 SiO₂ (약 1 nm)', t: 8, leak: 3, e: 6, q: '게이트 제어 강함 · 터널링 누설 전류 큼',
+            desc: '소자를 줄이며 산화막을 아주 얇게 하면 게이트가 채널을 강하게 제어한다. 하지만 두께가 1 nm 안팎이 되면 전자가 양자역학적 터널링으로 산화막을 직접 통과해 게이트 누설 전류가 크게 늘어난다.' },
+          { id: 'highk', label: 'High-k + 금속 게이트', t: 22, leak: 1, e: 6, hk: true, q: '전기적 두께(EOT)는 얇게 · 물리 두께는 두껍게',
+            desc: '하프늄 산화물(HfO₂) 같은 High-k 물질은 유전율이 SiO₂(약 3.9)보다 훨씬 높아서, 물리적으로 더 두껍게 만들어도 SiO₂ 얇은 막과 같은 게이트 제어력(같은 EOT)을 낸다. 두꺼운 만큼 터널링 누설이 크게 줄어든다. 2000년대 후반 양산 공정부터 금속 게이트와 함께 쓰이기 시작했다.' },
+        ],
+        svg(s) {
+          const y0 = 98, t = s.t, yb = y0 + t;
+          const leak = [0, 1, 2].slice(0, s.leak).map(i => dgFlow(`M${150 + i * 50} ${yb + 24} V${y0 - 6}`, true)).join('');
+          const el = dgDots(Array.from({ length: s.e }, (_, i) => 100 + i * 40), yb + 30, 'e').replace(/cy="/g, 'cy="');
+          return dgSvg('게이트 산화막: ' + s.label, `
+            <rect class="dg-met" x="70" y="56" width="240" height="${y0 - 56}"/>
+            <rect class="${s.hk ? 'dg-hk' : 'dg-ox'}" x="70" y="${y0}" width="240" height="${t}"/>
+            <rect class="dg-si" x="70" y="${yb}" width="240" height="${250 - yb}"/>
+            ${leak}${el}
+            ${dgT(316, 82, '게이트', 'dg-sub', 'start')}${dgT(316, y0 + t / 2 + 4, s.hk ? 'High-k 막' : '산화막', 'dg-sub', 'start')}${dgT(316, yb + 40, '채널(Si)', 'dg-sub', 'start')}
+            ${dgArrow(52, y0 + t / 2, 52, y0)}${dgArrow(52, y0 + t / 2, 52, yb)}${dgT(46, y0 + t / 2 + 4, '두께', 'dg-sub', 'end')}
+            ${dgT(200, 280, s.q, 'dg-volt')}`);
+        }
+      },
+      'cvd-reactor': {
+        title: 'CVD 반응 과정',
+        states: [
+          { id: 'feed', label: '① 기체 공급', film: 0, ads: 0, by: 0, out: false, q: '반응 기체가 위에서 웨이퍼로 공급됨',
+            desc: '반응 기체(전구체)를 샤워헤드로 챔버에 넣는다. 예를 들어 실리콘 산화막은 SiH₄나 TEOS 같은 실리콘 원료와 산소 계열 기체를 쓴다. 기체는 웨이퍼 위의 얇은 경계층을 지나 표면으로 확산한다.' },
+          { id: 'ads', label: '② 표면 흡착', film: 0, ads: 1, by: 0, out: false, q: '기체 분자가 가열된 웨이퍼 표면에 달라붙음',
+            desc: '가열된 웨이퍼 표면에 기체 분자가 달라붙는다(흡착). 표면의 온도가 반응에 필요한 에너지를 준다. 플라즈마를 쓰는 PECVD는 플라즈마로 기체를 활성화해서 더 낮은 온도에서도 반응시킨다.' },
+          { id: 'rxn', label: '③ 표면 반응·막 성장', film: 10, ads: 0, by: 1, out: false, q: '표면에서 반응해 고체 막이 쌓이고 부산물이 생김',
+            desc: '흡착한 분자들이 표면에서 화학 반응을 일으켜 고체 막이 되어 쌓인다. 이 반응에서 막이 되지 않는 부산물(기체)도 함께 생긴다. 반응이 표면에서 일어나기 때문에 PVD보다 홈 안쪽에도 막이 비교적 잘 입혀진다.' },
+          { id: 'exh', label: '④ 부산물 배출', film: 16, ads: 0, by: 1, out: true, q: '부산물과 남은 기체는 펌프로 배기',
+            desc: '반응 부산물과 쓰고 남은 기체는 진공 펌프로 챔버 밖으로 빼낸다. 부산물이 막 속에 남으면 불순물이 되므로 잘 배출해야 한다. 이 과정이 반복되며 막이 계속 두꺼워진다.' },
+        ],
+        svg(s) {
+          const wy = 200, fh = s.film;
+          const gas = s.id === 'feed' ? [150, 200, 250].map(x => dgArrow(x, 82, x, 150)).join('') + dgT(200, 56, '반응 기체', 'dg-volt') : '';
+          const ads = s.ads ? [140, 170, 200, 230, 260].map(x => `<circle cx="${x}" cy="${wy - 6}" r="5" fill="#f59e0b"/>`).join('') : '';
+          const by = s.by && !s.out ? [150, 210, 260].map(x => `<circle cx="${x}" cy="${wy - fh - 22}" r="4.5" fill="none" stroke="#f87171" stroke-width="2"/>${dgArrow(x, wy - fh - 30, x, wy - fh - 56)}`).join('') : '';
+          const out = s.out ? [150, 190].map(y0 => dgArrow(150, wy - fh - 26 - (y0 - 150) / 2, 336, wy - fh - 26 - (y0 - 150) / 2)).join('') + dgT(342, wy - fh - 20, '배기', 'dg-sub', 'start') : '';
+          return dgSvg('CVD: ' + s.label, `
+            <rect class="dg-fsub" x="46" y="52" width="308" height="214" rx="6" style="fill-opacity:.04"/>
+            <path class="dg-line" d="M110 78 H290"/>${[130, 160, 190, 220, 250, 270].map(x => `<circle cx="${x}" cy="78" r="2" fill="currentColor"/>`).join('')}
+            ${dgT(66, 74, '샤워헤드', 'dg-sub', 'start')}
+            <rect class="dg-heat" x="100" y="${wy + 10}" width="200" height="16"/>${dgT(66, wy + 22, '히터', 'dg-sub', 'start')}
+            <rect class="dg-si" x="110" y="${wy}" width="180" height="10"/>
+            ${fh ? `<rect class="dg-film" x="110" y="${wy - fh}" width="180" height="${fh}"/>` : ''}
+            ${gas}${ads}${by}${out}
+            ${dgT(200, 284, s.q, 'dg-volt')}`);
+        }
+      },
+      'ald-cycle': {
+        title: 'ALD 한 사이클',
+        states: [
+          { id: 'a', label: '① 전구체 A 주입', a: 'ads', film: false, purge: false, q: '표면의 자리가 모두 차면 흡착이 멈춤 (자기 제한)',
+            desc: '첫 번째 전구체 A를 넣으면 표면의 빈 자리에 한 층만 달라붙는다. 표면이 가득 차면 더 이상 붙지 않으므로, 넣는 양이 많아도 한 층에서 멈춘다. 이것이 ALD의 자기 제한 성질이다.' },
+          { id: 'p1', label: '② 퍼지', a: 'ads', film: false, purge: true, q: '남은 A는 불활성 기체로 씻어냄',
+            desc: '불활성 기체로 챔버를 씻어 표면에 붙지 않은 A를 내보낸다. 표면에 달라붙은 한 층만 남는다. A와 B가 챔버 안에서 섞이지 않게 해서 기체 상태의 반응(CVD처럼 되는 것)을 막는다.' },
+          { id: 'b', label: '③ 반응물 B 주입', a: 'rxn', film: true, purge: false, q: 'B가 A 층과 반응해 막 한 층이 생김',
+            desc: '두 번째 반응물 B(예: 물, 오존, 플라즈마)를 넣으면 표면의 A 층과 반응해 원하는 박막 한 층이 만들어진다. 이 반응도 표면의 A가 다 쓰이면 멈춘다.' },
+          { id: 'p2', label: '④ 퍼지', a: 'none', film: true, purge: true, q: '1사이클 끝 · 원자층 한 층 성장 (보통 0.1 nm 안팎)',
+            desc: '남은 B와 부산물을 다시 씻어낸다. 한 사이클에 보통 0.1 nm(1 Å) 안팎의 막이 자란다. 이 사이클을 반복하는 횟수로 두께를 정확히 조절한다. 대신 성장 속도는 느리다.' },
+        ],
+        svg(s) {
+          const sy = 214, X = [100, 140, 180, 220, 260, 300];
+          const ads = s.a === 'ads' ? X.map(x => `<circle cx="${x}" cy="${sy - 7}" r="7" fill="#f59e0b"/>`).join('') : s.a === 'rxn' ? X.map(x => `<circle cx="${x}" cy="${sy - 7}" r="7" fill="#f59e0b" fill-opacity=".45"/>`).join('') : '';
+          const feedA = s.id === 'a' ? [120, 200, 280].map(x => `<circle cx="${x}" cy="110" r="7" fill="#f59e0b"/>${dgArrow(x, 122, x, 162)}`).join('') + dgT(200, 78, '전구체 A', 'dg-volt') : '';
+          const feedB = s.id === 'b' ? [120, 200, 280].map(x => `<circle cx="${x}" cy="110" r="7" fill="#60a5fa"/>${dgArrow(x, 122, x, 162)}`).join('') + dgT(200, 78, '반응물 B', 'dg-volt') : '';
+          const purge = s.purge ? [110, 140, 170].map(y => dgArrow(70, y, 330, y)).join('') + dgT(200, 90, '불활성 기체로 퍼지', 'dg-volt') : '';
+          const newf = s.film ? `<rect class="dg-film" x="80" y="${sy - 12}" width="240" height="12"/>` : '';
+          return dgSvg('ALD: ' + s.label, `
+            <rect class="dg-fsub" x="60" y="${sy + 24}" width="280" height="28"/>
+            <rect class="dg-film" x="80" y="${sy + 0 + (s.film ? 0 : 0)}" width="240" height="24" style="fill-opacity:.25"/>
+            ${newf ? '' : ''}${s.film ? `<rect class="dg-film" x="80" y="${sy - 12}" width="240" height="12"/>` : ''}
+            ${ads}${feedA}${feedB}${purge}
+            ${dgT(346, sy + 10, '이전 사이클의 막', 'dg-sub', 'start')}${dgT(346, sy + 42, '기판', 'dg-sub', 'start')}
+            ${dgT(200, 284, s.q, 'dg-volt')}`);
+        }
+      },
+      'plasma-etch': {
+        title: '플라즈마 식각',
+        states: [
+          { id: 'gen', label: '① 플라즈마 생성', q: '기체 → 이온 · 전자 · 라디칼', depth: 0, acc: false,
+            desc: '식각 기체에 RF 전력을 걸면 기체가 전자와 이온, 반응성이 큰 라디칼(중성 조각)이 섞인 플라즈마가 된다. 전체적으로는 중성이지만 이온과 라디칼이 식각의 재료가 된다.' },
+          { id: 'acc', label: '② 이온 가속', q: '바이어스 전압이 이온을 수직으로 가속', depth: 0, acc: true,
+            desc: '웨이퍼 쪽에 건 바이어스 전압이 플라즈마와 웨이퍼 사이(쉬스)에 전기장을 만든다. 양이온은 이 전기장에서 웨이퍼 표면에 수직으로 가속되어 부딪힌다. 이 방향성이 이방성 식각의 이유다.' },
+          { id: 'etch', label: '③ 식각 진행', q: '바닥: 이온 충돌 + 화학 반응 · 측벽: 보호막', depth: 30, acc: true,
+            desc: '홈 바닥에서는 이온 충돌이 결합을 끊고 라디칼이 반응해 휘발성 부산물이 만들어져 막이 깎인다. 측벽에는 이온이 거의 닿지 않고 보호막(폴리머)이 쌓여 옆으로는 식각되지 않는다. 그래서 마스크 모양대로 수직으로 파들어간다. 부산물은 펌프로 배기한다.' },
+        ],
+        svg(s) {
+          const rnd = (n, a, b) => Array.from({ length: n }, (_, i) => a + ((i * 53 + 17) % 100) / 100 * (b - a));
+          const xs = [96, 130, 164, 198, 232, 266, 300];
+          const plasma = xs.map((x, i) => {
+            const y = 84 + (i * 37) % 46, k = i % 3;
+            return k === 0 ? `<circle cx="${x}" cy="${y}" r="4.5" fill="none" stroke="#f87171" stroke-width="2"/>` : k === 1 ? `<circle cx="${x}" cy="${y}" r="3" fill="#60a5fa"/>` : `<circle cx="${x}" cy="${y}" r="4.5" fill="#f59e0b"/>`;
+          }).join('');
+          const acc = s.acc ? [176, 200, 224].map(x => dgArrow(x, 146, x, 184 + (s.depth ? 18 : 0))).join('') : '';
+          const side = s.depth ? `<path class="dg-hlp" d="M160 196 V${196 + s.depth} M240 196 V${196 + s.depth}"/>` : '';
+          return dgSvg('플라즈마 식각: ' + s.label, `
+            <rect class="dg-mask" x="80" y="44" width="240" height="6"/>${dgT(330, 52, 'RF', 'dg-volt', 'start')}
+            <rect class="dg-deplf" x="80" y="58" width="240" height="84" rx="10"/><path class="dg-depl" d="M80 142 H320"/>
+            ${plasma}${dgT(330, 100, '플라즈마', 'dg-sub', 'start')}${dgT(330, 164, '쉬스', 'dg-sub', 'start')}
+            ${acc}
+            <rect class="dg-fsub" x="110" y="236" width="180" height="26"/>
+            <rect class="dg-film" x="110" y="196" width="180" height="40"/>
+            ${s.depth ? `<rect class="dg-void" x="160" y="196" width="80" height="${s.depth}"/>` : ''}
+            <rect class="dg-mask" x="110" y="188" width="50" height="8"/><rect class="dg-mask" x="240" y="188" width="50" height="8"/>
+            ${side}${s.depth ? dgArrow(190, 150, 190, 196) : ''}
+            ${dgT(298, 224, '식각할 막', 'dg-sub', 'start')}
+            ${dgT(200, 284, s.q, 'dg-volt')}`);
+        }
+      },
+      'resolution-dof': {
+        title: '해상도와 초점 심도',
+        states: [
+          { id: 'base', label: '기준', hw: 56, d: 22, r: 30, per: 26, q1: '해상도 R = k₁ · λ / NA', q2: '초점 심도 DOF = k₂ · λ / NA²',
+            desc: '노광 장비의 해상도(만들 수 있는 최소 선폭) R은 빛의 파장 λ에 비례하고 렌즈의 개구수 NA에 반비례한다. 초점 심도(DOF)는 웨이퍼가 초점에서 위아래로 벗어나도 패턴이 선명하게 찍히는 범위로, 클수록 공정이 안정적이다.' },
+          { id: 'na', label: 'NA를 키우면', hw: 86, d: 10, r: 20, per: 26, q1: '해상도 좋아짐 (R 작아짐)', q2: '초점 심도는 NA²에 반비례해 크게 줄어듦',
+            desc: 'NA는 렌즈가 빛을 모으는 각도에 해당한다. NA를 키우면 R이 작아져 더 가는 선폭을 만들 수 있다. 하지만 DOF는 NA의 제곱에 반비례하므로 크게 줄어, 웨이퍼 평탄도와 초점 제어가 훨씬 까다로워진다.' },
+          { id: 'lam', label: '파장을 줄이면', hw: 56, d: 15, r: 21, per: 15, q1: '해상도 좋아짐 (R 작아짐)', q2: '초점 심도도 λ에 비례해 줄어듦',
+            desc: '파장 λ를 줄이면 R이 작아진다. 이것이 노광 광원을 KrF, ArF, EUV로 바꿔 온 이유다. DOF도 λ에 비례하므로 같이 줄어든다. 다만 EUV는 NA가 작은 렌즈로도 충분한 해상도를 얻을 수 있어 NA 증가의 부담을 덜 수 있다.' },
+        ],
+        svg(s) {
+          const fy = 190, hw = s.hw;
+          const wave = (() => { let d = 'M110 40'; for (let x = 110; x <= 290; x += 3) d += ` L${x} ${(36 + 7 * Math.sin((x - 110) / s.per * Math.PI * 2)).toFixed(1)}`; return `<path class="dg-line" d="${d}" style="stroke-width:1.6"/>`; })();
+          return dgSvg('해상도와 초점 심도: ' + s.label, `
+            ${wave}${dgT(330, 40, '빛 (파장 λ)', 'dg-sub', 'start')}
+            <path class="dg-line" d="M${200 - 70} 86 Q200 66 ${200 + 70} 86 Q200 106 ${200 - 70} 86 Z" style="fill:currentColor;fill-opacity:.12"/>${dgT(330, 90, '렌즈', 'dg-sub', 'start')}
+            <path class="dg-line" d="M${200 - hw} 96 L200 ${fy} L${200 + hw} 96" style="stroke-width:1.6;stroke:var(--hl-accent)"/>
+            <rect class="dg-fsub" x="70" y="${fy}" width="260" height="30"/><path class="dg-line" d="M70 ${fy} H330"/>
+            <path class="dg-depl" d="M${200 - 76} ${fy - s.d} H${200 + 76} M${200 - 76} ${fy + s.d} H${200 + 76}"/>
+            ${dgArrow(296, fy, 296, fy - s.d)}${dgArrow(296, fy, 296, fy + s.d)}${dgT(306, fy - 28, '초점 심도', 'dg-sub', 'start')}
+            <rect class="dg-pr" x="${200 - s.r / 2}" y="${fy - 8}" width="${s.r}" height="8"/>${dgT(200, fy + 48, '↑ 찍히는 선폭', 'dg-sub')}
+            ${dgT(200, 270, s.q1, 'dg-volt')}${dgT(200, 288, s.q2, 'dg-volt')}`);
+        }
+      },
+      'tsv-process': {
+        title: 'TSV 형성 과정',
+        states: [
+          { id: 'etch', label: '① TSV 홀 식각', q: '깊은 반응성 이온 식각(DRIE)으로 깊은 구멍을 팜',
+            desc: '실리콘에 칩을 수직으로 관통할 구멍을 판다. 구멍이 가늘고 깊어서 식각과 측벽 보호를 번갈아 하는 보슈(Bosch) 방식의 깊은 반응성 이온 식각(DRIE)을 주로 쓴다.' },
+          { id: 'liner', label: '② 절연막·배리어·시드', q: '절연막(SiO₂) → 배리어(Ta/TaN) → 구리 시드',
+            desc: '구멍 안쪽에 먼저 절연막(SiO₂)을 입혀 구리가 실리콘과 전기적으로 닿지 않게 한다. 그 위에 구리가 퍼지는 것을 막는 배리어(Ta, TaN 등)와 도금용 구리 시드층을 얇게 입힌다.' },
+          { id: 'fill', label: '③ 구리 충진 + CMP', q: '전기도금으로 구리를 채우고 CMP로 윗면 평탄화',
+            desc: '시드층을 전극으로 삼아 구리를 전기도금해서 구멍을 채운다. 위로 넘친 구리는 CMP로 깎아 평탄하게 만든다. 이렇게 하면 실리콘 안에 구리 기둥이 세워진다.' },
+          { id: 'thin', label: '④ 웨이퍼 박화·후면 노출', q: '뒷면을 갈아 내어 구리 기둥 끝을 드러냄',
+            desc: '웨이퍼 뒷면을 연삭(백그라인딩)하고 연마해서 실리콘을 얇게 만들면 구리 기둥의 끝이 뒷면으로 드러난다. 이제 앞면과 뒷면이 구리 기둥으로 연결되어, 칩을 위아래로 쌓아 신호와 전력을 통과시킬 수 있다.' },
+        ],
+        svg(s) {
+          const thin = s.id === 'thin', y1 = 92, y2 = thin ? 206 : 262;
+          const hole = `x="180" y="${y1}" width="40" height="${150}"`;
+          const lin = s.id === 'liner' ? `<path class="dg-line dg-hl" d="M180 ${y1} V242 H220 V${y1}"/><path class="dg-line" style="stroke:#a78bfa" d="M184 ${y1} V238 H216 V${y1}"/>` : '';
+          const cu = s.id === 'fill' || thin ? `<rect class="dg-cu" x="180" y="${y1}" width="40" height="${thin ? 118 : 150}"/>` : '';
+          const cut = thin ? `<rect class="dg-deplf" x="60" y="206" width="280" height="56"/><path class="dg-depl" d="M60 206 H340"/>${dgT(200, 236, '연삭으로 제거', 'dg-sub')}` : '';
+          return dgSvg('TSV: ' + s.label, `
+            <rect class="dg-ox" x="60" y="72" width="280" height="20"/>${dgT(346, 86, '배선층', 'dg-sub', 'start')}
+            <rect class="dg-si" x="60" y="${y1}" width="280" height="${y2 - y1}"/>${dgT(346, 150, '실리콘', 'dg-sub', 'start')}
+            ${s.id === 'etch' || s.id === 'liner' ? `<rect class="dg-void" ${hole}/>` : ''}
+            ${lin}${cu}${cut}
+            ${s.id === 'etch' ? dgArrow(200, 54, 200, 90) + dgT(200, 46, '식각 이온', 'dg-volt') : ''}
+            ${dgT(200, 284, s.q, 'dg-volt')}`);
         }
       },
       'damascene': {
