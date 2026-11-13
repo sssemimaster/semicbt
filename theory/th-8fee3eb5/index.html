@@ -2660,6 +2660,7 @@ html.dark .cs-frame{
     async function syncNow() {
       if (!fb || !acct.user || acct.busy) return; acct.busy = true; acct.err = ''; renderAcct();
       try {
+        await fbStore();
         const ref = fb.doc(fb.db, 'users', acct.user.uid), snap = await fb.getDoc(ref), cloud = snap.exists() ? (snap.data().data || {}) : {};
         let localChanged = false, remoteChanged = !snap.exists(); const out = {};
         SYNC_KEYS.forEach((k) => {
@@ -2672,23 +2673,43 @@ html.dark .cs-frame{
       } catch (e) { acct.err = e && e.code === 'too-large' ? '저장할 기록이 너무 커서 동기화하지 못했어요.' : acctErr(e); }
       acct.busy = false; renderAcct();
     }
+    // 로그인 부품(Firebase)은 무거워서, 필요할 때만 불러온다.
+    //  - 예전에 로그인한 기기: 첫 화면이 다 뜬 뒤 한가할 때 불러와 계정을 이어 붙인다.
+    //  - 로그인한 적 없는 기기: 👤 를 누를 때까지 아예 불러오지 않는다. (Firestore 는 처음 동기화할 때 따로 불러온다)
+    const FB_BASE = 'https://www.gstatic.com/firebasejs/10.12.2/', ACCT_HINT = 'semiCbtAcct';
+    const hintGet = () => { try { return localStorage.getItem(ACCT_HINT) === '1'; } catch (e) { return false; } };
+    const hintSet = (on) => { try { on ? _lsSet.call(localStorage, ACCT_HINT, '1') : localStorage.removeItem(ACCT_HINT); } catch (e) {} };
+    const idle = (fn, ms) => (window.requestIdleCallback ? requestIdleCallback(fn, { timeout: ms }) : setTimeout(fn, Math.min(ms, 1500)));
+    let sdkP = null, storeP = null;
+    function acctSdk() {
+      if (sdkP) return sdkP;
+      sdkP = (async () => {
+        const cfg = window.FIREBASE_CONFIG; if (!cfg || !cfg.apiKey) throw new Error('no-config');
+        const [A, U] = await Promise.all([import(FB_BASE + 'firebase-app.js'), import(FB_BASE + 'firebase-auth.js')]);
+        const app = A.initializeApp(cfg), auth = U.getAuth(app);
+        fb = { app, auth, U };
+        U.getRedirectResult(auth).catch((e) => { acct.err = acctErr(e); renderAcct(); });
+        U.onAuthStateChanged(auth, (u) => { acct.user = u; if (u) hintSet(true); renderAcct(); if (u) syncNow(); });
+        document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && acct.user && Date.now() - acct.last > 60000) syncNow(); });
+      })().catch((e) => { sdkP = null; acct.err = '로그인 모듈을 불러오지 못했어요. 네트워크를 확인해 주세요.'; renderAcct(); throw e; });
+      return sdkP;
+    }
+    function fbStore() {
+      if (storeP) return storeP;
+      storeP = import(FB_BASE + 'firebase-firestore.js').then((F) => { Object.assign(fb, { db: F.getFirestore(fb.app), doc: F.doc, getDoc: F.getDoc, setDoc: F.setDoc, deleteDoc: F.deleteDoc }); }).catch((e) => { storeP = null; throw e; });
+      return storeP;
+    }
     async function acctInit() {
       const btn = document.getElementById('acctBtn'); if (!btn || acct.ready) return;
       try { await new Promise((res) => { const s = document.createElement('script'); s.src = ROOT + 'firebase-config.js?v=' + Date.now(); s.onload = s.onerror = res; document.head.appendChild(s); }); } catch (e) {}
       const cfg = window.FIREBASE_CONFIG; if (!cfg || !cfg.apiKey) return;
       acct.ready = true; btn.classList.remove('hidden'); renderAcct();
-      try {
-        const B = 'https://www.gstatic.com/firebasejs/10.12.2/', [A, U, F] = await Promise.all([import(B + 'firebase-app.js'), import(B + 'firebase-auth.js'), import(B + 'firebase-firestore.js')]);
-        const app = A.initializeApp(cfg), auth = U.getAuth(app);
-        fb = { auth, db: F.getFirestore(app), doc: F.doc, getDoc: F.getDoc, setDoc: F.setDoc, deleteDoc: F.deleteDoc, U };
-        U.getRedirectResult(auth).catch((e) => { acct.err = acctErr(e); renderAcct(); });
-        U.onAuthStateChanged(auth, (u) => { acct.user = u; renderAcct(); if (u) syncNow(); });
-        document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && acct.user && Date.now() - acct.last > 60000) syncNow(); });
-      } catch (e) { acct.err = '로그인 모듈을 불러오지 못했어요. 네트워크를 확인해 주세요.'; renderAcct(); }
+      if (hintGet()) idle(() => acctSdk().catch(() => {}), 4000);
+      else try { indexedDB.databases().then((l) => { if (l.some((d) => d.name === 'firebaseLocalStorageDb')) idle(() => acctSdk().catch(() => {}), 4000); }).catch(() => {}); } catch (e) {}   // 힌트가 없어도 로그인 흔적이 있으면 이어 붙인다
     }
     async function acctSignIn() {
       if (!fb) { acct.err = '로그인 모듈을 아직 불러오는 중이에요. 잠시 뒤 다시 눌러 주세요.'; renderAcct(); return; }
-      acct.err = ''; const prov = new fb.U.GoogleAuthProvider();
+      acct.err = ''; hintSet(true); const prov = new fb.U.GoogleAuthProvider();
       try { await fb.U.signInWithPopup(fb.auth, prov); }
       catch (e) {
         if (e && (e.code === 'auth/popup-closed-by-user' || e.code === 'auth/cancelled-popup-request')) return;
@@ -2700,17 +2721,18 @@ html.dark .cs-frame{
       if (!fb) return; await syncNow();
       const wipe = confirm('로그아웃합니다.\n\n이 기기에 저장된 학습 기록도 지울까요?\n(기록은 계정에 남아 있어서 다시 로그인하면 돌아와요. 공용 기기라면 [확인]을 누르세요.)');
       try { await fb.U.signOut(fb.auth); } catch (e) {}
+      hintSet(false);
       if (wipe) { SYNC_KEYS.concat([TODAY_KEY]).forEach((k) => { try { localStorage.removeItem(k); } catch (e) {} }); starredIds = []; wrongNotes = {}; stats = { cats: {}, topics: {}, total: { r: 0, t: 0 } }; attendDays = []; dayLog = {}; reloadFromStorage(); }
       closeAcct();
     }
     async function acctDelete() {
       if (!fb || !acct.user) return;
       if (!confirm('계정에 저장된 학습 기록을 모두 삭제할까요?\n이 기기에 있는 기록은 그대로 남지만, 다른 기기와의 동기화는 끊겨요.\n삭제한 기록은 되돌릴 수 없어요.')) return;
-      try { await fb.deleteDoc(fb.doc(fb.db, 'users', acct.user.uid)); try { await acct.user.delete(); } catch (e) {} try { await fb.U.signOut(fb.auth); } catch (e) {} closeAcct(); alert('계정에 저장된 기록을 삭제했어요.'); }
+      try { await fbStore(); await fb.deleteDoc(fb.doc(fb.db, 'users', acct.user.uid)); try { await acct.user.delete(); } catch (e) {} try { await fb.U.signOut(fb.auth); } catch (e) {} hintSet(false); closeAcct(); alert('계정에 저장된 기록을 삭제했어요.'); }
       catch (e) { acct.err = acctErr(e); renderAcct(); }
     }
     const gLogo = '<svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.5 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4.1 7.1-10.1 7.1-17.5z"/><path fill="#FBBC05" d="M10.5 28.7A14.5 14.5 0 0 1 9.5 24c0-1.6.3-3.2.8-4.7l-7.9-6.1A24 24 0 0 0 0 24c0 3.9.9 7.5 2.6 10.8l7.9-6.1z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.5-5.8c-2.1 1.4-4.9 2.3-8.4 2.3-6.3 0-11.6-4-13.5-9.8l-7.9 6.1C6.5 42.6 14.6 48 24 48z"/></svg>';
-    function openAcct() { let o = document.getElementById('acctM'); if (!o) { o = document.createElement('div'); o.id = 'acctM'; o.className = 'wl'; o.setAttribute('role', 'dialog'); o.setAttribute('aria-modal', 'true'); o.setAttribute('aria-label', '내 계정'); o.addEventListener('click', (e) => { if (e.target === o) closeAcct(); }); document.body.appendChild(o); } renderAcct(); requestAnimationFrame(() => o.classList.add('on')); }
+    function openAcct() { let o = document.getElementById('acctM'); if (!o) { o = document.createElement('div'); o.id = 'acctM'; o.className = 'wl'; o.setAttribute('role', 'dialog'); o.setAttribute('aria-modal', 'true'); o.setAttribute('aria-label', '내 계정'); o.addEventListener('click', (e) => { if (e.target === o) closeAcct(); }); document.body.appendChild(o); } renderAcct(); requestAnimationFrame(() => o.classList.add('on')); acctSdk().catch(() => {}); }
     function closeAcct() { const o = document.getElementById('acctM'); if (!o) return; o.classList.remove('on'); setTimeout(() => o.remove(), 220); }
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && document.getElementById('acctM')) closeAcct(); });
     function ago(t) { if (!t) return '아직 동기화 전'; const s = Math.round((Date.now() - t) / 1000); return s < 10 ? '방금 전' : s < 60 ? `${s}초 전` : s < 3600 ? `${Math.round(s / 60)}분 전` : `${Math.round(s / 3600)}시간 전`; }
@@ -2730,7 +2752,7 @@ html.dark .cs-frame{
           <button type="button" class="ac-google" onclick="acctSignIn()">${gLogo}<span>구글로 로그인</span></button>${err}
           <p class="ac-note">로그인하지 않아도 모든 기능을 그대로 쓸 수 있어요. 구글 이름·이메일·프로필 사진과 학습 기록만 저장해요.</p><p class="ac-priv">${priv}</p></div>`;
     }
-    setTimeout(acctInit, 900);
+    idle(acctInit, 3000);
     function updateNav() {
       const v = currentViewId, map = { 'view-lobby': 'home', 'view-learning': 'theory', 'view-quiz': 'quiz', 'view-result': 'quiz', 'view-interview': 'interview', 'view-exam': 'exam', 'view-note': 'note', 'view-stats': 'stats', 'view-careers': 'careers', 'view-setup': currentMode === 'interview' ? 'interview' : (document.getElementById('examToggle') && document.getElementById('examToggle').checked ? 'exam' : 'quiz') };
       document.querySelectorAll('[data-nav]').forEach(b => b.classList.toggle('active', b.dataset.nav === map[v]));
