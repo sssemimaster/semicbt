@@ -139,6 +139,9 @@
     /* 날짜별 기록 · 새기는 연출 */
     .wf-open { cursor: pointer; border-radius: 50%; -webkit-tap-highlight-color: transparent; transition: transform .2s; }
     .wf-open:hover { transform: scale(1.02); } .wf-open:focus-visible { outline: 2px solid #6366f1; outline-offset: 3px; }
+    .wf-stages { display: flex; justify-content: space-between; gap: .4rem; } .wf-stages span { display: inline-flex; align-items: center; gap: .35rem; color: #94a3b8; } .wf-stages i { width: 8px; height: 8px; border-radius: 50%; background: #cbd5e1; } html.dark .wf-stages i { background: #334155; }
+    .wf-stages .on { color: #64748b; } .wf-stages .on i { background: #6366f1; } html.dark .wf-stages .on i { background: #67e8f9; } .wf-stages .cur { color: #0f172a; font-weight: 700; } html.dark .wf-stages .cur { color: #e2e8f0; } .wf-stages .cur i { box-shadow: 0 0 0 3px rgba(99,102,241,.25); background: #6366f1; } html.dark .wf-stages .cur i { background: #67e8f9; box-shadow: 0 0 0 3px rgba(103,232,249,.2); }
+    .wf-pop { transform-box: fill-box; transform-origin: center; animation: wfPkg 1.6s cubic-bezier(.2,.8,.2,1) both; } @keyframes wfPkg { 0% { opacity: 0; transform: scale(.92); } 100% { opacity: 1; transform: none; } }
     .wf-nodes { display: flex; align-items: center; justify-content: space-between; position: relative; padding: 0 2px; }
     .wf-nodes::before { content: ''; position: absolute; left: 4px; right: 4px; top: 50%; height: 2px; background: rgba(100,116,139,.25); transform: translateY(-50%); }
     .wf-nodes i { position: relative; width: 8px; height: 8px; border-radius: 50%; background: #cbd5e1; border: 2px solid #f8fafc; } html.dark .wf-nodes i { background: #334155; border-color: #0b1226; }
@@ -2378,21 +2381,16 @@ html.dark .cs-frame{
       if (meta && typeof logStudy === 'function') logStudy(meta.k, meta.cat, meta.label);
     }
     // =====================================================
-    // 한 달(출석 30일) = 1µm → 2nm 까지 11장의 웨이퍼. 앞 웨이퍼를 다 채우면 더 미세한 공정의 다음 웨이퍼가 열리고,
-    // 앞 웨이퍼에 새긴 패턴은 같은 자리 그대로 다음 웨이퍼로 옮겨져 더 가늘고 촘촘하게 다시 새겨진다. 30일을 채우면 다음 달 새 웨이퍼가 열린다.
+    // 한 달(출석 30일) = 웨이퍼 한 장. 패턴 레벨은 3단계: 웨이퍼 → 회로 기판(10일~) → 패키징(20일~).
+    // 단계가 오르면 웨이퍼 둘레에 기판 배선과 패키지(솔더볼·테두리)가 붙고, 칸마다 새겨지는 회로 선도 늘어난다. 30일을 채우면 다음 달 새 웨이퍼가 열린다.
     // =====================================================
-    const NODE_NM = ['1µm', '350nm', '180nm', '90nm', '45nm', '28nm', '14nm', '7nm', '5nm', '3nm', '2nm'];
-    const NODE_AT = [0, 3, 6, 9, 11, 14, 17, 20, 22, 25, 28, 30];     // 각 공정 웨이퍼가 열리는 달 안의 날(0부터)
-    const LINE_N = [1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6], LINE_W = [2.3, 2.1, 1.85, 1.65, 1.45, 1.3, 1.15, 1.02, .92, .82, .72];   // 공정이 미세할수록 선은 가늘고 많아진다
-    const MAX_NODE = NODE_NM.length - 1;
+    const STAGES = [['Seed Wafer', '기초 웨이퍼'], ['Substrate', '회로 기판'], ['Package', '패키징']];
+    const stageOf = (dm) => dm >= 20 ? 3 : dm >= 10 ? 2 : 1;
+    const LINE_W3 = [2.1, 1.7, 1.4];   // 단계가 오를수록 칸마다 선이 1개 → 2개 → 3개로 늘고 조금 가늘어진다
     function waferInfo(N) {
-      const m = N === 0 ? 0 : Math.floor((N - 1) / 30), dm = N - m * 30, idx = Math.max(dm - 1, 0);
-      let k = 0; for (let i = 0; i <= MAX_NODE; i++) if (idx >= NODE_AT[i]) k = i;
-      const size = NODE_AT[k + 1] - NODE_AT[k], d = dm === 0 ? 0 : dm - NODE_AT[k], remain = size - d;
-      const level = dm >= 30 ? 4 : dm >= 20 ? 3 : dm >= 10 ? 2 : 1;
-      const names = { 1: ['Seed Wafer', '기초 웨이퍼'], 2: ['Pattern Wafer', '패턴 형성'], 3: ['Connected Wafer', '회로 연결'], 4: ['Master Wafer', '웨이퍼 완성'] };
-      const next = dm >= 30 ? '다음 출석에 새 달 웨이퍼 개방' : remain > 0 ? `${remain}일 후 · ${k < MAX_NODE ? NODE_NM[k + 1] + ' 웨이퍼 개방' : '웨이퍼 완성'}` : `다음 출석에 ${NODE_NM[k + 1]} 웨이퍼 개방`;
-      return { m, dm, k, d, size, remain, carry: NODE_AT[k], level, name: names[level], nm: NODE_NM[k], nextNm: NODE_NM[Math.min(k + 1, MAX_NODE)], next, collected: Math.floor(N / 30), toMax: Math.max(0, NODE_AT[MAX_NODE] + 1 - dm) };
+      const m = N === 0 ? 0 : Math.floor((N - 1) / 30), dm = N - m * 30, level = stageOf(dm);
+      const next = dm >= 30 ? '다음 출석에 새 달 웨이퍼 개방' : dm < 10 ? `${10 - dm}일 후 · 회로 기판 단계` : dm < 20 ? `${20 - dm}일 후 · 패키징 단계` : `${30 - dm}일 후 · 웨이퍼 완성`;
+      return { m, dm, level, name: STAGES[level - 1], next, collected: Math.floor(N / 30) };
     }
     function mulberry(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
     // 웨이퍼 위의 칩(다이) 격자 + 각 칩에 새겨질 회로 (중심부부터 바깥으로, 위치는 달마다 달라짐). lines[0] 이 기본 회로, 뒤쪽 선은 공정이 미세해질수록 추가로 새겨진다
@@ -2454,20 +2452,32 @@ html.dark .cs-frame{
     }
     function streakNow() { const s = new Set(attendDays), d = new Date(); let n = 0; while (s.has(dateStr(d))) { n++; d.setDate(d.getDate() - 1); } return n; }
 
-    // info: waferInfo() 결과. o.k: 공정 단계(기본 info.k) / o.earned: 새겨 둔 칸 수(기본 info.dm) / o.u: id 꼬리표 / o.sel: 선택된 칸 / o.still: 깜빡임 없음 / o.days: 칸마다 연결된 날짜
+    // 웨이퍼 둘레에 붙는 패키징: 2단계 = 기판 배선(가는 선 + 패드), 3단계 = 패키지 테두리 + 솔더볼. fresh 가 해당 단계면 막 붙는 연출을 한다.
+    function pkgSVG(lvl, dk, fresh) {
+      if (lvl < 2) return '';
+      const tr = dk ? '#7f93b5' : '#64748b', gold = dk ? '#d6b36b' : '#a47f2c', pad = dk ? '#0b1226' : '#f1f5fb', P = (r, a) => [(Math.cos(a) * r).toFixed(1), (Math.sin(a) * r).toFixed(1)];
+      let g2 = '', g3 = '';
+      for (let i = 0; i < 24; i++) {
+        if (i === 6) continue;   // 아래쪽 노치 자리는 비워 둔다
+        const a = i * Math.PI / 12, d = 0, p0 = P(143, a), p2 = P(i % 2 ? 156 : 160, a);
+        g2 += `<path d="M${p0} L${p2}" fill="none" stroke="${tr}" stroke-opacity=".75" stroke-width="1.1"/><circle cx="${p2[0]}" cy="${p2[1]}" r="2.3" fill="${pad}" stroke="${gold}" stroke-width="1.1"/>`;
+        const q0 = P(i % 2 ? 158.4 : 162.4, a), q1 = P(167, a); g3 += `<path d="M${q0} L${q1}" stroke="${gold}" stroke-opacity=".75" stroke-width="1"/>`;
+      }
+      for (let i = 0; i < 48; i++) { const p = P(173, i * Math.PI / 24 + .02); g3 += `<circle cx="${p[0]}" cy="${p[1]}" r="1.9" fill="${gold}" fill-opacity=".85"/>`; }
+      g3 += `<circle r="167.5" fill="none" stroke="${gold}" stroke-opacity=".7" stroke-width="1"/>`;
+      return `<g class="${fresh === 2 ? 'wf-pop' : ''}">${g2}</g>` + (lvl >= 3 ? `<g class="${fresh === 3 ? 'wf-pop' : ''}">${g3}</g>` : '');
+    }
+    // info: waferInfo() 결과. o.lvl: 패턴 레벨(기본 info.level) / o.fresh: 막 붙는 단계(2·3) / o.earned: 새겨 둔 칸 수(기본 info.dm) / o.u: id 꼬리표 / o.sel: 선택된 칸 / o.still: 깜빡임 없음 / o.days: 칸마다 연결된 날짜
     function waferSVG(info, o = {}) {
-      const u = o.u || '', node = o.k != null ? o.k : info.k, earned = o.earned != null ? o.earned : info.dm, carry = Math.min(NODE_AT[node], earned), cells = waferCells(info.m), lvl = info.level, dk = isDark();
-      const days = o.days || attendDays.slice(info.m * 30, info.m * 30 + 30), col = (i) => dayCol(days[i], dk, u), nl = LINE_N[node], lw = LINE_W[node];
-      const max = Math.max(1, ...RING_CATS.map(([k2]) => (stats.cats[k2] || { t: 0 }).t));
-      let h = `<svg id="waferSvg${u}" viewBox="-163 -163 326 326" class="w-full h-full" role="img" aria-label="나의 학습 웨이퍼 ${NODE_NM[node]} 공정 ${earned}/30"><defs>
+      const u = o.u || '', earned = o.earned != null ? o.earned : info.dm, cells = waferCells(info.m), lvl = o.lvl != null ? o.lvl : info.level, dk = isDark();
+      const days = o.days || attendDays.slice(info.m * 30, info.m * 30 + 30), col = (i) => dayCol(days[i], dk, u), nl = lvl, lw = LINE_W3[lvl - 1];
+      let h = `<svg id="waferSvg${u}" viewBox="-180 -180 360 360" class="w-full h-full" role="img" aria-label="나의 학습 웨이퍼 ${STAGES[lvl - 1][1]} 단계 ${earned}/30"><defs>
         <radialGradient id="wBase${u}" cx="35%" cy="30%" r="85%">${dk ? '<stop offset="0" stop-color="#3d4968"/><stop offset=".55" stop-color="#1b2542"/><stop offset="1" stop-color="#0b1122"/>' : '<stop offset="0" stop-color="#ffffff"/><stop offset=".55" stop-color="#dbe3ee"/><stop offset="1" stop-color="#a3b3c9"/>'}</radialGradient>
         <linearGradient id="prism${u}" gradientUnits="userSpaceOnUse" x1="-120" y1="-120" x2="120" y2="120">${dk ? '<stop offset="0" stop-color="#67e8f9"/><stop offset=".5" stop-color="#a78bfa"/><stop offset="1" stop-color="#f472b6"/>' : '<stop offset="0" stop-color="#0891b2"/><stop offset=".5" stop-color="#6d28d9"/><stop offset="1" stop-color="#db2777"/>'}</linearGradient>
         <clipPath id="wClip${u}"><circle r="138"/></clipPath><linearGradient id="sheenG${u}" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity="${dk ? .13 : .7}"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
         <filter id="glow${u}" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>`;
-      if (!o.plain) RING_CATS.forEach(([k2, c], i) => { const op = (.2 + .8 * ((stats.cats[k2] || { t: 0 }).t / max)).toFixed(2); h += `<path d="${arcPath(155, -90 + i * 360 / RING_CATS.length + 5, -90 + (i + 1) * 360 / RING_CATS.length - 5)}" fill="none" stroke="${c}" stroke-opacity="${op}" stroke-width="4" stroke-linecap="round"/>`; });
+      h += pkgSVG(lvl, dk, o.fresh || 0);
       h += `<circle r="140" fill="url(#wBase${u})" stroke="#94a3b8" stroke-opacity=".5"/><circle r="134" fill="none" stroke="${dk ? '#fff' : '#64748b'}" stroke-opacity="${dk ? .06 : .18}"/>`;
-      if (lvl >= 2) h += `<circle r="124" fill="none" stroke="url(#prism${u})" stroke-opacity=".35" stroke-width=".7"/>`;
-      if (lvl >= 4) h += `<circle r="140" fill="none" stroke="url(#prism${u})" stroke-width="2.2" filter="url(#glow${u})"/>`;
       cells.forEach((c, i) => { h += `<rect x="${c.cx - 12}" y="${c.cy - 12}" width="24" height="24" rx="2" ${i < earned ? `fill="${col(i)}" fill-opacity="${dk ? .1 : .13}"` : `fill="${dk ? 'rgba(255,255,255,.015)' : 'rgba(255,255,255,.4)'}"`} stroke="${dk ? 'rgba(148,163,184,.16)' : 'rgba(71,85,105,.22)'}" stroke-width=".6"/>`; });
       for (let i = earned; i < 30 && i < cells.length; i++) h += `<path d="${cells[i].d}" fill="none" stroke="${dk ? '#64748b' : '#8da0b8'}" stroke-opacity="${dk ? .38 : .85}" stroke-width="1"/>`;
       if (lvl >= 3) for (let i = 0; i < earned - 1; i++) { const a = cells[i].end, b = cells[i + 1].start; if (Math.hypot(a[0] - b[0], a[1] - b[1]) > 70) continue; h += `<path d="M${a[0]} ${a[1]} H${b[0]} V${b[1]}" fill="none" stroke="${col(i)}" stroke-opacity=".5" stroke-width=".9" stroke-dasharray="2 2"/>`; }
@@ -2479,12 +2489,12 @@ html.dark .cs-frame{
       }
       if (o.sel != null && cells[o.sel]) { const c = cells[o.sel]; h += `<rect x="${c.cx - 14}" y="${c.cy - 14}" width="28" height="28" rx="3" fill="none" stroke="${dk ? '#fff' : '#0f172a'}" stroke-width="1.8"/>`; }
       h += `<circle cx="0" cy="140" r="7" fill="${dk ? '#0b1226' : '#f1f5fb'}"/><g clip-path="url(#wClip${u})" style="pointer-events:none"><rect class="wafer-sheen" x="-30" y="-200" width="60" height="400" fill="url(#sheenG${u})"/></g><g id="waferFx${u}" style="pointer-events:none"></g></svg>`;
-      return { svg: h, cells, carry, earned };
+      return { svg: h, cells, earned };
     }
     // 눌린 위치에서 가장 가까운 새긴 칸 번호 (칸이 작아도 눌리도록 가까운 칸을 고른다)
     function pickCell(ev, wrap, m, earned) {
       const svg = wrap && wrap.querySelector('svg'); if (!svg || !ev || ev.clientX == null) return null;
-      const r = svg.getBoundingClientRect(), x = (ev.clientX - r.left) / r.width * 326 - 163, y = (ev.clientY - r.top) / r.height * 326 - 163;
+      const r = svg.getBoundingClientRect(), x = (ev.clientX - r.left) / r.width * 360 - 180, y = (ev.clientY - r.top) / r.height * 360 - 180;
       const cells = waferCells(m); let best = null, bd = 20;
       for (let i = 0; i < earned && i < cells.length; i++) { const dd = Math.hypot(cells[i].cx - x, cells[i].cy - y); if (dd < bd) { bd = dd; best = i; } }
       return best;
@@ -2499,21 +2509,21 @@ html.dark .cs-frame{
       const btn = doneToday ? `<button disabled class="w-full font-bold py-3 rounded-xl bg-slate-100 text-slate-500 dark:bg-white/10 dark:text-slate-300 cursor-default">✅ 오늘의 회로를 새겼어요</button>`
         : ready ? `<button onclick="attendToday()" class="w-full pbtn font-bold py-3 rounded-xl shadow-lg hover:opacity-90 transition">✨ 오늘의 회로 새기기</button>`
         : `<button disabled class="w-full font-bold py-3 rounded-xl bg-slate-100 text-slate-400 dark:bg-white/10 cursor-not-allowed">학습 완료 후 출석 기록하기 (${pts}/${DAILY_GOAL})</button>`;
-      const dots = NODE_NM.map((n, i) => `<i class="${i < info.k ? 'on' : i === info.k ? 'cur' : ''}" title="${n}"></i>`).join('');
+      const stages = STAGES.map((st, i) => `<span class="${i < info.level - 1 ? 'on' : i === info.level - 1 ? 'cur' : ''}"><i></i>${st[1]}</span>`).join('');
       panel.innerHTML = `<div class="rounded-2xl bg-white/80 border border-slate-200 shadow-sm dark:shadow-none dark:bg-white/[.04] dark:border-white/10 p-5 sm:p-6 h-full flex flex-col">
         <div class="flex justify-between items-start gap-3">
-          <div><p class="font-mono text-[10px] tracking-[.22em] text-indigo-500 dark:text-cyan-200/70 font-bold">WAFER #${info.k + 1} · <span class="prism-text bg-clip-text text-transparent">${info.nm}</span> 공정</p><p class="text-sm font-bold mt-1">PATTERN LEVEL ${pad2(info.level)} <span class="text-slate-400 font-medium">· ${info.name[1]}</span></p></div>
+          <div><p class="font-mono text-[10px] tracking-[.22em] text-indigo-500 dark:text-cyan-200/70 font-bold">THIS MONTH · WAFER #${info.m + 1}</p><p class="text-sm font-bold mt-1">PATTERN LEVEL ${pad2(info.level)} <span class="text-slate-400 font-medium">· ${info.name[1]}</span></p></div>
           <div class="text-right shrink-0"><span id="waferDays" class="font-display text-3xl font-bold">${info.dm}</span><span class="text-slate-400 font-bold"> / 30</span><p class="text-[10px] text-slate-400">이번 달 출석</p></div>
         </div>
         <div class="wf-body flex-1">
-        <div class="wf-svg relative mx-auto my-3 w-full max-w-[230px] aspect-square wf-open" role="button" tabindex="0" aria-label="새긴 패턴을 눌러 날짜별 학습 기록 보기" onclick="openWaferLog(event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openWaferLog()}">${svg}</div>
+        <div class="wf-svg relative mx-auto my-3 w-full max-w-[250px] aspect-square wf-open" role="button" tabindex="0" aria-label="새긴 패턴을 눌러 날짜별 학습 기록 보기" onclick="openWaferLog(event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openWaferLog()}">${svg}</div>
         <div class="wf-info">
         <button type="button" class="wf-log-btn" onclick="openWaferLog()"><span>📅 날짜별 학습 기록</span><span class="wf-log-n">총 ${N}일</span></button>
-        <div class="mt-3 flex justify-between text-[11px] text-slate-400"><span class="font-mono tracking-widest font-bold">NEXT UPGRADE</span><span>${info.next}</span></div>
+        <div class="mt-3 flex justify-between text-[11px] text-slate-400"><span class="font-mono tracking-widest font-bold">NEXT STAGE</span><span>${info.next}</span></div>
         <div class="mt-2 mb-4"><div class="flex justify-between text-[11px] text-slate-600 dark:text-slate-300 mb-1"><span>오늘의 학습</span><span>${pts} / ${DAILY_GOAL}</span></div><div class="h-1.5 rounded-full bg-slate-200 dark:bg-white/10 overflow-hidden"><div class="h-full rounded-full pbtn" style="width:${pts / DAILY_GOAL * 100}%"></div></div>
           <p class="text-[10px] text-slate-500 mt-1.5">문제 1개 +1 · 면접 문항 확인 +1 · 이론 1개 읽기 +2</p></div>
         ${btn}
-        <div class="wf-legend mt-3 text-[10px] text-slate-400"><div class="wf-nodes" aria-label="공정 단계">${dots}</div><div class="flex justify-between mt-1"><span>1µm</span><span>${info.k < MAX_NODE ? `2nm까지 ${info.toMax}일` : '최종 공정 도달'}</span><span>2nm</span></div>
+        <div class="wf-legend mt-3 text-[10px] text-slate-400"><div class="wf-stages" aria-label="패턴 레벨 3단계">${stages}</div>
           <div class="wf-cats mt-2 flex items-center flex-wrap" style="gap:.25rem .7rem"><span class="font-bold">선 색 · 그날 주력 과목</span>${CATS.map(c => `<span class="inline-flex items-center gap-1"><i class="w-2 h-2 rounded-full inline-block" style="background:${c[dk ? 'd' : 'l']}"></i>${c.s}</span>`).join('')}<span class="ml-auto">수집한 웨이퍼 ${info.collected}장</span></div></div></div></div></div>`;
     }
 
@@ -2543,9 +2553,9 @@ html.dark .cs-frame{
           + (s ? `<p class="wl-det-s">${s.text}</p>${s.th.length ? `<p class="wl-det-l"><span>📖 이론</span>${s.th.map(escH).join(' · ')}</p>` : ''}${s.qt.length ? `<p class="wl-det-l"><span>✏️ 문제</span>${s.qt.map(escH).join(' · ')}</p>` : ''}` : `<p class="wl-det-l">학습 기록 기능이 생기기 전에 새긴 칸이라 자세한 내용은 남아 있지 않아요.</p>`) + '</div>';
       } else det = `<div class="wl-det"><p class="wl-det-l">새겨진 패턴을 누르면 그날 공부한 내용이 보여요.</p></div>`;
       const rows = []; for (let i = earned - 1; i >= 0; i--) { const date = dayOfCell(wl.m, i), s = daySummary(date), mm = dayMain(date), c = mm !== null && mm >= 0 ? `style="background:${CATS[mm][dk ? 'd' : 'l']}"` : ''; rows.push(`<button type="button" class="wl-row ${i === wl.sel ? 'on' : ''}" onclick="wlSel(${i})"><i ${c} class="${c ? '' : 'prism'}"></i><b>DAY ${wl.m * 30 + i + 1}</b><span>${dayLabel(date)}</span><em>${s ? s.text : '기록 이전'}</em></button>`); }
-      const nav = cur.m > 0 ? `<div class="wl-nav"><button type="button" onclick="wlCycle(-1)" ${wl.m <= 0 ? 'disabled' : ''} aria-label="이전 달 웨이퍼">‹</button><span>${isCur ? `이번 달 · ${info.nm} 웨이퍼` : `${wl.m + 1}번째 달 · 2nm 완성`}</span><button type="button" onclick="wlCycle(1)" ${isCur ? 'disabled' : ''} aria-label="다음 달 웨이퍼">›</button></div>` : `<div class="wl-nav"><span>이번 달 · ${info.nm} 웨이퍼</span></div>`;
+      const nav = cur.m > 0 ? `<div class="wl-nav"><button type="button" onclick="wlCycle(-1)" ${wl.m <= 0 ? 'disabled' : ''} aria-label="이전 달 웨이퍼">‹</button><span>${isCur ? '이번 달 웨이퍼' : `${wl.m + 1}번째 달 웨이퍼 · 완성`}</span><button type="button" onclick="wlCycle(1)" ${isCur ? 'disabled' : ''} aria-label="다음 달 웨이퍼">›</button></div>` : `<div class="wl-nav"><span>이번 달 웨이퍼</span></div>`;
       o.innerHTML = `<div class="wl-card"><div class="wl-top"><div><p class="eyebrow">MY WAFER LOG</p><h3>날짜별 학습 기록</h3></div><button type="button" class="wl-x" onclick="closeWaferLog()" aria-label="닫기">✕</button></div>
-        ${nav}<div class="wl-w" id="wlW">${svg}</div><div class="wl-legend">${legend}</div>${isCur && info.carry ? `<p class="wl-carry">앞 웨이퍼의 패턴 ${info.carry}칸이 ${info.nm} 공정으로 다시 새겨졌어요</p>` : ''}${det}
+        ${nav}<div class="wl-w" id="wlW">${svg}</div><div class="wl-legend">${legend}</div>${det}
         ${rows.length ? `<p class="wl-sec">새긴 날 <span>(최근 순)</span></p><div class="wl-rows">${rows.join('')}</div>` : ''}</div>`;
       const w = o.querySelector('#wlW'); if (w) w.onclick = (e) => { const i = pickCell(e, w, wl.m, earned); if (i != null) wlSel(i); };
     }
@@ -2556,16 +2566,15 @@ html.dark .cs-frame{
     function runCeremony(info) {
       return new Promise(async (done) => {
         const key = dateStr(), dk = isDark(), cells = waferCells(info.m), cell = cells[info.dm - 1], sum = daySummary(key), st = streakNow(), main = dayMain(key);
-        const colr = dayCol(key, dk, 'C'), newMonth = info.dm === 1 && info.m > 0, nodeUp = !newMonth && info.d === 1 && info.k > 0;
-        const ms = { 10: ['PATTERN LAYER UNLOCKED', '패턴 형성 단계가 열렸어요'], 20: ['CONNECTED WAFER UNLOCKED', '회로 연결 단계가 열렸어요'], 30: ['WAFER COMPLETE', '2nm 마스터 웨이퍼를 완성했어요! 다음 출석부터 새 달 웨이퍼가 열려요'] }[info.dm]
-          || (info.remain === 0 && info.k < MAX_NODE ? ['WAFER COMPLETE', `${info.nm} 웨이퍼 완성! 다음 출석에 ${info.nextNm} 웨이퍼가 열리고 패턴이 옮겨져요`] : null), big = !!ms && [10, 20, 30].includes(info.dm);
+        const colr = dayCol(key, dk, 'C'), newMonth = info.dm === 1 && info.m > 0, lvPrev = newMonth ? 3 : stageOf(info.dm - 1 || 1);
+        const ms = { 10: ['SUBSTRATE UNLOCKED', '웨이퍼 둘레에 회로 기판이 붙었어요'], 20: ['PACKAGE UNLOCKED', '패키징 단계가 열렸어요. 솔더볼과 테두리가 붙었어요'], 30: ['WAFER COMPLETE', '이번 달 웨이퍼를 완성했어요! 다음 출석부터 새 달 웨이퍼가 열려요'] }[info.dm] || null, big = !!ms;
         const prevMonth = newMonth ? waferInfo(info.m * 30) : null;
-        const start = newMonth ? waferSVG(prevMonth, { plain: true, u: 'C', still: true }).svg : nodeUp ? waferSVG(info, { plain: true, u: 'C', k: info.k - 1, earned: info.dm - 1, still: true }).svg : waferSVG(info, { plain: true, u: 'C', earned: info.dm - 1, still: true }).svg;
+        const start = newMonth ? waferSVG(prevMonth, { u: 'C', still: true }).svg : waferSVG(info, { u: 'C', earned: info.dm - 1, still: true, lvl: lvPrev }).svg;
         const o = document.createElement('div'); o.id = 'wfCer'; o.className = 'wfc'; o.setAttribute('role', 'dialog'); o.setAttribute('aria-modal', 'true'); o.setAttribute('aria-label', '오늘의 회로 새기기');
-        o.innerHTML = `<div class="wfc-card"><p class="eyebrow wfc-eb" id="wfcEb">WAFER #${newMonth ? 11 : nodeUp ? info.k : info.k + 1} · ${newMonth ? '2nm' : nodeUp ? NODE_NM[info.k - 1] : info.nm} 공정</p>
+        o.innerHTML = `<div class="wfc-card"><p class="eyebrow wfc-eb" id="wfcEb">WAFER #${newMonth ? info.m : info.m + 1} · ${STAGES[lvPrev - 1][1]}</p>
           <div class="wfc-day"><span id="wfcN">DAY ${newMonth ? 30 : info.dm - 1}</span><small>/ 30</small></div>
           <div class="wfc-w" id="wfcW">${start}</div>
-          <p class="wfc-step" id="wfcStep">${newMonth || nodeUp ? 'WAFER TRANSFER' : 'STEP 01 · 레이저 활성화'}</p>
+          <p class="wfc-step" id="wfcStep">${newMonth ? 'NEW WAFER' : 'STEP 01 · 레이저 활성화'}</p>
           <div class="wfc-sum" id="wfcSum"></div>
           <div class="wfc-act"><button type="button" id="wfcOk" class="pbtn wfc-ok" hidden>확인</button></div></div><button type="button" id="wfcSkip" class="wfc-skip">건너뛰기</button>`;
         document.body.appendChild(o); requestAnimationFrame(() => o.classList.add('on'));
@@ -2576,13 +2585,13 @@ html.dark .cs-frame{
         const onKey = (e) => { if (e.key === 'Escape' || e.key === 'Enter') { e.preventDefault(); if (finished) close(); else skip = true; } };
         document.addEventListener('keydown', onKey);
         await tw(500, () => {});
-        if (newMonth || nodeUp) {   // 앞 웨이퍼가 사라지고, 패턴이 (더 미세한) 새 웨이퍼로 옮겨진다
-          $('wfcStep').textContent = newMonth ? 'NEW WAFER · 1µm' : `WAFER TRANSFER · ${NODE_NM[info.k - 1]} → ${info.nm}`;
-          const w = $('wfcW'); const nxt = document.createElement('div'); nxt.style.cssText = 'position:absolute;inset:0;opacity:0'; nxt.innerHTML = waferSVG(info, { plain: true, u: 'N', earned: info.dm - 1, still: true }).svg; w.style.position = 'relative'; w.appendChild(nxt);
+        if (newMonth) {   // 지난 웨이퍼가 사라지고 새 달의 웨이퍼가 나타난다
+          $('wfcStep').textContent = 'NEW WAFER';
+          const w = $('wfcW'); const nxt = document.createElement('div'); nxt.style.cssText = 'position:absolute;inset:0;opacity:0'; nxt.innerHTML = waferSVG(info, { u: 'N', earned: info.dm - 1, still: true, lvl: 1 }).svg; w.style.position = 'relative'; w.appendChild(nxt);
           const old = w.firstElementChild;
-          await tw(1700, p => { old.style.opacity = (1 - p).toFixed(3); old.style.transform = `scale(${1 - .06 * p})`; nxt.style.opacity = p.toFixed(3); nxt.style.transform = `scale(${1.06 - .06 * p})`; });
-          w.innerHTML = waferSVG(info, { plain: true, u: 'C', earned: info.dm - 1, still: true }).svg; $('wfcEb').textContent = `WAFER #${info.k + 1} · ${info.nm} 공정`; $('wfcN').textContent = `DAY ${info.dm - 1}`;
-          $('wfcStep').textContent = newMonth ? '새 달의 웨이퍼가 열렸어요 · 지난 웨이퍼는 수집됐어요' : `이전 패턴 ${info.carry}칸이 ${info.nm} 공정으로 옮겨졌어요`; await tw(1000, () => {}); $('wfcStep').textContent = 'STEP 01 · 레이저 활성화';
+          await tw(1500, p => { old.style.opacity = (1 - p).toFixed(3); old.style.transform = `scale(${1 - .06 * p})`; nxt.style.opacity = p.toFixed(3); nxt.style.transform = `scale(${1.06 - .06 * p})`; });
+          w.innerHTML = waferSVG(info, { u: 'C', earned: info.dm - 1, still: true, lvl: 1 }).svg; $('wfcEb').textContent = `WAFER #${info.m + 1} · ${STAGES[0][1]}`; $('wfcN').textContent = `DAY ${info.dm - 1}`;
+          $('wfcStep').textContent = '새 달의 웨이퍼가 열렸어요 · 지난 웨이퍼는 수집됐어요'; await tw(1000, () => {}); $('wfcStep').textContent = 'STEP 01 · 레이저 활성화';
         }
         const fx = $('waferFxC'), step = $('wfcStep');
         fx.innerHTML = `<rect id="cFlash" x="${cell.cx - 12}" y="${cell.cy - 12}" width="24" height="24" rx="2" fill="${colr}" opacity="0"/><path id="cTrace" d="${cell.d}" fill="none" stroke="${colr}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" filter="url(#glowC)" opacity="0"/><circle id="cLaser" r="0" cx="0" cy="0" fill="#fff" filter="url(#glowC)"/><circle id="cRing" cx="${cell.cx}" cy="${cell.cy}" r="0" fill="none" stroke="${colr}" stroke-width="2" opacity="0"/><g id="cSparks"></g>`;
@@ -2600,7 +2609,7 @@ html.dark .cs-frame{
           const ring = $('cRing'); ring.setAttribute('r', (4 + 80 * p).toFixed(1)); ring.setAttribute('opacity', (1 - p).toFixed(3)); ring.setAttribute('stroke-width', (3 - 2 * p).toFixed(2));
           dots.forEach((d, i) => { const a = i / N * Math.PI * 2, r = 8 + 52 * p; d.setAttribute('cx', (cell.cx + Math.cos(a) * r).toFixed(1)); d.setAttribute('cy', (cell.cy + Math.sin(a) * r).toFixed(1)); d.setAttribute('opacity', (1 - p).toFixed(3)); });
         });
-        $('wfcW').innerHTML = waferSVG(info, { plain: true, u: 'C' }).svg;
+        $('wfcW').innerHTML = waferSVG(info, { u: 'C', fresh: info.dm === 10 ? 2 : info.dm === 20 ? 3 : 0 }).svg; $('wfcEb').textContent = `WAFER #${info.m + 1} · ${STAGES[info.level - 1][1]}`;
         step.textContent = ms ? ms[0] : `DAY ${info.dm} COMPLETE`;
         const chip = (main !== null && main >= 0) ? `<span class="wfc-chip" style="--c:${CATS[main][dk ? 'd' : 'l']}"><i></i>${CATS[main].s} 중심</span>` : '';
         const facts = [sum && sum.text, st > 1 && `연속 ${st}일째`].filter(Boolean).join(' · ');
