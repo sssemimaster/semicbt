@@ -2720,9 +2720,8 @@ $$</p>
         acct.err = acctErr(e); renderAcct();
       }
     }
-    async function acctSignOut() {
-      if (!fb) return; await syncNow();
-      const wipe = confirm('로그아웃합니다.\n\n이 기기에 저장된 학습 기록도 지울까요?\n(기록은 계정에 남아 있어서 다시 로그인하면 돌아와요. 공용 기기라면 [확인]을 누르세요.)');
+    async function acctSignOut(wipe) {
+      if (!fb) return; await syncNow();   // 평소엔 묻지 않고 로그아웃만 한다. 공용 기기는 '로그아웃하고 이 기기 기록 지우기'를 쓴다.
       try { await fb.U.signOut(fb.auth); } catch (e) {}
       hintSet(false);
       if (wipe) { SYNC_KEYS.concat([TODAY_KEY]).forEach((k) => { try { localStorage.removeItem(k); } catch (e) {} }); starredIds = []; wrongNotes = {}; stats = { cats: {}, topics: {}, total: { r: 0, t: 0 } }; attendDays = []; dayLog = {}; reloadFromStorage(); }
@@ -2749,6 +2748,7 @@ $$</p>
           <div class="ac-stat"><span>${acct.busy ? '동기화 중…' : '마지막 동기화'}</span><b>${acct.busy ? '' : ago(acct.last)}</b></div>
           <p class="ac-note">출석 ${attendDays.length}일 · 오답 노트 ${Object.keys(wrongNotes).length}개 · 즐겨찾기 ${starredIds.length}개가 이 계정과 연결돼 있어요. 기록은 이 기기와 계정에 함께 저장돼요.</p>${err}
           <div class="ac-btns"><button type="button" class="pbtn" onclick="syncNow()" ${acct.busy ? 'disabled' : ''}>지금 동기화</button><button type="button" class="ac-ghost" onclick="acctSignOut()">로그아웃</button></div>
+          <button type="button" class="ac-del" onclick="if(confirm('로그아웃하고 이 기기에 저장된 학습 기록을 지울까요?\n(기록은 계정에 남아 있어서 다시 로그인하면 돌아와요.)'))acctSignOut(true)">공용 기기라면: 로그아웃하고 이 기기 기록 지우기</button>
           <button type="button" class="ac-del" onclick="acctDelete()">계정에 저장된 내 기록 삭제</button><p class="ac-priv">${priv}</p></div>`
         : `<div class="wl-card ac-card"><div class="wl-top"><div><p class="eyebrow">MY ACCOUNT</p><h3>내 기록을 계정에 저장하기</h3></div><button type="button" class="wl-x" onclick="closeAcct()" aria-label="닫기">✕</button></div>
           <ul class="ac-list"><li>폰과 PC에서 같은 출석·웨이퍼·오답 노트를 이어 쓸 수 있어요</li><li>브라우저 데이터를 지워도 기록이 남아요</li><li>지금까지 이 기기에 쌓은 기록은 그대로 계정으로 합쳐져요</li></ul>
