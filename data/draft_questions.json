@@ -1,5 +1,56 @@
 [
   {
+    "id": "Q-ecff5690",
+    "category": "차세대 첨단 기술",
+    "topic": "High-k/Metal Gate",
+    "theory_id": "TH-7de81ff2",
+    "difficulty": "기초",
+    "type": "concept",
+    "question": "High-k/Metal Gate 기술의 주요 구성 요소는 무엇인가?",
+    "options": [
+      "폴리실리콘과 산소로 구성된다.",
+      "High-k 물질과 금속 게이트로 구성된다.",
+      "금속과 유기물로 구성된다.",
+      "실리콘 산화막과 폴리실리콘으로 구성된다."
+    ],
+    "answer": 1,
+    "explanation": "정답 해설\nHigh-k/Metal Gate 기술은 두 가지 주요 성분, 즉 높은 유전율을 가진 High-k 물질과 전극을 형성하는 금속 게이트로 구성된다. 이러한 조합은 소자 성능을 향상시키기 위해 설계되었다.\n\n오답 체크\n· 1번: 이 보기는 잘못된 조합이며, 폴리실리콘은 High-k/Metal Gate의 구성 요소가 아니다.\n· 3번: High-k/Metal Gate 기술에는 유기물이 포함되지 않으며, 물질이 다르다.\n· 4번: 전통적인 MOSFET 소자는 SiO₂와 폴리실리콘으로 되어 있지만, High-k/Metal Gate는 다른 기술이다.\n\n💡 기억 포인트: High-k/Metal Gate는 High-k 물질과 금속 게이트로 이루어진다."
+  },
+  {
+    "id": "Q-f9a1a4d4",
+    "category": "차세대 첨단 기술",
+    "topic": "High-k/Metal Gate",
+    "theory_id": "TH-7de81ff2",
+    "difficulty": "응용",
+    "type": "scenario",
+    "question": "한 반도체 제조 공정에서 High-k/Metal Gate 기술을 도입한 결과, 게이트 전극의 작업 함수가 불안정해지고 있다. 이 문제의 가장 타당한 원인은 무엇인가?",
+    "options": [
+      "폴리실리콘 게이트의 전기적 저항이 증가했기 때문이다.",
+      "High-k 물질의 유전율이 낮기 때문이다.",
+      "금속 게이트의 작업 함수가 공정 조건에 민감하기 때문이다.",
+      "소자의 물리적 두께가 지나치게 두껍기 때문이다."
+    ],
+    "answer": 2,
+    "explanation": "정답 해설\n금속 게이트는 공정 조건에 따라 작업 함수가 변화하기 때문에 불안정한 특성을 보일 수 있다. 이는 High-k/Metal Gate 기술에서 중요한 고려사항이다.\n\n오답 체크\n· 1번: 폴리실리콘 게이트가 아닌 금속 게이트가 문제의 핵심이다.\n· 2번: High-k 물질의 유전율이 아닌, 금속 게이트의 작업 함수가 문제의 원인이다.\n· 4번: 물리적 두께의 두꺼움은 EOT에 영향을 미치지만, 작업 함수의 불안정성과는 관계가 없다.\n\n💡 기억 포인트: 금속 게이트의 작업 함수는 공정 조건에 민감하다."
+  },
+  {
+    "id": "Q-e5b8ed32",
+    "category": "차세대 첨단 기술",
+    "topic": "High-k/Metal Gate",
+    "theory_id": "TH-7de81ff2",
+    "difficulty": "중급",
+    "type": "compare",
+    "question": "High-k/Metal Gate와 SiO₂/Poly-Si Gate의 주요 차이는 무엇인가?",
+    "options": [
+      "High-k/Metal Gate는 높은 저항을 가지며 누설 전류가 증가한다.",
+      "Poly-Si 게이트는 전기적 특성이 뛰어난 반면 High-k 물질은 그렇지 않다.",
+      "High-k 물질은 높은 유전율을 가지며, EOT가 작아 소자의 성능이 향상된다.",
+      "SiO₂는 높은 유전율을 가지고 EOT가 작다."
+    ],
+    "answer": 2,
+    "explanation": "정답 해설\nHigh-k/Metal Gate는 기존의 SiO₂/Poly-Si 기술에 비해 높은 유전율과 낮은 EOT를 제공하여 소자 성능을 크게 향상시킨다. 이는 반도체 소자의 기본 성능을 결정짓는 중요한 요소이다.\n\n오답 체크\n· 1번: High-k/Metal Gate는 낮은 저항을 가지고 누설 전류를 감소시킨다.\n· 2번: High-k 물질은 전기적 특성이 뛰어나고 성능을 향상시킨다.\n· 4번: SiO₂는 낮은 유전율을 가지며, EOT가 크다.\n\n💡 기억 포인트: High-k/Metal Gate는 높은 유전율과 낮은 EOT로 성능을 향상시킨다."
+  },
+  {
     "id": "Q-f58f310a",
     "category": "반도체 8대 공정",
     "topic": "리페어와 리던던시",
