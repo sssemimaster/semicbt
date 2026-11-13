@@ -11,10 +11,10 @@
   
   <!-- ✨ Tailwind & Typography 플러그인 (마크다운 렌더링용) -->
   <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
-  <!-- ✨ marked.js (마크다운 변환) -->
-  <script src="https://cdn.jsdelivr.net/npm/marked@18.2.0/lib/marked.umd.js" integrity="sha384-DDYDxilZ1LlqPSbaRHlrwh12h+3fUewuQj7HjscrZIWt5bGyQ+n0DHtIoZE3i3zU" crossorigin="anonymous"></script>
+  <!-- ✨ marked.js (마크다운 변환) — 외부 CDN 대신 이 저장소의 vendor/ 파일을 쓴다 (CDN·캐시 문제로 미리보기가 깨지는 것을 막기 위함) -->
+  <script src="vendor/marked.umd.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0"></script>
-  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js" integrity="sha384-+VfUPEb0PdtChMwmBcBmykRMDd+v6D/oFmB3rZM/puCMDYcIvF968OimRh4KQY9a" crossorigin="anonymous"></script>
+  <script src="vendor/purify.min.js"></script>
 
   <!-- 수식 렌더링 (KaTeX) : 사용자 페이지와 동일하게 보이도록 -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
@@ -461,7 +461,7 @@
       md = md.replace(/^[ \t]*\{\{\s*diagram:([^|}\s]+)(?:\|([^}\n]*))?\}\}[ \t]*$/gm, (m, id, cap) => `\n\n<div class="my-3 rounded-lg border-2 border-dashed border-indigo-300 bg-indigo-50 px-3 py-2 text-xs text-indigo-700">🖼 눌러 보는 그림 자리: <b>${escHtml(id)}</b>${cap ? ' — ' + escHtml(cap) : ''} (사이트에서 그림으로 표시됨)</div>\n\n`);
       md = md.replace(/>\s*💡\s*(.*?)(?=\n\n|\n###|$)/gs, (m, p1) => `<div class="custom-highlight-box">${marked.parseInline(p1.trim())}</div>\n\n`);
       md = md.replace(/###\s*\[(.*?)\]\s*(.*)/g, (m, badge, title) => `<div class="custom-badge-heading"><span class="custom-badge">${escHtml(badge)}</span>${escHtml(title)}</div>`);
-      const clean = (window.DOMPurify ? DOMPurify.sanitize(marked.parse(md), { FORBID_TAGS: ['style', 'form', 'iframe', 'object', 'embed'], FORBID_ATTR: ['style'] }) : escHtml(md));
+      const clean = (window.DOMPurify ? DOMPurify.sanitize(marked.parse(md), { FORBID_TAGS: ['style', 'form', 'iframe', 'object', 'embed'], FORBID_ATTR: ['style'] }) : '<p class="text-rose-600 font-bold">미리보기 도구(DOMPurify)를 불러오지 못했어요. 페이지를 새로고침해 주세요.</p><div style="white-space:pre-wrap">' + escHtml(md) + '</div>');
       return math.restore(clean);
     }
     function renderAdminMath() {

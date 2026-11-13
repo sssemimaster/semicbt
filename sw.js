@@ -1,7 +1,7 @@
 /* 반도체 새김 서비스 워커 — 오프라인에서도 열리게 한다.
    - 이 사이트의 파일(화면·데이터): 네트워크 우선(항상 최신), 느리거나 끊기면 저장해 둔 것을 보여 준다.
    - 글꼴·수식·마크다운 같은 외부 라이브러리: 저장해 둔 것 우선. 사이트가 바뀌면 VERSION 을 올리면 옛 저장분이 지워진다. */
-const VERSION = 'semicbt-v1';
+const VERSION = 'semicbt-v2';
 const SHELL = ['./', 'index.html', 'tw.css', 'manifest.webmanifest', 'data/questions.json', 'data/interviews.json', 'data/theories.json', 'data/theory_pages.json', 'data/careers.json'];
 const EXTERNAL = ['cdn.jsdelivr.net', 'fonts.googleapis.com', 'fonts.gstatic.com', 'cdn.tailwindcss.com'];
 
@@ -24,7 +24,8 @@ function networkFirst(req) {
   });
 }
 function cacheFirst(req) {
-  return caches.match(req).then((hit) => hit || fetch(req).then((res) => put(req, res)));
+  // 저장된 응답이 '불투명(opaque)'인데 이번 요청은 CORS(SRI 검사용)면 그 저장분은 쓸 수 없어 스크립트가 막히므로, 새로 받는다.
+  return caches.match(req).then((hit) => (hit && !(hit.type === 'opaque' && req.mode === 'cors')) ? hit : fetch(req).then((res) => put(req, res)));
 }
 
 self.addEventListener('fetch', (e) => {
