@@ -349,6 +349,9 @@ html.dark .cs-frame{
    이 블록은 좁은 화면에서만 적용된다. 768px 이상(태블릿·PC)의 화면은 이 블록 때문에 달라지지 않는다. */
 #mTabs { display: none; }
 .m-toc { display: none; }
+/* (공통) 문제·면접 설정의 과목 고르기: 항상 한 줄에 2개, '전체 과목'은 맨 위 한 줄을 다 쓴다 */
+#subjectChips { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+#subjectChips > :first-child { grid-column: 1 / -1; }
 @media (max-width: 767px) {
   body { padding-bottom: calc(60px + env(safe-area-inset-bottom)); }
   body[data-view="view-quiz"], body[data-view="view-interview"], body[data-view="view-exam"] { padding-bottom: 0; }
@@ -371,6 +374,14 @@ html.dark .cs-frame{
   html.dark .mt-btn { color: #94a3b8; } html.dark .mt-btn.active { color: #67e8f9; }
 
   /* --- 홈: 줄이고 순서 바꾸기 --- */
+  /* 설정 화면(문제·면접): 카드 안쪽 여백을 줄여 2열 칩이 넉넉하게 들어가게 */
+  #view-setup .qcard { padding: 1.25rem; }
+  #view-setup .qbar-wrap { margin: -1.25rem -1.25rem 1.2rem !important; }
+  #view-setup #subjectChips, #view-setup #countChips { gap: .5rem; }
+  #view-setup #subjectChips > .chip { padding: .8rem .85rem; }
+  #view-setup #subjectChips .text-xs { font-size: 11.5px; }
+  #view-setup .qcard > p.mb-7 { margin-bottom: 1.1rem; }
+  #view-setup #subjectChips { margin-bottom: 1.25rem; }
   #view-lobby { gap: 1rem; }
   #view-lobby > section:first-of-type { gap: .75rem; }
   #view-lobby #homeSummary { display: none; }
@@ -444,10 +455,10 @@ html.dark .cs-frame{
   #view-careers > .mb-5 { margin-bottom: .8rem; }
   #view-careers > .mb-5 > p.text-sm { display: none; }
   #view-careers .page-title { font-size: 1.45rem; }
-  #view-careers > .rounded-2xl.p-4 { padding: .85rem; margin-bottom: .75rem; }
+  #view-careers > .rounded-2xl.p-4 { padding: .85rem 1.1rem; margin: 0 -1rem .75rem; border-radius: 0; border-left-width: 0; border-right-width: 0; }
   #view-careers > .rounded-2xl.p-4 > div:first-child > span.text-xs { display: none; }
-  #cTypes, #cBldChips { flex-wrap: nowrap; overflow-x: auto; margin-left: -.85rem; margin-right: -.85rem; padding: 0 .85rem 4px; scrollbar-width: none; }
-  #cBldChips { margin-left: -1rem; margin-right: -1rem; padding: 0 1rem 4px; }
+  #cTypes { flex-wrap: nowrap; overflow-x: auto; margin-left: -1.1rem; margin-right: -1.1rem; padding: 0 1.1rem 4px; scrollbar-width: none; }
+  #cBldChips { flex-wrap: nowrap; overflow-x: auto; margin-left: -1rem; margin-right: -1rem; padding: 0 1rem 4px; scrollbar-width: none; }
   #cTypes::-webkit-scrollbar, #cBldChips::-webkit-scrollbar { display: none; }
   #cTypes > *, #cBldChips > * { flex: none; white-space: nowrap; }
   #cBlurb { font-size: 13px; padding: .55rem .8rem; }
@@ -456,7 +467,17 @@ html.dark .cs-frame{
   #view-careers p.font-bold.mt-5 { margin-top: .9rem; }
   #view-careers p.font-bold.mt-5 > span { display: none; }
   #view-careers .grid.mt-5 { margin-top: .9rem; gap: .75rem; }
-  #cBuilding, #cJobs { padding: .95rem; }
+  #cBuilding, #cJobs { padding: 1.1rem; }
+  /* 직무 화면도 이론처럼 화면 폭을 꽉 쓴다: 카드의 좌우 여백·테두리를 없애고(바깥 여백 1rem 만큼만 되돌림), 글 주변 안쪽 여백은 1.1rem */
+  #cFrame { width: auto; max-width: none; margin-left: -1rem; margin-right: -1rem; border-radius: 0 !important; border-left-width: 0 !important; border-right-width: 0 !important; }
+  #cBuilding, #cJobs, #cDetail { margin-left: -1rem; margin-right: -1rem; border-radius: 0; border-left-width: 0; border-right-width: 0; box-shadow: none; }
+  #cDetail > .p-5 { padding: 1.1rem 1.1rem 1.25rem; }
+  #cDetail > .bg-slate-50 { padding: 1rem 1.1rem; }
+  #cJobs > button { padding: .75rem .9rem; }
+}
+@media (min-width: 640px) and (max-width: 767px) {   /* 큰 폰·작은 태블릿: 바깥 여백이 1.5rem 이라 화면 폭 꽉 쓰기 보정값도 맞춘다 */
+  #learningContainer > div.rounded-2xl, #cFrame, #cBuilding, #cJobs, #cDetail, #view-careers > .rounded-2xl.p-4 { margin-left: -1.5rem; margin-right: -1.5rem; }
+  #cBldChips { margin-left: -1.5rem; margin-right: -1.5rem; padding-left: 1.5rem; padding-right: 1.5rem; }
 }
 </style>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "패키지 열 방출", "description": "반도체 소자가 정상 작동하지 않거나 수명이 짧아지는 문제는 주로 열 관리 실패에서 비롯된다. 소자 내부에서 발생하는 열을 제대로 방출하지 못하면 온도가 상승하고, 이는 소자의 전기적 특성을 변형시켜 성능을 저하시…", "inLanguage": "ko", "articleSection": "반도체 8대 공정", "dateModified": "2026-11-13", "publisher": {"@type": "Organization", "name": "반도체 새김"}, "mainEntityOfPage": "https://sssemimaster.github.io/semicbt/theory/th-f17f4387/"}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "반도체 새김", "item": "https://sssemimaster.github.io/semicbt/"}, {"@type": "ListItem", "position": 2, "name": "이론 백과사전", "item": "https://sssemimaster.github.io/semicbt/theory/"}, {"@type": "ListItem", "position": 3, "name": "패키지 열 방출"}]}</script></head>
