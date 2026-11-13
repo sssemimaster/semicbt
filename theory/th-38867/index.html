@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' data: https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' data: blob: https://*.googleusercontent.com; connect-src 'self' https://*.googleapis.com https://*.firebaseapp.com https://*.supabase.co wss://*.supabase.co https://cdn.jsdelivr.net; frame-src https://*.firebaseapp.com https://accounts.google.com https://apis.google.com https://content.googleapis.com; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
   <meta name="theme-color" content="#0a1020">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -23,12 +24,13 @@
   </script>
 
   
-  <script defer src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/marked@18.2.0/lib/marked.umd.js" integrity="sha384-DDYDxilZ1LlqPSbaRHlrwh12h+3fUewuQj7HjscrZIWt5bGyQ+n0DHtIoZE3i3zU" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js" integrity="sha384-+VfUPEb0PdtChMwmBcBmykRMDd+v6D/oFmB3rZM/puCMDYcIvF968OimRh4KQY9a" crossorigin="anonymous"></script>
   
   <!-- 수식 렌더링 (KaTeX) -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" media="print" onload="this.media='all'">
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" integrity="sha384-GvrOXuhMATgEsSwCs4smul74iXGOixntILdUW9XmUC6+HX0sLNAK3q71HotJqlAn" crossorigin="anonymous" media="print" onload="this.media='all'">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js" integrity="sha384-cpW21h6RZv/phavutF+AuVYrr+dA8xD9zs6FwLpaCct6O9ctzYFfFr4dgmgccOTx" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"></script>
 
   <style>
     /* ===== 라이트/다크 색상 토큰 (html.dark 일 때 아래 값으로 바뀜) ===== */
@@ -1057,7 +1059,7 @@ html.dark .cs-frame{
       if (!supabaseLoading) supabaseLoading = new Promise((resolve) => {
         const make = () => { try { supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY); } catch (e) {} resolve(supabaseClient); };
         if (window.supabase) return make();
-        const sc = document.createElement('script'); sc.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2'; sc.onload = make; sc.onerror = () => { supabaseLoading = null; resolve(null); };
+        const sc = document.createElement('script'); sc.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0'; sc.onload = make; sc.onerror = () => { supabaseLoading = null; resolve(null); };
         document.head.appendChild(sc);
       });
       return supabaseLoading;
@@ -1078,6 +1080,8 @@ html.dark .cs-frame{
       try { localStorage.setItem('semiCbtStats', JSON.stringify(stats)); } catch (e) {}
     }
     function saveWrong() { try { localStorage.setItem('semiCbtWrong', JSON.stringify(wrongNotes)); } catch (e) {} }
+    // 이론 글(마크다운 변환 결과)은 화면에 넣기 전에 걸러서, 글에 섞인 스크립트·이벤트 속성이 실행되지 않게 한다.
+    const safeHtml = (h) => (window.DOMPurify ? DOMPurify.sanitize(String(h), { ADD_ATTR: ['data-dg', 'data-cap'] }) : String(h).replace(/<[^>]*>/g, ''));
     const escH = (v) => String(v == null ? '' : v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     
     const FIXED_CATEGORIES = ["반도체 기초 이론", "반도체 소자", "반도체 8대 공정", "차세대 첨단 기술", "기타"];
@@ -1533,7 +1537,7 @@ html.dark .cs-frame{
       const btn = document.createElement('button');
       btn.className = "bg-white dark:bg-[#0f1729] border border-slate-200 dark:border-white/10 hover:border-indigo-400 dark:hover:border-[#67e8f9] hover:shadow-md p-5 rounded-xl text-left transition flex items-center w-full shadow-sm";
       btn.onclick = () => navTo('view-learning', { level: 'detail', theoryId: t.id });
-      btn.innerHTML = `<span class="text-2xl mr-4">📄</span><div><h3 class="text-lg font-bold text-slate-900 dark:text-white leading-snug">${t.title}</h3><div class="mt-2 flex flex-wrap gap-1">${(t.tags || []).map(tag => `<span class="bg-indigo-50 dark:bg-[#0f2233] text-indigo-700 dark:text-[#67e8f9] text-[10px] px-2 py-0.5 rounded font-bold">#${tag}</span>`).join('')}</div></div>`;
+      btn.innerHTML = `<span class="text-2xl mr-4">📄</span><div><h3 class="text-lg font-bold text-slate-900 dark:text-white leading-snug">${escH(t.title)}</h3><div class="mt-2 flex flex-wrap gap-1">${(t.tags || []).map(tag => `<span class="bg-indigo-50 dark:bg-[#0f2233] text-indigo-700 dark:text-[#67e8f9] text-[10px] px-2 py-0.5 rounded font-bold">#${tag}</span>`).join('')}</div></div>`;
       container.appendChild(btn);
     }
 
@@ -1950,16 +1954,16 @@ html.dark .cs-frame{
       // '**용어(영문)**는' 처럼 괄호 뒤에 한글이 바로 붙으면 marked가 굵게 처리를 못 해서 ** 가 그대로 보임 -> 직접 변환
       rawMarkdown = rawMarkdown.replace(/\*\*([^*\n]+?)\*\*/g, '<strong>$1</strong>');
       rawMarkdown = rawMarkdown.replace(DG_RE, (m, id, cap) => `\n\n<figure class="dg" data-dg="${id}" data-cap="${escH((cap || '').trim())}"></figure>\n\n`);
-      rawMarkdown = rawMarkdown.replace(/>\s*💡\s*(.*?)(?=\n\n|\n###|$)/gs, (match, p1) => `<div class="custom-highlight-box">${marked.parseInline(p1.trim())}</div>\n\n`);
+      rawMarkdown = rawMarkdown.replace(/>\s*💡\s*(.*?)(?=\n\n|\n###|$)/gs, (match, p1) => `<div class="custom-highlight-box">${safeHtml(marked.parseInline(p1.trim()))}</div>\n\n`);
       rawMarkdown = rawMarkdown.replace(/###\s*\[(.*?)\]\s*(.*)/g, (match, badgeText, titleText) => `<div class="custom-badge-heading"><span class="custom-badge">${badgeEmoji(badgeText)} ${badgeText}</span>${titleText}</div>`);
       
       card.innerHTML = `
         <div class="p-6 md:p-8">
           <p class="eyebrow mb-2">${escH(t.category)} <span class="opacity-50">/</span> ${escH(t.subject)} <span class="opacity-50">·</span> 약 ${Math.max(1, Math.round(String(t.content).length / 650))}분 읽기</p>
-          <h2 class="page-title text-slate-900 dark:text-white mb-3">${t.title}</h2>
+          <h2 class="page-title text-slate-900 dark:text-white mb-3">${escH(t.title)}</h2>
           <div class="flex flex-wrap gap-1.5 mb-6 pb-6 border-b border-slate-100 dark:border-white/10">${(t.tags || []).map(tag => `<span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#${escH(tag)}</span>`).join('')}</div>
           <div class="custom-table-container theory-body prose prose-slate dark:prose-invert max-w-none">
-            ${math.restore(marked.parse(rawMarkdown))}
+            ${math.restore(safeHtml(marked.parse(rawMarkdown)))}
           </div>
         </div>
         <div class="bg-slate-50 dark:bg-[#0f2233] p-6 border-t border-slate-200 dark:border-[#1e3a5f]">
@@ -2391,7 +2395,7 @@ html.dark .cs-frame{
           <div id="rv-${i}" class="hidden px-4 pb-4 text-sm">
             <p class="font-bold text-slate-900 dark:text-white mb-3">${q.question}</p>
             <p class="mb-1 ${r.ok ? 'text-emerald-600 dark:text-indigo-400' : 'text-rose-500 dark:text-rose-400'}">내 답: ${r.picked < 0 ? '미응답' : (r.picked + 1) + '번 · ' + q.options[r.picked]}</p>
-            ${r.ok ? '' : `<p class="mb-2 text-emerald-600 dark:text-indigo-400 font-bold">정답: ${q.answer + 1}번 · ${q.options[q.answer]}</p>`}
+            ${r.ok ? '' : `<p class="mb-2 text-emerald-600 dark:text-indigo-400 font-bold">정답: ${q.answer + 1}번 · ${escH(q.options[q.answer])}</p>`}
             <p class="text-slate-600 dark:text-slate-400 leading-relaxed bg-slate-50 dark:bg-[#0a1020] rounded-lg p-3 whitespace-pre-line">${escH(q.explanation)}</p>${theoryLinkHtml(q)}</div>`;
         list.appendChild(d);
       });
