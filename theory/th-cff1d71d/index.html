@@ -159,6 +159,7 @@
     .wl-x { width: 2rem; height: 2rem; border-radius: 50%; background: rgba(100,116,139,.12); color: #64748b; font-size: 13px; } html.dark .wl-x { background: rgba(255,255,255,.1); color: #cbd5e1; }
     .wl-nav { display: flex; align-items: center; justify-content: center; gap: .8rem; margin-top: .5rem; font-size: 12px; font-weight: 700; color: #64748b; }
     .wl-nav button { width: 2rem; height: 2rem; border-radius: 50%; background: rgba(100,116,139,.12); font-size: 18px; line-height: 1; } .wl-nav button:disabled { opacity: .3; }
+    .wl-lgh { text-align: center; font-size: 11px; font-weight: 700; color: #94a3b8; margin: .5rem 0 .3rem; } .wl-lgs { text-align: center; font-size: 11px; color: #94a3b8; margin-top: .4rem; }
     .wl-legend { display: flex; flex-wrap: wrap; justify-content: center; gap: .3rem .8rem; font-size: 11px; color: #64748b; } html.dark .wl-legend { color: #94a3b8; }
     .wl-lg { display: inline-flex; align-items: center; gap: .3rem; } .wl-lg i { width: 8px; height: 8px; border-radius: 50%; display: inline-block; } .wl-lg b { color: #0f172a; } html.dark .wl-lg b { color: #f1f5f9; }
     .wl-w { width: min(100%, 310px); aspect-ratio: 1; margin: .6rem auto .3rem; touch-action: manipulation; } .wl-w svg { display: block; width: 100%; height: 100%; }
@@ -2546,7 +2547,7 @@ $$</p>
           <p class="text-[10px] text-slate-500 mt-1.5">문제 1개 +1 · 면접 문항 확인 +1 · 이론 1개 읽기 +2</p></div>
         ${btn}
         <div class="wf-legend mt-3 text-[10px] text-slate-400"><div class="wf-stages" aria-label="패턴 레벨 3단계">${stages}</div>
-          <div class="wf-cats mt-2 flex items-center flex-wrap" style="gap:.25rem .7rem"><span class="font-bold">선 색 · 그날 주력 과목</span>${CATS.map(c => `<span class="inline-flex items-center gap-1"><i class="w-2 h-2 rounded-full inline-block" style="background:${c[dk ? 'd' : 'l']}"></i>${c.s}</span>`).join('')}<span class="ml-auto">수집한 웨이퍼 ${info.collected}장</span></div></div></div></div></div>`;
+        </div></div></div></div>`;
     }
 
     // ---------- 날짜별 기록 보기 ----------
@@ -2577,7 +2578,7 @@ $$</p>
       const rows = []; for (let i = earned - 1; i >= 0; i--) { const date = dayOfCell(wl.m, i), s = daySummary(date), mm = dayMain(date), c = mm !== null && mm >= 0 ? `style="background:${CATS[mm][dk ? 'd' : 'l']}"` : ''; rows.push(`<button type="button" class="wl-row ${i === wl.sel ? 'on' : ''}" onclick="wlSel(${i})"><i ${c} class="${c ? '' : 'prism'}"></i><b>DAY ${wl.m * 30 + i + 1}</b><span>${dayLabel(date)}</span><em>${s ? s.text : '기록 이전'}</em></button>`); }
       const nav = cur.m > 0 ? `<div class="wl-nav"><button type="button" onclick="wlCycle(-1)" ${wl.m <= 0 ? 'disabled' : ''} aria-label="이전 달 웨이퍼">‹</button><span>${isCur ? '이번 달 웨이퍼' : `${wl.m + 1}번째 달 웨이퍼 · 완성`}</span><button type="button" onclick="wlCycle(1)" ${isCur ? 'disabled' : ''} aria-label="다음 달 웨이퍼">›</button></div>` : `<div class="wl-nav"><span>이번 달 웨이퍼</span></div>`;
       o.innerHTML = `<div class="wl-card"><div class="wl-top"><div><p class="eyebrow">MY WAFER LOG</p><h3>날짜별 학습 기록</h3></div><button type="button" class="wl-x" onclick="closeWaferLog()" aria-label="닫기">✕</button></div>
-        ${nav}<div class="wl-w" id="wlW">${svg}</div><div class="wl-legend">${legend}</div>${det}
+        ${nav}<div class="wl-w" id="wlW">${svg}</div><p class="wl-lgh">선 색 · 그날 주력 과목</p><div class="wl-legend">${legend}</div>${cur.collected ? `<p class="wl-lgs">지금까지 수집한 웨이퍼 ${cur.collected}장</p>` : ''}${det}
         ${rows.length ? `<p class="wl-sec">새긴 날 <span>(최근 순)</span></p><div class="wl-rows">${rows.join('')}</div>` : ''}</div>`;
       const w = o.querySelector('#wlW'); if (w) w.onclick = (e) => { const i = pickCell(e, w, wl.m, earned); if (i != null) wlSel(i); };
     }
