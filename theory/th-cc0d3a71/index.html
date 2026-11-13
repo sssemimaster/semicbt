@@ -629,7 +629,7 @@ html.dark .cs-frame{
         <p class="text-sm text-slate-500 dark:text-slate-400 mb-7">과목과 문항 수를 고르면 바로 시작할 수 있어요.</p>
         <select id="select-subject" class="hidden" onchange="updateSetupHint()"><option value="ALL">전체 과목</option><option value="반도체 기초 이론">반도체 기초 이론</option><option value="반도체 소자">반도체 소자</option><option value="반도체 8대 공정">반도체 8대 공정</option><option value="차세대 첨단 기술">차세대 첨단 기술</option></select>
         <select id="select-count" class="hidden" onchange="updateSetupHint()"></select>
-        <p class="eyebrow mb-3" style="color:#94a3b8">01 · 과목</p>
+        <p class="eyebrow mb-3" style="color:#94a3b8">01 · 과목 <span id="subjPick" style="letter-spacing:0;text-transform:none;font-weight:500">· 여러 개 고를 수 있어요</span></p>
         <div id="subjectChips" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-7"></div>
         <p class="eyebrow mb-3" style="color:#94a3b8">02 · 문항 수</p>
         <div id="countChips" class="grid grid-cols-3 gap-2.5 mb-6"></div>
@@ -2031,29 +2031,32 @@ html.dark .cs-frame{
       sel.innerHTML = COUNT_OPTIONS[mode].map(n => `<option value="${n}" ${n === COUNT_DEFAULT[mode] ? 'selected' : ''}>${n}개</option>`).join('');
       const ex = document.getElementById('examRow'); document.getElementById('examToggle').checked = !!preExam && mode === 'quiz';
       ex.classList.toggle('hidden', mode !== 'quiz'); ex.classList.toggle('flex', mode === 'quiz');
-      document.getElementById('select-subject').value = 'ALL';
+      document.getElementById('select-subject').value = 'ALL'; setupSubs.clear();
       updateSetupHint();
       navTo('view-setup');
     }
+    // 과목은 여러 개 고를 수 있다. 하나도 고르지 않으면 '전체 과목'.
+    const setupSubs = new Set();
     function setupPool() {
-      const sub = document.getElementById('select-subject').value;
+      const subs = [...setupSubs];
       const data = currentMode === 'quiz' ? allQuizData : allInterviewData;
-      return data.filter(q => sub === "ALL" || (q.category && q.category.includes(sub)));
+      return data.filter(q => !subs.length || (q.category && subs.some(s => q.category.includes(s))));
     }
     const SUBJECT_CHIPS = [['ALL', '전체 과목', '모든 분야를 섞어서'], ['반도체 기초 이론', '기초 이론', '밴드 · 캐리어 · 접합'], ['반도체 소자', '소자', '트랜지스터 · 메모리'], ['반도체 8대 공정', '8대 공정', '웨이퍼부터 패키징까지'], ['차세대 첨단 기술', '첨단 기술', '차세대 소자 · 패키징']];
     function updateSetupHint() {
       const n = setupPool().length, want = parseInt(document.getElementById('select-count').value || '0'), real = Math.min(n, want);
       const unit = currentMode === 'quiz' ? '문제' : '면접 문항', exam = currentMode === 'quiz' && document.getElementById('examToggle').checked;
-      document.getElementById('setupHint').textContent = n === 0 ? `선택한 과목에 등록된 ${unit}가 아직 없어요.` : (n < want ? `${unit} ${n}개뿐이라 모두 출제해요.` : `${unit} ${n}개 중 ${want}개를 무작위로 출제해요.`);
+      const sel = setupSubs.size > 1 ? `선택한 ${setupSubs.size}개 과목의 ` : '', sp = document.getElementById('subjPick'); if (sp) sp.textContent = setupSubs.size ? `· ${setupSubs.size}개 선택됨` : '· 여러 개 고를 수 있어요';
+      document.getElementById('setupHint').textContent = n === 0 ? `선택한 과목에 등록된 ${unit}가 아직 없어요.` : (n < want ? `${sel}${unit} ${n}개뿐이라 모두 출제해요.` : `${sel}${unit} ${n}개 중 ${want}개를 무작위로 출제해요.`);
       const min = exam ? Math.ceil(real * 1.5) : Math.max(1, Math.round(real * (currentMode === 'quiz' ? 1 : 2)));
       document.getElementById('setupTime').textContent = real ? `${exam ? '제한' : '약'} ${min}분` : '–';
       document.getElementById('setupMeter').style.width = (want ? Math.min(100, real / want * 100) : 0) + '%';
-      const data = currentMode === 'quiz' ? allQuizData : allInterviewData, cur = document.getElementById('select-subject').value, cnt = document.getElementById('select-count').value;
+      const data = currentMode === 'quiz' ? allQuizData : allInterviewData, cnt = document.getElementById('select-count').value;
       document.getElementById('subjectChips').innerHTML = SUBJECT_CHIPS.map(([v, name, sub]) => { const c = v === 'ALL' ? data.length : data.filter(q => q.category && q.category.includes(v)).length;
-        return `<button data-sub="${v}" class="chip text-left p-4 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0a1020] ${cur === v ? 'chip-on' : ''}"><span class="flex items-center justify-between"><b class="text-sm text-slate-900 dark:text-white">${name}</b><span class="font-mono text-xs font-bold ${c ? 'text-indigo-600 dark:text-cyan-300' : 'text-slate-400'}">${c}</span></span><span class="block text-xs text-slate-400 dark:text-slate-500 mt-1">${sub}</span></button>`; }).join('');
+        return `<button data-sub="${v}" aria-pressed="${v === 'ALL' ? setupSubs.size === 0 : setupSubs.has(v)}" class="chip text-left p-4 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0a1020] ${(v === 'ALL' ? setupSubs.size === 0 : setupSubs.has(v)) ? 'chip-on' : ''}"><span class="flex items-center justify-between"><b class="text-sm text-slate-900 dark:text-white">${name}</b><span class="font-mono text-xs font-bold ${c ? 'text-indigo-600 dark:text-cyan-300' : 'text-slate-400'}">${c}</span></span><span class="block text-xs text-slate-400 dark:text-slate-500 mt-1">${sub}</span></button>`; }).join('');
       document.getElementById('countChips').innerHTML = COUNT_OPTIONS[currentMode].map(c => `<button data-cnt="${c}" class="chip py-4 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0a1020] text-center ${String(c) === cnt ? 'chip-on' : ''}"><span class="font-display text-2xl font-bold text-slate-900 dark:text-white">${c}</span><span class="block text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">${unit}</span></button>`).join('');
     }
-    document.getElementById('subjectChips').addEventListener('click', (e) => { const b = e.target.closest('[data-sub]'); if (b) { document.getElementById('select-subject').value = b.dataset.sub; updateSetupHint(); } });
+    document.getElementById('subjectChips').addEventListener('click', (e) => { const b = e.target.closest('[data-sub]'); if (!b) return; const v = b.dataset.sub; if (v === 'ALL') setupSubs.clear(); else if (setupSubs.has(v)) setupSubs.delete(v); else setupSubs.add(v); updateSetupHint(); });
     document.getElementById('countChips').addEventListener('click', (e) => { const b = e.target.closest('[data-cnt]'); if (b) { document.getElementById('select-count').value = b.dataset.cnt; updateSetupHint(); } });
     function startSession() {
       const cnt = parseInt(document.getElementById('select-count').value) || COUNT_DEFAULT[currentMode];
