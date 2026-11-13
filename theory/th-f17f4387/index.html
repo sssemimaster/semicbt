@@ -132,62 +132,56 @@
     html.dark .pbtn { background: linear-gradient(90deg, #22d3ee, #818cf8 58%, #e879f9); color: #0a1020; }
     .pbtn:hover:not(:disabled) { filter: brightness(1.08); }
     html.dark .hero .pbtn { background: linear-gradient(90deg, #22d3ee, #818cf8 58%, #e879f9); color: #0a1020; }
-    /* 웨이퍼 새기기: 공정 미세화 사다리 */
-    .gw { padding: 1.25rem; height: 100%; display: flex; flex-direction: column; gap: .9rem; }
-    @media (min-width:640px){ .gw { padding: 1.5rem; } }
-    .gw-head { display: flex; justify-content: space-between; align-items: flex-start; gap: .75rem; }
-    .gw-nm { font-family: 'Sora', 'IBM Plex Sans KR', sans-serif; font-weight: 800; font-size: 2.4rem; line-height: 1.05; margin-top: .15rem; letter-spacing: -.03em; background-image: linear-gradient(100deg, var(--g1), var(--g2), var(--g3)); -webkit-background-clip: text; background-clip: text; color: transparent; width: fit-content; }
-    .gw-nm span { font-size: .85rem; font-weight: 700; letter-spacing: 0; margin-left: .15rem; }
-    .gw-streak { font-size: 11px; font-weight: 700; padding: .3rem .65rem; border-radius: 999px; background: rgba(100,116,139,.12); color: #64748b; white-space: nowrap; }
-    .gw-streak.on { background: rgba(249,115,22,.14); color: #c2410c; }
-    html.dark .gw-streak { background: rgba(255,255,255,.08); color: #94a3b8; } html.dark .gw-streak.on { background: rgba(251,146,60,.18); color: #fdba74; }
-    .gw-body { display: flex; align-items: center; gap: 1.1rem; flex: 1; }
-    .gw-svg { flex: none; width: 168px; aspect-ratio: 1; }
-    @media (min-width:768px){ .gw-svg { width: 200px; } } @media (min-width:1200px){ .gw-svg { width: 220px; } }
-    .gw-svg svg, .gw-lvl-w svg { display: block; width: 100%; height: 100%; }
-    .gw-info { flex: 1; min-width: 0; }
-    .gw-row { display: flex; justify-content: space-between; gap: .5rem; font-size: 12px; color: #475569; margin-bottom: .3rem; }
-    .gw-row b { color: #0f172a; } html.dark .gw-row { color: #cbd5e1; } html.dark .gw-row b { color: #f1f5f9; }
-    .gw-bar { height: 9px; border-radius: 999px; background: rgba(100,116,139,.18); overflow: hidden; }
-    .gw-bar > i { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--g1), var(--g2), var(--g3)); transition: width 1.1s cubic-bezier(.2,.8,.2,1); }
-    .gw-bar-s { height: 5px; } .gw-bar-s > i { background: #94a3b8; }
-    html.dark .gw-bar-s > i { background: #64748b; }
-    html.dark .gw-bar { background: rgba(255,255,255,.1); }
-    .gw-sub { font-size: 11px; color: #64748b; margin-top: .35rem; line-height: 1.45; } .gw-sub b { color: inherit; }
-    html.dark .gw-sub { color: #94a3b8; }
-    .gw-btn { width: 100%; font-weight: 800; padding: .8rem 1rem; border-radius: .85rem; font-size: 14px; transition: .2s; }
-    .gw-btn small { display: block; font-size: 11px; font-weight: 700; opacity: .85; margin-top: 1px; }
-    .gw-btn-off { background: #f1f5f9; color: #94a3b8; cursor: not-allowed; } html.dark .gw-btn-off { background: rgba(255,255,255,.08); color: #94a3b8; }
-    .gw-btn-done { background: #f1f5f9; color: #64748b; cursor: default; } html.dark .gw-btn-done { background: rgba(255,255,255,.1); color: #cbd5e1; }
-    .gw-ladder { margin-top: -.15rem; }
-    .gw-dots { display: flex; align-items: center; justify-content: space-between; position: relative; padding: 0 3px; }
-    .gw-dots::before { content: ''; position: absolute; left: 6px; right: 6px; top: 50%; height: 2px; background: rgba(100,116,139,.25); transform: translateY(-50%); }
-    .gw-dot { position: relative; width: 9px; height: 9px; border-radius: 50%; background: #cbd5e1; border: 2px solid #f8fafc; } html.dark .gw-dot { background: #334155; border-color: #0b1226; }
-    .gw-dot.on { background: var(--g1); } html.dark .gw-dot.on { background: var(--g1); }
-    .gw-dot.cur { width: 14px; height: 14px; background: var(--g1); box-shadow: 0 0 0 4px color-mix(in srgb, var(--g1) 22%, transparent); animation: gwPulse 2s ease-in-out infinite; }
-    .gw-ends { display: flex; justify-content: space-between; font-size: 10px; color: #94a3b8; margin-top: .3rem; font-family: ui-monospace, monospace; }
-    @keyframes gwPulse { 50% { box-shadow: 0 0 0 7px transparent; } }
-    .gw-new { animation: gwNew 1.6s ease-out 1; }
-    @keyframes gwNew { 0% { opacity: 0; } 25% { opacity: 1; } 45% { opacity: .35; } 65% { opacity: 1; } }
-    #xpToast { position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 16px); z-index: 90; display: flex; gap: .6rem; align-items: center; padding: .55rem 1rem; border-radius: 999px; background: #0f172a; color: #e2e8f0; font-size: 12px; box-shadow: 0 8px 28px rgba(15,23,42,.3); opacity: 0; pointer-events: none; transition: .25s; white-space: nowrap; max-width: calc(100vw - 32px); }
-    #xpToast.on { opacity: 1; transform: translate(-50%, 0); }
-    #xpToast b { color: #67e8f9; font-size: 14px; } #xpToast span { opacity: .75; }
-    html.dark #xpToast { background: #1e293b; }
-    .gw-lvl { position: fixed; inset: 0; z-index: 100; display: flex; align-items: center; justify-content: center; padding: 16px; background: rgba(5,8,20,.82); backdrop-filter: blur(6px); opacity: 0; transition: opacity .3s; overflow-y: auto; }
-    .gw-lvl.on { opacity: 1; }
-    .gw-lvl-card { width: 100%; max-width: 380px; text-align: center; color: #e2e8f0; margin: auto; }
-    .gw-lvl-card .eyebrow { color: #a5b4fc; margin-bottom: .4rem; }
-    .gw-lvl-nm { display: flex; align-items: baseline; justify-content: center; gap: .7rem; font-family: 'Sora', sans-serif; font-weight: 800; }
-    .gw-lvl-nm s { font-size: 1.2rem; opacity: .55; } .gw-lvl-nm i { font-style: normal; opacity: .6; } .gw-lvl-nm b { font-size: 3rem; line-height: 1.1; letter-spacing: -.03em; background-image: linear-gradient(100deg, var(--g1), var(--g2), var(--g3)); -webkit-background-clip: text; background-clip: text; color: transparent; }
-    .gw-lvl-w { position: relative; width: min(260px, 66vw); aspect-ratio: 1; margin: 1rem auto .6rem; }
-    .gw-lvl-w > div { position: absolute; inset: 0; }
-    .gw-lvl-w .a { animation: gwOut .7s ease 1.1s both; } .gw-lvl-w .b { animation: gwIn 1s ease 1.1s both; }
-    .gw-lvl-w::after { content: ''; position: absolute; inset: -6%; border-radius: 50%; border: 1px solid #cbd5e1; opacity: 0; animation: gwRing 1.1s ease-out 1.1s 1; }
-    @keyframes gwOut { to { opacity: 0; transform: scale(.94); } } @keyframes gwIn { from { opacity: 0; transform: scale(1.1); filter: brightness(2.2); } to { opacity: 1; transform: none; filter: none; } }
-    @keyframes gwRing { 0% { opacity: .9; transform: scale(.7); } 100% { opacity: 0; transform: scale(1.25); } }
-    .gw-lvl-t { font-size: 1.15rem; font-weight: 800; margin-top: .3rem; } .gw-lvl-s { font-size: 12.5px; opacity: .8; margin: .3rem 0 1.2rem; }
-    .gw-lvl-btn { padding: .8rem 2rem; border-radius: .9rem; font-weight: 800; }
-    @media (prefers-reduced-motion: reduce) { .gw-dot.cur, .gw-new, .gw-lvl-w::after { animation: none; } .gw-lvl-w .a { display: none; } .gw-lvl-w .b { animation: none; } .gw-bar > i { transition: none; } }
+    @media (min-width:1024px){ .wf-body{display:flex;align-items:center;gap:1.5rem} .wf-svg{flex:none;width:176px;margin:.5rem 0} .wf-legend{flex-wrap:wrap;row-gap:.25rem} .wf-legend>span{white-space:nowrap} .wf-info{flex:1;min-width:0} .wf-step{text-align:left} }
+    @media (min-width:1200px){ .wf-svg{width:210px} }
+    /* 날짜별 기록 · 새기는 연출 */
+    .wf-open { cursor: pointer; border-radius: 50%; -webkit-tap-highlight-color: transparent; transition: transform .2s; }
+    .wf-open:hover { transform: scale(1.02); } .wf-open:focus-visible { outline: 2px solid #6366f1; outline-offset: 3px; }
+    .wf-nodes { display: flex; align-items: center; justify-content: space-between; position: relative; padding: 0 2px; }
+    .wf-nodes::before { content: ''; position: absolute; left: 4px; right: 4px; top: 50%; height: 2px; background: rgba(100,116,139,.25); transform: translateY(-50%); }
+    .wf-nodes i { position: relative; width: 8px; height: 8px; border-radius: 50%; background: #cbd5e1; border: 2px solid #f8fafc; } html.dark .wf-nodes i { background: #334155; border-color: #0b1226; }
+    .wf-nodes i.on { background: #6366f1; } html.dark .wf-nodes i.on { background: #67e8f9; }
+    .wf-nodes i.cur { width: 13px; height: 13px; background: linear-gradient(135deg, #22d3ee, #a78bfa, #f472b6); border: 0; box-shadow: 0 0 0 3px rgba(129,140,248,.25); }
+    .wl-carry { text-align: center; font-size: 11.5px; color: #64748b; margin-top: .1rem; } html.dark .wl-carry { color: #94a3b8; }
+    .wf-log-btn { white-space: nowrap; width: 100%; display: flex; justify-content: space-between; align-items: center; gap: .5rem; padding: .55rem .8rem; border-radius: .75rem; border: 1px solid #cbd5e1; background: rgba(241,245,249,.7); font-size: 12px; font-weight: 700; color: #334155; transition: .15s; }
+    .wf-log-btn:hover { border-color: #6366f1; color: #4338ca; } .wf-log-n { font-weight: 600; color: #64748b; font-size: 11px; }
+    html.dark .wf-log-btn { border-color: rgba(255,255,255,.14); background: rgba(255,255,255,.05); color: #e2e8f0; } html.dark .wf-log-btn:hover { border-color: #67e8f9; color: #67e8f9; } html.dark .wf-log-n { color: #94a3b8; }
+    .wl { position: fixed; inset: 0; z-index: 95; display: flex; align-items: center; justify-content: center; padding: 16px; background: rgba(5,8,20,.62); backdrop-filter: blur(5px); opacity: 0; transition: opacity .22s; }
+    .wl.on { opacity: 1; }
+    .wl-card { width: 100%; max-width: 440px; max-height: calc(100vh - 32px); max-height: calc(100dvh - 32px); overflow-y: auto; overscroll-behavior: contain; background: #fff; border-radius: 1.25rem; padding: 1.1rem 1.1rem 1.25rem; box-shadow: 0 24px 60px rgba(0,0,0,.35); transform: translateY(14px); transition: transform .25s; }
+    .wl.on .wl-card { transform: none; } html.dark .wl-card { background: #0f1729; border: 1px solid rgba(255,255,255,.1); }
+    .wl-top { display: flex; justify-content: space-between; align-items: flex-start; gap: .5rem; } .wl-top h3 { font-size: 1.1rem; font-weight: 800; margin-top: .15rem; }
+    .wl-x { width: 2rem; height: 2rem; border-radius: 50%; background: rgba(100,116,139,.12); color: #64748b; font-size: 13px; } html.dark .wl-x { background: rgba(255,255,255,.1); color: #cbd5e1; }
+    .wl-nav { display: flex; align-items: center; justify-content: center; gap: .8rem; margin-top: .5rem; font-size: 12px; font-weight: 700; color: #64748b; }
+    .wl-nav button { width: 2rem; height: 2rem; border-radius: 50%; background: rgba(100,116,139,.12); font-size: 18px; line-height: 1; } .wl-nav button:disabled { opacity: .3; }
+    .wl-legend { display: flex; flex-wrap: wrap; justify-content: center; gap: .3rem .8rem; font-size: 11px; color: #64748b; } html.dark .wl-legend { color: #94a3b8; }
+    .wl-lg { display: inline-flex; align-items: center; gap: .3rem; } .wl-lg i { width: 8px; height: 8px; border-radius: 50%; display: inline-block; } .wl-lg b { color: #0f172a; } html.dark .wl-lg b { color: #f1f5f9; }
+    .wl-w { width: min(100%, 310px); aspect-ratio: 1; margin: .6rem auto .3rem; touch-action: manipulation; } .wl-w svg { display: block; width: 100%; height: 100%; }
+    .prism { background: linear-gradient(135deg, #22d3ee, #a78bfa, #f472b6); }
+    .wl-det { margin-top: .8rem; padding: .8rem .9rem; border-radius: .9rem; background: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid var(--c, #a78bfa); } html.dark .wl-det { background: rgba(255,255,255,.05); border-color: rgba(255,255,255,.1); border-left-color: var(--c, #a78bfa); }
+    .wl-det-h { display: flex; align-items: center; flex-wrap: wrap; gap: .45rem; font-size: 13px; } .wl-det-h b { font-weight: 800; } .wl-det-h span { color: #64748b; font-size: 12px; } .wl-det-h em { font-style: normal; font-size: 11px; font-weight: 700; color: var(--c, #64748b); margin-left: auto; }
+    .wl-dot { width: 9px; height: 9px; border-radius: 50%; } .wl-dot.prism { background: linear-gradient(135deg, #22d3ee, #a78bfa, #f472b6); }
+    .wl-det-s { margin-top: .4rem; font-size: 15px; font-weight: 800; }
+    .wl-det-l { margin-top: .35rem; font-size: 12.5px; line-height: 1.6; color: #475569; } html.dark .wl-det-l { color: #cbd5e1; } .wl-det-l span { font-weight: 700; margin-right: .4rem; color: #0f172a; } html.dark .wl-det-l span { color: #fff; }
+    .wl-sec { margin: 1rem 0 .4rem; font-size: 12px; font-weight: 800; } .wl-sec span { font-weight: 500; color: #94a3b8; }
+    .wl-rows { display: flex; flex-direction: column; gap: 2px; max-height: 190px; overflow-y: auto; border-radius: .7rem; }
+    .wl-row { display: flex; align-items: center; gap: .55rem; padding: .5rem .6rem; border-radius: .6rem; font-size: 12px; text-align: left; } .wl-row:hover { background: rgba(100,116,139,.1); } .wl-row.on { background: rgba(99,102,241,.12); }
+    .wl-row i { width: 9px; height: 9px; border-radius: 50%; flex: none; } .wl-row span { color: #94a3b8; } .wl-row em { font-style: normal; margin-left: auto; color: #475569; font-weight: 600; } html.dark .wl-row em { color: #cbd5e1; }
+    .wfc { position: fixed; inset: 0; z-index: 100; display: flex; align-items: center; justify-content: center; padding: 16px; background: radial-gradient(circle at 50% 40%, rgba(30,41,90,.92), rgba(4,7,18,.96)); opacity: 0; transition: opacity .35s; overflow-y: auto; }
+    .wfc.on { opacity: 1; } .wfc-card { width: 100%; max-width: 380px; text-align: center; color: #e2e8f0; margin: auto; transform: scale(.92); transition: transform .5s cubic-bezier(.2,.8,.2,1); } .wfc.on .wfc-card { transform: none; }
+    .wfc .eyebrow { color: #67e8f9; }
+    .wfc-day { display: flex; align-items: baseline; justify-content: center; gap: .4rem; margin: .3rem 0 .2rem; font-family: 'Sora', sans-serif; font-weight: 800; }
+    .wfc-day span { font-size: 2.6rem; letter-spacing: -.02em; color: #fff; display: inline-block; } .wfc-day small { opacity: .5; font-size: 1rem; }
+    .wfc-day span.pop { animation: wfcPop .6s cubic-bezier(.2,1.5,.4,1); } @keyframes wfcPop { 0% { transform: scale(.7); opacity: .3; } 60% { transform: scale(1.25); } 100% { transform: none; opacity: 1; } }
+    .wfc-w { width: min(300px, 76vw); aspect-ratio: 1; margin: .4rem auto; filter: drop-shadow(0 0 28px rgba(103,232,249,.18)); } .wfc-w svg { display: block; width: 100%; height: 100%; }
+    .wfc-step { font-family: ui-monospace, monospace; font-size: 11px; letter-spacing: .12em; color: #67e8f9; min-height: 1.2em; margin-top: .3rem; }
+    .wfc-sum { opacity: 0; transform: translateY(8px); transition: .5s; min-height: 1px; } .wfc-sum.on { opacity: 1; transform: none; }
+    .wfc-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: .4rem; margin-top: .7rem; }
+    .wfc-chip { display: inline-flex; align-items: center; gap: .35rem; padding: .3rem .7rem; border-radius: 999px; background: rgba(255,255,255,.1); font-size: 12px; font-weight: 700; } .wfc-chip i { width: 8px; height: 8px; border-radius: 50%; background: var(--c); } 
+    .wfc-th { margin-top: .6rem; font-size: 12.5px; opacity: .8; } .wfc-ms { margin-top: .7rem; font-size: 13.5px; font-weight: 800; color: #fde68a; }
+    .wfc-act { margin-top: 1.1rem; min-height: 3rem; display: flex; justify-content: center; align-items: center; }
+    .wfc-skip { font-size: 12px; color: #94a3b8; padding: .5rem 1rem; } .wfc-ok { padding: .8rem 2.4rem; border-radius: .9rem; font-weight: 800; }
+    @media (prefers-reduced-motion: reduce) { .wfc-day span.pop { animation: none; } .wfc-card, .wl-card { transition: none; } }
     /* 상단 바의 뼈대는 Tailwind CDN 이 느린 환경에서 초반 클래스를 놓쳐도 무너지지 않게 일반 CSS 로도 한 번 더 고정해 둔다 */
     .app-bar { display: flex; align-items: center; justify-content: space-between; gap: .75rem; height: 4rem; max-width: 72rem; margin: 0 auto; padding: 0 1rem; }
     .app-l { display: flex; align-items: center; gap: .75rem; } .app-r { display: flex; align-items: center; gap: .5rem; }
@@ -469,12 +463,11 @@ html.dark .cs-frame{
   #view-lobby .feature-card p { font-size: 12px; line-height: 1.45; margin-top: .2rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
   #view-lobby .stagger .feature-card > span.inline-block { display: none; }
   #view-lobby .stagger .feature-card > span.absolute { top: .6rem; right: .6rem; }
-  .gw { padding: 1rem; gap: .7rem; }
-  .gw-nm { font-size: 1.9rem; }
-  .gw-body { gap: 12px; } .gw-svg { width: 132px; }
-  .gw-info .gw-sub:last-child { display: none; }
-  .gw-btn { padding: .7rem .9rem; }
-  #xpToast { bottom: calc(76px + env(safe-area-inset-bottom)); }
+  .wf-body { display: flex; align-items: center; gap: 14px; }
+  .wf-svg { flex: none; width: 112px; margin: 0 !important; }
+  .wf-info { flex: 1; min-width: 0; }
+  .wf-info .wf-step, .wf-info p.text-\[10px\] { display: none; } .wf-legend { margin-top: .5rem !important; } .wf-cats { display: none !important; }
+  #waferPanel > div { padding: 1rem; }
 
   /* --- 이론 목록·읽기 --- */
   #view-learning > .back-link, #view-careers > .back-link { margin-bottom: .6rem; }
@@ -593,7 +586,7 @@ html.dark .cs-frame{
         <button data-nav="stats" onclick="navTo('view-stats')" class="nav-btn">통계</button>
       </nav>
       <div class="app-r flex items-center gap-2">
-        <button id="navAttend" onclick="navTo('view-lobby'); setTimeout(()=>document.getElementById('waferPanel').scrollIntoView({behavior:'smooth',block:'center'}),60)" class="hidden sm:flex items-center gap-1.5 text-xs font-bold bg-slate-900/5 hover:bg-slate-900/10 border border-slate-200 dark:bg-white/10 dark:hover:bg-white/15 dark:border-white/10 px-3 h-9 rounded-full transition"><span class="w-2 h-2 rounded-full bg-indigo-500 dark:bg-cyan-300"></span><span id="navAttendText">Lv.1 · 1µm</span></button>
+        <button id="navAttend" onclick="navTo('view-lobby'); setTimeout(()=>document.getElementById('waferPanel').scrollIntoView({behavior:'smooth',block:'center'}),60)" class="hidden sm:flex items-center gap-1.5 text-xs font-bold bg-slate-900/5 hover:bg-slate-900/10 border border-slate-200 dark:bg-white/10 dark:hover:bg-white/15 dark:border-white/10 px-3 h-9 rounded-full transition"><span class="w-2 h-2 rounded-full bg-indigo-500 dark:bg-cyan-300"></span><span id="navAttendText">출석 0일</span></button>
         <button onclick="navTo('view-search')" aria-label="검색" class="text-lg bg-slate-900/5 hover:bg-slate-900/10 dark:bg-white/10 dark:hover:bg-white/15 w-8 h-9 rounded-full flex items-center justify-center transition">🔍</button>
         <button onclick="toggleTheme()" id="themeToggleBtn" aria-label="테마 전환" class="text-lg bg-slate-900/5 hover:bg-slate-900/10 dark:bg-white/10 dark:hover:bg-white/15 w-8 h-9 rounded-full flex items-center justify-center transition">🌙</button>
       </div>
@@ -1406,7 +1399,7 @@ html.dark .cs-frame{
       if (viewId !== 'view-exam') stopExamTimer();
       if (viewId !== 'view-learning') returnCtx = null;
       if (viewId === 'view-lobby') { renderResumeBanner(); renderHome(); }
-      updateNav(); window.scrollTo({ top: 0 }); setTimeout(maybeShowLevelUp, 450);
+      updateNav(); window.scrollTo({ top: 0 });
       if (viewId === 'view-careers') enterCareers();
       if (viewId === 'view-search') { const si = document.getElementById('globalSearchInput'); runGlobalSearch(); setTimeout(() => si.focus(), 50); }
       if (viewId === 'view-learning') {
@@ -1862,7 +1855,7 @@ html.dark .cs-frame{
     document.addEventListener('click', (e) => { const b = e.target.closest && e.target.closest('[data-dg-state]'); if (!b) return; const fig = b.closest('figure.dg'); if (fig) dgRender(fig, b.dataset.dgState); });
 
     function renderDetailDOM(theoryId) {
-      const t = allTheories.find(x => x.id === theoryId); addPoints(2, theoryId);
+      const t = allTheories.find(x => x.id === theoryId); addPoints(2, theoryId, { k: 'th', cat: t.category, label: t.title });
       renderBreadcrumb();
       const container = document.getElementById('learningContainer'); container.className = "flex flex-col space-y-4"; container.innerHTML = '';
       const card = document.createElement('div'); card.className = "bg-white dark:bg-[#0f1729] rounded-2xl shadow-sm border border-slate-200 dark:border-white/10 overflow-hidden";
@@ -2132,7 +2125,7 @@ html.dark .cs-frame{
     }
     function revealInterview() {
       const i = filteredSession[currentIndex];
-      document.getElementById('iRevealBtn').classList.add('hidden'); document.getElementById('iExpBox').classList.remove('hidden'); saveResume(); addPoints(1); document.getElementById('iBar').style.width = ((currentIndex + 1) / filteredSession.length * 100) + '%';
+      document.getElementById('iRevealBtn').classList.add('hidden'); document.getElementById('iExpBox').classList.remove('hidden'); saveResume(); addPoints(1, null, { k: 'iv', cat: i.category }); document.getElementById('iBar').style.width = ((currentIndex + 1) / filteredSession.length * 100) + '%';
       document.getElementById('iKeywords').innerHTML = (i.key_points||[]).map(k=>`<span class="bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-400 px-2 py-1 rounded text-xs font-bold">#${k}</span>`).join('');
       document.getElementById('iAnsText').innerText = i.interview_answer;
       const fw = document.getElementById('iFollow'); fw.classList.toggle('hidden', !i.follow_up); fw.classList.remove('iv-pop'); void fw.offsetWidth; if (i.follow_up) fw.classList.add('iv-pop');
@@ -2176,7 +2169,7 @@ html.dark .cs-frame{
     function gradeRecord(q, ok) {
       const n = wrongNotes[q.id] || (ok ? null : { wrong: 0, right: 0, memo: '' });
       if (n) { if (ok) n.right = (n.right || 0) + 1; else n.wrong = (n.wrong || 0) + 1; n.last = Date.now(); wrongNotes[q.id] = n; saveWrong(); }
-      recordStat(q, ok); addPoints(1);
+      recordStat(q, ok); addPoints(1, null, { k: 'q', cat: q.category, label: q.topic });
     }
     // 🔗 문제 → 관련 이론 (theory_id 우선, 옛 문제는 주제명이 제목에 들어간 이론)
     function theoryFor(q) {
@@ -2329,226 +2322,263 @@ html.dark .cs-frame{
     }
 
     // =====================================================
-    // ◉ 새김 웨이퍼: 하루 학습 목표를 채워 출석하면 보너스 XP 를 받고, 쌓인 XP 만큼 웨이퍼 공정이 미세화돼요
+    // ◉ 새김 웨이퍼: 출석(학습 완료 후)할 때마다 회로가 하나씩 새겨져요
     // =====================================================
     const DAILY_GOAL = 5, WAFER_KEY = 'semiCbtWafer', TODAY_KEY = 'semiCbtToday';
     let attendDays = []; try { attendDays = (JSON.parse(localStorage.getItem(WAFER_KEY)) || {}).days || []; } catch (e) {}
+    let attendBusy = false;
     const pad2 = (n) => String(n).padStart(2, '0');
     const dateStr = (d = new Date()) => `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
     function saveAttend() { try { localStorage.setItem(WAFER_KEY, JSON.stringify({ days: attendDays })); } catch (e) {} }
     function todayData() { let t = null; try { t = JSON.parse(localStorage.getItem(TODAY_KEY)); } catch (e) {} const d = dateStr(); return (t && t.date === d) ? t : { date: d, pts: 0, theories: [] }; }
     // 오늘의 학습 점수: 문제 1개 +1 · 면접 문항 확인 +1 · 이론 1개 읽기 +2 (목표 5점)
-    function addPoints(n, theoryId) {
+    function addPoints(n, theoryId, meta) {
       const t = todayData();
       if (theoryId) { if (t.theories.includes(theoryId)) return; t.theories.push(theoryId); }
       t.pts += n; try { localStorage.setItem(TODAY_KEY, JSON.stringify(t)); } catch (e) {}
-      if (typeof addXp === 'function') addXp(n * XP_PER_POINT);
+      if (meta && typeof logStudy === 'function') logStudy(meta.k, meta.cat, meta.label);
     }
     // =====================================================
-    // 🪐 웨이퍼 새기기: 공정 미세화 사다리
-    //  공부할수록 경험치(XP)가 쌓이고, 쌓인 만큼 웨이퍼의 공정 노드가 1µm → 2nm 로 미세화된다. (30일 리셋 없이 계속 이어진다)
-    //  XP = 학습량(문제 1개 +5 · 면접 확인 +5 · 이론 1개 +10, 하루 150 XP 까지) + 출석 보너스(30 + 연속일 × 3, 연속 10일까지)
+    // 한 달(출석 30일) = 1µm → 2nm 까지 11장의 웨이퍼. 앞 웨이퍼를 다 채우면 더 미세한 공정의 다음 웨이퍼가 열리고,
+    // 앞 웨이퍼에 새긴 패턴은 같은 자리 그대로 다음 웨이퍼로 옮겨져 더 가늘고 촘촘하게 다시 새겨진다. 30일을 채우면 다음 달 새 웨이퍼가 열린다.
     // =====================================================
-    const GROW_KEY = 'semiCbtGrowth', XP_PER_POINT = 5, XP_DAILY_CAP = 150, ATTEND_XP = 30;
-    const NODES = [
-      { nm: '1µm', at: 0, title: '웨이퍼 입문' }, { nm: '350nm', at: 60, title: '패턴 입문' }, { nm: '180nm', at: 160, title: '공정 견습' },
-      { nm: '90nm', at: 320, title: '라인 신입' }, { nm: '45nm', at: 560, title: '공정 엔지니어' }, { nm: '28nm', at: 880, title: '수율 파이터' },
-      { nm: '14nm', at: 1300, title: '핀펫 마스터' }, { nm: '7nm', at: 1850, title: 'EUV 개척자' }, { nm: '5nm', at: 2500, title: '초미세 장인' },
-      { nm: '3nm', at: 3300, title: 'GAA 선구자' }, { nm: '2nm', at: 4300, title: '마스터 웨이퍼' },
-    ];
-    const DIE_PITCH = [62, 48, 40, 33, 28, 24, 20, 17, 14, 12, 10];        // 칩 한 변(작아질수록 한 웨이퍼의 칩 수가 늘어난다)
-    const LINE_W = [2.4, 2, 1.7, 1.4, 1.2, 1, .85, .7, .6, .5, .42];       // 회로 선 굵기(미세화될수록 가늘어진다)
-    const LINE_N = [1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6];                       // 칩 안의 회로 선 수(촘촘해진다)
-    const nodeIndexOf = (xp) => { let k = 0; NODES.forEach((n, i) => { if (xp >= n.at) k = i; }); return k; };
-    let growth = (() => {
-      try { const g = JSON.parse(localStorage.getItem(GROW_KEY)); if (g && typeof g.xp === 'number') return { xp: g.xp, days: g.days || {}, pending: g.pending || null, capDay: g.capDay || '' }; } catch (e) {}
-      // 처음 열었을 때: 예전 기록(출석 일수 + 푼 문제)을 경험치로 이어받는다
-      const T = stats.total || { r: 0, t: 0 }, xp = attendDays.length * ATTEND_XP + T.r * 5 + Math.max(0, T.t - T.r) * 2;
-      return { xp, days: {}, pending: null, capDay: '' };
-    })();
-    function saveGrowth() {
-      const keep = Object.keys(growth.days).sort().slice(-14), days = {}; keep.forEach(k => { days[k] = growth.days[k]; }); growth.days = days;
-      try { localStorage.setItem(GROW_KEY, JSON.stringify(growth)); } catch (e) {}
+    const NODE_NM = ['1µm', '350nm', '180nm', '90nm', '45nm', '28nm', '14nm', '7nm', '5nm', '3nm', '2nm'];
+    const NODE_AT = [0, 3, 6, 9, 11, 14, 17, 20, 22, 25, 28, 30];     // 각 공정 웨이퍼가 열리는 달 안의 날(0부터)
+    const LINE_N = [1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6], LINE_W = [2.3, 2.1, 1.85, 1.65, 1.45, 1.3, 1.15, 1.02, .92, .82, .72];   // 공정이 미세할수록 선은 가늘고 많아진다
+    const MAX_NODE = NODE_NM.length - 1;
+    function waferInfo(N) {
+      const m = N === 0 ? 0 : Math.floor((N - 1) / 30), dm = N - m * 30, idx = Math.max(dm - 1, 0);
+      let k = 0; for (let i = 0; i <= MAX_NODE; i++) if (idx >= NODE_AT[i]) k = i;
+      const size = NODE_AT[k + 1] - NODE_AT[k], d = dm === 0 ? 0 : dm - NODE_AT[k], remain = size - d;
+      const level = dm >= 30 ? 4 : dm >= 20 ? 3 : dm >= 10 ? 2 : 1;
+      const names = { 1: ['Seed Wafer', '기초 웨이퍼'], 2: ['Pattern Wafer', '패턴 형성'], 3: ['Connected Wafer', '회로 연결'], 4: ['Master Wafer', '웨이퍼 완성'] };
+      const next = dm >= 30 ? '다음 출석에 새 달 웨이퍼 개방' : remain > 0 ? `${remain}일 후 · ${k < MAX_NODE ? NODE_NM[k + 1] + ' 웨이퍼 개방' : '웨이퍼 완성'}` : `다음 출석에 ${NODE_NM[k + 1]} 웨이퍼 개방`;
+      return { m, dm, k, d, size, remain, carry: NODE_AT[k], level, name: names[level], nm: NODE_NM[k], nextNm: NODE_NM[Math.min(k + 1, MAX_NODE)], next, collected: Math.floor(N / 30), toMax: Math.max(0, NODE_AT[MAX_NODE] + 1 - dm) };
     }
-    function streakCount() {
-      const set = new Set(attendDays), d = new Date(); if (!set.has(dateStr(d))) d.setDate(d.getDate() - 1);
-      let n = 0; while (set.has(dateStr(d))) { n++; d.setDate(d.getDate() - 1); } return n;
-    }
-    try { if (!localStorage.getItem(GROW_KEY)) localStorage.setItem(GROW_KEY, JSON.stringify(growth)); } catch (e) {}
-    const attendBonus = () => { const s = streakCount() + (attendDays.includes(dateStr()) ? 0 : 1); return ATTEND_XP + Math.min(s, 10) * 3; };
-    function gainXp(n) {
-      const before = nodeIndexOf(growth.xp); growth.xp += n; const after = nodeIndexOf(growth.xp);
-      if (after > before) growth.pending = { from: growth.pending ? growth.pending.from : before, to: after };
-      saveGrowth(); updateHeaderChip();
-    }
-    // 학습으로 얻는 XP (하루 한도 있음 — 같은 문제를 반복해서 올리는 것을 막는다)
-    function addXp(n) {
-      const d = dateStr(), used = growth.days[d] || 0, add = Math.max(0, Math.min(n, XP_DAILY_CAP - used));
-      if (!add) { if (growth.capDay !== d) { growth.capDay = d; saveGrowth(); xpToast(0); } return; }
-      growth.days[d] = used + add; gainXp(add); xpToast(add);
-    }
-    let xpToastSum = 0, xpToastTimer = null;
-    function xpToast(n) {
-      let el = document.getElementById('xpToast');
-      if (!el) { el = document.createElement('div'); el.id = 'xpToast'; el.setAttribute('role', 'status'); document.body.appendChild(el); }
-      const idx = nodeIndexOf(growth.xp), next = NODES[idx + 1];
-      if (n) { xpToastSum += n; el.innerHTML = `<b>+${xpToastSum} XP</b>${next ? `<span>${next.nm}까지 ${next.at - growth.xp}</span>` : '<span>MAX</span>'}`; }
-      else { el.innerHTML = '<span>오늘 학습 XP 한도(150)에 도달했어요. 내일 또 만나요</span>'; }
-      el.classList.add('on'); clearTimeout(xpToastTimer);
-      xpToastTimer = setTimeout(() => { el.classList.remove('on'); xpToastSum = 0; }, 1500);
-    }
-
-    // ---------- 웨이퍼 그림 ----------
-    const RING_CATS = [['반도체 기초 이론', '#22d3ee'], ['반도체 소자', '#34d399'], ['반도체 8대 공정', '#a78bfa'], ['차세대 첨단 기술', '#f472b6']];
     function mulberry(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+    // 웨이퍼 위의 칩(다이) 격자 + 각 칩에 새겨질 회로 (중심부부터 바깥으로, 위치는 달마다 달라짐). lines[0] 이 기본 회로, 뒤쪽 선은 공정이 미세해질수록 추가로 새겨진다
+    const _cellCache = {};
+    function waferCells(m) {
+      if (_cellCache[m]) return _cellCache[m];
+      const rnd = mulberry(7 + m * 13), S = 26, cells = [];
+      for (let i = -5; i <= 5; i++) for (let j = -5; j <= 5; j++) { const cx = i * S, cy = j * S, r = Math.hypot(cx, cy); if (r <= 112) cells.push({ cx, cy, r }); }
+      const order = cells.map(c => ({ c, k: c.r + rnd() * 22 })).sort((a, b) => a.k - b.k).map(x => x.c);
+      order.forEach((c, idx) => {
+        const r2 = mulberry(1000 + m * 97 + idx * 31), x0 = c.cx - 9, y0 = c.cy + Math.round(r2() * 14 - 7);
+        let x = x0, y = y0, d = `M${x} ${y}`; const steps = 2 + Math.floor(r2() * 2);
+        for (let k = 0; k < steps; k++) {
+          x = Math.min(c.cx + 9, x + Math.round(6 + r2() * 5)); d += ` H${x}`;
+          y = Math.max(c.cy - 9, Math.min(c.cy + 9, y + Math.round((r2() * 2 - 1) * 12))); d += ` V${y}`;
+        }
+        c.start = [x0, y0]; c.end = [x, y]; c.d = d; c.extra = [];
+        for (let l = 1; l < 6; l++) {   // 추가 회로선: 칩 안의 가는 띠마다 하나씩
+          const by = c.cy - 9 + l * 3.2 + (r2() - .5) * 1.4; let ex = c.cx - 9 + r2() * 4, ey = by, ed = `M${ex.toFixed(1)} ${ey.toFixed(1)}`; const n2 = 2 + Math.floor(r2() * 2);
+          for (let s = 0; s < n2; s++) { ex = Math.min(c.cx + 9, ex + 4 + r2() * 5); ed += `H${ex.toFixed(1)}`; ey = Math.max(c.cy - 9, Math.min(c.cy + 9, by + (r2() - .5) * 4)); ed += `V${ey.toFixed(1)}`; }
+          c.extra.push(ed);
+        }
+      });
+      return (_cellCache[m] = order);
+    }
+    const dayOfCell = (m, i) => attendDays[m * 30 + i];
+    const RING_CATS = [['반도체 기초 이론', '#22d3ee'], ['반도체 소자', '#34d399'], ['반도체 8대 공정', '#a78bfa'], ['차세대 첨단 기술', '#f472b6']];
     function arcPath(r, a0, a1) {
       const pt = (a) => [r * Math.cos(a * Math.PI / 180), r * Math.sin(a * Math.PI / 180)];
       const [x0, y0] = pt(a0), [x1, y1] = pt(a1); return `M${x0.toFixed(2)} ${y0.toFixed(2)} A${r} ${r} 0 0 1 ${x1.toFixed(2)} ${y1.toFixed(2)}`;
     }
-    // 웨이퍼 위 칩(다이) 배치: 위에서 아래로 스캔하듯 채워 간다
-    function dieGrid(idx) {
-      const P = DIE_PITCH[idx], gap = P >= 24 ? 3 : P >= 14 ? 2 : 1.4, hs = (P - gap) / 2, R = 124, n = Math.ceil(R / P) + 1, dies = [];
-      for (let j = -n; j < n; j++) for (let i = -n; i < n; i++) {
-        const cx = (i + .5) * P, cy = (j + .5) * P;
-        if (Math.hypot(Math.abs(cx) + hs, Math.abs(cy) + hs) <= R) dies.push({ cx, cy, j, i });
-      }
-      dies.sort((a, b) => a.j - b.j || (a.j % 2 ? b.i - a.i : a.i - b.i));
-      return { dies, hs, P };
+    // ---------- 날짜별 학습 기록 ----------
+    const LOG_KEY = 'semiCbtDayLog';
+    const CATS = [{ s: '기초 이론', d: '#22d3ee', l: '#0891b2' }, { s: '소자', d: '#34d399', l: '#059669' }, { s: '8대 공정', d: '#a78bfa', l: '#7c3aed' }, { s: '차세대', d: '#f472b6', l: '#db2777' }];
+    let dayLog = {}; try { dayLog = JSON.parse(localStorage.getItem(LOG_KEY)) || {}; } catch (e) {}
+    const isDark = () => document.documentElement.classList.contains('dark');
+    function saveLog() { const ks = Object.keys(dayLog).sort(); while (ks.length > 400) delete dayLog[ks.shift()]; try { localStorage.setItem(LOG_KEY, JSON.stringify(dayLog)); } catch (e) {} }
+    function catIdx(name) { name = String(name || ''); const i = RING_CATS.findIndex(c => c[0] === name); if (i >= 0) return i; return /기초/.test(name) ? 0 : /소자/.test(name) ? 1 : /공정/.test(name) ? 2 : /차세대|첨단/.test(name) ? 3 : -1; }
+    function logStudy(kind, cat, label) {
+      const d = dateStr(), e = dayLog[d] || (dayLog[d] = { w: {}, th: [], q: 0, iv: 0, qt: {} }), key = String(catIdx(cat));
+      e.w[key] = (e.w[key] || 0) + (kind === 'th' ? 2 : 1);
+      if (kind === 'th') { if (label && !e.th.includes(label) && e.th.length < 12) e.th.push(label); }
+      else if (kind === 'q') { e.q++; if (label && (e.qt[label] || Object.keys(e.qt).length < 12)) e.qt[label] = (e.qt[label] || 0) + 1; }
+      else e.iv++;
+      saveLog();
     }
-    function dieTrace(rng, cx, cy, hs, lines) {
-      let d = '';
-      for (let l = 0; l < lines; l++) {
-        let x = cx - hs * .75, y = cy + (rng() * 2 - 1) * hs * .65; d += `M${x.toFixed(1)} ${y.toFixed(1)}`;
-        const steps = 2 + Math.floor(rng() * 2);
-        for (let s = 0; s < steps; s++) {
-          x = Math.min(cx + hs * .75, x + hs * (.4 + rng() * .6)); d += `H${x.toFixed(1)}`;
-          y = Math.max(cy - hs * .75, Math.min(cy + hs * .75, y + (rng() * 2 - 1) * hs * .9)); d += `V${y.toFixed(1)}`;
-        }
-      }
-      return d;
+    // 그날 가장 많이 공부한 과목 (기록이 없으면 null, 과목을 알 수 없으면 -1)
+    function dayMain(date) {
+      const e = dayLog[date]; if (!e) return null; let best = -1, bw = 0;
+      Object.entries(e.w).forEach(([k, w]) => { if (+k >= 0 && w > bw) { bw = w; best = +k; } });
+      return best;
     }
-    // idx: 노드 번호, frac: 이번 노드 진행도(0~1), from: 직전에 새겨져 있던 칩 수(새로 새겨진 칩 강조용)
-    const TIER_COLS = { l: [['#475569', '#94a3b8'], ['#2563eb', '#38bdf8'], ['#0f766e', '#2dd4bf'], ['#b45309', '#f2b441'], ['#0891b2', '#7c3aed', '#db2777']],
-                        d: [['#94a3b8', '#cbd5e1'], ['#38bdf8', '#818cf8'], ['#2dd4bf', '#99f6e4'], ['#fbbf24', '#fde68a'], ['#67e8f9', '#a78bfa', '#f472b6']] };
-    const tierOf = (idx) => idx < 3 ? 0 : idx < 6 ? 1 : idx < 9 ? 2 : idx < 10 ? 3 : 4;   // 마지막 노드(2nm)만 프리즘
-    const tierCols = (idx, dk) => TIER_COLS[dk ? 'd' : 'l'][tierOf(idx)];
-    const colVars = (c) => `--g1:${c[0]};--g2:${c[1]};--g3:${c[2] || c[1]}`;
-    function ladderSVG(idx, frac, from, uid) {
-      const dk = document.documentElement.classList.contains('dark'), tier = tierOf(idx), { dies, hs } = dieGrid(idx);
-      const lit = Math.min(dies.length, Math.floor(frac * dies.length + 1e-9)), id = (s) => `${s}${uid}`;
-      // 단계마다 한 가지 색조의 두 톤만 쓴다: 은빛 → 파랑 → 보라 → 황금 (프리즘처럼 여러 색을 섞지 않는다)
-      const dd = dk, stops = tierCols(idx, dk), acc = stops[0];
-      const base = dd ? [['#3a455e', '#1b2438', '#0b101c'], ['#2f4a78', '#18284a', '#091022'], ['#1f4d4d', '#102c2e', '#071415'], ['#6b5a2e', '#2a2210', '#0d0a05'], ['#3f3873', '#1d1a45', '#0a0920']][tier]
-                      : [['#f8fafc', '#e2e8f0', '#cbd5e1'], ['#f3f7ff', '#dbe7fb', '#c3d3f2'], ['#f1fbf9', '#d4f0eb', '#b6e2db'], ['#fffbf2', '#f7ebd0', '#e8d6a8'], ['#f8f8ff', '#e9e6fa', '#d4cdf0']][tier];
-      let h = `<svg id="${id('gwSvg')}" viewBox="-163 -163 326 326" class="w-full h-full" role="img" aria-label="내 웨이퍼 ${NODES[idx].nm} 공정, 칩 ${dies.length}개 중 ${lit}개 완성"><defs>
-        <radialGradient id="${id('wb')}" cx="35%" cy="30%" r="85%"><stop offset="0" stop-color="${base[0]}"/><stop offset=".55" stop-color="${base[1]}"/><stop offset="1" stop-color="${base[2]}"/></radialGradient>
-        <linearGradient id="${id('pr')}" gradientUnits="userSpaceOnUse" x1="-120" y1="-120" x2="120" y2="120">${stops.map((c, i) => `<stop offset="${(i / (stops.length - 1)).toFixed(2)}" stop-color="${c}"/>`).join('')}</linearGradient>
-        <clipPath id="${id('cl')}"><circle r="138"/></clipPath>
-        <linearGradient id="${id('sh')}" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity="${dd ? .13 : .5}"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
-        <linearGradient id="${id('sc')}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="${stops[stops.length - 1]}" stop-opacity=".9"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
-        <filter id="${id('gl')}" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="1.6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>`;
-      const max = Math.max(1, ...RING_CATS.map(([k]) => (stats.cats[k] || { t: 0 }).t));
-      RING_CATS.forEach(([k], i) => { const op = (.18 + .7 * ((stats.cats[k] || { t: 0 }).t / max)).toFixed(2); h += `<path d="${arcPath(155, -90 + i * 90 + 5, -90 + (i + 1) * 90 - 5)}" fill="none" stroke="${acc}" stroke-opacity="${op}" stroke-width="2.4" stroke-linecap="round"/>`; });
-      h += `<circle r="140" fill="url(#${id('wb')})" stroke="${tier === 3 ? stops[1] : tier === 4 ? `url(#${id('pr')})` : '#94a3b8'}" stroke-opacity="${tier >= 3 ? .85 : .55}" stroke-width="${tier >= 3 ? 1.6 : 1}"/><circle r="134" fill="none" stroke="${dd ? '#fff' : '#64748b'}" stroke-opacity="${dd ? .07 : .18}"/>`;
-      if (idx >= 1) h += `<circle r="128" fill="none" stroke="url(#${id('pr')})" stroke-opacity=".3" stroke-width=".6"/>`;
-      if (idx >= 3) h += `<circle r="131" fill="none" stroke="url(#${id('pr')})" stroke-opacity=".28" stroke-width=".6" stroke-dasharray="3 3"/>`;
-      if (idx >= 6) h += `<circle r="140" fill="none" stroke="url(#${id('pr')})" stroke-width="1.6" filter="url(#${id('gl')})" stroke-opacity=".8"/>`;
-      // 칩 격자: 아직 안 새긴 칩(옅은 외곽선) / 새긴 칩(색 + 회로) / 방금 새긴 칩(깜빡임)
-      let dOff = '', dOn = '', dNew = '', tr = '', trNew = '';
-      const rect = (c) => `M${(c.cx - hs).toFixed(1)} ${(c.cy - hs).toFixed(1)}h${(hs * 2).toFixed(1)}v${(hs * 2).toFixed(1)}h${(-hs * 2).toFixed(1)}z`;
-      dies.forEach((c, k) => {
-        if (k >= lit) { dOff += rect(c); return; }
-        const rng = mulberry(idx * 100003 + k * 7919 + 17), path = hs >= 3 ? dieTrace(rng, c.cx, c.cy, hs, LINE_N[idx]) : '';
-        if (from != null && k >= from) { dNew += rect(c); trNew += path; } else { dOn += rect(c); tr += path; }
-      });
-      const fillOn = dd ? 'rgba(255,255,255,.06)' : `${acc}1f`;
-      h += `<path d="${dOff}" fill="${dd ? 'rgba(255,255,255,.015)' : 'rgba(255,255,255,.4)'}" stroke="${dd ? '#94a3b8' : '#8da0b8'}" stroke-opacity="${dd ? .32 : .75}" stroke-width=".6"/>`;
-      if (dOn) h += `<path d="${dOn}" fill="${fillOn}" stroke="url(#${id('pr')})" stroke-opacity=".5" stroke-width=".6"/>`;
-      if (tr) h += `<path d="${tr}" fill="none" stroke="url(#${id('pr')})" stroke-width="${LINE_W[idx]}" stroke-linecap="round" stroke-linejoin="round"${idx >= 6 ? ` filter="url(#${id('gl')})"` : ''}/>`;
-      if (dNew) h += `<g class="gw-new"><path d="${dNew}" fill="${fillOn}" stroke="url(#${id('pr')})" stroke-width=".8"/><path d="${trNew}" fill="none" stroke="url(#${id('pr')})" stroke-width="${LINE_W[idx]}" stroke-linecap="round" stroke-linejoin="round" filter="url(#${id('gl')})"/></g>`;
-      h += `<circle cx="0" cy="140" r="7" fill="${dk ? '#0b1226' : '#f1f5fb'}"/><g clip-path="url(#${id('cl')})" style="pointer-events:none"><rect class="wafer-sheen" x="-30" y="-200" width="60" height="400" fill="url(#${id('sh')})" transform="rotate(20)"/><g id="${id('fx')}"></g></g></svg>`;
-      return { svg: h, total: dies.length, lit };
+    function dayCol(date, dk, u) { const m = dayMain(date); return m === null ? `url(#prism${u || ''})` : m < 0 ? '#94a3b8' : CATS[m][dk ? 'd' : 'l']; }
+    const dayLabel = (s) => { const [y, m, d] = s.split('-').map(Number), w = ['일', '월', '화', '수', '목', '금', '토'][new Date(y, m - 1, d).getDay()]; return `${m}/${d} (${w})`; };
+    function daySummary(date) {
+      const e = dayLog[date]; if (!e) return null;
+      const p = []; if (e.th.length) p.push(`이론 ${e.th.length}`); if (e.q) p.push(`문제 ${e.q}`); if (e.iv) p.push(`면접 ${e.iv}`);
+      return { text: p.join(' · ') || '기록 없음', th: e.th, qt: Object.entries(e.qt).sort((a, b) => b[1] - a[1]).map(([t, n]) => `${t} ${n}`), main: dayMain(date) };
+    }
+    function streakNow() { const s = new Set(attendDays), d = new Date(); let n = 0; while (s.has(dateStr(d))) { n++; d.setDate(d.getDate() - 1); } return n; }
+
+    // info: waferInfo() 결과. o.k: 공정 단계(기본 info.k) / o.earned: 새겨 둔 칸 수(기본 info.dm) / o.u: id 꼬리표 / o.sel: 선택된 칸 / o.still: 깜빡임 없음 / o.days: 칸마다 연결된 날짜
+    function waferSVG(info, o = {}) {
+      const u = o.u || '', node = o.k != null ? o.k : info.k, earned = o.earned != null ? o.earned : info.dm, carry = Math.min(NODE_AT[node], earned), cells = waferCells(info.m), lvl = info.level, dk = isDark();
+      const days = o.days || attendDays.slice(info.m * 30, info.m * 30 + 30), col = (i) => dayCol(days[i], dk, u), nl = LINE_N[node], lw = LINE_W[node];
+      const max = Math.max(1, ...RING_CATS.map(([k2]) => (stats.cats[k2] || { t: 0 }).t));
+      let h = `<svg id="waferSvg${u}" viewBox="-163 -163 326 326" class="w-full h-full" role="img" aria-label="나의 학습 웨이퍼 ${NODE_NM[node]} 공정 ${earned}/30"><defs>
+        <radialGradient id="wBase${u}" cx="35%" cy="30%" r="85%">${dk ? '<stop offset="0" stop-color="#3d4968"/><stop offset=".55" stop-color="#1b2542"/><stop offset="1" stop-color="#0b1122"/>' : '<stop offset="0" stop-color="#ffffff"/><stop offset=".55" stop-color="#dbe3ee"/><stop offset="1" stop-color="#a3b3c9"/>'}</radialGradient>
+        <linearGradient id="prism${u}" gradientUnits="userSpaceOnUse" x1="-120" y1="-120" x2="120" y2="120">${dk ? '<stop offset="0" stop-color="#67e8f9"/><stop offset=".5" stop-color="#a78bfa"/><stop offset="1" stop-color="#f472b6"/>' : '<stop offset="0" stop-color="#0891b2"/><stop offset=".5" stop-color="#6d28d9"/><stop offset="1" stop-color="#db2777"/>'}</linearGradient>
+        <clipPath id="wClip${u}"><circle r="138"/></clipPath><linearGradient id="sheenG${u}" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity="${dk ? .13 : .7}"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+        <filter id="glow${u}" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>`;
+      RING_CATS.forEach(([k2, c], i) => { const op = (.2 + .8 * ((stats.cats[k2] || { t: 0 }).t / max)).toFixed(2); h += `<path d="${arcPath(155, -90 + i * 360 / RING_CATS.length + 5, -90 + (i + 1) * 360 / RING_CATS.length - 5)}" fill="none" stroke="${c}" stroke-opacity="${op}" stroke-width="4" stroke-linecap="round"/>`; });
+      h += `<circle r="140" fill="url(#wBase${u})" stroke="#94a3b8" stroke-opacity=".5"/><circle r="134" fill="none" stroke="${dk ? '#fff' : '#64748b'}" stroke-opacity="${dk ? .06 : .18}"/>`;
+      if (lvl >= 2) h += `<circle r="124" fill="none" stroke="url(#prism${u})" stroke-opacity=".35" stroke-width=".7"/>`;
+      if (lvl >= 4) h += `<circle r="140" fill="none" stroke="url(#prism${u})" stroke-width="2.2" filter="url(#glow${u})"/>`;
+      cells.forEach((c, i) => { h += `<rect x="${c.cx - 12}" y="${c.cy - 12}" width="24" height="24" rx="2" ${i < earned ? `fill="${col(i)}" fill-opacity="${dk ? .1 : .13}"` : `fill="${dk ? 'rgba(255,255,255,.015)' : 'rgba(255,255,255,.4)'}"`} stroke="${dk ? 'rgba(148,163,184,.16)' : 'rgba(71,85,105,.22)'}" stroke-width=".6"/>`; });
+      for (let i = earned; i < 30 && i < cells.length; i++) h += `<path d="${cells[i].d}" fill="none" stroke="${dk ? '#64748b' : '#8da0b8'}" stroke-opacity="${dk ? .38 : .85}" stroke-width="1"/>`;
+      if (lvl >= 3) for (let i = 0; i < earned - 1; i++) { const a = cells[i].end, b = cells[i + 1].start; if (Math.hypot(a[0] - b[0], a[1] - b[1]) > 70) continue; h += `<path d="M${a[0]} ${a[1]} H${b[0]} V${b[1]}" fill="none" stroke="${col(i)}" stroke-opacity=".5" stroke-width=".9" stroke-dasharray="2 2"/>`; }
+      for (let i = 0; i < earned && i < cells.length; i++) {
+        const c = cells[i], cl = col(i); let ex = ''; for (let l = 0; l < nl - 1; l++) ex += c.extra[l];
+        h += `<path ${i === earned - 1 && !o.still ? 'class="wafer-latest"' : ''} d="${c.d}" fill="none" stroke="${cl}" stroke-width="${lw}" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow${u})"/>`
+          + (ex ? `<path d="${ex}" fill="none" stroke="${cl}" stroke-opacity=".85" stroke-width="${(lw * .72).toFixed(2)}" stroke-linecap="round" stroke-linejoin="round"/>` : '')
+          + `<circle cx="${c.end[0]}" cy="${c.end[1]}" r="${Math.max(1.2, lw * .9).toFixed(1)}" fill="${cl}"/>`;
+      }
+      if (o.sel != null && cells[o.sel]) { const c = cells[o.sel]; h += `<rect x="${c.cx - 14}" y="${c.cy - 14}" width="28" height="28" rx="3" fill="none" stroke="${dk ? '#fff' : '#0f172a'}" stroke-width="1.8"/>`; }
+      h += `<circle cx="0" cy="140" r="7" fill="${dk ? '#0b1226' : '#f1f5fb'}"/><g clip-path="url(#wClip${u})" style="pointer-events:none"><rect class="wafer-sheen" x="-30" y="-200" width="60" height="400" fill="url(#sheenG${u})"/></g><g id="waferFx${u}" style="pointer-events:none"></g></svg>`;
+      return { svg: h, cells, carry, earned };
+    }
+    // 눌린 위치에서 가장 가까운 새긴 칸 번호 (칸이 작아도 눌리도록 가까운 칸을 고른다)
+    function pickCell(ev, wrap, m, earned) {
+      const svg = wrap && wrap.querySelector('svg'); if (!svg || !ev || ev.clientX == null) return null;
+      const r = svg.getBoundingClientRect(), x = (ev.clientX - r.left) / r.width * 326 - 163, y = (ev.clientY - r.top) / r.height * 326 - 163;
+      const cells = waferCells(m); let best = null, bd = 20;
+      for (let i = 0; i < earned && i < cells.length; i++) { const dd = Math.hypot(cells[i].cx - x, cells[i].cy - y); if (dd < bd) { bd = dd; best = i; } }
+      return best;
     }
 
     // ---------- 홈의 웨이퍼 패널 ----------
-    let lastLit = null, lastIdx = null, lastFrac = null, attendBusy = false;
     function renderWaferPanel() {
       const panel = document.getElementById('waferPanel'); if (!panel) return;
-      const idx = nodeIndexOf(growth.xp), node = NODES[idx], next = NODES[idx + 1], span = next ? next.at - node.at : 1;
-      const into = next ? growth.xp - node.at : 1, frac = next ? Math.min(1, into / span) : 1;
-      const from = (lastIdx === idx && lastLit != null) ? lastLit : null;
-      const { svg, total, lit } = ladderSVG(idx, frac, from, 'p');
-      const t = todayData(), done = attendDays.includes(dateStr()), pts = Math.min(DAILY_GOAL, t.pts), ready = t.pts >= DAILY_GOAL, bonus = attendBonus(), st = streakCount();
-      const todayXp = growth.days[dateStr()] || 0;
-      const btn = done ? `<button disabled class="gw-btn gw-btn-done">✅ 오늘의 출석 보너스를 받았어요</button>`
-        : ready ? `<button onclick="attendToday()" class="gw-btn pbtn">✨ 오늘의 회로 새기기 <small>출석 보너스 +${bonus} XP</small></button>`
-        : `<button disabled class="gw-btn gw-btn-off">학습 ${pts}/${DAILY_GOAL}을 채우면 <small>출석 보너스 +${bonus} XP</small></button>`;
-      const dots = NODES.map((n, i) => `<span class="gw-dot ${i < idx ? 'on' : i === idx ? 'cur' : ''}" title="${n.nm} · ${n.title}"></span>`).join('');
-      panel.innerHTML = `<div style="${colVars(tierCols(idx, document.documentElement.classList.contains('dark')))}" class="gw rounded-2xl bg-white/80 border border-slate-200 shadow-sm dark:shadow-none dark:bg-white/[.04] dark:border-white/10">
-        <div class="gw-head">
-          <div><p class="font-mono text-[10px] tracking-[.22em] text-indigo-500 dark:text-cyan-200/70 font-bold">LEVEL ${pad2(idx + 1)} · ${escH(node.title)}</p><p class="gw-nm">${node.nm}<span> 공정</span></p></div>
-          <div class="gw-streak ${st ? 'on' : ''}">${st ? `🔥 연속 ${st}일` : '오늘 새기면 연속 시작'}</div>
+      const N = attendDays.length, info = waferInfo(N), t = todayData(), doneToday = attendDays.includes(dateStr()), ready = t.pts >= DAILY_GOAL, dk = isDark();
+      const { svg } = waferSVG(info);
+      const pts = Math.min(DAILY_GOAL, t.pts);
+      const btn = doneToday ? `<button disabled class="w-full font-bold py-3 rounded-xl bg-slate-100 text-slate-500 dark:bg-white/10 dark:text-slate-300 cursor-default">✅ 오늘의 회로를 새겼어요</button>`
+        : ready ? `<button onclick="attendToday()" class="w-full pbtn font-bold py-3 rounded-xl shadow-lg hover:opacity-90 transition">✨ 오늘의 회로 새기기</button>`
+        : `<button disabled class="w-full font-bold py-3 rounded-xl bg-slate-100 text-slate-400 dark:bg-white/10 cursor-not-allowed">학습 완료 후 출석 기록하기 (${pts}/${DAILY_GOAL})</button>`;
+      const dots = NODE_NM.map((n, i) => `<i class="${i < info.k ? 'on' : i === info.k ? 'cur' : ''}" title="${n}"></i>`).join('');
+      panel.innerHTML = `<div class="rounded-2xl bg-white/80 border border-slate-200 shadow-sm dark:shadow-none dark:bg-white/[.04] dark:border-white/10 p-5 sm:p-6 h-full flex flex-col">
+        <div class="flex justify-between items-start gap-3">
+          <div><p class="font-mono text-[10px] tracking-[.22em] text-indigo-500 dark:text-cyan-200/70 font-bold">WAFER #${info.k + 1} · <span class="prism-text bg-clip-text text-transparent">${info.nm}</span> 공정</p><p class="text-sm font-bold mt-1">PATTERN LEVEL ${pad2(info.level)} <span class="text-slate-400 font-medium">· ${info.name[1]}</span></p></div>
+          <div class="text-right shrink-0"><span id="waferDays" class="font-display text-3xl font-bold">${info.dm}</span><span class="text-slate-400 font-bold"> / 30</span><p class="text-[10px] text-slate-400">이번 달 출석</p></div>
         </div>
-        <div class="gw-body">
-          <div class="gw-svg" id="gwWafer">${svg}</div>
-          <div class="gw-info">
-            <div class="gw-row"><span>${next ? `다음 <b>${next.nm}</b>까지` : '<b>최고 단계</b> 달성'}</span><span class="font-mono">${next ? `${into} / ${span} XP` : `${growth.xp} XP`}</span></div>
-            <div class="gw-bar"><i id="gwBar" style="width:${(lastIdx === idx && lastFrac != null ? lastFrac : frac) * 100}%"></i></div>
-            <p class="gw-sub">칩 ${total}개 중 <b>${lit}개</b> 완성</p>
-            <div class="gw-row mt-3"><span>오늘 학습</span><span class="font-mono">+${todayXp} XP</span></div>
-            <div class="gw-bar gw-bar-s"><i style="width:${Math.min(100, todayXp / XP_DAILY_CAP * 100)}%"></i></div>
-            <p class="gw-sub">문제 1개 +5 · 면접 확인 +5 · 이론 읽기 +10 (하루 ${XP_DAILY_CAP} XP까지)</p>
-          </div>
-        </div>
+        <div class="wf-body flex-1">
+        <div class="wf-svg relative mx-auto my-3 w-full max-w-[230px] aspect-square wf-open" role="button" tabindex="0" aria-label="새긴 패턴을 눌러 날짜별 학습 기록 보기" onclick="openWaferLog(event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openWaferLog()}">${svg}</div>
+        <div class="wf-info">
+        <button type="button" class="wf-log-btn" onclick="openWaferLog()"><span>📅 날짜별 학습 기록</span><span class="wf-log-n">총 ${N}일</span></button>
+        <div class="mt-3 flex justify-between text-[11px] text-slate-400"><span class="font-mono tracking-widest font-bold">NEXT UPGRADE</span><span>${info.next}</span></div>
+        <div class="mt-2 mb-4"><div class="flex justify-between text-[11px] text-slate-600 dark:text-slate-300 mb-1"><span>오늘의 학습</span><span>${pts} / ${DAILY_GOAL}</span></div><div class="h-1.5 rounded-full bg-slate-200 dark:bg-white/10 overflow-hidden"><div class="h-full rounded-full pbtn" style="width:${pts / DAILY_GOAL * 100}%"></div></div>
+          <p class="text-[10px] text-slate-500 mt-1.5">문제 1개 +1 · 면접 문항 확인 +1 · 이론 1개 읽기 +2</p></div>
         ${btn}
-        <div class="gw-ladder" aria-label="공정 노드 사다리"><div class="gw-dots">${dots}</div><div class="gw-ends"><span>1µm</span><span>${next ? next.nm + ' ▸' : ''}</span><span>2nm</span></div></div>
-      </div>`;
-      const bar = document.getElementById('gwBar'); if (bar && lastIdx === idx && lastFrac != null && lastFrac !== frac) requestAnimationFrame(() => requestAnimationFrame(() => { bar.style.width = (frac * 100) + '%'; }));
-      lastLit = lit; lastIdx = idx; lastFrac = frac;
+        <div class="wf-legend mt-3 text-[10px] text-slate-400"><div class="wf-nodes" aria-label="공정 단계">${dots}</div><div class="flex justify-between mt-1"><span>1µm</span><span>${info.k < MAX_NODE ? `2nm까지 ${info.toMax}일` : '최종 공정 도달'}</span><span>2nm</span></div>
+          <div class="wf-cats mt-2 flex items-center flex-wrap" style="gap:.25rem .7rem"><span class="font-bold">선 색 · 그날 주력 과목</span>${CATS.map(c => `<span class="inline-flex items-center gap-1"><i class="w-2 h-2 rounded-full inline-block" style="background:${c[dk ? 'd' : 'l']}"></i>${c.s}</span>`).join('')}<span class="ml-auto">수집한 웨이퍼 ${info.collected}장</span></div></div></div></div></div>`;
     }
+
+    // ---------- 날짜별 기록 보기 ----------
+    let wl = null;
+    function openWaferLog(ev) {
+      const info = waferInfo(attendDays.length), wrap = ev && ev.currentTarget && ev.currentTarget.classList && ev.currentTarget.classList.contains('wf-svg') ? ev.currentTarget : null;
+      wl = { m: info.m, sel: wrap ? pickCell(ev, wrap, info.m, info.dm) : null, opener: document.activeElement };
+      let o = document.getElementById('wfLog');
+      if (!o) { o = document.createElement('div'); o.id = 'wfLog'; o.className = 'wl'; o.setAttribute('role', 'dialog'); o.setAttribute('aria-modal', 'true'); o.setAttribute('aria-label', '날짜별 학습 기록'); o.addEventListener('click', (e) => { if (e.target === o) closeWaferLog(); }); document.body.appendChild(o); }
+      renderWaferLog(); requestAnimationFrame(() => o.classList.add('on'));
+    }
+    function closeWaferLog() { const o = document.getElementById('wfLog'); if (!o) return; o.classList.remove('on'); setTimeout(() => o.remove(), 220); if (wl && wl.opener && wl.opener.focus) try { wl.opener.focus(); } catch (e) {} wl = null; }
+    function wlSel(i) { if (wl) { wl.sel = i; renderWaferLog(); } }
+    function wlCycle(dir) { if (!wl) return; const max = waferInfo(attendDays.length).m; wl.m = Math.max(0, Math.min(max, wl.m + dir)); wl.sel = null; renderWaferLog(); }
+    function renderWaferLog() {
+      const o = document.getElementById('wfLog'); if (!o || !wl) return;
+      const cur = waferInfo(attendDays.length), isCur = wl.m === cur.m, info = isCur ? cur : waferInfo((wl.m + 1) * 30), earned = info.dm, dk = isDark(), days = attendDays.slice(wl.m * 30, wl.m * 30 + 30);
+      if (wl.sel == null || wl.sel >= earned) wl.sel = earned ? earned - 1 : null;
+      const { svg } = waferSVG(info, { u: 'L', sel: wl.sel, still: true });
+      const cnt = [0, 0, 0, 0]; let other = 0; days.forEach(d => { const mm = dayMain(d); if (mm !== null && mm >= 0) cnt[mm]++; else other++; });
+      const legend = CATS.map((c, i) => `<span class="wl-lg"><i style="background:${c[dk ? 'd' : 'l']}"></i>${c.s} <b>${cnt[i]}</b></span>`).join('') + (other ? `<span class="wl-lg"><i class="prism"></i>기록 이전 <b>${other}</b></span>` : '');
+      let det = '';
+      if (wl.sel != null) {
+        const date = dayOfCell(wl.m, wl.sel), gno = wl.m * 30 + wl.sel + 1, s = date ? daySummary(date) : null, mm = date ? dayMain(date) : null, colr = mm !== null && mm >= 0 ? CATS[mm][dk ? 'd' : 'l'] : null;
+        det = `<div class="wl-det" ${colr ? `style="--c:${colr}"` : ''}><div class="wl-det-h"><span class="wl-dot ${colr ? '' : 'prism'}" ${colr ? 'style="background:var(--c)"' : ''}></span><b>DAY ${gno}</b><span>${date ? dayLabel(date) : ''}</span>${colr ? `<em>${CATS[mm].s} 중심</em>` : ''}</div>`
+          + (s ? `<p class="wl-det-s">${s.text}</p>${s.th.length ? `<p class="wl-det-l"><span>📖 이론</span>${s.th.map(escH).join(' · ')}</p>` : ''}${s.qt.length ? `<p class="wl-det-l"><span>✏️ 문제</span>${s.qt.map(escH).join(' · ')}</p>` : ''}` : `<p class="wl-det-l">학습 기록 기능이 생기기 전에 새긴 칸이라 자세한 내용은 남아 있지 않아요.</p>`) + '</div>';
+      } else det = `<div class="wl-det"><p class="wl-det-l">새겨진 패턴을 누르면 그날 공부한 내용이 보여요.</p></div>`;
+      const rows = []; for (let i = earned - 1; i >= 0; i--) { const date = dayOfCell(wl.m, i), s = daySummary(date), mm = dayMain(date), c = mm !== null && mm >= 0 ? `style="background:${CATS[mm][dk ? 'd' : 'l']}"` : ''; rows.push(`<button type="button" class="wl-row ${i === wl.sel ? 'on' : ''}" onclick="wlSel(${i})"><i ${c} class="${c ? '' : 'prism'}"></i><b>DAY ${wl.m * 30 + i + 1}</b><span>${dayLabel(date)}</span><em>${s ? s.text : '기록 이전'}</em></button>`); }
+      const nav = cur.m > 0 ? `<div class="wl-nav"><button type="button" onclick="wlCycle(-1)" ${wl.m <= 0 ? 'disabled' : ''} aria-label="이전 달 웨이퍼">‹</button><span>${isCur ? `이번 달 · ${info.nm} 웨이퍼` : `${wl.m + 1}번째 달 · 2nm 완성`}</span><button type="button" onclick="wlCycle(1)" ${isCur ? 'disabled' : ''} aria-label="다음 달 웨이퍼">›</button></div>` : `<div class="wl-nav"><span>이번 달 · ${info.nm} 웨이퍼</span></div>`;
+      o.innerHTML = `<div class="wl-card"><div class="wl-top"><div><p class="eyebrow">MY WAFER LOG</p><h3>날짜별 학습 기록</h3></div><button type="button" class="wl-x" onclick="closeWaferLog()" aria-label="닫기">✕</button></div>
+        ${nav}<div class="wl-w" id="wlW">${svg}</div><div class="wl-legend">${legend}</div>${isCur && info.carry ? `<p class="wl-carry">앞 웨이퍼의 패턴 ${info.carry}칸이 ${info.nm} 공정으로 다시 새겨졌어요</p>` : ''}${det}
+        ${rows.length ? `<p class="wl-sec">새긴 날 <span>(최근 순)</span></p><div class="wl-rows">${rows.join('')}</div>` : ''}</div>`;
+      const w = o.querySelector('#wlW'); if (w) w.onclick = (e) => { const i = pickCell(e, w, wl.m, earned); if (i != null) wlSel(i); };
+    }
+    document.addEventListener('keydown', (e) => { if (e.key !== 'Escape') return; if (document.getElementById('wfLog')) closeWaferLog(); });
+
+    // ---------- 새기는 순간 연출 ----------
     const tween = (ms, fn) => new Promise(res => { const t0 = performance.now(); const f = (t) => { const p = Math.min(1, (t - t0) / ms); fn(p); p < 1 ? requestAnimationFrame(f) : res(); }; requestAnimationFrame(f); });
-    // 출석 버튼: 레이저가 웨이퍼를 위에서 아래로 훑고 지나가면 보너스 XP 가 들어온다
+    function runCeremony(info) {
+      return new Promise(async (done) => {
+        const key = dateStr(), dk = isDark(), cells = waferCells(info.m), cell = cells[info.dm - 1], sum = daySummary(key), st = streakNow(), main = dayMain(key);
+        const colr = dayCol(key, dk, 'C'), newMonth = info.dm === 1 && info.m > 0, nodeUp = !newMonth && info.d === 1 && info.k > 0;
+        const ms = { 10: ['PATTERN LAYER UNLOCKED', '패턴 형성 단계가 열렸어요'], 20: ['CONNECTED WAFER UNLOCKED', '회로 연결 단계가 열렸어요'], 30: ['WAFER COMPLETE', '2nm 마스터 웨이퍼를 완성했어요! 다음 출석부터 새 달 웨이퍼가 열려요'] }[info.dm]
+          || (info.remain === 0 && info.k < MAX_NODE ? ['WAFER COMPLETE', `${info.nm} 웨이퍼 완성! 다음 출석에 ${info.nextNm} 웨이퍼가 열리고 패턴이 옮겨져요`] : null), big = !!ms && [10, 20, 30].includes(info.dm);
+        const prevMonth = newMonth ? waferInfo(info.m * 30) : null;
+        const start = newMonth ? waferSVG(prevMonth, { u: 'C', still: true }).svg : nodeUp ? waferSVG(info, { u: 'C', k: info.k - 1, earned: info.dm - 1, still: true }).svg : waferSVG(info, { u: 'C', earned: info.dm - 1, still: true }).svg;
+        const o = document.createElement('div'); o.id = 'wfCer'; o.className = 'wfc'; o.setAttribute('role', 'dialog'); o.setAttribute('aria-modal', 'true'); o.setAttribute('aria-label', '오늘의 회로 새기기');
+        o.innerHTML = `<div class="wfc-card"><p class="eyebrow wfc-eb" id="wfcEb">WAFER #${newMonth ? 11 : nodeUp ? info.k : info.k + 1} · ${newMonth ? '2nm' : nodeUp ? NODE_NM[info.k - 1] : info.nm} 공정</p>
+          <div class="wfc-day"><span id="wfcN">DAY ${newMonth ? 30 : info.dm - 1}</span><small>/ 30</small></div>
+          <div class="wfc-w" id="wfcW">${start}</div>
+          <p class="wfc-step" id="wfcStep">${newMonth || nodeUp ? 'WAFER TRANSFER' : 'STEP 01 · 레이저 활성화'}</p>
+          <div class="wfc-sum" id="wfcSum"></div>
+          <div class="wfc-act"><button type="button" id="wfcSkip" class="wfc-skip">건너뛰기</button><button type="button" id="wfcOk" class="pbtn wfc-ok" hidden>확인</button></div></div>`;
+        document.body.appendChild(o); requestAnimationFrame(() => o.classList.add('on'));
+        let skip = REDUCE, finished = false; const $ = (id) => document.getElementById(id);
+        const tw = (ms2, fn) => new Promise(res => { const t0 = performance.now(); const f = (t) => { const p = skip ? 1 : Math.min(1, (t - t0) / ms2); fn(p); p < 1 ? requestAnimationFrame(f) : res(); }; requestAnimationFrame(f); });
+        $('wfcSkip').onclick = () => { skip = true; $('wfcSkip').hidden = true; };
+        const close = () => { if (!finished) return; document.removeEventListener('keydown', onKey); o.classList.remove('on'); setTimeout(() => { o.remove(); done(); }, 250); };
+        const onKey = (e) => { if (e.key === 'Escape' || e.key === 'Enter') { e.preventDefault(); if (finished) close(); else skip = true; } };
+        document.addEventListener('keydown', onKey);
+        await tw(500, () => {});
+        if (newMonth || nodeUp) {   // 앞 웨이퍼가 사라지고, 패턴이 (더 미세한) 새 웨이퍼로 옮겨진다
+          $('wfcStep').textContent = newMonth ? 'NEW WAFER · 1µm' : `WAFER TRANSFER · ${NODE_NM[info.k - 1]} → ${info.nm}`;
+          const w = $('wfcW'); const nxt = document.createElement('div'); nxt.style.cssText = 'position:absolute;inset:0;opacity:0'; nxt.innerHTML = waferSVG(info, { u: 'N', earned: info.dm - 1, still: true }).svg; w.style.position = 'relative'; w.appendChild(nxt);
+          const old = w.firstElementChild;
+          await tw(1700, p => { old.style.opacity = (1 - p).toFixed(3); old.style.transform = `scale(${1 - .06 * p})`; nxt.style.opacity = p.toFixed(3); nxt.style.transform = `scale(${1.06 - .06 * p})`; });
+          w.innerHTML = waferSVG(info, { u: 'C', earned: info.dm - 1, still: true }).svg; $('wfcEb').textContent = `WAFER #${info.k + 1} · ${info.nm} 공정`; $('wfcN').textContent = `DAY ${info.dm - 1}`;
+          $('wfcStep').textContent = newMonth ? '새 달의 웨이퍼가 열렸어요 · 지난 웨이퍼는 수집됐어요' : `이전 패턴 ${info.carry}칸이 ${info.nm} 공정으로 옮겨졌어요`; await tw(1000, () => {}); $('wfcStep').textContent = 'STEP 01 · 레이저 활성화';
+        }
+        const fx = $('waferFxC'), step = $('wfcStep');
+        fx.innerHTML = `<rect id="cFlash" x="${cell.cx - 12}" y="${cell.cy - 12}" width="24" height="24" rx="2" fill="${colr}" opacity="0"/><path id="cTrace" d="${cell.d}" fill="none" stroke="${colr}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" filter="url(#glowC)" opacity="0"/><circle id="cLaser" r="0" cx="0" cy="0" fill="#fff" filter="url(#glowC)"/><circle id="cRing" cx="${cell.cx}" cy="${cell.cy}" r="0" fill="none" stroke="${colr}" stroke-width="2" opacity="0"/><g id="cSparks"></g>`;
+        const path = $('cTrace'), laser = $('cLaser'), len = path.getTotalLength(); path.style.strokeDasharray = len; path.style.strokeDashoffset = len;
+        await tw(800, p => { laser.setAttribute('r', 3.4 * p); laser.setAttribute('cx', cell.start[0] * p); laser.setAttribute('cy', cell.start[1] * p); });
+        step.textContent = 'STEP 02 · 회로 각인'; path.setAttribute('opacity', 1);
+        await tw(1500, p => { path.style.strokeDashoffset = len * (1 - p); const pt = path.getPointAtLength(len * p); laser.setAttribute('cx', pt.x); laser.setAttribute('cy', pt.y); });
+        step.textContent = 'STEP 03 · 패턴 활성화';
+        const sp = $('cSparks'), N = 14; sp.innerHTML = Array.from({ length: N }, () => `<circle r="1.8" fill="${colr}" opacity="0"/>`).join('');
+        const dots = [...sp.children]; try { navigator.vibrate && !skip && navigator.vibrate([30, 40, 70]); } catch (e) {}
+        const n = $('wfcN'); n.textContent = `DAY ${info.dm}`; n.classList.remove('pop'); void n.offsetWidth; n.classList.add('pop');
+        await tw(1000, p => {
+          laser.setAttribute('r', 3.4 * (1 - p)); path.setAttribute('stroke-width', 2.2 + 2.6 * Math.sin(Math.PI * p));
+          $('cFlash').setAttribute('opacity', (.5 * Math.sin(Math.PI * Math.min(1, p * 1.3))).toFixed(3));
+          const ring = $('cRing'); ring.setAttribute('r', (4 + 80 * p).toFixed(1)); ring.setAttribute('opacity', (1 - p).toFixed(3)); ring.setAttribute('stroke-width', (3 - 2 * p).toFixed(2));
+          dots.forEach((d, i) => { const a = i / N * Math.PI * 2, r = 8 + 52 * p; d.setAttribute('cx', (cell.cx + Math.cos(a) * r).toFixed(1)); d.setAttribute('cy', (cell.cy + Math.sin(a) * r).toFixed(1)); d.setAttribute('opacity', (1 - p).toFixed(3)); });
+        });
+        $('wfcW').innerHTML = waferSVG(info, { u: 'C' }).svg;
+        step.textContent = ms ? ms[0] : `DAY ${info.dm} COMPLETE`;
+        const chips = []; if (main !== null && main >= 0) chips.push(`<span class="wfc-chip" style="--c:${CATS[main][dk ? 'd' : 'l']}"><i></i>${CATS[main].s} 중심</span>`);
+        if (sum) chips.push(`<span class="wfc-chip">${sum.text}</span>`); if (st > 1) chips.push(`<span class="wfc-chip">🔥 연속 ${st}일째</span>`);
+        const th = sum && sum.th[0] ? `<p class="wfc-th">📖 ${escH(sum.th.slice(0, 2).join(' · '))}${sum.th.length > 2 ? ` 외 ${sum.th.length - 2}` : ''}</p>` : '';
+        $('wfcSum').innerHTML = `<div class="wfc-chips">${chips.join('')}</div>${th}${ms ? `<p class="wfc-ms">${ms[1]}</p>` : ''}`; $('wfcSum').classList.add('on');
+        if (big) { try { navigator.vibrate && navigator.vibrate([50, 60, 110]); } catch (e) {} confetti(); }
+        $('wfcSkip').hidden = true; const ok = $('wfcOk'); ok.hidden = false; finished = true; ok.onclick = close; ok.focus();
+      });
+    }
     async function attendToday() {
       if (attendBusy) return; const t = todayData();
       if (attendDays.includes(dateStr()) || t.pts < DAILY_GOAL) return;
-      attendBusy = true; const bonus = attendBonus();
-      const fx = document.getElementById('fxp'), btn = document.querySelector('#waferPanel .gw-btn');
-      if (btn) btn.disabled = true;
-      if (fx && !REDUCE) {
-        fx.innerHTML = '<rect id="gwScan" x="-150" y="-170" width="300" height="34" fill="url(#scp)"/>';
-        await tween(1200, p => { const s = document.getElementById('gwScan'); if (s) s.setAttribute('y', (-170 + 310 * p).toFixed(1)); });
-      }
-      attendDays.push(dateStr()); saveAttend(); gainXp(bonus);
+      attendBusy = true; attendDays.push(dateStr()); saveAttend();
+      try { await runCeremony(waferInfo(attendDays.length)); } catch (e) {}
       attendBusy = false; renderWaferPanel(); renderHome(); updateHeaderChip();
-      xpToastSum = 0; xpToast(bonus); try { navigator.vibrate && navigator.vibrate(30); } catch (e) {}
-      maybeShowLevelUp();
     }
-    function updateHeaderChip() { const el = document.getElementById('navAttendText'); if (el) { const i = nodeIndexOf(growth.xp); el.textContent = `Lv.${i + 1} · ${NODES[i].nm}`; } }
-
-    // ---------- 승급 연출 ----------
-    let lvlOpen = false;
-    function maybeShowLevelUp() {
-      if (lvlOpen || !growth.pending) return;
-      if (['view-quiz', 'view-interview', 'view-exam'].includes(currentViewId)) return;
-      const { from, to } = growth.pending; if (to <= from) { growth.pending = null; saveGrowth(); return; }
-      lvlOpen = true;
-      const A = NODES[from], B = NODES[to], gA = dieGrid(from).dies.length, gB = dieGrid(to).dies.length;
-      const o = document.createElement('div'); o.id = 'gwLvl'; o.className = 'gw-lvl'; o.setAttribute('role', 'dialog'); o.setAttribute('aria-modal', 'true'); o.setAttribute('aria-label', '공정 승급');
-      o.innerHTML = `<div class="gw-lvl-card" style="${colVars(tierCols(to, true))}"><p class="eyebrow">NODE UP · LEVEL ${pad2(to + 1)}</p>
-        <div class="gw-lvl-nm"><s>${A.nm}</s><i>→</i><b>${B.nm}</b></div>
-        <div class="gw-lvl-w"><div class="a">${ladderSVG(from, 1, null, 'a').svg}</div><div class="b">${ladderSVG(to, .35, null, 'b').svg}</div></div>
-        <p class="gw-lvl-t">${escH(B.title)}</p>
-        <p class="gw-lvl-s">칩 ${gA}개 → <b>${gB}개</b> · 회로가 더 가늘고 촘촘해졌어요</p>
-        <button class="pbtn gw-lvl-btn" onclick="closeLevelUp()">계속 새기기</button></div>`;
-      document.body.appendChild(o); requestAnimationFrame(() => o.classList.add('on'));
-      try { navigator.vibrate && navigator.vibrate([40, 60, 90]); } catch (e) {} setTimeout(confetti, 900);
-      const btn = o.querySelector('button'); if (btn) btn.focus();
-    }
-    function closeLevelUp() {
-      const o = document.getElementById('gwLvl'); growth.pending = null; saveGrowth(); lvlOpen = false;
-      if (o) { o.classList.remove('on'); setTimeout(() => o.remove(), 250); }
-      lastLit = null; lastIdx = null; lastFrac = null; renderWaferPanel(); updateHeaderChip();
-    }
+    function updateHeaderChip() { const el = document.getElementById('navAttendText'); if (el) el.textContent = `출석 ${attendDays.length}일`; }
     function updateNav() {
       const v = currentViewId, map = { 'view-lobby': 'home', 'view-learning': 'theory', 'view-quiz': 'quiz', 'view-result': 'quiz', 'view-interview': 'interview', 'view-exam': 'exam', 'view-note': 'note', 'view-stats': 'stats', 'view-careers': 'careers', 'view-setup': currentMode === 'interview' ? 'interview' : (document.getElementById('examToggle') && document.getElementById('examToggle').checked ? 'exam' : 'quiz') };
       document.querySelectorAll('[data-nav]').forEach(b => b.classList.toggle('active', b.dataset.nav === map[v]));
@@ -2562,7 +2592,7 @@ html.dark .cs-frame{
       const nd = el('homeNoteDesc'); if (nd && !nd.dataset.def) nd.dataset.def = nd.textContent;
       if (nd) nd.textContent = wc ? `복습할 오답 ${wc}문제가 기다리고 있어요` : nd.dataset.def;
       renderHomeSubjects();
-      if (!attendBusy) renderWaferPanel();
+      if (!attendBusy) renderWaferPanel(false);
       updateHeaderChip();
     }
     function startCategory(kind, cat) { folderCtx = { category: cat, subject: null }; startFolder(kind); }
