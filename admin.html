@@ -427,8 +427,8 @@
         <h2 class="text-xl font-bold text-slate-900 mb-2">${escHtml(t.title)}</h2>
         <div class="mb-4">${tagsHtml}</div>
         
-        <!-- 미리보기 렌더링 박스 (스크롤 적용) -->
-        <div class="p-6 bg-slate-50 border border-slate-200 rounded-xl overflow-y-auto max-h-96 mb-6">
+        <!-- 미리보기 렌더링 박스 (높이 제한 없이 전체 표시) -->
+        <div class="p-4 sm:p-6 bg-slate-50 border border-slate-200 rounded-xl mb-6">
           <div id="theoryPreview" class="prose prose-slate prose-sm max-w-none prose-headings:text-indigo-800 prose-a:text-emerald-600 prose-table:border-collapse prose-th:bg-slate-100 prose-th:p-2 prose-td:border prose-td:border-slate-200 prose-td:p-2">
             ${parsedMarkdown}
           </div>
