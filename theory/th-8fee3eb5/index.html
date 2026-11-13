@@ -2,7 +2,12 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0a1020">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="반도체 새김">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>EUV 리소그래피 정리 — 3. 포토 공정 (Photo) | 반도체 새김</title>
   <meta name="description" content="EUV 리소그래피는 반도체 소자의 집적도를 높이는 데 필수적이다. 반도체 기술의 발전은 트랜지스터의 크기를 줄이고 성능을 향상시키는 데 기여하며, 이는 모바일 기기, 컴퓨터, IoT 등 다양한 분야에서의 혁신을…"><link rel="canonical" href="https://sssemimaster.github.io/semicbt/theory/th-8fee3eb5/"><meta property="og:type" content="article"><meta property="og:site_name" content="반도체 새김"><meta property="og:locale" content="ko_KR"><meta property="og:title" content="EUV 리소그래피 정리 — 3. 포토 공정 (Photo) | 반도체 새김"><meta property="og:description" content="EUV 리소그래피는 반도체 소자의 집적도를 높이는 데 필수적이다. 반도체 기술의 발전은 트랜지스터의 크기를 줄이고 성능을 향상시키는 데 기여하며, 이는 모바일 기기, 컴퓨터, IoT 등 다양한 분야에서의 혁신을…"><meta name="twitter:card" content="summary"><meta property="og:url" content="https://sssemimaster.github.io/semicbt/theory/th-8fee3eb5/">
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -262,6 +267,7 @@
         document.head.appendChild(s);
       };
       document.write('<link rel="stylesheet" href="' + base + 'tw.css" onerror="__twFallback()">');
+      document.write('<link rel="manifest" href="' + base + 'manifest.webmanifest"><link rel="apple-touch-icon" href="' + base + 'icons/apple-touch-icon.png">');
     })();
   </script>
 <style id="careersCss">
@@ -338,6 +344,121 @@ html.dark .cs-frame{
 .cj-n{flex:none;width:1.5rem;height:1.5rem;margin-top:.22rem;border-radius:999px;background:var(--badge-bg);color:var(--badge-fg);font-size:.72rem;font-weight:800;display:flex;align-items:center;justify-content:center}
 #cDetail .custom-highlight-box{margin:0;font-size:1rem;line-height:1.75;border-radius:16px;border-left-width:5px}
 </style>
+<style id="mobileCss">
+/* ===== 📱 모바일 전용 (767px 이하) =====
+   이 블록은 좁은 화면에서만 적용된다. 768px 이상(태블릿·PC)의 화면은 이 블록 때문에 달라지지 않는다. */
+#mTabs { display: none; }
+.m-toc { display: none; }
+@media (max-width: 767px) {
+  body { padding-bottom: calc(60px + env(safe-area-inset-bottom)); }
+  body[data-view="view-quiz"], body[data-view="view-interview"], body[data-view="view-exam"] { padding-bottom: 0; }
+  main.flex-1 { padding-top: .9rem; padding-bottom: .5rem; }
+  header .app-bar { height: 52px; }
+  header.sticky { padding-top: env(safe-area-inset-top); }
+  body > footer.border-t { margin-top: 1rem; }
+  body > footer .py-8 { padding-top: 1.25rem; padding-bottom: 1.25rem; }
+  #returnBtn { bottom: calc(72px + env(safe-area-inset-bottom)); }
+  #cBuilding, #cDetail, .cj-h { scroll-margin-top: 64px; }
+
+  /* --- 하단 탭 바 --- */
+  #mTabs { position: fixed; left: 0; right: 0; bottom: 0; z-index: 35; display: flex; height: calc(56px + env(safe-area-inset-bottom)); padding-bottom: env(safe-area-inset-bottom);
+    background: rgba(255,255,255,.97); border-top: 1px solid #e2e8f0; }
+  html.dark #mTabs { background: rgba(10,16,32,.97); border-top-color: rgba(255,255,255,.1); }
+  body[data-view="view-quiz"] #mTabs, body[data-view="view-interview"] #mTabs, body[data-view="view-exam"] #mTabs { display: none; }
+  .mt-btn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; font-size: 10.5px; font-weight: 700; color: #64748b; -webkit-tap-highlight-color: transparent; }
+  .mt-btn svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .mt-btn.active { color: #4f46e5; }
+  html.dark .mt-btn { color: #94a3b8; } html.dark .mt-btn.active { color: #67e8f9; }
+
+  /* --- 홈: 줄이고 순서 바꾸기 --- */
+  #view-lobby { gap: 1rem; }
+  #view-lobby > section:first-of-type { gap: .75rem; }
+  #view-lobby #homeSummary { display: none; }
+  #view-lobby > section:first-of-type h2 { font-size: 22px; }
+  #view-lobby > .grid { display: contents; }                 /* 과목 + 웨이퍼 묶음을 풀어서 각각 순서를 준다 */
+  #view-lobby > section:nth-of-type(1) { order: 1; }          /* 인사·검색 */
+  #view-lobby > .grid > section:first-child { order: 2; }     /* 과목별 학습 */
+  #view-lobby > section:nth-of-type(2) { order: 3; }          /* 학습 방식 카드 */
+  #view-lobby > section:nth-of-type(3) { order: 4; }          /* 직무 지도 */
+  #view-lobby > .grid > section:last-child { order: 5; }      /* 웨이퍼 키우기 */
+  #view-lobby h3 { font-size: 16px; }
+  #view-lobby section > .mb-4 > span { display: none; }
+  #homeSubjects { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: #e2e8f0; }
+  html.dark #homeSubjects { background: rgba(255,255,255,.09); }
+  #homeSubjects > div { background: #fff; padding: .8rem .75rem; gap: .6rem; border-top-width: 0 !important; }
+  html.dark #homeSubjects > div { background: #0f1729; }
+  #homeSubjects > div > .min-w-0 > div:first-child { flex-direction: column; align-items: flex-start; gap: 1px; }
+  #homeSubjects h4 { font-size: 15px; letter-spacing: -.03em; }
+  #homeSubjects > div > .min-w-0 > div:last-child { flex-direction: column; align-items: stretch; gap: 4px; margin-top: .5rem; }
+  #homeSubjects > div > .min-w-0 > div:last-child > div { flex: none; width: 100%; }
+  #homeSubjects > div > .min-w-0 > div:last-child > span { font-size: 11px; text-align: left; white-space: normal; }
+  #homeSubjects > div > .flex { width: 100%; gap: .4rem; }
+  #homeSubjects button { flex: 1; padding: 0 !important; height: 34px !important; font-size: 12.5px !important; }
+  #view-lobby .stagger { grid-template-columns: 1fr 1fr; gap: .625rem; }
+  #view-lobby .feature-card { padding: .85rem; border-radius: 1rem; }
+  #view-lobby .feature-card .w-11 { width: 2.25rem; height: 2.25rem; margin-bottom: .55rem; }
+  #view-lobby .feature-card h4 { font-size: 15px; }
+  #view-lobby .feature-card p { font-size: 12px; line-height: 1.45; margin-top: .2rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  #view-lobby .stagger .feature-card > span.inline-block { display: none; }
+  #view-lobby .stagger .feature-card > span.absolute { top: .6rem; right: .6rem; }
+  .wf-body { display: flex; align-items: center; gap: 14px; }
+  .wf-svg { flex: none; width: 112px; margin: 0 !important; }
+  .wf-info { flex: 1; min-width: 0; }
+  .wf-info .wf-step, .wf-legend, .wf-info p.text-\[10px\] { display: none; }
+  #waferPanel > div { padding: 1rem; }
+
+  /* --- 이론 목록·읽기 --- */
+  #view-learning > .back-link, #view-careers > .back-link { margin-bottom: .6rem; }
+  #view-learning > .mb-6 { margin-bottom: .9rem; }
+  #view-learning > .mb-6 .mb-5 { margin-bottom: 0; }
+  #view-learning > .mb-6 p.text-sm { display: none; }
+  body:not([data-lvl="home"]) #view-learning > .mb-6 { display: none; }
+  #breadcrumbContainer { flex-wrap: nowrap; overflow-x: auto; white-space: nowrap; padding: .55rem .8rem; margin-bottom: .9rem; scrollbar-width: none; }
+  #learningContainer.grid { gap: .5rem; }
+  #learningContainer > button { padding: .7rem .85rem; gap: .75rem; border-radius: 1rem; }
+  #learningContainer > button > span:first-child { width: 2.5rem; height: 2.5rem; font-size: 1.2rem; border-radius: .75rem; margin-right: 0; }
+  #learningContainer > button h3 { font-size: 15.5px; }
+  #learningContainer.space-y-3 > button { align-items: flex-start; }
+  #learningContainer.space-y-3 > button > span:first-child { margin-right: .75rem; width: auto; height: auto; border: 0; }
+  #view-learning > button.mt-10 { margin-top: 1.25rem; padding: .8rem 1rem; }
+  /* 이론 본문: 화면 폭을 꽉 쓰는 읽기 화면 */
+  #learningContainer > div.rounded-2xl { margin-left: -1rem; margin-right: -1rem; border-radius: 0; border-left-width: 0; border-right-width: 0; box-shadow: none; }
+  #learningContainer > div.rounded-2xl > .p-6 { padding: 1.1rem 1.1rem 1.25rem; }
+  #learningContainer > div.rounded-2xl > .bg-slate-50 { padding: 1rem 1.1rem; }
+  #learningContainer .page-title { font-size: 1.45rem; }
+  #learningContainer .page-title + div { margin-bottom: .9rem; padding-bottom: .9rem; }
+  .theory-body { font-size: 1rem; line-height: 1.82; }
+  .custom-badge-heading { display: block; margin-top: 1.9rem; margin-bottom: .7rem; font-size: 1.18rem; line-height: 1.4; }
+  .custom-badge { display: flex; width: fit-content; margin-bottom: .4rem; font-size: .7rem; padding: 3px 9px; }
+  .custom-highlight-box { font-size: .95rem; }
+  #learningContainer .grid.grid-cols-1 { grid-template-columns: 1fr 1fr; gap: .5rem; }
+  #learningContainer .grid.grid-cols-1 > button { flex-direction: column; gap: .15rem; padding: .75rem .4rem; font-size: 12.5px; line-height: 1.3; text-align: center; }
+  #learningContainer .grid.grid-cols-1 > button .text-lg { font-size: 1.1rem; }
+  .m-toc { display: flex; gap: 6px; overflow-x: auto; margin: 0 -1.1rem 1.1rem; padding: 0 1.1rem 4px; scrollbar-width: none; }
+  .m-toc::-webkit-scrollbar { display: none; }
+  .m-toc button { flex: none; white-space: nowrap; font-size: 12px; font-weight: 700; padding: 6px 11px; border-radius: 999px; background: var(--badge-bg); color: var(--badge-fg); }
+  .theory-body .custom-badge-heading { scroll-margin-top: 64px; }
+  .m-toc + .theory-body > .custom-badge-heading:first-child { margin-top: .4rem; }
+
+  /* --- 직무 --- */
+  #view-careers > .mb-5 { margin-bottom: .8rem; }
+  #view-careers > .mb-5 > p.text-sm { display: none; }
+  #view-careers .page-title { font-size: 1.45rem; }
+  #view-careers > .rounded-2xl.p-4 { padding: .85rem; margin-bottom: .75rem; }
+  #view-careers > .rounded-2xl.p-4 > div:first-child > span.text-xs { display: none; }
+  #cTypes, #cBldChips { flex-wrap: nowrap; overflow-x: auto; margin-left: -.85rem; margin-right: -.85rem; padding: 0 .85rem 4px; scrollbar-width: none; }
+  #cBldChips { margin-left: -1rem; margin-right: -1rem; padding: 0 1rem 4px; }
+  #cTypes::-webkit-scrollbar, #cBldChips::-webkit-scrollbar { display: none; }
+  #cTypes > *, #cBldChips > * { flex: none; white-space: nowrap; }
+  #cBlurb { font-size: 13px; padding: .55rem .8rem; }
+  #view-careers p.text-xs.mt-2 { display: none; }
+  #view-careers .flex-wrap.gap-x-5 { gap: .3rem .9rem; font-size: 11px; margin-top: .5rem; }
+  #view-careers p.font-bold.mt-5 { margin-top: .9rem; }
+  #view-careers p.font-bold.mt-5 > span { display: none; }
+  #view-careers .grid.mt-5 { margin-top: .9rem; gap: .75rem; }
+  #cBuilding, #cJobs { padding: .95rem; }
+}
+</style>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "EUV 리소그래피", "description": "EUV 리소그래피는 반도체 소자의 집적도를 높이는 데 필수적이다. 반도체 기술의 발전은 트랜지스터의 크기를 줄이고 성능을 향상시키는 데 기여하며, 이는 모바일 기기, 컴퓨터, IoT 등 다양한 분야에서의 혁신을…", "inLanguage": "ko", "articleSection": "반도체 8대 공정", "dateModified": "2026-11-12", "publisher": {"@type": "Organization", "name": "반도체 새김"}, "mainEntityOfPage": "https://sssemimaster.github.io/semicbt/theory/th-8fee3eb5/"}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "반도체 새김", "item": "https://sssemimaster.github.io/semicbt/"}, {"@type": "ListItem", "position": 2, "name": "이론 백과사전", "item": "https://sssemimaster.github.io/semicbt/theory/"}, {"@type": "ListItem", "position": 3, "name": "EUV 리소그래피"}]}</script></head>
 <body class="bg-slate-50 dark:bg-[#0a1020] text-slate-800 dark:text-slate-200 antialiased min-h-screen flex flex-col relative transition-colors duration-200">
 
@@ -357,6 +478,7 @@ html.dark .cs-frame{
       <button onclick="navTo('view-careers'); toggleSidebar()" class="w-full text-left p-4 rounded-xl hover:bg-emerald-50 dark:hover:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 font-bold flex items-center gap-3"><span class="text-xl">💼</span> 직무 지도</button>
       <button onclick="navTo('view-note'); toggleSidebar()" class="w-full text-left p-4 rounded-xl hover:bg-amber-50 dark:hover:bg-amber-900/20 text-amber-700 dark:text-amber-400 font-bold flex items-center gap-3"><span class="text-xl">📒</span> 오답 노트</button>
       <button onclick="navTo('view-stats'); toggleSidebar()" class="w-full text-left p-4 rounded-xl hover:bg-sky-50 dark:hover:bg-sky-900/20 text-sky-700 dark:text-sky-400 font-bold flex items-center gap-3"><span class="text-xl">📊</span> 내 학습 통계</button>
+      <button id="pwaInstall" onclick="installApp(); toggleSidebar()" class="hidden w-full text-left p-4 rounded-xl hover:bg-indigo-50 dark:hover:bg-indigo-900/20 text-indigo-700 dark:text-indigo-300 font-bold flex items-center gap-3"><span class="text-xl">📲</span> 앱으로 설치하기</button>
     </div>
   </div>
 
@@ -767,6 +889,16 @@ html.dark .cs-frame{
     </div>
   </footer>
 
+  <!-- 📱 모바일 하단 탭 바 (767px 이하에서만 보임) -->
+  <nav id="mTabs" aria-label="하단 메뉴">
+    <button data-nav="home" onclick="navTo('view-lobby')" class="mt-btn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8M5 10v10h14V10M10 20v-6h4v6"/></svg>홈</button>
+    <button data-nav="theory" onclick="navTo('view-learning', {level:'home'})" class="mt-btn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 5.5C4 4 8 4 12 6c4-2 8-2 10-.5V19c-2-1.5-6-1.5-10 .5-4-2-8-2-10-.5z"/><path d="M12 6v13.5"/></svg>이론</button>
+    <button data-nav="quiz" onclick="openSetup('quiz')" class="mt-btn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>문제</button>
+    <button data-nav="interview" onclick="openSetup('interview')" class="mt-btn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.5 7.2L4 20l1-4.4A8 8 0 1 1 21 12z"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01" stroke-width="2.6"/></svg>면접</button>
+    <button data-nav="careers" onclick="navTo('view-careers')" class="mt-btn"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M3 13h18"/></svg>직무</button>
+  </nav>
+
+
   <script>
     function toggleTheme() { document.documentElement.classList.toggle('dark'); localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light'); document.getElementById('themeToggleBtn').innerText = document.documentElement.classList.contains('dark') ? '☀️' : '🌙';  if (currentViewId === 'view-lobby') renderHome(); }
     window.addEventListener('DOMContentLoaded', () => { document.getElementById('themeToggleBtn').innerText = document.documentElement.classList.contains('dark') ? '☀️' : '🌙'; });
@@ -831,6 +963,14 @@ html.dark .cs-frame{
       } catch (e) { return './'; }
     })();
     const APP_BASE = ROOT;
+    // 📲 앱처럼 설치(PWA): 서비스 워커로 한 번 열어 본 화면과 문제 데이터를 저장해 두어 오프라인에서도 열린다.
+    if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+      window.addEventListener('load', () => { navigator.serviceWorker.register(ROOT + 'sw.js').catch(() => {}); });
+    }
+    let installEvt = null;
+    window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); installEvt = e; const b = document.getElementById('pwaInstall'); if (b) b.classList.remove('hidden'); });
+    window.addEventListener('appinstalled', () => { installEvt = null; const b = document.getElementById('pwaInstall'); if (b) b.classList.add('hidden'); });
+    function installApp() { if (!installEvt) return; installEvt.prompt(); installEvt.userChoice.finally(() => { installEvt = null; const b = document.getElementById('pwaInstall'); if (b) b.classList.add('hidden'); }); }
     let theoryPages = {};   // 이론 id -> 정적 페이지 주소 조각 (data/theory_pages.json). 이론을 읽는 동안 주소창이 그 이론의 고유 주소가 된다.
     function urlForState() {
       try {
@@ -1696,7 +1836,18 @@ html.dark .cs-frame{
       container.appendChild(card);
       appendTheoryCareers(t, card);
       hydrateDiagrams(card);
+      buildMobileToc(card);
       applyMathRendering();
+    }
+    // 📱 긴 이론을 폰에서 한 번에 훑고 건너뛰도록, 소제목 칩을 맨 위에 둔다 (좁은 화면에서만 보임)
+    function buildMobileToc(card) {
+      try {
+        const body = card.querySelector('.theory-body'); if (!body || card.querySelector('.m-toc')) return;
+        const hs = [...body.querySelectorAll('.custom-badge-heading')]; if (hs.length < 3) return;
+        const bar = document.createElement('div'); bar.className = 'm-toc'; bar.setAttribute('aria-label', '이 글의 목차');
+        hs.forEach((h) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = h.textContent.replace(h.querySelector('.custom-badge')?.textContent || '', '').trim() || '목차'; b.onclick = () => h.scrollIntoView({ behavior: 'smooth', block: 'start' }); bar.appendChild(b); });
+        body.parentNode.insertBefore(bar, body);
+      } catch (e) {}
     }
 
     // 이론과 관련된 문제/면접 문항 찾기
@@ -2226,6 +2377,7 @@ html.dark .cs-frame{
     function updateNav() {
       const v = currentViewId, map = { 'view-lobby': 'home', 'view-learning': 'theory', 'view-quiz': 'quiz', 'view-result': 'quiz', 'view-interview': 'interview', 'view-exam': 'exam', 'view-note': 'note', 'view-stats': 'stats', 'view-careers': 'careers', 'view-setup': currentMode === 'interview' ? 'interview' : (document.getElementById('examToggle') && document.getElementById('examToggle').checked ? 'exam' : 'quiz') };
       document.querySelectorAll('[data-nav]').forEach(b => b.classList.toggle('active', b.dataset.nav === map[v]));
+      document.body.dataset.view = v; document.body.dataset.lvl = learnState.level;   // 모바일 화면 조정용 (하단 탭 숨김, 이론 머리글 숨김)
     }
     function renderHome() {
       const el = (id) => document.getElementById(id); if (!el('homeSubjects')) return;
