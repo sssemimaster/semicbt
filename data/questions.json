@@ -1,5 +1,22 @@
 [
   {
+    "id": "Q-ecff5690",
+    "category": "차세대 첨단 기술",
+    "topic": "High-k/Metal Gate",
+    "theory_id": "TH-7de81ff2",
+    "difficulty": "기초",
+    "type": "concept",
+    "question": "High-k/Metal Gate 기술의 주요 구성 요소는 무엇인가?",
+    "options": [
+      "폴리실리콘과 산소로 구성된다.",
+      "High-k 물질과 금속 게이트로 구성된다.",
+      "금속과 유기물로 구성된다.",
+      "실리콘 산화막과 폴리실리콘으로 구성된다."
+    ],
+    "answer": 1,
+    "explanation": "정답 해설\nHigh-k/Metal Gate 기술은 두 가지 주요 성분, 즉 높은 유전율을 가진 High-k 물질과 전극을 형성하는 금속 게이트로 구성된다. 이러한 조합은 소자 성능을 향상시키기 위해 설계되었다.\n\n오답 체크\n· 1번: 이 보기는 잘못된 조합이며, 폴리실리콘은 High-k/Metal Gate의 구성 요소가 아니다.\n· 3번: High-k/Metal Gate 기술에는 유기물이 포함되지 않으며, 물질이 다르다.\n· 4번: 전통적인 MOSFET 소자는 SiO₂와 폴리실리콘으로 되어 있지만, High-k/Metal Gate는 다른 기술이다.\n\n💡 기억 포인트: High-k/Metal Gate는 High-k 물질과 금속 게이트로 이루어진다."
+  },
+  {
     "id": "Q-f59d1730",
     "category": "반도체 8대 공정",
     "topic": "식각 선택비",
