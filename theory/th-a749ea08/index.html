@@ -94,7 +94,7 @@
     .float-slow { animation: drift 14s ease-in-out infinite; } .float-slower { animation: drift 19s ease-in-out infinite reverse; }
     .prism-text { background-size: 200% 100% !important; animation: shimmer 7s linear 2; background-image: linear-gradient(90deg, #0891b2, #6366f1 25%, #c026d3 50%, #6366f1 75%, #0891b2) !important; }
     html.dark .prism-text { background-image: linear-gradient(90deg, #67e8f9, #a78bfa 25%, #f472b6 50%, #a78bfa 75%, #67e8f9) !important; }
-    .wafer-sheen { animation: sheen 7s ease-in-out 2; }
+    .wafer-sheen { transform: translateX(-260px) rotate(24deg); animation: sheen 7s ease-in-out 2 forwards; }
     .opt.opt-correct { animation: pop .4s ease; } .opt.opt-wrong { animation: shake .45s ease; }
     .pbtn:active:not(:disabled), .opt:active:not(:disabled), .feature-card:active, .chip:active { transform: scale(.98); }
     .chip { transition: border-color .15s, background-color .15s, transform .12s, box-shadow .15s, color .15s; }
@@ -139,7 +139,7 @@
     /* 날짜별 기록 · 새기는 연출 */
     .wf-open { cursor: pointer; border-radius: 50%; -webkit-tap-highlight-color: transparent; transition: transform .2s; }
     .wf-open:hover { transform: scale(1.02); } .wf-open:focus-visible { outline: 2px solid #6366f1; outline-offset: 3px; }
-    .wf-stages { display: flex; justify-content: space-between; gap: .4rem; } .wf-stages span { display: inline-flex; align-items: center; gap: .35rem; color: #94a3b8; } .wf-stages i { width: 8px; height: 8px; border-radius: 50%; background: #cbd5e1; } html.dark .wf-stages i { background: #334155; }
+    .wf-stages { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .2rem .5rem; } .wf-stages b { font-weight: inherit; } .wf-stages em { font-style: normal; white-space: pre; } .wf-stages span { display: inline-flex; white-space: nowrap; align-items: center; gap: .35rem; color: #94a3b8; } .wf-stages i { width: 8px; height: 8px; border-radius: 50%; background: #cbd5e1; } html.dark .wf-stages i { background: #334155; }
     .wf-stages .on { color: #64748b; } .wf-stages .on i { background: #6366f1; } html.dark .wf-stages .on i { background: #67e8f9; } .wf-stages .cur { color: #0f172a; font-weight: 700; } html.dark .wf-stages .cur { color: #e2e8f0; } .wf-stages .cur i { box-shadow: 0 0 0 3px rgba(99,102,241,.25); background: #6366f1; } html.dark .wf-stages .cur i { background: #67e8f9; box-shadow: 0 0 0 3px rgba(103,232,249,.2); }
     .wf-pop { transform-box: fill-box; transform-origin: center; animation: wfPkg 1.6s cubic-bezier(.2,.8,.2,1) both; } @keyframes wfPkg { 0% { opacity: 0; transform: scale(.92); } 100% { opacity: 1; transform: none; } }
     .wf-nodes { display: flex; align-items: center; justify-content: space-between; position: relative; padding: 0 2px; }
@@ -481,7 +481,7 @@ html.dark .cs-frame{
   #view-lobby .stagger .feature-card > span.inline-block { display: none; }
   #view-lobby .stagger .feature-card > span.absolute { top: .6rem; right: .6rem; }
   .wf-body { display: flex; align-items: center; gap: 14px; }
-  .wf-svg { flex: none; width: 112px; margin: 0 !important; }
+  .wf-svg { flex: none; width: 128px; margin: 0 !important; } .wf-st-w { display: none; }
   .wf-info { flex: 1; min-width: 0; }
   .wf-info .wf-step, .wf-info p.text-\[10px\] { display: none; } .wf-legend { margin-top: .5rem !important; } .wf-cats { display: none !important; }
   #waferPanel > div { padding: 1rem; }
@@ -2492,6 +2492,7 @@ $$</p>
       const btn = doneToday ? `<button disabled class="w-full font-bold py-3 rounded-xl bg-slate-100 text-slate-500 dark:bg-white/10 dark:text-slate-300 cursor-default">✅ 오늘의 회로를 새겼어요</button>`
         : ready ? `<button onclick="attendToday()" class="w-full pbtn font-bold py-3 rounded-xl shadow-lg hover:opacity-90 transition">✨ 오늘의 회로 새기기</button>`
         : `<button disabled class="w-full font-bold py-3 rounded-xl bg-slate-100 text-slate-400 dark:bg-white/10 cursor-not-allowed">학습 완료 후 출석 기록하기 (${pts}/${DAILY_GOAL})</button>`;
+      const stages = STAGES.map((st, i) => `<span class="${i < info.level - 1 ? 'on' : i === info.level - 1 ? 'cur' : ''}"><i></i><b>${st[1].replace(' 웨이퍼', '')}<em class="wf-st-w"> 웨이퍼</em></b></span>`).join('');
       panel.innerHTML = `<div class="rounded-2xl bg-white/80 border border-slate-200 shadow-sm dark:shadow-none dark:bg-white/[.04] dark:border-white/10 p-5 sm:p-6 h-full flex flex-col">
         <div class="flex justify-between items-start gap-3">
           <div><p class="font-mono text-[10px] tracking-[.22em] text-indigo-500 dark:text-cyan-200/70 font-bold">THIS MONTH · WAFER #${info.m + 1}</p><p class="text-sm font-bold mt-1">PATTERN LEVEL ${pad2(info.level)} <span class="text-slate-400 font-medium">· ${info.name[1]}</span></p></div>
@@ -2505,6 +2506,7 @@ $$</p>
         <div class="mt-2 mb-4"><div class="flex justify-between text-[11px] text-slate-600 dark:text-slate-300 mb-1"><span>오늘의 학습</span><span>${pts} / ${DAILY_GOAL}</span></div><div class="h-1.5 rounded-full bg-slate-200 dark:bg-white/10 overflow-hidden"><div class="h-full rounded-full pbtn" style="width:${pts / DAILY_GOAL * 100}%"></div></div>
           <p class="text-[10px] text-slate-500 mt-1.5">문제 1개 +1 · 면접 문항 확인 +1 · 이론 1개 읽기 +2</p></div>
         ${btn}
+        <div class="wf-legend mt-3 text-[10px] text-slate-400"><div class="wf-stages" aria-label="패턴 레벨 3단계">${stages}</div></div>
         </div></div></div></div>`;
     }
 
