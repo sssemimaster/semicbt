@@ -77,6 +77,7 @@ def render_markdown(src):
         stash.append(m.group(0))
         return f"@@MATH{len(stash) - 1}@@"
 
+    src = re.sub(r"<(?=[A-Za-z/!?])", "&lt;", src)   # 글에 섞인 HTML 태그는 글자로만 보이게 막는다 (아래에서 사이트가 만드는 태그는 영향 없음)
     t = re.sub(r"\$\$[\s\S]+?\$\$", hold, src)
     t = re.sub(r"\$[^$\n]+?\$", hold, t)
     t = re.sub(r"\*\*([^*\n]+?)\*\*", r"<strong>\1</strong>", t)
