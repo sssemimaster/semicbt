@@ -883,16 +883,16 @@ html.dark .cs-frame{
       <div class="mb-6"><div class="mb-5"><p class="eyebrow mb-1.5">ENCYCLOPEDIA</p><h2 class="page-title text-slate-900 dark:text-white">이론 백과사전</h2><p class="text-sm text-slate-500 dark:text-slate-400 mt-1.5">소자부터 공정, 첨단 기술까지 폴더별로 정리했어요.</p></div></div>
       <input type="text" id="theorySearchInput" class="hidden" onkeyup="handleTheorySearch()">
       <div id="breadcrumbContainer" class="bg-indigo-50/70 dark:bg-[#0f2233] rounded-xl border border-indigo-100 dark:border-white/10 px-4 py-3 mb-6 flex flex-wrap items-center gap-y-2 text-sm hidden"></div>
-      <div id="learningContainer" class="flex flex-col space-y-4"><div class="bg-white dark:bg-[#0f1729] rounded-2xl shadow-sm border border-slate-200 dark:border-white/10 overflow-hidden"><div class="p-6 md:p-8"><p class="eyebrow mb-2">차세대 첨단 기술 <span class="opacity-50">/</span> 어드밴스드 패키징 <span class="opacity-50">·</span> 약 5분 읽기</p><h1 class="page-title text-slate-900 dark:text-white mb-3">HBM 구조</h1><div class="flex flex-wrap gap-1.5 mb-6 pb-6 border-b border-slate-100 dark:border-white/10"><span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#HBM구조</span><span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#핵심이론</span></div><div class="custom-table-container theory-body prose prose-slate dark:prose-invert max-w-none"><div class="custom-badge-heading"><span class="custom-badge">📘 핵심 개념</span>연산이 빨라져도 메모리 통로가 좁으면 연산기가 기다린다</div>
+      <div id="learningContainer" class="flex flex-col space-y-4"><div class="bg-white dark:bg-[#0f1729] rounded-2xl shadow-sm border border-slate-200 dark:border-white/10 overflow-hidden"><div class="p-6 md:p-8"><p class="eyebrow mb-2">차세대 첨단 기술 <span class="opacity-50">/</span> 어드밴스드 패키징 <span class="opacity-50">·</span> 약 5분 읽기</p><h1 class="page-title text-slate-900 dark:text-white mb-3">HBM 구조</h1><div class="flex flex-wrap gap-1.5 mb-6 pb-6 border-b border-slate-100 dark:border-white/10"><span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#HBM구조</span><span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#핵심이론</span></div><div class="custom-table-container theory-body prose prose-slate dark:prose-invert max-w-none"><div class="custom-badge-heading"><span class="custom-badge">📘 핵심 개념</span>메모리 대역폭 병목</div>
 
 <p>AI 가속기 같은 프로세서는 연산 능력이 빠르게 늘었지만, 메모리에서 데이터를 가져오는 속도(대역폭)가 따라가지 못하면 연산기가 데이터를 기다리며 놀게 된다. 일반 DRAM 모듈(DDR)은 한 번에 보내는 신호선이 64개로 적어서, 대역폭을 늘리려면 신호선 하나의 속도를 계속 올려야 한다. 게다가 데이터는 기판 위의 긴 배선을 지나야 한다. HBM은 속도보다 통로의 폭을 넓히는 쪽으로 이 문제를 푼다.</p>
-<div class="custom-badge-heading"><span class="custom-badge">📘 정의</span>HBM은 DRAM을 쌓아 TSV로 잇고 넓은 통로로 프로세서에 붙인 메모리이다</div>
+<div class="custom-badge-heading"><span class="custom-badge">📘 정의</span>HBM의 정의</div>
 
 <p><strong>HBM</strong>(High Bandwidth Memory)은 DRAM 다이를 수직으로 쌓고 실리콘 관통 비아(TSV)로 서로 연결한 고대역폭 메모리이다. 스택 하나가 1024비트의 입출력을 가지며(HBM4는 2048비트), 프로세서와 같은 실리콘 인터포저 위에 나란히 올라가 수 mm 안팎의 짧은 배선으로 연결된다. 다이를 위로 쌓는 3D 구조와 인터포저로 옆의 프로세서에 잇는 2.5D 구조가 함께 쓰인다.</p>
-<div class="custom-badge-heading"><span class="custom-badge">📘 핵심 개념</span>직관적 이해: 차선을 늘린다</div>
+<div class="custom-badge-heading"><span class="custom-badge">📘 핵심 개념</span>직관적 이해: 차선 늘리기</div>
 
 <p>DDR이 좁은 도로에서 차의 속도를 올려 더 많이 보내는 방식이라면, HBM은 차선을 크게 늘려서 속도는 비슷해도 한꺼번에 많이 보내는 방식이다. 다만 이 비유는 차선을 늘리는 데 필요한 배선 수, 신호 품질, 발열 같은 비용까지는 보여 주지 못한다.</p>
-<div class="custom-badge-heading"><span class="custom-badge">🔬 구조</span>아래에서 위로 보는 HBM 스택</div>
+<div class="custom-badge-heading"><span class="custom-badge">🔬 구조</span>HBM 스택 구조</div>
 
 <p>HBM 패키지는 아래에서 위로 다음과 같이 쌓인다.</p>
 <ul>
@@ -905,11 +905,11 @@ html.dark .cs-frame{
 
 <div class="custom-highlight-box">[면접 팁] HBM을 설명할 때 '스택 구조(베이스 다이, 코어 다이, TSV)'와 '패키지 구조(인터포저 위에 프로세서와 나란히)'를 구분해서 말하면 3D와 2.5D가 섞여 있다는 점이 잘 전달된다.</div>
 
-<div class="custom-badge-heading"><span class="custom-badge">✏️ 수식</span>대역폭은 입출력 폭과 핀당 속도의 곱이다</div>
+<div class="custom-badge-heading"><span class="custom-badge">✏️ 수식</span>대역폭 계산</div>
 
 <p>$$\text{대역폭 (GB/s)} = \frac{\text{입출력 폭 (bit)} \times \text{핀당 속도 (Gbps)}}{8}$$</p>
 <p>같은 핀당 속도 6.4 Gbps라면 64비트 DDR5-6400 모듈은 $64 \times 6.4 \div 8 = 51.2$ GB/s이고, 1024비트 HBM3 스택은 $1024 \times 6.4 \div 8 = 819.2$ GB/s이다. 폭이 16배 넓어서 대역폭도 16배가 된다. 폭이 넓으면 핀당 속도를 무리하게 올리지 않아도 되고, 배선이 짧아 비트당 전송 에너지도 줄일 수 있다.</p>
-<div class="custom-badge-heading"><span class="custom-badge">🎚️ 변수 영향</span>세대가 올라갈 때 달라지는 값</div>
+<div class="custom-badge-heading"><span class="custom-badge">🎚️ 변수 영향</span>세대별 변화</div>
 
 <div class="table-wrap"><table>
 <thead>
@@ -954,7 +954,7 @@ html.dark .cs-frame{
 <li><strong>높이 제한</strong>: 패키지 두께 한도(대략 0.7~0.8 mm 수준) 안에 단수를 늘려야 하므로 다이를 더 얇게 갈고 다이 사이 접합 간격을 줄여야 한다. 얇은 다이는 휘거나 깨지기 쉽다.</li>
 </ul>
 <p>적층과 충진 방식은 제조사마다 다르다. 열압착으로 한 장씩 접합하며 접합부 사이를 비전도성 필름(NCF)으로 채우는 <strong>TC-NCF</strong>, 다이를 쌓고 한꺼번에 리플로로 접합한 뒤 몰딩 소재로 틈을 채우는 <strong>MR-MUF</strong>가 알려져 있다.</p>
-<div class="custom-badge-heading"><span class="custom-badge">✏️ 개선 방법</span>수율과 방열을 함께 잡는 방향</div>
+<div class="custom-badge-heading"><span class="custom-badge">✏️ 개선 방법</span>수율과 방열 개선</div>
 
 <ul>
 <li><strong>양품 다이 선별(KGD)</strong>: 쌓기 전에 다이를 미리 테스트해서 양품만 적층한다.</li>

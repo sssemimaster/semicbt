@@ -883,21 +883,21 @@ html.dark .cs-frame{
       <div class="mb-6"><div class="mb-5"><p class="eyebrow mb-1.5">ENCYCLOPEDIA</p><h2 class="page-title text-slate-900 dark:text-white">이론 백과사전</h2><p class="text-sm text-slate-500 dark:text-slate-400 mt-1.5">소자부터 공정, 첨단 기술까지 폴더별로 정리했어요.</p></div></div>
       <input type="text" id="theorySearchInput" class="hidden" onkeyup="handleTheorySearch()">
       <div id="breadcrumbContainer" class="bg-indigo-50/70 dark:bg-[#0f2233] rounded-xl border border-indigo-100 dark:border-white/10 px-4 py-3 mb-6 flex flex-wrap items-center gap-y-2 text-sm hidden"></div>
-      <div id="learningContainer" class="flex flex-col space-y-4"><div class="bg-white dark:bg-[#0f1729] rounded-2xl shadow-sm border border-slate-200 dark:border-white/10 overflow-hidden"><div class="p-6 md:p-8"><p class="eyebrow mb-2">반도체 8대 공정 <span class="opacity-50">/</span> 4. 식각 공정 (Etching) <span class="opacity-50">·</span> 약 6분 읽기</p><h1 class="page-title text-slate-900 dark:text-white mb-3">식각 선택비</h1><div class="flex flex-wrap gap-1.5 mb-6 pb-6 border-b border-slate-100 dark:border-white/10"><span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#식각선택비</span><span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#핵심이론</span></div><div class="custom-table-container theory-body prose prose-slate dark:prose-invert max-w-none"><div class="custom-badge-heading"><span class="custom-badge">📘 정의</span>선택비는 지켜야 할 막이 얼마나 덜 깎이는지를 나타낸다</div>
+      <div id="learningContainer" class="flex flex-col space-y-4"><div class="bg-white dark:bg-[#0f1729] rounded-2xl shadow-sm border border-slate-200 dark:border-white/10 overflow-hidden"><div class="p-6 md:p-8"><p class="eyebrow mb-2">반도체 8대 공정 <span class="opacity-50">/</span> 4. 식각 공정 (Etching) <span class="opacity-50">·</span> 약 6분 읽기</p><h1 class="page-title text-slate-900 dark:text-white mb-3">식각 선택비</h1><div class="flex flex-wrap gap-1.5 mb-6 pb-6 border-b border-slate-100 dark:border-white/10"><span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#식각선택비</span><span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#핵심이론</span></div><div class="custom-table-container theory-body prose prose-slate dark:prose-invert max-w-none"><div class="custom-badge-heading"><span class="custom-badge">📘 정의</span>선택비의 정의</div>
 
 <p>식각에서는 깎을 막만 없애고 나머지는 남겨야 한다. 그러나 식각 가스나 약품은 대상 막만 골라서 깎지 못하고 마스크와 아래층도 조금씩 깎는다. <strong>식각 선택비</strong>(Selectivity)는 깎을 막의 식각 속도가 지킬 막의 식각 속도보다 몇 배 빠른지를 나타내는 값이다. 선택비가 10이면 대상 막이 10만큼 깎이는 동안 지킬 막은 1만큼 깎인다는 뜻이다.</p>
 <p>지킬 막은 두 종류가 있다. 위에서 패턴을 정해 주는 <strong>마스크</strong>(감광막이나 하드마스크)와, 식각이 멈춰야 할 <strong>하부막</strong>이다. 앞의 것을 기준으로 한 값이 마스크 선택비, 뒤의 것을 기준으로 한 값이 하부막 선택비이며, 같은 식각 조건에서도 두 값은 서로 다르다.</p>
-<div class="custom-badge-heading"><span class="custom-badge">📘 핵심 개념</span>선택비가 모자라면 마스크가 먼저 닳거나 아래층이 뚫린다</div>
+<div class="custom-badge-heading"><span class="custom-badge">📘 핵심 개념</span>선택비가 모자랄 때의 문제</div>
 
 <p>식각은 정해진 시간 동안 계속되므로 그동안 마스크도 함께 얇아진다. 마스크가 도중에 없어지면 가려져 있던 부분까지 깎여 패턴이 망가진다. 막 두께는 웨이퍼 위치마다 조금씩 다르기 때문에, 어떤 자리는 먼저 다 깎여 아래층이 드러난 뒤에도 나머지 자리가 끝날 때까지 식각을 이어가야 한다. 이 추가 식각을 <strong>과식각</strong>(Over-etch)이라 하며, 먼저 드러난 하부막은 과식각 동안 계속 깎인다. 하부막 선택비가 낮으면 이 구간에서 아래층이 얇아지거나 뚫려 소자가 불량이 된다.</p>
 <figure class="dg" data-dg="etch-profile" data-cap="식각 방식별 단면과, 선택비가 낮아 마스크와 아래층까지 깎이는 경우"></figure>
 
 <div class="custom-highlight-box">[면접 팁] 선택비를 정의만 말하지 말고 '마스크가 끝까지 버텨야 한다'와 '하부막이 멈춤층 역할을 해야 한다'의 두 가지로 나누어 설명하면 답이 정돈된다.</div>
 
-<div class="custom-badge-heading"><span class="custom-badge">🌱 등장 배경</span>미세화가 선택비의 여유를 줄인다</div>
+<div class="custom-badge-heading"><span class="custom-badge">🌱 등장 배경</span>미세화와 선택비 여유</div>
 
 <p>패턴이 미세해지면 감광막도 얇게 코팅해야 해서 마스크가 버틸 두께가 줄어든다. 반대로 깎아야 할 홈은 폭에 비해 깊어져 식각 시간이 길어진다. 마스크는 얇아지고 식각 시간은 늘어나므로 같은 선택비로는 버티기 어렵고, 그 부담이 하드마스크 도입과 가스 조건의 정밀한 조정으로 이어졌다.</p>
-<div class="custom-badge-heading"><span class="custom-badge">✏️ 측정 방법</span>선택비는 막별 식각 속도를 따로 재서 나눈다</div>
+<div class="custom-badge-heading"><span class="custom-badge">✏️ 측정 방법</span>막별 식각 속도 측정</div>
 
 <p>선택비는 식각 속도의 비이므로 막마다 식각 속도를 먼저 구해야 한다. 보통 패턴이 없는 같은 종류의 막이 입혀진 시험 웨이퍼를 같은 조건으로 같은 시간 동안 식각하고, 식각 전후의 막 두께 차이를 식각 시간으로 나누어 속도를 얻는다. 두께는 엘립소미터나 반사율계 같은 광학 장비로 잰다. 이렇게 구한 두 속도를 나누면 선택비가 된다.</p>
 <p>$$S = \frac{R_{\text{대상}}}{R_{\text{지킬 막}}}$$</p>
@@ -906,7 +906,7 @@ html.dark .cs-frame{
 <li>$R_{\text{지킬 막}}$: 지켜야 할 막(마스크 또는 하부막)의 식각 속도</li>
 </ul>
 <p>이 식으로 필요한 마스크 두께도 가늠할 수 있다. 깊이 $d$만큼 식각하는 동안 마스크가 깎이는 양은 대략 $d/S$이다. 예를 들어 선택비가 10이면 1 µm를 파는 동안 마스크가 약 0.1 µm 줄어든다. 실제 마스크 두께는 이 값에 웨이퍼 위치별 편차와 과식각 몫을 더해서 정한다.</p>
-<div class="custom-badge-heading"><span class="custom-badge">🎚️ 변수 영향</span>선택비는 식각의 화학적 성격이 클수록 높아진다</div>
+<div class="custom-badge-heading"><span class="custom-badge">🎚️ 변수 영향</span>선택비를 좌우하는 조건</div>
 
 <p>식각은 이온이 때려서 깎는 물리적 작용과 라디칼이나 약품이 반응해서 깎는 화학적 작용이 합쳐진 결과이다. 물리적 작용은 막의 종류를 가리지 않고 때리기 때문에 선택비를 낮추고, 화학적 작용은 반응하는 물질이 정해져 있어 선택비를 높인다. 그래서 선택비를 올리는 쪽과 수직한 단면을 만드는 쪽은 조건이 서로 반대로 움직이는 경우가 많다.</p>
 <div class="table-wrap"><table>
@@ -938,12 +938,12 @@ html.dark .cs-frame{
 <p>습식 식각은 화학 반응만으로 깎기 때문에 선택비가 대체로 높다. 불산(HF)은 산화막(SiO₂)을 빠르게 녹이지만 실리콘(Si)은 거의 깎지 않고, 뜨거운 인산(H₃PO₄)은 질화막(Si₃N₄)을 산화막보다 훨씬 빠르게 깎는다.</p>
 <div class="custom-highlight-box">[실무 코멘트] 산화막을 실리콘 위에서 식각할 때는 불소와 탄소를 함께 쓰는 가스를 쓴다. 산화막에서는 막 속의 산소가 폴리머를 태워 없애 식각이 계속되고, 실리콘 위에는 폴리머가 쌓여 식각이 느려지는 차이가 선택비를 만든다.</div>
 
-<div class="custom-badge-heading"><span class="custom-badge">✏️ 흔한 오해</span>선택비가 높다고 좋은 식각은 아니다</div>
+<div class="custom-badge-heading"><span class="custom-badge">✏️ 흔한 오해</span>높은 선택비의 함정</div>
 
 <p>선택비만 높이면 다른 특성이 나빠질 수 있다. 폴리머를 많이 쌓거나 이온 에너지를 낮추어 선택비를 올리면 식각 속도가 느려지고, 홈의 단면이 위아래로 좁아지는 테이퍼 모양이 되거나 홈 바닥에서 식각이 멈추기도 한다. 따라서 선택비는 식각 속도, 단면 모양, 균일도와 함께 균형을 맞춰야 하는 값이다.</p>
 <div class="custom-highlight-box">[흔한 오해] 선택비는 한 번 정해지는 상수가 아니라 막, 가스, 전력 조건에 따라 달라지는 값이다. 같은 막이라도 조건이 바뀌면 선택비도 바뀐다.</div>
 
-<div class="custom-badge-heading"><span class="custom-badge">🛠️ 실무 이슈</span>하드마스크와 종횡비가 선택비 여유를 좌우한다</div>
+<div class="custom-badge-heading"><span class="custom-badge">🛠️ 실무 이슈</span>하드마스크와 종횡비</div>
 
 <p>감광막은 식각 내성이 약하고 미세 패턴에서는 두께도 얇아서, 깊은 식각에서는 버티지 못하는 경우가 많다. 그래서 감광막으로 먼저 하드마스크를 패터닝하고, 하드마스크를 마스크로 아래 막을 깎는다. 하드마스크로는 비정질 탄소막, 질화막, 폴리실리콘 같은 막을 쓴다. 이 막들은 식각 가스에 잘 닳지 않아 마스크 선택비가 높다.</p>
 <p>또 홈이 깊고 좁을수록 바닥으로 이온과 라디칼이 덜 도달해 바닥의 식각 속도가 느려진다. 이를 <strong>종횡비 의존 식각</strong>(ARDE)이라 한다. 폭이 다른 홈 중 넓은 홈이 먼저 뚫리고 좁은 홈은 늦게 뚫리므로 과식각이 길어지고, 그만큼 하부막 선택비에 더 큰 여유가 필요하다.</p>

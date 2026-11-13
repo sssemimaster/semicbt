@@ -883,10 +883,10 @@ html.dark .cs-frame{
       <div class="mb-6"><div class="mb-5"><p class="eyebrow mb-1.5">ENCYCLOPEDIA</p><h2 class="page-title text-slate-900 dark:text-white">이론 백과사전</h2><p class="text-sm text-slate-500 dark:text-slate-400 mt-1.5">소자부터 공정, 첨단 기술까지 폴더별로 정리했어요.</p></div></div>
       <input type="text" id="theorySearchInput" class="hidden" onkeyup="handleTheorySearch()">
       <div id="breadcrumbContainer" class="bg-indigo-50/70 dark:bg-[#0f2233] rounded-xl border border-indigo-100 dark:border-white/10 px-4 py-3 mb-6 flex flex-wrap items-center gap-y-2 text-sm hidden"></div>
-      <div id="learningContainer" class="flex flex-col space-y-4"><div class="bg-white dark:bg-[#0f1729] rounded-2xl shadow-sm border border-slate-200 dark:border-white/10 overflow-hidden"><div class="p-6 md:p-8"><p class="eyebrow mb-2">반도체 8대 공정 <span class="opacity-50">/</span> 6. 금속 배선 공정 (Metallization) <span class="opacity-50">·</span> 약 6분 읽기</p><h1 class="page-title text-slate-900 dark:text-white mb-3">구리 다마신 공정</h1><div class="flex flex-wrap gap-1.5 mb-6 pb-6 border-b border-slate-100 dark:border-white/10"><span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#구리다마신공정</span><span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#핵심이론</span></div><div class="custom-table-container theory-body prose prose-slate dark:prose-invert max-w-none"><div class="custom-badge-heading"><span class="custom-badge">🌱 등장 배경</span>구리는 깎아서 배선을 만들기 어려운 금속이다</div>
+      <div id="learningContainer" class="flex flex-col space-y-4"><div class="bg-white dark:bg-[#0f1729] rounded-2xl shadow-sm border border-slate-200 dark:border-white/10 overflow-hidden"><div class="p-6 md:p-8"><p class="eyebrow mb-2">반도체 8대 공정 <span class="opacity-50">/</span> 6. 금속 배선 공정 (Metallization) <span class="opacity-50">·</span> 약 5분 읽기</p><h1 class="page-title text-slate-900 dark:text-white mb-3">구리 다마신 공정</h1><div class="flex flex-wrap gap-1.5 mb-6 pb-6 border-b border-slate-100 dark:border-white/10"><span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#구리다마신공정</span><span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#핵심이론</span></div><div class="custom-table-container theory-body prose prose-slate dark:prose-invert max-w-none"><div class="custom-badge-heading"><span class="custom-badge">🌱 등장 배경</span>구리 식각의 어려움</div>
 
 <p>알루미늄 배선은 금속막을 먼저 입히고 필요한 부분만 남기도록 식각한 뒤, 배선 사이를 절연막으로 채워 만들었다. 구리는 알루미늄보다 비저항이 낮고 전자이동에 강해서 배선 지연과 신뢰성 면에서 유리하다. 그러나 구리는 식각 가스와 반응해 만들어지는 화합물이 잘 휘발하지 않아 건식 식각으로 패턴을 만들기가 어렵다. 게다가 구리 원자는 실리콘과 산화막 속으로 쉽게 퍼져서 트랜지스터 특성을 망가뜨리기 때문에 배선을 배리어로 감싸야 한다.</p>
-<div class="custom-badge-heading"><span class="custom-badge">📘 정의</span>다마신은 홈을 먼저 파고 금속을 채우는 방식이다</div>
+<div class="custom-badge-heading"><span class="custom-badge">📘 정의</span>다마신의 정의</div>
 
 <p><strong>다마신</strong>(Damascene) 공정은 순서를 뒤집어 해결한다. 절연막에 배선이 놓일 홈을 먼저 파고, 그 홈에 구리를 채운 뒤, 넘친 구리를 연마로 깎아 홈 안에만 남긴다. 구리를 식각하지 않고 절연막을 식각하므로 구리의 식각 문제를 피할 수 있다. 이름은 금속을 파낸 홈에 박아 넣는 상감 기법에서 따왔다.</p>
 <div class="table-wrap"><table>
@@ -920,7 +920,7 @@ html.dark .cs-frame{
 </tr>
 </tbody>
 </table></div>
-<div class="custom-badge-heading"><span class="custom-badge">⚙️ 원리</span>단일 다마신은 여섯 단계로 홈을 구리로 채운다</div>
+<div class="custom-badge-heading"><span class="custom-badge">⚙️ 원리</span>단일 다마신의 여섯 단계</div>
 
 <ol>
 <li><strong>절연막 증착</strong>: 배선 사이를 절연하는 막을 입힌다. 배선 지연을 줄이기 위해 유전율이 낮은 low-k 막을 쓴다.</li>
@@ -934,7 +934,7 @@ html.dark .cs-frame{
 
 <div class="custom-highlight-box">[면접 팁] 다마신의 핵심은 '구리를 식각하지 않고 절연막을 식각한다'는 점과 'CMP로 넘친 구리를 제거해 배선을 분리한다'는 점이다. 이 두 가지를 먼저 말하고 단계를 이어 가면 된다.</div>
 
-<div class="custom-badge-heading"><span class="custom-badge">🗂️ 분류</span>단일 다마신과 이중 다마신의 차이</div>
+<div class="custom-badge-heading"><span class="custom-badge">🗂️ 분류</span>단일·이중 다마신</div>
 
 <p>단일 다마신은 배선 한 층이나 비아(층 사이를 잇는 구멍) 중 하나를 한 번에 만든다. <strong>이중 다마신</strong>은 비아와 배선 홈을 모두 판 다음 배리어, 시드, 도금, CMP를 한 번에 진행한다. 비아를 먼저 파는 방식과 배선 홈을 먼저 파는 방식이 있다.</p>
 <div class="table-wrap"><table>
@@ -974,7 +974,7 @@ html.dark .cs-frame{
 </tbody>
 </table></div>
 <p>현재 구리 배선은 공정 단계가 적은 이중 다마신이 주로 쓰인다.</p>
-<div class="custom-badge-heading"><span class="custom-badge">🎚️ 변수 영향</span>구리를 빈틈없이 채우는 조건</div>
+<div class="custom-badge-heading"><span class="custom-badge">🎚️ 변수 영향</span>구리 충진 조건</div>
 
 <p>홈이 깊고 좁을수록 입구가 먼저 막혀 안쪽에 보이드(빈 공간)가 남기 쉽다. 이를 막는 요소는 크게 세 가지이다.</p>
 <ul>
@@ -982,7 +982,7 @@ html.dark .cs-frame{
 <li><strong>시드층의 균일성</strong>: 시드층이 입구에서 두껍게 쌓여 입구를 좁히면(오버행) 도금액이 안쪽까지 들어가지 못한다. 시드층은 홈 안쪽까지 끊김 없이 얇게 입혀야 한다.</li>
 <li><strong>배리어 두께</strong>: 배리어가 두꺼우면 홈 안에서 구리가 차지하는 단면적이 줄어 저항이 커진다. 확산을 막을 수 있는 선에서 가장 얇게 입혀야 한다.</li>
 </ul>
-<div class="custom-badge-heading"><span class="custom-badge">🛠️ 실무 이슈</span>CMP 결함과 보이드, 미세 배선의 저항 상승</div>
+<div class="custom-badge-heading"><span class="custom-badge">🛠️ 실무 이슈</span>CMP 결함과 보이드</div>
 
 <ul>
 <li><strong>디싱과 침식</strong>: 구리는 주변의 배리어와 절연막보다 연마가 잘 되어 폭이 넓은 배선 윗면이 접시처럼 움푹 패이는 <strong>디싱</strong>(Dishing)이 생긴다. 배선이 촘촘한 구역에서는 절연막까지 얇아지는 <strong>침식</strong>(Erosion)이 생긴다. 두 경우 모두 배선 단면적과 평탄도가 달라져 저항 변동과 다음 층 공정 불량으로 이어진다.</li>

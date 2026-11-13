@@ -883,16 +883,16 @@ html.dark .cs-frame{
       <div class="mb-6"><div class="mb-5"><p class="eyebrow mb-1.5">ENCYCLOPEDIA</p><h2 class="page-title text-slate-900 dark:text-white">이론 백과사전</h2><p class="text-sm text-slate-500 dark:text-slate-400 mt-1.5">소자부터 공정, 첨단 기술까지 폴더별로 정리했어요.</p></div></div>
       <input type="text" id="theorySearchInput" class="hidden" onkeyup="handleTheorySearch()">
       <div id="breadcrumbContainer" class="bg-indigo-50/70 dark:bg-[#0f2233] rounded-xl border border-indigo-100 dark:border-white/10 px-4 py-3 mb-6 flex flex-wrap items-center gap-y-2 text-sm hidden"></div>
-      <div id="learningContainer" class="flex flex-col space-y-4"><div class="bg-white dark:bg-[#0f1729] rounded-2xl shadow-sm border border-slate-200 dark:border-white/10 overflow-hidden"><div class="p-6 md:p-8"><p class="eyebrow mb-2">반도체 소자 <span class="opacity-50">/</span> 트랜지스터 소자 <span class="opacity-50">·</span> 약 6분 읽기</p><h1 class="page-title text-slate-900 dark:text-white mb-3">단채널 효과 (SCE)</h1><div class="flex flex-wrap gap-1.5 mb-6 pb-6 border-b border-slate-100 dark:border-white/10"><span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#단채널효과(SCE)</span><span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#핵심이론</span></div><div class="custom-table-container theory-body prose prose-slate dark:prose-invert max-w-none"><div class="custom-badge-heading"><span class="custom-badge">📘 핵심 개념</span>채널이 짧아지면 게이트가 채널을 혼자 지배하지 못한다</div>
+      <div id="learningContainer" class="flex flex-col space-y-4"><div class="bg-white dark:bg-[#0f1729] rounded-2xl shadow-sm border border-slate-200 dark:border-white/10 overflow-hidden"><div class="p-6 md:p-8"><p class="eyebrow mb-2">반도체 소자 <span class="opacity-50">/</span> 트랜지스터 소자 <span class="opacity-50">·</span> 약 6분 읽기</p><h1 class="page-title text-slate-900 dark:text-white mb-3">단채널 효과 (SCE)</h1><div class="flex flex-wrap gap-1.5 mb-6 pb-6 border-b border-slate-100 dark:border-white/10"><span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#단채널효과(SCE)</span><span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#핵심이론</span></div><div class="custom-table-container theory-body prose prose-slate dark:prose-invert max-w-none"><div class="custom-badge-heading"><span class="custom-badge">📘 핵심 개념</span>게이트 제어력의 약화</div>
 
 <p>채널이 충분히 길면 채널의 상태는 게이트 전압이 거의 혼자 정한다. 소스와 드레인 주변에 생기는 공핍 영역은 채널 길이에 비해 작아서 무시할 수 있기 때문이다. 채널 길이 $L$이 줄어 이 공핍 영역이 채널 길이와 비슷해지면 사정이 달라진다. 채널 아래 전하의 일부를 소스와 드레인이 대신 만들고, 드레인 전압의 전계가 소스 쪽까지 파고든다. 게이트의 제어력이 약해져서 생기는 이런 이상 현상을 묶어 <strong>단채널 효과</strong>(Short-Channel Effects, SCE)라고 한다.</p>
-<div class="custom-badge-heading"><span class="custom-badge">🌱 등장 배경</span>줄일수록 얻는 것과 치르는 대가</div>
+<div class="custom-badge-heading"><span class="custom-badge">🌱 등장 배경</span>미세화의 대가</div>
 
 <p>채널 길이를 줄이면 같은 면적에 더 많은 트랜지스터를 넣을 수 있고 동작도 빨라진다. 그 대가로 소자가 의도한 대로 꺼지지 않아 대기 전류가 늘고, 문턱 전압이 채널 길이에 따라 달라지며, 설계 마진이 줄어든다. 단채널 효과는 미세화가 계속되는 한 피할 수 없는 문제이고, FinFET과 GAA 같은 구조 변화도 이 문제를 풀기 위해 나왔다.</p>
-<div class="custom-badge-heading"><span class="custom-badge">📘 핵심 개념</span>직관적 이해: 얇은 둑과 드레인 수위</div>
+<div class="custom-badge-heading"><span class="custom-badge">📘 핵심 개념</span>직관적 이해: 얇은 둑</div>
 
 <p>소스와 드레인 사이의 에너지 장벽을 물을 막는 둑에 비유할 수 있다. 게이트는 둑의 높이를 조절한다. 둑이 두꺼우면 반대편 수위(드레인 전압)가 올라가도 둑 높이는 거의 변하지 않는다. 둑이 얇으면 반대편 수위가 오를 때 둑 자체가 낮아져서 물이 더 쉽게 넘는다. 다만 이 비유는 장벽을 넘는 전자가 열에너지로 분포한다는 점까지는 설명하지 못한다.</p>
-<div class="custom-badge-heading"><span class="custom-badge">🎚️ 변수 영향</span>채널 길이가 줄 때 나타나는 현상</div>
+<div class="custom-badge-heading"><span class="custom-badge">🎚️ 변수 영향</span>채널 길이에 따른 변화</div>
 
 <p>정전기적 제어가 약해져서 생기는 현상과, 전계가 강해져서 생기는 현상으로 나뉜다.</p>
 <div class="table-wrap"><table>
@@ -942,12 +942,12 @@ html.dark .cs-frame{
 <li>$V_{th,\mathrm{lin}}$: 낮은 $V_{DS}$(수십 mV 수준)에서 잰 문턱 전압</li>
 <li>$V_{th,\mathrm{sat}}$: 높은 $V_{DS}$(전원 전압 부근)에서 잰 문턱 전압</li>
 </ul>
-<div class="custom-badge-heading"><span class="custom-badge">✏️ 측정 방법</span>여러 채널 길이의 소자를 같은 조건으로 비교한다</div>
+<div class="custom-badge-heading"><span class="custom-badge">✏️ 측정 방법</span>채널 길이별 비교 측정</div>
 
 <p>채널 길이만 다른 트랜지스터를 시험 패턴(TEG)으로 같은 웨이퍼에 만들어 두고, 각각의 $I_D$-$V_{GS}$ 곡선을 낮은 $V_{DS}$와 높은 $V_{DS}$에서 잰다. 길이별 문턱 전압을 그래프로 그리면 롤오프가 보이고, 두 $V_{DS}$에서의 문턱 전압 차이로 DIBL을, 꺼짐 구간 기울기로 SS를 구한다.</p>
 <div class="custom-highlight-box">[흔한 오해] 채널 길이 변조와 단채널 효과를 같은 말로 쓰기 쉽다. 채널 길이 변조는 포화 영역에서 드레인 전압이 오를수록 전류가 조금씩 늘어나는 현상이고, 단채널 효과는 문턱 전압과 꺼짐 상태 누설을 흔드는 문제이다. 둘 다 짧은 채널에서 두드러지지만 증상이 다르다.</div>
 
-<div class="custom-badge-heading"><span class="custom-badge">✏️ 개선 방법</span>게이트의 제어력을 되찾는 방법</div>
+<div class="custom-badge-heading"><span class="custom-badge">✏️ 개선 방법</span>게이트 제어력 회복</div>
 
 <ul>
 <li><strong>게이트 산화막 박막화와 high-k 적용</strong>: 게이트와 채널의 결합이 강해져 드레인의 영향이 상대적으로 줄어든다. 산화막이 너무 얇으면 터널링 누설이 커져서 유전율이 높은 high-k 물질로 두께를 확보한다.</li>
@@ -957,7 +957,7 @@ html.dark .cs-frame{
 </ul>
 <figure class="dg" data-dg="finfet-gaa" data-cap="게이트가 채널을 감싸는 면의 수 비교"></figure>
 
-<div class="custom-badge-heading"><span class="custom-badge">🛠️ 실무 이슈</span>선폭 변동이 곧바로 문턱 전압 변동이 된다</div>
+<div class="custom-badge-heading"><span class="custom-badge">🛠️ 실무 이슈</span>선폭 변동과 문턱 전압</div>
 
 <p>문턱 전압이 채널 길이에 따라 가파르게 변하는 구간에서는 공정에서 생기는 선폭 편차가 그대로 문턱 전압 편차가 된다. 같은 웨이퍼 안에서도 소자마다 문턱 전압이 달라지면 속도가 느린 소자가 타이밍을 깨고, 꺼짐 전류가 큰 소자가 대기 전력을 올린다. 그래서 설계에서는 특성이 민감한 회로에 최소 길이보다 긴 채널을 쓰고, 공정에서는 게이트 선폭 균일도를 엄격하게 관리한다.</p>
 <div class="custom-highlight-box">[면접 팁] 단채널 효과를 '게이트가 채널을 제어하는 힘이 약해지는 문제'로 한 줄 정의한 뒤, 현상은 롤오프·DIBL·SS 악화, 대책은 박막화·도핑·구조 변경의 순서로 말하면 흐름이 깔끔하다.</div>
