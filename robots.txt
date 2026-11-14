@@ -2,3 +2,6 @@ User-agent: *
 Allow: /
 
 Sitemap: https://semicarve.com/sitemap.xml
+
+User-agent: Yeti
+Allow:/
