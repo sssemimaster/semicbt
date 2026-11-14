@@ -29,6 +29,12 @@ DIAGRAMS = {
     "device-map": "반도체 소자 지도. 다이오드·트랜지스터·CMOS 논리·메모리의 역할과 재료→PN 접합→트랜지스터→회로 순서. 소자 전체를 훑는 개요 글에 사용",
     "cmos-inverter": "CMOS 인버터. 입력 0/1에 따라 PMOS·NMOS가 켜지고 꺼지며 출력이 정해지는 과정, 정지 시 전류가 막히는 이유. CMOS, 인버터, 논리 게이트 설명에 사용",
     "memory-compare": "DRAM(1T1C)·SRAM(6T)·NAND 플래시 셀의 저장 방식 비교. 커패시터 전하, 맞물린 인버터, 플로팅 게이트. 메모리 종류 비교·개요 설명에 사용",
+    "nextgen-map": "차세대 반도체 기술 지도. 세 개의 벽(미세화·전력·메모리)과 네 갈래(트랜지스터·노광·배선·메모리·패키징)의 현재 단계(양산/도입 중/연구). 차세대 기술 전체를 훑는 개요 글에 사용",
+    "transistor-roadmap": "트랜지스터 구조 흐름. 평면(1면)→FinFET(3면)→GAA(4면)→CFET(n·p 수직 적층). 게이트가 채널을 감싸는 면, GAA, CFET 설명에 사용",
+    "litho-roadmap": "노광 진화. ArF 액침 193nm→EUV 13.5nm(NA 0.33)→High-NA EUV(NA 0.55)와 최소 선폭. EUV, High-NA, 해상도 설명에 사용",
+    "power-delivery": "전원 공급 방식 비교. 전면 전력 vs 후면 전력(BSPDN, PowerVia, Super Power Rail). 후면 전력, 배선 혼잡, 전압 강하 설명에 사용",
+    "memory-future": "메모리의 다음 단계. 3D NAND 적층, 3D DRAM(연구), 새 메모리(MRAM·ReRAM·PCM). 차세대 메모리 설명에 사용",
+    "packaging-evolution": "패키징 진화. 큰 칩 하나→칩렛+2.5D 인터포저→3D 적층(하이브리드 본딩). 칩렛, 2.5D, 3D 패키징 설명에 사용",
     "process-flow": "반도체 8대 공정 전체 흐름도와 웨이퍼 단면. 웨이퍼→산화→포토→식각→증착·주입→배선(층마다 반복)→EDS→패키징을 누르면 웨이퍼에 층이 쌓이는 모습. 공정 전체를 훑는 개요 글에 사용",
 }
 
@@ -56,6 +62,12 @@ RULES = [
     ("device-map", re.compile(r"소자 한눈에"), "소자의 종류와, 재료에서 칩까지 이어지는 순서"),
     ("cmos-inverter", re.compile(r"CMOS|인버터"), "입력 값에 따라 켜지고 꺼지는 PMOS와 NMOS"),
     ("memory-compare", re.compile(r"소자 한눈에|메모리 반도체 개요"), "DRAM, SRAM, NAND 셀의 저장 방식"),
+    ("nextgen-map", re.compile(r"차세대.*한눈에"), "벽 세 개와 네 갈래의 해결책, 그리고 기술별 단계"),
+    ("transistor-roadmap", re.compile(r"CFET|차세대 소자 기술 개요|GAA|FinFET"), "평면에서 CFET까지, 게이트가 채널을 감싸는 방식의 변화"),
+    ("litho-roadmap", re.compile(r"EUV|High-?NA"), "파장과 NA에 따라 달라지는 최소 선폭"),
+    ("power-delivery", re.compile(r"BSPDN|후면 전력"), "전원선의 위치에 따른 배선 구조 비교"),
+    ("memory-future", re.compile(r"3D NAND|3D DRAM|차세대 메모리|MRAM|ReRAM|PCM"), "쌓거나 새로 만드는 메모리의 다음 단계"),
+    ("packaging-evolution", re.compile(r"칩렛|하이브리드 본딩|어드밴스드 패키징 개요|2\.5D"), "큰 칩 하나에서 칩렛, 3D 적층으로의 변화"),
     ("process-flow", re.compile(r"공정 한눈에 보기"), "여덟 단계의 순서와 층마다 되풀이되는 구간"),
 ]
 
