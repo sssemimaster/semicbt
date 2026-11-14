@@ -143,6 +143,9 @@
     html.dark .hero .pbtn { background: linear-gradient(90deg, #22d3ee, #818cf8 58%, #e879f9); color: #0a1020; }
     @media (min-width:1024px){ .wf-body{display:flex;align-items:center;gap:1.5rem} .wf-svg{flex:none;width:176px;margin:.5rem 0} .wf-legend{flex-wrap:wrap;row-gap:.25rem} .wf-legend>span{white-space:nowrap} .wf-info{flex:1;min-width:0} .wf-step{text-align:left} }
     @media (min-width:1200px){ .wf-svg{width:210px} }
+    .fbtn { transition: box-shadow .2s, border-color .2s, transform .15s; } .fbtn:active:not(:disabled) { transform: scale(.98); }
+    .fbtn-q:hover:not(:disabled), .fbtn-q:focus-visible { box-shadow: 0 0 0 3px rgba(99,102,241,.12), 0 0 14px rgba(99,102,241,.35); } html.dark .fbtn-q:hover:not(:disabled), html.dark .fbtn-q:focus-visible { border-color: rgba(103,232,249,.7); box-shadow: 0 0 0 3px rgba(103,232,249,.14), 0 0 18px rgba(103,232,249,.45); }
+    .fbtn-i:hover:not(:disabled), .fbtn-i:focus-visible { box-shadow: 0 0 0 3px rgba(244,63,94,.12), 0 0 14px rgba(244,63,94,.35); } html.dark .fbtn-i:hover:not(:disabled), html.dark .fbtn-i:focus-visible { border-color: rgba(253,164,175,.8); box-shadow: 0 0 0 3px rgba(253,164,175,.14), 0 0 18px rgba(253,164,175,.45); }
     /* 날짜별 기록 · 새기는 연출 */
     .wf-open { cursor: pointer; border-radius: 50%; -webkit-tap-highlight-color: transparent; transition: transform .2s; }
     .wf-open:hover { transform: scale(1.02); } .wf-open:focus-visible { outline: 2px solid #6366f1; outline-offset: 3px; }
@@ -3216,8 +3219,8 @@ html.dark .cs-frame{
       return `<div class="col-span-full mt-6 pt-6 border-t border-slate-200 dark:border-white/10">
         <p class="eyebrow mb-3" style="color:#94a3b8">PRACTICE · ${subject ? '이 폴더' : '이 분류'}로 연습하기</p>
         <div class="flex flex-col sm:flex-row gap-2.5">
-          <button onclick="startFolder('quiz')" ${q ? '' : 'disabled'} class="${cls}border-slate-200 dark:border-white/15 bg-white dark:bg-[#0f1729] text-slate-700 dark:text-slate-200 hover:border-indigo-400 dark:hover:border-cyan-300/60">🧩 문제 풀기 <span class="text-xs text-slate-400">${q ? q + '문항' : '준비 중'}</span></button>
-          <button onclick="startFolder('interview')" ${i ? '' : 'disabled'} class="${cls}border-slate-200 dark:border-white/15 bg-white dark:bg-[#0f1729] text-slate-700 dark:text-slate-200 hover:border-rose-400">🗣️ 면접 연습 <span class="text-xs text-slate-400">${i ? i + '문항' : '준비 중'}</span></button></div></div>`;
+          <button onclick="startFolder('quiz')" ${q ? '' : 'disabled'} class="${cls}border-slate-200 dark:border-white/15 bg-white dark:bg-[#0f1729] text-slate-700 dark:text-slate-200 fbtn fbtn-q hover:border-indigo-400 dark:hover:border-cyan-300/60">🧩 문제 풀기 <span class="text-xs text-slate-400">${q ? q + '문항' : '준비 중'}</span></button>
+          <button onclick="startFolder('interview')" ${i ? '' : 'disabled'} class="${cls}border-slate-200 dark:border-white/15 bg-white dark:bg-[#0f1729] text-slate-700 dark:text-slate-200 fbtn fbtn-i hover:border-rose-400 dark:hover:border-rose-300/70">🗣️ 면접 연습 <span class="text-xs text-slate-400">${i ? i + '문항' : '준비 중'}</span></button></div></div>`;
     }
     function startFolder(kind) {
       if (!folderCtx) return;
