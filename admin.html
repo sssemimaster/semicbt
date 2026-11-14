@@ -24,6 +24,7 @@
     /* 사용자 페이지(index.html)와 같은 모양의 미리보기 (관리자 페이지는 라이트 전용) */
     .custom-highlight-box { background-color: #ecfdf5; border: 1px solid #a7f3d0; border-left: 6px solid #10b981; border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 1.5rem; color: #1f2937; display: flex; gap: 12px; font-size: 0.9rem; line-height: 1.6; }
     .custom-highlight-box::before { content: '💡'; font-size: 1.15rem; }
+    .custom-highlight-box { display: block; position: relative; padding-left: calc(1.25rem + 1.15rem + 10px); overflow-wrap: anywhere; } .custom-highlight-box::before { position: absolute; left: 1.25rem; top: 1rem; } .custom-highlight-box .katex { overflow-wrap: normal; }
     .custom-badge-heading { display: flex; align-items: center; gap: 10px; margin-top: 2rem; margin-bottom: 1rem; font-size: 1.05rem; font-weight: 800; color: #0f172a; }
     .custom-badge { background-color: #d1fae5; color: #047857; font-size: 0.7rem; padding: 4px 10px; border-radius: 9999px; white-space: nowrap; }
     .katex-display { overflow-x: auto; overflow-y: hidden; padding: 0.35rem 0; margin: 1rem 0 !important; }
