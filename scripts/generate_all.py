@@ -25,19 +25,31 @@ CHECK_MODEL = M["review"]  # review_existing.py 호환용
 print(f"⚙️ 품질 프리셋: {PRESET} {M}")
 
 topics = [
-    {"category": "반도체 기초 이론", "subject": "반도체 물리", "keywords": ["에너지 밴드", "페르미 준위", "캐리어 농도", "PN 접합", "유효 질량"]},
-    {"category": "반도체 소자", "subject": "트랜지스터 소자", "keywords": ["MOSFET", "채널 길이 변조", "단채널 효과 (SCE)", "누설 전류", "문턱 전압"]},
-    {"category": "반도체 소자", "subject": "메모리 반도체", "keywords": ["DRAM 동작 원리", "NAND 플래시 구조", "SRAM 셀 구조", "리프레시 동작"]},
-    {"category": "반도체 8대 공정", "subject": "1. 웨이퍼 제조 공정", "keywords": ["초크랄스키 공정", "웨이퍼 연마(CMP)", "에피택시 성장", "실리콘 잉곳"]},
-    {"category": "반도체 8대 공정", "subject": "2. 산화 공정 (Oxidation)", "keywords": ["건식 산화", "습식 산화", "Deal-Grove 모델", "게이트 산화막"]},
-    {"category": "반도체 8대 공정", "subject": "3. 포토 공정 (Photo)", "keywords": ["노광 공정", "포토레지스트", "해상도와 초점 심도", "EUV 리소그래피"]},
-    {"category": "반도체 8대 공정", "subject": "4. 식각 공정 (Etching)", "keywords": ["건식 식각", "플라즈마 식각", "식각 선택비", "Bowing 현상"]},
-    {"category": "반도체 8대 공정", "subject": "5. 박막 증착 공정 (Deposition)", "keywords": ["CVD 공정", "ALD 공정", "PVD 공정", "단차 피복성"]},
-    {"category": "반도체 8대 공정", "subject": "6. 금속 배선 공정 (Metallization)", "keywords": ["구리 다마신 공정", "전자 이동(Electromigration)", "배리어 메탈", "RC 지연"]},
-    {"category": "반도체 8대 공정", "subject": "7. EDS 공정 (Testing)", "keywords": ["EDS 테스트 흐름", "번인 테스트", "수율(Yield)", "리페어와 리던던시"]},
-    {"category": "반도체 8대 공정", "subject": "8. 패키징 공정 (Packaging)", "keywords": ["와이어 본딩", "플립칩 패키지", "몰딩 공정", "패키지 열 방출"]},
-    {"category": "차세대 첨단 기술", "subject": "차세대 소자 기술", "keywords": ["FinFET 구조", "GAA 나노시트", "High-k/Metal Gate", "BSPDN 후면 전력"]},
-    {"category": "차세대 첨단 기술", "subject": "어드밴스드 패키징", "keywords": ["HBM 구조", "TSV 공정", "2.5D 인터포저", "하이브리드 본딩"]}
+    {"category": "반도체 기초 이론", "subject": "반도체 물리", "keywords": ["에너지 밴드", "페르미 준위", "캐리어 농도", "PN 접합", "유효 질량", "드리프트와 확산 전류", "재결합과 소수 캐리어 수명", "이동도와 산란", "금속-반도체 접합 (쇼트키·오믹)"]},
+    {"category": "반도체 소자", "subject": "트랜지스터 소자", "keywords": ["MOSFET", "채널 길이 변조", "단채널 효과 (SCE)", "누설 전류", "문턱 전압", "MOS 커패시터 (축적·공핍·반전)", "서브스레숄드 전류와 스윙", "핫 캐리어 효과", "BTI (NBTI·PBTI)"]},
+    {"category": "반도체 소자", "subject": "메모리 반도체", "keywords": ["DRAM 동작 원리", "NAND 플래시 구조", "SRAM 셀 구조", "리프레시 동작", "3D NAND 적층 구조", "FN 터널링과 NAND 프로그램·소거", "멀티 레벨 셀 (SLC·MLC·TLC·QLC)", "차세대 메모리 (MRAM·ReRAM·PCM)"]},
+    {"category": "반도체 8대 공정", "subject": "1. 웨이퍼 제조 공정", "keywords": ["초크랄스키 공정", "웨이퍼 연마(CMP)", "에피택시 성장", "실리콘 잉곳", "웨이퍼 세정 (RCA 세정)"]},
+    {"category": "반도체 8대 공정", "subject": "2. 산화 공정 (Oxidation)", "keywords": ["건식 산화", "습식 산화", "Deal-Grove 모델", "게이트 산화막", "어닐링과 RTP", "LOCOS와 STI 소자 격리"]},
+    {"category": "반도체 8대 공정", "subject": "3. 포토 공정 (Photo)", "keywords": ["노광 공정", "포토레지스트", "해상도와 초점 심도", "EUV 리소그래피", "포토 공정 단계별 흐름", "멀티 패터닝 (SADP·LELE)", "OPC와 해상도 향상 기술", "오버레이와 CD 제어"]},
+    {"category": "반도체 8대 공정", "subject": "4. 식각 공정 (Etching)", "keywords": ["건식 식각", "플라즈마 식각", "식각 선택비", "Bowing 현상", "습식 식각"]},
+    {"category": "반도체 8대 공정", "subject": "5. 박막 증착 공정 (Deposition)", "keywords": ["CVD 공정", "ALD 공정", "PVD 공정", "단차 피복성", "이온 주입"]},
+    {"category": "반도체 8대 공정", "subject": "6. 금속 배선 공정 (Metallization)", "keywords": ["구리 다마신 공정", "전자 이동(Electromigration)", "배리어 메탈", "RC 지연", "Low-k 절연막", "금속 실리사이드와 콘택"]},
+    {"category": "반도체 8대 공정", "subject": "7. EDS 공정 (Testing)", "keywords": ["EDS 테스트 흐름", "번인 테스트", "수율(Yield)", "리페어와 리던던시", "결함 검사와 계측", "프로브 카드와 웨이퍼 테스트"]},
+    {"category": "반도체 8대 공정", "subject": "8. 패키징 공정 (Packaging)", "keywords": ["와이어 본딩", "플립칩 패키지", "몰딩 공정", "패키지 열 방출", "웨이퍼 백그라인딩과 다이싱", "패키지 종류와 구조 (BGA·QFP·CSP)"]},
+    {"category": "차세대 첨단 기술", "subject": "차세대 소자 기술", "keywords": ["FinFET 구조", "GAA 나노시트", "High-k/Metal Gate", "BSPDN 후면 전력", "CFET"]},
+    {"category": "차세대 첨단 기술", "subject": "어드밴스드 패키징", "keywords": ["HBM 구조", "TSV 공정", "2.5D 인터포저", "하이브리드 본딩", "칩렛과 UCIe", "팬아웃 웨이퍼 레벨 패키지 (FOWLP)"]}
+]
+
+# 새 키워드를 만들 '우선순위'. 앞에 있을수록 먼저 만든다. (면접·시험에 자주 나오고 기존 이론에 빠진 기초부터)
+# 여기 있는 키워드가 모두 등재/대기 중이 되면, 아래 pick_topic 의 폴더 균형 방식으로 돌아간다.
+# 키워드는 위 topics 의 글자와 똑같아야 한다.
+PRIORITY = [
+    "이온 주입", "MOS 커패시터 (축적·공핍·반전)", "서브스레숄드 전류와 스윙", "어닐링과 RTP", "드리프트와 확산 전류",
+    "3D NAND 적층 구조", "포토 공정 단계별 흐름", "멀티 패터닝 (SADP·LELE)", "OPC와 해상도 향상 기술", "웨이퍼 세정 (RCA 세정)",
+    "LOCOS와 STI 소자 격리", "습식 식각", "Low-k 절연막", "금속 실리사이드와 콘택", "웨이퍼 백그라인딩과 다이싱",
+    "패키지 종류와 구조 (BGA·QFP·CSP)", "칩렛과 UCIe", "팬아웃 웨이퍼 레벨 패키지 (FOWLP)", "핫 캐리어 효과", "BTI (NBTI·PBTI)",
+    "재결합과 소수 캐리어 수명", "이동도와 산란", "FN 터널링과 NAND 프로그램·소거", "멀티 레벨 셀 (SLC·MLC·TLC·QLC)", "오버레이와 CD 제어",
+    "결함 검사와 계측", "프로브 카드와 웨이퍼 테스트", "차세대 메모리 (MRAM·ReRAM·PCM)", "CFET", "금속-반도체 접합 (쇼트키·오믹)",
 ]
 
 draft_t_path = "data/draft_theories.json"
@@ -65,6 +77,7 @@ def pick_topic():
     """폴더(subject)별로 이론이 골고루 쌓이도록 고른다.
     - 등재된 이론 + 검수 대기 중인 이론 수가 '가장 적은' 폴더를 먼저 뽑는다 (동률이면 무작위)
     - 이미 만든 키워드는 제외한다. 남은 키워드가 하나도 없으면 None.
+    - 단, PRIORITY 에 적은 키워드가 남아 있으면 폴더 균형보다 그 순서를 먼저 따른다.
     """
     norm = lambda x: re.sub(r"\s+", "", str(x))
     used, per_subject = set(), {}
@@ -75,6 +88,13 @@ def pick_topic():
             used.add(norm(t.get("title", "")))
             key = (t.get("category"), t.get("subject"))
             per_subject[key] = per_subject.get(key, 0) + 1
+
+    for kw in PRIORITY:   # 우선순위 목록의 맨 앞에서 아직 안 만든 키워드부터
+        if norm(kw) in used:
+            continue
+        for t in topics:
+            if kw in t["keywords"]:
+                return t, kw
 
     candidates = []
     for t in topics:
