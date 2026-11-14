@@ -613,7 +613,7 @@ html.dark .cs-frame{
   #cBldChips { margin-left: -1.5rem; margin-right: -1.5rem; padding-left: 1.5rem; padding-right: 1.5rem; }
 }
 </style>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "페르미 준위", "description": "f(E) = \\frac{1}{1 + e^{(E-E_F)/kT}} 절대영도(0K)에서는 아래의 상태는 모두 채워지고 위의 상태는 모두 비어 있다.", "inLanguage": "ko", "articleSection": "반도체 기초 이론", "dateModified": "2026-11-12", "publisher": {"@type": "Organization", "name": "반도체 새김"}, "mainEntityOfPage": "https://semicarve.com/theory/th-cff1d71d/"}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "반도체 새김", "item": "https://semicarve.com/"}, {"@type": "ListItem", "position": 2, "name": "이론 백과사전", "item": "https://semicarve.com/theory/"}, {"@type": "ListItem", "position": 3, "name": "페르미 준위"}]}</script></head>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "페르미 준위", "description": "f(E) = \\frac{1}{1 + e^{(E-E_F)/kT}} 절대영도(0K)에서는 아래의 상태는 모두 채워지고 위의 상태는 모두 비어 있다.", "inLanguage": "ko", "articleSection": "반도체 기초 이론", "dateModified": "2026-11-14", "publisher": {"@type": "Organization", "name": "반도체 새김"}, "mainEntityOfPage": "https://semicarve.com/theory/th-cff1d71d/"}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "반도체 새김", "item": "https://semicarve.com/"}, {"@type": "ListItem", "position": 2, "name": "이론 백과사전", "item": "https://semicarve.com/theory/"}, {"@type": "ListItem", "position": 3, "name": "페르미 준위"}]}</script></head>
 <body class="bg-slate-50 dark:bg-[#0a1020] text-slate-800 dark:text-slate-200 antialiased min-h-screen flex flex-col relative transition-colors duration-200">
 
   <!-- 좌측 슬라이드 사이드바 -->
@@ -945,13 +945,15 @@ html.dark .cs-frame{
 f(E) = \frac{1}{1 + e^{(E-E_F)/kT}}
 $$</p>
 <p>절대영도(0K)에서는 $E_F$ 아래의 상태는 모두 채워지고 위의 상태는 모두 비어 있다. 온도가 오르면 $E_F$ 근처의 경계가 흐려지면서 일부 전자가 위로 올라간다. 반도체에서 $E_F$ 자리는 밴드갭 안에 있을 수 있어서, 그 자리에 전자가 실제로 존재하지 않아도 기준 에너지로서 의미가 있다.</p>
+<details class="th-toggle"><summary>에너지 밴드가 뭔가요?</summary><div class="th-tg-body">결정 속 전자가 가질 수 있는 에너지의 범위를 띠(밴드)처럼 나타낸 개념이다. 전자가 채워진 아래쪽 띠와 전자가 움직여 전기를 흐르게 하는 위쪽 띠 사이에는 전자가 가질 수 없는 구간(밴드갭)이 있다. 이 구조에 따라 도체, 반도체, 부도체가 나뉜다. 자세한 내용은 '에너지 밴드' 이론에서 다룬다.</div></details>
+
 <div class="custom-badge-heading"><span class="custom-badge">🌱 등장 배경</span>페르미 준위의 필요성</div>
 
-<p>반도체의 전기적 성질은 전도대에 전자가 얼마나 있는지, 가전자대에 정공이 얼마나 있는지로 정해진다. 페르미 준위는 이 두 농도를 한꺼번에 알려 주는 기준이다. 또한 서로 다른 재료를 붙였을 때 전자가 어느 쪽으로 옮겨 가는지(접합의 밴드 휘어짐)를 이해하는 출발점이 되므로, 소자 설계와 분석에 필수적이다.</p>
+<p>반도체의 전기적 성질은 전도대에 전자가 얼마나 있는지, 가전자대에 <button type="button" class="th-term" data-def="전자가 빠져나가 비어 버린 자리를 말한다. 이 빈자리가 양(+)의 전하를 띤 입자처럼 움직여 전류를 만든다.">정공</button>이 얼마나 있는지로 정해진다. 페르미 준위는 이 두 농도를 한꺼번에 알려 주는 기준이다. 또한 서로 다른 재료를 붙였을 때 전자가 어느 쪽으로 옮겨 가는지(접합의 밴드 휘어짐)를 이해하는 출발점이 되므로, 소자 설계와 분석에 필수적이다.</p>
 <div class="custom-badge-heading"><span class="custom-badge">⚙️ 원리</span>페르미 준위의 위치와 의미</div>
 
 <ol>
-<li><strong>진성 반도체</strong>: 도핑하지 않은 반도체에서는 전자와 정공 수가 같으므로 $E_F$가 밴드갭의 거의 가운데에 있다($E_i$라고도 한다).</li>
+<li><strong>진성 반도체</strong>: 도핑하지 않은 반도체에서는 전자와 정공 수가 같으므로 $E_F$가 <button type="button" class="th-term" data-def="전자가 가질 수 없는 에너지 구간의 폭이다. 이 값이 클수록 전기가 잘 통하지 않는다.">밴드갭</button>의 거의 가운데에 있다($E_i$라고도 한다).</li>
 <li><strong>N형 반도체</strong>: 도너 불순물로 전자가 많아지므로 $E_F$가 전도대($E_c$) 쪽으로 올라간다. 도핑 농도가 높을수록 더 가까워진다.</li>
 <li><strong>P형 반도체</strong>: 억셉터 불순물로 정공이 많아지므로 $E_F$가 가전자대($E_v$) 쪽으로 내려간다.</li>
 <li><strong>열평형에서의 일치</strong>: 서로 접촉한 물질은 열평형에서 $E_F$가 하나로 같아진다. PN 접합에서 밴드가 휘어지는 이유가 이것이다.</li>
@@ -1043,7 +1045,7 @@ $$</p>
 <div class="custom-badge-heading"><span class="custom-badge">🛠️ 실무 이슈</span>페르미 준위 관련 문제 및 해결 방향</div>
 
 <ul>
-<li><strong>문제</strong>: 도핑 농도가 목표와 다르면 $E_F$ 위치가 달라져 문턱 전압과 저항이 설계와 어긋난다.</li>
+<li><strong>문제</strong>: 도핑 농도가 목표와 다르면 $E_F$ 위치가 달라져 <button type="button" class="th-term" data-def="트랜지스터가 켜지기 시작하는 최소한의 게이트 전압이다.">문턱 전압</button>과 저항이 설계와 어긋난다.</li>
 <li><strong>해결 방향</strong>: 이온 주입의 에너지와 도즈, 열처리 조건을 정밀하게 제어하고 측정(4점 탐침, C-V)으로 확인한다.</li>
 <li><strong>문제</strong>: 온도가 변하면 캐리어 농도가 달라져 소자 특성이 변한다.</li>
 <li><strong>해결 방향</strong>: 온도 변화에도 동작이 유지되도록 설계 여유를 두고 온도 보상 회로를 쓴다.</li>

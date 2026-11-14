@@ -613,7 +613,7 @@ html.dark .cs-frame{
   #cBldChips { margin-left: -1.5rem; margin-right: -1.5rem; padding-left: 1.5rem; padding-right: 1.5rem; }
 }
 </style>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "RC 지연", "description": "반도체 회로에서 데이터 전송 속도가 느려지면 시스템 전체의 성능이 떨어진다. 이는 주로 RC 지연 때문인데, 이 지연이 커지면 신호 전달 시간이 늘어나고, 그 결과로 회로의 작동이 지연된다.", "inLanguage": "ko", "articleSection": "반도체 8대 공정", "dateModified": "2026-11-12", "publisher": {"@type": "Organization", "name": "반도체 새김"}, "mainEntityOfPage": "https://semicarve.com/theory/th-9f899ba0/"}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "반도체 새김", "item": "https://semicarve.com/"}, {"@type": "ListItem", "position": 2, "name": "이론 백과사전", "item": "https://semicarve.com/theory/"}, {"@type": "ListItem", "position": 3, "name": "RC 지연"}]}</script></head>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "RC 지연", "description": "반도체 회로에서 데이터 전송 속도가 느려지면 시스템 전체의 성능이 떨어진다. 이는 주로 RC 지연 때문인데, 이 지연이 커지면 신호 전달 시간이 늘어나고, 그 결과로 회로의 작동이 지연된다.", "inLanguage": "ko", "articleSection": "반도체 8대 공정", "dateModified": "2026-11-14", "publisher": {"@type": "Organization", "name": "반도체 새김"}, "mainEntityOfPage": "https://semicarve.com/theory/th-9f899ba0/"}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "반도체 새김", "item": "https://semicarve.com/"}, {"@type": "ListItem", "position": 2, "name": "이론 백과사전", "item": "https://semicarve.com/theory/"}, {"@type": "ListItem", "position": 3, "name": "RC 지연"}]}</script></head>
 <body class="bg-slate-50 dark:bg-[#0a1020] text-slate-800 dark:text-slate-200 antialiased min-h-screen flex flex-col relative transition-colors duration-200">
 
   <!-- 좌측 슬라이드 사이드바 -->
@@ -956,7 +956,7 @@ html.dark .cs-frame{
 
 <div class="custom-badge-heading"><span class="custom-badge">🎚️ 변수 영향</span>RC 지연에 영향을 미치는 요인</div>
 
-<p>RC 지연은 저항($R$)과 커패시턴스($C$)에 의해 결정된다. 하지만 이 두 가지 요소는 여러 물리적 변수에 의해 변한다. 예를 들어, <strong>배선 길이</strong>가 길어질수록 저항이 증가하고, 이에 따라 RC 지연도 커진다. 또한, <strong>배선의 폭</strong>이나 <strong>두께</strong>가 얇아지면 단면적이 줄어 저항이 커진다. 커패시턴스는 배선 사이의 간격, 배선이 마주 보는 면적, 절연막의 유전율에 의해 영향을 받는다. 배선 사이 간격이 좁거나 유전율이 높으면 커패시턴스가 커지고, 결과적으로 RC 지연이 증가한다. 또한 저항과 커패시턴스가 모두 배선 길이에 비례하므로, RC 지연은 배선 길이의 제곱에 비례해 커진다.</p>
+<p>RC 지연은 저항($R$)과 커패시턴스($C$)에 의해 결정된다. 하지만 이 두 가지 요소는 여러 물리적 변수에 의해 변한다. 예를 들어, <strong>배선 길이</strong>가 길어질수록 저항이 증가하고, 이에 따라 RC 지연도 커진다. 또한, <strong>배선의 폭</strong>이나 <strong>두께</strong>가 얇아지면 단면적이 줄어 저항이 커진다. 커패시턴스는 배선 사이의 간격, 배선이 마주 보는 면적, <button type="button" class="th-term" data-def="전기가 통하지 않는 막(물질)이다. 전극이나 배선 사이가 서로 전기적으로 이어지지 않게 막아 준다.">절연막</button>의 유전율에 의해 영향을 받는다. 배선 사이 간격이 좁거나 유전율이 높으면 커패시턴스가 커지고, 결과적으로 RC 지연이 증가한다. 또한 저항과 커패시턴스가 모두 배선 길이에 비례하므로, RC 지연은 배선 길이의 제곱에 비례해 커진다.</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -1000,7 +1000,7 @@ html.dark .cs-frame{
 
 <div class="custom-badge-heading"><span class="custom-badge">🛠️ 실무 이슈</span>RC 지연의 실무 문제</div>
 
-<p>RC 지연은 반도체 회로의 성능을 저하시킬 수 있는 주요 원인 중 하나이다. 특히, 미세화로 배선의 폭이 좁아져 저항이 커지고 배선 사이 간격도 좁아져 커패시턴스가 커지면서 RC 지연은 더 심각한 문제가 된다. 트랜지스터의 지연은 줄어드는 반면 배선 지연은 줄지 않아, 미세 공정에서는 배선 지연이 전체 속도를 좌우한다. 이로 인해 신호 전송 속도가 느려지고, 회로의 동작 주파수 한계가 낮아질 수 있다. 이러한 문제는 고속 동작이 요구되는 반도체 소자에서 더욱 두드러진다. 결과적으로, RC 지연은 반도체 공정에서 회로 설계와 배선 최적화의 중요한 고려 사항이 된다.</p>
+<p>RC 지연은 반도체 회로의 성능을 저하시킬 수 있는 주요 원인 중 하나이다. 특히, 미세화로 배선의 폭이 좁아져 저항이 커지고 배선 사이 간격도 좁아져 커패시턴스가 커지면서 RC 지연은 더 심각한 문제가 된다. <button type="button" class="th-term" data-def="전기 신호로 전류를 켜고 끄는 반도체 스위치이다.">트랜지스터</button>의 지연은 줄어드는 반면 배선 지연은 줄지 않아, 미세 공정에서는 배선 지연이 전체 속도를 좌우한다. 이로 인해 신호 전송 속도가 느려지고, 회로의 동작 주파수 한계가 낮아질 수 있다. 이러한 문제는 고속 동작이 요구되는 반도체 소자에서 더욱 두드러진다. 결과적으로, RC 지연은 반도체 공정에서 회로 설계와 배선 최적화의 중요한 고려 사항이 된다.</p>
 <div class="custom-badge-heading"><span class="custom-badge">✏️ 개선 방법</span>RC 지연 감소를 위한 기술적 접근</div>
 
 <p>RC 지연을 줄이기 위해 다양한 기술적 접근이 필요하다. 첫째, <strong>배선 재료</strong>의 변경을 고려할 수 있다. 구리와 같은 저저항 재료를 사용하면 $R$을 줄일 수 있다. 둘째, <strong>절연 재료</strong>를 바꿔 $C$를 줄인다. 층간 절연막에 SiO₂보다 유전율이 낮은 low-k 물질이나 에어갭을 쓰면 배선 사이 커패시턴스가 줄어든다. 셋째, <strong>배선 구조</strong>를 최적화한다. 긴 배선은 두껍고 넓은 상위 금속층에 배치하고 필요하면 중간에 리피터(버퍼)를 넣어 지연을 나눈다. 넷째, <strong>신호 무결성</strong>을 높이는 방법으로, 신호 간섭을 줄이는 배치 설계가 중요하다. 이러한 개선은 모두 RC 지연을 효과적으로 줄일 수 있는 방법이다.</p>

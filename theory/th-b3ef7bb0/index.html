@@ -613,7 +613,7 @@ html.dark .cs-frame{
   #cBldChips { margin-left: -1.5rem; margin-right: -1.5rem; padding-left: 1.5rem; padding-right: 1.5rem; }
 }
 </style>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "채널 길이 변조", "description": "이상적인 MOSFET은 포화 영역에서 드레인 전압을 올려도 드레인 전류가 변하지 않는 전류원처럼 동작한다. 실제 소자에서는 드레인 전압이 커질수록 전류가 완만하게 계속 늘어난다.", "inLanguage": "ko", "articleSection": "반도체 소자", "dateModified": "2026-11-13", "publisher": {"@type": "Organization", "name": "반도체 새김"}, "mainEntityOfPage": "https://semicarve.com/theory/th-b3ef7bb0/"}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "반도체 새김", "item": "https://semicarve.com/"}, {"@type": "ListItem", "position": 2, "name": "이론 백과사전", "item": "https://semicarve.com/theory/"}, {"@type": "ListItem", "position": 3, "name": "채널 길이 변조"}]}</script></head>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "채널 길이 변조", "description": "이상적인 MOSFET은 포화 영역에서 드레인 전압을 올려도 드레인 전류가 변하지 않는 전류원처럼 동작한다. 실제 소자에서는 드레인 전압이 커질수록 전류가 완만하게 계속 늘어난다.", "inLanguage": "ko", "articleSection": "반도체 소자", "dateModified": "2026-11-14", "publisher": {"@type": "Organization", "name": "반도체 새김"}, "mainEntityOfPage": "https://semicarve.com/theory/th-b3ef7bb0/"}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "반도체 새김", "item": "https://semicarve.com/"}, {"@type": "ListItem", "position": 2, "name": "이론 백과사전", "item": "https://semicarve.com/theory/"}, {"@type": "ListItem", "position": 3, "name": "채널 길이 변조"}]}</script></head>
 <body class="bg-slate-50 dark:bg-[#0a1020] text-slate-800 dark:text-slate-200 antialiased min-h-screen flex flex-col relative transition-colors duration-200">
 
   <!-- 좌측 슬라이드 사이드바 -->
@@ -943,7 +943,7 @@ html.dark .cs-frame{
 <p>이상적인 MOSFET은 포화 영역에서 드레인 전압을 올려도 드레인 전류가 변하지 않는 전류원처럼 동작한다. 실제 소자에서는 드레인 전압이 커질수록 전류가 완만하게 계속 늘어난다. 이 현상이 <strong>채널 길이 변조</strong>(Channel Length Modulation)이다. 전류원이 이상적이지 않다는 뜻이므로 아날로그 회로의 이득과 전류 거울의 정확도에 직접 영향을 준다.</p>
 <div class="custom-badge-heading"><span class="custom-badge">📘 정의</span>채널 길이 변조의 정의</div>
 
-<p>포화 영역에서 드레인 전압 $V_{DS}$가 커지면 채널이 끊기는 지점인 핀치오프점이 드레인에서 소스 쪽으로 이동한다. 드레인 쪽 공핍 영역이 넓어지기 때문이다. 전류가 흐르는 유효 채널 길이는 $L_{eff} = L - \Delta L$로 줄어들고, 전류는 채널 길이에 반비례하므로 조금 늘어난다. 게이트 전압이 아니라 드레인 전압이 원인이라는 점이 핵심이다.</p>
+<p>포화 영역에서 드레인 전압 $V_{DS}$가 커지면 채널이 끊기는 지점인 핀치오프점이 드레인에서 소스 쪽으로 이동한다. 드레인 쪽 공핍 영역이 넓어지기 때문이다. 전류가 흐르는 유효 채널 길이는 $L_{eff} = L - \Delta L$로 줄어들고, 전류는 채널 길이에 반비례하므로 조금 늘어난다. <button type="button" class="th-term" data-def="트랜지스터에서 전류가 흐를지 말지를 전압으로 정하는 스위치 역할의 전극이다.">게이트</button> 전압이 아니라 드레인 전압이 원인이라는 점이 핵심이다.</p>
 <figure class="dg" data-dg="channel-length-mod" data-cap="드레인 전압이 커질 때 핀치오프점이 이동하며 유효 채널 길이가 줄어드는 모습"></figure>
 
 <div class="custom-badge-heading"><span class="custom-badge">📘 핵심 개념</span>직관적 이해: 수로</div>
@@ -956,7 +956,7 @@ I_D = \frac{1}{2}\mu C_{ox}\frac{W}{L}(V_{GS}-V_{th})^2(1 + \lambda V_{DS})
 $$</p>
 <ul>
 <li>$I_D$: 드레인 전류</li>
-<li>$\mu$: 캐리어 이동도</li>
+<li>$\mu$: <button type="button" class="th-term" data-def="반도체 안에서 전기를 실어 나르는 입자로, 전자와 정공이 있다.">캐리어</button> 이동도</li>
 <li>$C_{ox}$: 단위 면적당 산화막 커패시턴스</li>
 <li>$W$, $L$: 채널 폭과 길이</li>
 <li>$V_{GS}$, $V_{th}$: 게이트-소스 전압과 문턱 전압</li>

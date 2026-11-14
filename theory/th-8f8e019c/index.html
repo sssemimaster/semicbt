@@ -613,7 +613,7 @@ html.dark .cs-frame{
   #cBldChips { margin-left: -1.5rem; margin-right: -1.5rem; padding-left: 1.5rem; padding-right: 1.5rem; }
 }
 </style>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "HBM 구조", "description": "AI 가속기 같은 프로세서는 연산 능력이 빠르게 늘었지만, 메모리에서 데이터를 가져오는 속도(대역폭)가 따라가지 못하면 연산기가 데이터를 기다리며 놀게 된다.", "inLanguage": "ko", "articleSection": "차세대 첨단 기술", "dateModified": "2026-11-13", "publisher": {"@type": "Organization", "name": "반도체 새김"}, "mainEntityOfPage": "https://semicarve.com/theory/th-8f8e019c/"}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "반도체 새김", "item": "https://semicarve.com/"}, {"@type": "ListItem", "position": 2, "name": "이론 백과사전", "item": "https://semicarve.com/theory/"}, {"@type": "ListItem", "position": 3, "name": "HBM 구조"}]}</script></head>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "HBM 구조", "description": "AI 가속기 같은 프로세서는 연산 능력이 빠르게 늘었지만, 메모리에서 데이터를 가져오는 속도(대역폭)가 따라가지 못하면 연산기가 데이터를 기다리며 놀게 된다.", "inLanguage": "ko", "articleSection": "차세대 첨단 기술", "dateModified": "2026-11-14", "publisher": {"@type": "Organization", "name": "반도체 새김"}, "mainEntityOfPage": "https://semicarve.com/theory/th-8f8e019c/"}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "반도체 새김", "item": "https://semicarve.com/"}, {"@type": "ListItem", "position": 2, "name": "이론 백과사전", "item": "https://semicarve.com/theory/"}, {"@type": "ListItem", "position": 3, "name": "HBM 구조"}]}</script></head>
 <body class="bg-slate-50 dark:bg-[#0a1020] text-slate-800 dark:text-slate-200 antialiased min-h-screen flex flex-col relative transition-colors duration-200">
 
   <!-- 좌측 슬라이드 사이드바 -->
@@ -940,10 +940,10 @@ html.dark .cs-frame{
       <div id="breadcrumbContainer" class="bg-indigo-50/70 dark:bg-[#0f2233] rounded-xl border border-indigo-100 dark:border-white/10 px-4 py-3 mb-6 flex flex-wrap items-center gap-y-2 text-sm hidden"></div>
       <div id="learningContainer" class="flex flex-col space-y-4"><div class="bg-white dark:bg-[#0f1729] rounded-2xl shadow-sm border border-slate-200 dark:border-white/10 overflow-hidden"><div class="p-6 md:p-8"><p class="eyebrow mb-2">차세대 첨단 기술 <span class="opacity-50">/</span> 어드밴스드 패키징 <span class="opacity-50">·</span> 약 5분 읽기</p><h1 class="page-title text-slate-900 dark:text-white mb-3">HBM 구조</h1><div class="flex flex-wrap gap-1.5 mb-6 pb-6 border-b border-slate-100 dark:border-white/10"><span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#HBM구조</span><span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#핵심이론</span></div><div class="custom-table-container theory-body prose prose-slate dark:prose-invert max-w-none"><div class="custom-badge-heading"><span class="custom-badge">📘 핵심 개념</span>메모리 대역폭 병목</div>
 
-<p>AI 가속기 같은 프로세서는 연산 능력이 빠르게 늘었지만, 메모리에서 데이터를 가져오는 속도(대역폭)가 따라가지 못하면 연산기가 데이터를 기다리며 놀게 된다. 일반 DRAM 모듈(DDR)은 한 번에 보내는 신호선이 64개로 적어서, 대역폭을 늘리려면 신호선 하나의 속도를 계속 올려야 한다. 게다가 데이터는 기판 위의 긴 배선을 지나야 한다. HBM은 속도보다 통로의 폭을 넓히는 쪽으로 이 문제를 푼다.</p>
+<p>AI 가속기 같은 프로세서는 연산 능력이 빠르게 늘었지만, 메모리에서 데이터를 가져오는 속도(대역폭)가 따라가지 못하면 연산기가 데이터를 기다리며 놀게 된다. 일반 DRAM 모듈(DDR)은 한 번에 보내는 신호선이 64개로 적어서, 대역폭을 늘리려면 신호선 하나의 속도를 계속 올려야 한다. 게다가 데이터는 기판 위의 긴 <button type="button" class="th-term" data-def="칩 안에서 소자들을 서로 이어 전기 신호를 전달하는 금속선이다.">배선</button>을 지나야 한다. HBM은 속도보다 통로의 폭을 넓히는 쪽으로 이 문제를 푼다.</p>
 <div class="custom-badge-heading"><span class="custom-badge">📘 정의</span>HBM의 정의</div>
 
-<p><strong>HBM</strong>(High Bandwidth Memory)은 DRAM 다이를 수직으로 쌓고 실리콘 관통 비아(TSV)로 서로 연결한 고대역폭 메모리이다. 스택 하나가 1024비트의 입출력을 가지며(HBM4는 2048비트), 프로세서와 같은 실리콘 인터포저 위에 나란히 올라가 수 mm 안팎의 짧은 배선으로 연결된다. 다이를 위로 쌓는 3D 구조와 인터포저로 옆의 프로세서에 잇는 2.5D 구조가 함께 쓰인다.</p>
+<p><strong>HBM</strong>(High Bandwidth Memory)은 DRAM 다이를 수직으로 쌓고 실리콘 관통 <button type="button" class="th-term" data-def="위아래 층의 배선을 이어 주는, 금속으로 채운 작은 구멍이다.">비아</button>(TSV)로 서로 연결한 고대역폭 메모리이다. 스택 하나가 1024비트의 입출력을 가지며(HBM4는 2048비트), 프로세서와 같은 실리콘 인터포저 위에 나란히 올라가 수 mm 안팎의 짧은 배선으로 연결된다. 다이를 위로 쌓는 3D 구조와 인터포저로 옆의 프로세서에 잇는 2.5D 구조가 함께 쓰인다.</p>
 <div class="custom-badge-heading"><span class="custom-badge">📘 핵심 개념</span>직관적 이해: 차선 늘리기</div>
 
 <p>DDR이 좁은 도로에서 차의 속도를 올려 더 많이 보내는 방식이라면, HBM은 차선을 크게 늘려서 속도는 비슷해도 한꺼번에 많이 보내는 방식이다. 다만 이 비유는 차선을 늘리는 데 필요한 배선 수, 신호 품질, 발열 같은 비용까지는 보여 주지 못한다.</p>
@@ -1014,7 +1014,7 @@ html.dark .cs-frame{
 <ul>
 <li><strong>양품 다이 선별(KGD)</strong>: 쌓기 전에 다이를 미리 테스트해서 양품만 적층한다.</li>
 <li><strong>TSV 이중화와 리페어</strong>: 불량 TSV나 셀을 예비 경로로 대체하는 구조를 둬서 수율을 높인다.</li>
-<li><strong>열 경로 확보</strong>: 열전도율이 높은 충진 소재를 쓰고, 열 전달용 더미 범프와 TSV를 배치한다.</li>
+<li><strong>열 경로 확보</strong>: <button type="button" class="th-term" data-def="열이 물질 속에서 얼마나 잘 전달되는지를 나타내는 값이다. 클수록 열이 잘 빠져나간다.">열전도율</button>이 높은 충진 소재를 쓰고, 열 전달용 더미 범프와 TSV를 배치한다.</li>
 <li><strong>접합 간격 축소</strong>: 범프 없이 구리끼리 직접 붙이는 하이브리드 본딩으로 단수를 더 늘리는 방법이 검토되고 있다.</li>
 </ul>
 <div class="custom-highlight-box">[면접 팁] HBM이 DDR보다 무엇이 좋은지 물으면 '대역폭'과 '전력 효율'을, 무엇이 어려운지 물으면 '적층 수율, 열, 비용'을 한 묶음으로 답하면 균형이 잡힌다.</div>

@@ -613,7 +613,7 @@ html.dark .cs-frame{
   #cBldChips { margin-left: -1.5rem; margin-right: -1.5rem; padding-left: 1.5rem; padding-right: 1.5rem; }
 }
 </style>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "식각 선택비", "description": "식각에서는 깎을 막만 없애고 나머지는 남겨야 한다. 그러나 식각 가스나 약품은 대상 막만 골라서 깎지 못하고 마스크와 아래층도 조금씩 깎는다.", "inLanguage": "ko", "articleSection": "반도체 8대 공정", "dateModified": "2026-11-13", "publisher": {"@type": "Organization", "name": "반도체 새김"}, "mainEntityOfPage": "https://semicarve.com/theory/th-b942bbf5/"}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "반도체 새김", "item": "https://semicarve.com/"}, {"@type": "ListItem", "position": 2, "name": "이론 백과사전", "item": "https://semicarve.com/theory/"}, {"@type": "ListItem", "position": 3, "name": "식각 선택비"}]}</script></head>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "식각 선택비", "description": "식각에서는 깎을 막만 없애고 나머지는 남겨야 한다. 그러나 식각 가스나 약품은 대상 막만 골라서 깎지 못하고 마스크와 아래층도 조금씩 깎는다.", "inLanguage": "ko", "articleSection": "반도체 8대 공정", "dateModified": "2026-11-14", "publisher": {"@type": "Organization", "name": "반도체 새김"}, "mainEntityOfPage": "https://semicarve.com/theory/th-b942bbf5/"}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "반도체 새김", "item": "https://semicarve.com/"}, {"@type": "ListItem", "position": 2, "name": "이론 백과사전", "item": "https://semicarve.com/theory/"}, {"@type": "ListItem", "position": 3, "name": "식각 선택비"}]}</script></head>
 <body class="bg-slate-50 dark:bg-[#0a1020] text-slate-800 dark:text-slate-200 antialiased min-h-screen flex flex-col relative transition-colors duration-200">
 
   <!-- 좌측 슬라이드 사이드바 -->
@@ -944,7 +944,7 @@ html.dark .cs-frame{
 <p>지킬 막은 두 종류가 있다. 위에서 패턴을 정해 주는 <strong>마스크</strong>(감광막이나 하드마스크)와, 식각이 멈춰야 할 <strong>하부막</strong>이다. 앞의 것을 기준으로 한 값이 마스크 선택비, 뒤의 것을 기준으로 한 값이 하부막 선택비이며, 같은 식각 조건에서도 두 값은 서로 다르다.</p>
 <div class="custom-badge-heading"><span class="custom-badge">📘 핵심 개념</span>선택비가 모자랄 때의 문제</div>
 
-<p>식각은 정해진 시간 동안 계속되므로 그동안 마스크도 함께 얇아진다. 마스크가 도중에 없어지면 가려져 있던 부분까지 깎여 패턴이 망가진다. 막 두께는 웨이퍼 위치마다 조금씩 다르기 때문에, 어떤 자리는 먼저 다 깎여 아래층이 드러난 뒤에도 나머지 자리가 끝날 때까지 식각을 이어가야 한다. 이 추가 식각을 <strong>과식각</strong>(Over-etch)이라 하며, 먼저 드러난 하부막은 과식각 동안 계속 깎인다. 하부막 선택비가 낮으면 이 구간에서 아래층이 얇아지거나 뚫려 소자가 불량이 된다.</p>
+<p>식각은 정해진 시간 동안 계속되므로 그동안 마스크도 함께 얇아진다. 마스크가 도중에 없어지면 가려져 있던 부분까지 깎여 패턴이 망가진다. 막 두께는 <button type="button" class="th-term" data-def="반도체 칩의 재료가 되는, 실리콘 등을 얇고 둥글게 잘라 만든 원판이다.">웨이퍼</button> 위치마다 조금씩 다르기 때문에, 어떤 자리는 먼저 다 깎여 아래층이 드러난 뒤에도 나머지 자리가 끝날 때까지 식각을 이어가야 한다. 이 추가 식각을 <strong>과식각</strong>(Over-etch)이라 하며, 먼저 드러난 하부막은 과식각 동안 계속 깎인다. 하부막 선택비가 낮으면 이 구간에서 아래층이 얇아지거나 뚫려 소자가 불량이 된다.</p>
 <figure class="dg" data-dg="etch-profile" data-cap="식각 방식별 단면과, 선택비가 낮아 마스크와 아래층까지 깎이는 경우"></figure>
 
 <div class="custom-highlight-box">[면접 팁] 선택비를 정의만 말하지 말고 '마스크가 끝까지 버텨야 한다'와 '하부막이 멈춤층 역할을 해야 한다'의 두 가지로 나누어 설명하면 답이 정돈된다.</div>
@@ -963,7 +963,7 @@ html.dark .cs-frame{
 <p>이 식으로 필요한 마스크 두께도 가늠할 수 있다. 깊이 $d$만큼 식각하는 동안 마스크가 깎이는 양은 대략 $d/S$이다. 예를 들어 선택비가 10이면 1 µm를 파는 동안 마스크가 약 0.1 µm 줄어든다. 실제 마스크 두께는 이 값에 웨이퍼 위치별 편차와 과식각 몫을 더해서 정한다.</p>
 <div class="custom-badge-heading"><span class="custom-badge">🎚️ 변수 영향</span>선택비를 좌우하는 조건</div>
 
-<p>식각은 이온이 때려서 깎는 물리적 작용과 라디칼이나 약품이 반응해서 깎는 화학적 작용이 합쳐진 결과이다. 물리적 작용은 막의 종류를 가리지 않고 때리기 때문에 선택비를 낮추고, 화학적 작용은 반응하는 물질이 정해져 있어 선택비를 높인다. 그래서 선택비를 올리는 쪽과 수직한 단면을 만드는 쪽은 조건이 서로 반대로 움직이는 경우가 많다.</p>
+<p>식각은 이온이 때려서 깎는 물리적 작용과 <button type="button" class="th-term" data-def="짝을 이루지 못한 전자를 가진 원자나 분자로, 다른 물질과 매우 쉽게 반응한다.">라디칼</button>이나 약품이 반응해서 깎는 화학적 작용이 합쳐진 결과이다. 물리적 작용은 막의 종류를 가리지 않고 때리기 때문에 선택비를 낮추고, 화학적 작용은 반응하는 물질이 정해져 있어 선택비를 높인다. 그래서 선택비를 올리는 쪽과 수직한 단면을 만드는 쪽은 조건이 서로 반대로 움직이는 경우가 많다.</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -990,7 +990,7 @@ html.dark .cs-frame{
 </tr>
 </tbody>
 </table></div>
-<p>습식 식각은 화학 반응만으로 깎기 때문에 선택비가 대체로 높다. 불산(HF)은 산화막(SiO₂)을 빠르게 녹이지만 실리콘(Si)은 거의 깎지 않고, 뜨거운 인산(H₃PO₄)은 질화막(Si₃N₄)을 산화막보다 훨씬 빠르게 깎는다.</p>
+<p>습식 식각은 화학 반응만으로 깎기 때문에 선택비가 대체로 높다. 불산(HF)은 <button type="button" class="th-term" data-def="실리콘 표면에 만든 얇은 이산화규소(SiO2) 막이다. 전기를 통하지 않게 막는 절연 역할을 한다.">산화막</button>(SiO₂)을 빠르게 녹이지만 실리콘(Si)은 거의 깎지 않고, 뜨거운 인산(H₃PO₄)은 질화막(Si₃N₄)을 산화막보다 훨씬 빠르게 깎는다.</p>
 <div class="custom-highlight-box">[실무 코멘트] 산화막을 실리콘 위에서 식각할 때는 불소와 탄소를 함께 쓰는 가스를 쓴다. 산화막에서는 막 속의 산소가 폴리머를 태워 없애 식각이 계속되고, 실리콘 위에는 폴리머가 쌓여 식각이 느려지는 차이가 선택비를 만든다.</div>
 
 <div class="custom-badge-heading"><span class="custom-badge">✏️ 흔한 오해</span>높은 선택비의 함정</div>
