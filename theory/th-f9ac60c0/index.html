@@ -941,7 +941,7 @@ html.dark .cs-frame{
       <div class="mb-6"><div class="mb-5"><p class="eyebrow mb-1.5">ENCYCLOPEDIA</p><h2 class="page-title text-slate-900 dark:text-white">이론 백과사전</h2><p class="text-sm text-slate-500 dark:text-slate-400 mt-1.5">소자부터 공정, 첨단 기술까지 폴더별로 정리했어요.</p></div></div>
       <input type="text" id="theorySearchInput" class="hidden" onkeyup="handleTheorySearch()">
       <div id="breadcrumbContainer" class="bg-indigo-50/70 dark:bg-[#0f2233] rounded-xl border border-indigo-100 dark:border-white/10 px-4 py-3 mb-6 flex flex-wrap items-center gap-y-2 text-sm hidden"></div>
-      <div id="learningContainer" class="flex flex-col space-y-4"><div class="bg-white dark:bg-[#0f1729] rounded-2xl shadow-sm border border-slate-200 dark:border-white/10 overflow-hidden"><div class="p-6 md:p-8"><p class="eyebrow mb-2">반도체 소자 <span class="opacity-50">/</span> 메모리 반도체 <span class="opacity-50">·</span> 약 4분 읽기</p><h1 class="page-title text-slate-900 dark:text-white mb-3">SRAM 셀 구조</h1><div class="flex flex-wrap gap-1.5 mb-6 pb-6 border-b border-slate-100 dark:border-white/10"><span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#SRAM셀구조</span><span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#핵심이론</span></div><div class="custom-table-container theory-body prose prose-slate dark:prose-invert max-w-none"><div class="custom-badge-heading"><span class="custom-badge">📘 핵심 개념</span>SRAM의 필요성</div>
+      <div id="learningContainer" class="flex flex-col space-y-4"><div class="bg-white dark:bg-[#0f1729] rounded-2xl shadow-sm border border-slate-200 dark:border-white/10 overflow-hidden"><div class="p-6 md:p-8"><p class="eyebrow mb-2">반도체 소자 <span class="opacity-50">/</span> 메모리 반도체 <span class="opacity-50">·</span> 약 5분 읽기</p><h1 class="page-title text-slate-900 dark:text-white mb-3">SRAM 셀 구조</h1><div class="flex flex-wrap gap-1.5 mb-6 pb-6 border-b border-slate-100 dark:border-white/10"><span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#SRAM셀구조</span><span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#핵심이론</span></div><div class="custom-table-container theory-body prose prose-slate dark:prose-invert max-w-none"><div class="custom-badge-heading"><span class="custom-badge">📘 핵심 개념</span>SRAM의 필요성</div>
 
 <p>스마트폰이나 컴퓨터가 순간적인 작업을 빠르게 수행하지 못한다면 사용자는 큰 불편을 겪게 된다. <strong>SRAM</strong>(Static Random Access Memory)은 이러한 문제를 해결하는 데 중요한 역할을 한다. 휘발성 메모리인 SRAM은 전원이 공급되는 동안 데이터를 유지하고, 빠른 데이터 접근 속도를 제공한다. 따라서 중앙처리장치(CPU)나 그래픽처리장치(GPU)의 캐시 메모리로 주로 사용된다. DRAM과 비교해 셀 면적이 크고 비트당 가격이 비싸지만, 속도가 빠르고 리프레시가 필요 없다는 점에서 특정 용도에 적합하다.</p>
 <div class="custom-badge-heading"><span class="custom-badge">📘 정의</span>SRAM의 정의</div>
@@ -990,12 +990,16 @@ $$</p>
 <li>$P_{dynamic}$: 동작 전력</li>
 </ul>
 <p>이 수식을 통해 SRAM의 전력 소모를 분석할 수 있다. 스탠바이 전력은 전원이 공급되는 동안 셀의 상태를 유지하는 데 필요한 전력이고, 동작 전력은 셀이 활성화되어 데이터가 읽히거나 쓰일 때 소모되는 전력이다.</p>
+<div class="custom-highlight-box">[실무 코멘트] SRAM 셀은 읽기 안정성과 쓰기 여유를 동시에 맞춰야 해서 셀 내부 트랜지스터의 크기 비율로 균형을 잡는다. 미세화로 문턱 전압 산포가 커지면 낮은 전압에서 동작이 불안정해져 최소 동작 전압이 제약이 된다.</div>
+
 <div class="custom-badge-heading"><span class="custom-badge">🛠️ 실무 이슈</span>SRAM의 전력 소모와 크기 문제</div>
 
 <p>SRAM은 고속이며 데이터 보존이 가능한 메모리지만, <strong>전력 소모</strong>와 <strong>크기</strong>가 실무에서 문제로 자주 언급된다. 특히 모바일 기기나 IoT 장치에서는 전력 소모가 중요한 요소다. SRAM은 대기 전력($P_{static}$)이 발생하기 때문에 전력 효율을 높이려면 설계 단계에서 이를 줄이는 방법이 필요하다. 또, 트랜지스터의 크기가 SRAM 셀의 크기를 결정하므로, 공정 기술이 발전함에 따라 셀 크기를 줄이는 것이 중요하다. 작은 크기의 SRAM은 더 높은 집적도를 제공하지만, 제조 공정이 정밀해야 한다는 도전 과제를 동반한다.</p>
 <div class="custom-badge-heading"><span class="custom-badge">✏️ 개선 방법</span>SRAM 성능 향상의 방향</div>
 
 <p>SRAM의 성능을 향상시키기 위해 <strong>공정 기술</strong>과 <strong>설계 최적화</strong>가 중요하다. 공정 기술이 발전함에 따라 트랜지스터 크기를 줄여 더 작은 셀을 만들 수 있다. 이는 집적도를 높이고 전력 소모를 줄이는 데 기여한다. 설계 측면에서는 전력 소모를 줄이기 위해 대기 전력을 최소화하는 회로 설계가 필요하다. 예를 들어, 전원 공급이 필요 없는 부분을 차단하는 방법이 있다. <strong>온도</strong> 역시 성능에 영향을 미치므로, 온도 변화에 강한 설계를 고려해야 한다. </p>
+<div class="custom-highlight-box">[면접 팁] 6T SRAM 셀이 교차 결합된 인버터 2개와 액세스 트랜지스터 2개로 이뤄졌다는 구조를 먼저 말한다. DRAM과 비교해 빠르지만 셀이 크고 비싸서 캐시에 쓰고, 대용량에는 DRAM을 쓴다는 결론으로 마무리한다.</div>
+
 <div class="custom-badge-heading"><span class="custom-badge">🧠 암기 포인트</span>시험·면접 직전 체크</div>
 
 <ul>

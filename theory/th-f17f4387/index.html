@@ -616,7 +616,7 @@ html.dark .cs-frame{
   #cBldChips { margin-left: -1.5rem; margin-right: -1.5rem; padding-left: 1.5rem; padding-right: 1.5rem; }
 }
 </style>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "패키지 열 방출", "description": "반도체 소자가 정상 작동하지 않거나 수명이 짧아지는 문제는 주로 열 관리 실패에서 비롯된다. 소자 내부에서 발생하는 열을 제대로 방출하지 못하면 온도가 상승하고, 이는 소자의 전기적 특성을 변형시켜 성능을 저하시…", "inLanguage": "ko", "articleSection": "반도체 8대 공정", "dateModified": "2026-11-13", "publisher": {"@type": "Organization", "name": "반도체 새김"}, "mainEntityOfPage": "https://semicarve.com/theory/th-f17f4387/"}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "반도체 새김", "item": "https://semicarve.com/"}, {"@type": "ListItem", "position": 2, "name": "이론 백과사전", "item": "https://semicarve.com/theory/"}, {"@type": "ListItem", "position": 3, "name": "패키지 열 방출"}]}</script></head>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "패키지 열 방출", "description": "반도체 소자가 정상 작동하지 않거나 수명이 짧아지는 문제는 주로 열 관리 실패에서 비롯된다. 소자 내부에서 발생하는 열을 제대로 방출하지 못하면 온도가 상승하고, 이는 소자의 전기적 특성을 변형시켜 성능을 저하시…", "inLanguage": "ko", "articleSection": "반도체 8대 공정", "dateModified": "2026-11-14", "publisher": {"@type": "Organization", "name": "반도체 새김"}, "mainEntityOfPage": "https://semicarve.com/theory/th-f17f4387/"}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "반도체 새김", "item": "https://semicarve.com/"}, {"@type": "ListItem", "position": 2, "name": "이론 백과사전", "item": "https://semicarve.com/theory/"}, {"@type": "ListItem", "position": 3, "name": "패키지 열 방출"}]}</script></head>
 <body class="bg-slate-50 dark:bg-[#0a1020] text-slate-800 dark:text-slate-200 antialiased min-h-screen flex flex-col relative transition-colors duration-200">
 
   <!-- 좌측 슬라이드 사이드바 -->
@@ -981,12 +981,16 @@ html.dark .cs-frame{
 <div class="custom-badge-heading"><span class="custom-badge">🎚️ 변수 영향</span>열 발생의 원인</div>
 
 <p>패키지 내에서 열이 발생하는 주요 원인은 <strong>전력 소비</strong>와 <strong>전류 흐름</strong>이다. 소자가 작동하면서 전력을 소비할 때, 일부 에너지가 열로 변환된다. 이는 주로 저항성 손실과 관련된다. 또한, 전류가 흐르면서 접합부에서 발생하는 <strong>캐리어 재결합</strong>도 열 발생의 원인 중 하나이다. 이러한 열 발생은 소자 내부의 온도를 상승시키고, 적절한 열 방출이 이루어지지 않으면 소자의 성능 저하와 손상을 초래할 수 있다.</p>
+<div class="custom-highlight-box">[실무 코멘트] 실제 패키지에서는 칩과 방열판 사이의 열 계면 재료(TIM)가 전체 열 저항에서 큰 비중을 차지하는 경우가 많다. 그래서 방열 설계에서는 TIM의 종류와 접합 두께 관리가 중요하다.</div>
+
 <div class="custom-badge-heading"><span class="custom-badge">🛠️ 실무 이슈</span>열 방출 문제 사례</div>
 
 <p>현장에서 패키지 열 방출 문제는 다양한 방식으로 나타난다. 예를 들어, <strong>열 저항 값</strong>이 예상보다 높아지면 소자의 온도가 상승해 전기적 특성이 변화할 수 있다. 이는 시스템의 성능 저하나 수명 단축으로 이어질 수 있다. 또 다른 사례로는 <strong>패키지 재료</strong>의 열 전도성이 낮아 열이 효과적으로 방출되지 않는 경우가 있다. 이러한 문제는 고전력 소자에서 특히 두드러진다. 해결하지 않으면 소자의 안정성에 큰 영향을 줄 수 있다.</p>
 <div class="custom-badge-heading"><span class="custom-badge">✏️ 개선 방법</span>열 방출 성능 향상</div>
 
 <p>패키지 열 방출 성능을 개선하기 위해 여러 접근법을 사용할 수 있다. 첫째, <strong>패키지 설계</strong>를 최적화해 열이 쉽게 전달될 수 있는 구조로 만든다. 예를 들어 히트 싱크나 열 파이프를 추가해 열 방출 경로를 확장할 수 있다. 둘째, <strong>재료 선택</strong>을 통해 열 전도성이 높은 소재를 사용한다. 이는 열이 빠르게 전파될 수 있어 열 저항을 줄이는 데 도움이 된다. 셋째, <strong>환경 조건</strong>을 조절해 외부 냉각 시스템을 활용하거나 주변 온도를 낮추는 방법도 있다. 이는 열 방출을 보조하며 소자의 열 안정성을 높인다.</p>
+<div class="custom-highlight-box">[면접 팁] 열 저항 $R_{th} = \Delta T / P$ 식과 접합부에서 케이스, 주변으로 이어지는 열 경로를 함께 말한다. 소자 온도가 높아지면 수명과 성능이 모두 나빠진다는 결과로 이어서 답한다.</div>
+
 <div class="custom-badge-heading"><span class="custom-badge">🧠 암기 포인트</span>시험·면접 대비 요점</div>
 
 <ul>

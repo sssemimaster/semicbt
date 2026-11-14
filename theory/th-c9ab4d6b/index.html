@@ -941,7 +941,7 @@ html.dark .cs-frame{
       <div class="mb-6"><div class="mb-5"><p class="eyebrow mb-1.5">ENCYCLOPEDIA</p><h2 class="page-title text-slate-900 dark:text-white">이론 백과사전</h2><p class="text-sm text-slate-500 dark:text-slate-400 mt-1.5">소자부터 공정, 첨단 기술까지 폴더별로 정리했어요.</p></div></div>
       <input type="text" id="theorySearchInput" class="hidden" onkeyup="handleTheorySearch()">
       <div id="breadcrumbContainer" class="bg-indigo-50/70 dark:bg-[#0f2233] rounded-xl border border-indigo-100 dark:border-white/10 px-4 py-3 mb-6 flex flex-wrap items-center gap-y-2 text-sm hidden"></div>
-      <div id="learningContainer" class="flex flex-col space-y-4"><div class="bg-white dark:bg-[#0f1729] rounded-2xl shadow-sm border border-slate-200 dark:border-white/10 overflow-hidden"><div class="p-6 md:p-8"><p class="eyebrow mb-2">반도체 8대 공정 <span class="opacity-50">/</span> 2. 산화 공정 (Oxidation) <span class="opacity-50">·</span> 약 4분 읽기</p><h1 class="page-title text-slate-900 dark:text-white mb-3">Deal-Grove 모델</h1><div class="flex flex-wrap gap-1.5 mb-6 pb-6 border-b border-slate-100 dark:border-white/10"><span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#Deal-Grove모델</span><span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#핵심이론</span></div><div class="custom-table-container theory-body prose prose-slate dark:prose-invert max-w-none"><div class="custom-badge-heading"><span class="custom-badge">📘 핵심 개념</span>산화 공정의 필요성</div>
+      <div id="learningContainer" class="flex flex-col space-y-4"><div class="bg-white dark:bg-[#0f1729] rounded-2xl shadow-sm border border-slate-200 dark:border-white/10 overflow-hidden"><div class="p-6 md:p-8"><p class="eyebrow mb-2">반도체 8대 공정 <span class="opacity-50">/</span> 2. 산화 공정 (Oxidation) <span class="opacity-50">·</span> 약 5분 읽기</p><h1 class="page-title text-slate-900 dark:text-white mb-3">Deal-Grove 모델</h1><div class="flex flex-wrap gap-1.5 mb-6 pb-6 border-b border-slate-100 dark:border-white/10"><span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#Deal-Grove모델</span><span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#핵심이론</span></div><div class="custom-table-container theory-body prose prose-slate dark:prose-invert max-w-none"><div class="custom-badge-heading"><span class="custom-badge">📘 핵심 개념</span>산화 공정의 필요성</div>
 
 <p>반도체 제조 과정에서 산화 공정은 실리콘 웨이퍼 표면에 얇은 산화막을 형성하는 단계이다. 이 산화막은 웨이퍼를 보호하고, 전기적 특성을 개선하며, 이후 공정에서 마스크 역할을 한다. 산화막이 균일하지 않거나 두께가 적절하지 않으면, 트랜지스터의 성능이 불안정해지고, 누설 전류가 증가할 수 있다. 따라서 산화 공정의 제어는 매우 중요하다.</p>
 <div class="custom-badge-heading"><span class="custom-badge">📘 정의</span>Deal-Grove 모델</div>
@@ -988,6 +988,8 @@ $$</p>
 </table></div>
 <p>온도가 높아지면 $A$와 $B$ 모두 증가하여 산화 속도가 빨라진다. 반면, 산화 가스의 농도가 변하면 주로 $A$에 영향을 미쳐 초기 산화 속도를 조절한다.</p>
 <div class="custom-highlight-box">온도와 산화 가스의 농도를 조절하여 원하는 산화막 두께를 얻는 것이 중요하다.</div>
+
+<div class="custom-highlight-box">[실무 코멘트] 실제 공정에서는 $A$, $B$를 이론값 그대로 쓰지 않고 온도별로 산화막 두께를 측정해 맞춰 쓴다. 아주 얇은 산화막 구간에서는 실제 성장이 모델보다 빠른 초기 구간이 있어 별도 보정이 필요하다.</div>
 
 <div class="custom-badge-heading"><span class="custom-badge">✏️ 수식</span>산화 속도 메커니즘</div>
 

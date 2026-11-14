@@ -941,7 +941,7 @@ html.dark .cs-frame{
       <div class="mb-6"><div class="mb-5"><p class="eyebrow mb-1.5">ENCYCLOPEDIA</p><h2 class="page-title text-slate-900 dark:text-white">이론 백과사전</h2><p class="text-sm text-slate-500 dark:text-slate-400 mt-1.5">소자부터 공정, 첨단 기술까지 폴더별로 정리했어요.</p></div></div>
       <input type="text" id="theorySearchInput" class="hidden" onkeyup="handleTheorySearch()">
       <div id="breadcrumbContainer" class="bg-indigo-50/70 dark:bg-[#0f2233] rounded-xl border border-indigo-100 dark:border-white/10 px-4 py-3 mb-6 flex flex-wrap items-center gap-y-2 text-sm hidden"></div>
-      <div id="learningContainer" class="flex flex-col space-y-4"><div class="bg-white dark:bg-[#0f1729] rounded-2xl shadow-sm border border-slate-200 dark:border-white/10 overflow-hidden"><div class="p-6 md:p-8"><p class="eyebrow mb-2">반도체 8대 공정 <span class="opacity-50">/</span> 5. 박막 증착 공정 (Deposition) <span class="opacity-50">·</span> 약 4분 읽기</p><h1 class="page-title text-slate-900 dark:text-white mb-3">CVD 공정</h1><div class="flex flex-wrap gap-1.5 mb-6 pb-6 border-b border-slate-100 dark:border-white/10"><span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#CVD공정</span><span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#핵심이론</span></div><div class="custom-table-container theory-body prose prose-slate dark:prose-invert max-w-none"><div class="custom-badge-heading"><span class="custom-badge">📘 핵심 개념</span>CVD 공정의 필요성</div>
+      <div id="learningContainer" class="flex flex-col space-y-4"><div class="bg-white dark:bg-[#0f1729] rounded-2xl shadow-sm border border-slate-200 dark:border-white/10 overflow-hidden"><div class="p-6 md:p-8"><p class="eyebrow mb-2">반도체 8대 공정 <span class="opacity-50">/</span> 5. 박막 증착 공정 (Deposition) <span class="opacity-50">·</span> 약 5분 읽기</p><h1 class="page-title text-slate-900 dark:text-white mb-3">CVD 공정</h1><div class="flex flex-wrap gap-1.5 mb-6 pb-6 border-b border-slate-100 dark:border-white/10"><span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#CVD공정</span><span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#핵심이론</span></div><div class="custom-table-container theory-body prose prose-slate dark:prose-invert max-w-none"><div class="custom-badge-heading"><span class="custom-badge">📘 핵심 개념</span>CVD 공정의 필요성</div>
 
 <p>반도체 제조에서 박막 증착이 제대로 이루어지지 않으면 소자의 성능과 신뢰성이 크게 저하된다. 특히, 균일한 두께와 조성을 가진 박막이 형성되지 않으면 전기적 특성에 문제가 생기거나, 기계적 불안정성이 초래될 수 있다. 이러한 문제를 해결하기 위해 화학 기상 증착(CVD, Chemical Vapor Deposition) 공정이 필수적으로 사용된다. CVD 공정은 다양한 물질을 균일하게 증착할 수 있어, 소자의 성능을 안정적으로 유지한다.</p>
 <div class="custom-badge-heading"><span class="custom-badge">📘 정의</span>CVD 공정의 정의</div>
@@ -978,6 +978,8 @@ html.dark .cs-frame{
 </tr>
 </tbody>
 </table></div>
+<div class="custom-highlight-box">[실무 코멘트] 챔버 벽에 쌓이는 부산물이 입자 불량의 원인이 되므로 플라즈마 세정으로 챔버를 정기적으로 청소한다. 박막 두께와 균일도는 모니터링용 웨이퍼로 주기적으로 확인한다.</div>
+
 <div class="custom-badge-heading"><span class="custom-badge">⚙️ 동작 원리</span>CVD의 반응 메커니즘</div>
 
 <p>CVD의 동작 원리는 화학 반응을 통해 기체 상태의 전구체가 기판 표면에 고체 박막으로 증착되는 것이다. 이 과정은 주로 두 가지 메커니즘으로 설명된다: <strong>기체 반응 메커니즘</strong>과 <strong>표면 반응 메커니즘</strong>. 기체 반응 메커니즘에서는 전구체가 기체 상태에서 먼저 화학적 반응을 일으킨 후 고체로 증착된다. 반면, 표면 반응 메커니즘은 전구체가 기판 표면에 흡착되어 직접 반응을 일으켜 박막을 형성한다. </p>
@@ -1000,6 +1002,8 @@ $$</p>
 <div class="custom-badge-heading"><span class="custom-badge">✏️ 개선 방법</span>공정 최적화 방향</div>
 
 <p>CVD 공정의 효율성을 높이기 위해 다양한 개선 방법이 연구되고 있다. 첫째, 홈 안쪽까지 막이 고르게 쌓여야 한다면 압력과 온도를 조절한 CVD를 쓰고, 더 좁은 구조에는 단차 피복성이 가장 좋은 <strong>ALD</strong>를 쓴다. 둘째, <strong>플라즈마 강화 CVD(PECVD)</strong>는 플라즈마가 반응을 돕기 때문에 낮은 온도에서도 막을 만들 수 있어 열에 약한 구조에 쓴다. 다만 PECVD가 단차 피복성을 좋게 하는 것은 아니다. 셋째, <strong>저온 CVD</strong> 기술은 열적 스트레스를 줄여 소자의 신뢰성을 높인다. 마지막으로, 공정 중 발생하는 입자 문제를 해결하기 위해 <strong>클린룸 환경</strong>을 철저히 관리하고, 정기적인 장비 점검과 유지보수를 통해 입자의 발생을 최소화한다.</p>
+<div class="custom-highlight-box">[면접 팁] CVD는 기체 반응으로 막을 만드는 공정이라고 정의하고, LPCVD와 PECVD를 온도와 압력 기준으로 구분해 답한다. 단차 피복성이 부족하면 ALD로 넘어간다는 흐름을 같이 말한다.</div>
+
 <div class="custom-badge-heading"><span class="custom-badge">🧠 암기 포인트</span>시험·면접 직전 체크</div>
 
 <ul>
