@@ -2294,6 +2294,82 @@ $$</p>
             ${dgT(272, 120, ['시드', '넥', '크라운', '바디(잉곳)'][s.hl], 'dg-volt', 'start')}`);
         }
       }
+      ,
+      'oxidation': {
+        title: '열산화: 실리콘 표면이 산화막으로 변하는 과정',
+        states: [
+          { id: 'start', label: '① 산화 시작', t: 8, flow: false, brk: false, q: '고온에서 산소가 실리콘 표면과 만남',
+            desc: '고온(약 800~1,200℃)의 로에 웨이퍼를 넣고 산소(건식)나 수증기(습식)를 흘린다. 실리콘 표면이 산화제와 만나 얇은 SiO₂ 막이 생기기 시작한다.' },
+          { id: 'grow', label: '② 산화제 확산·반응', t: 36, flow: true, brk: false, q: '산화제가 막을 통과해 실리콘 계면에서 반응',
+            desc: '막이 생긴 뒤에는 산화제가 이미 만들어진 SiO₂ 막 속으로 퍼져 들어가 실리콘과의 경계(계면)에서 반응한다. 새 막은 바깥이 아니라 계면 쪽에서 자라며, 막이 두꺼워질수록 산화제가 지나야 할 거리가 늘어 성장 속도가 느려진다.' },
+          { id: 'thick', label: '③ 막 성장·실리콘 소모', t: 72, flow: true, brk: true, q: 'SiO₂ 두께의 약 44%는 실리콘이 소모된 자리',
+            desc: '산화막이 두꺼워지는 만큼 실리콘이 소모되어 표면이 내려간다. 두께의 약 44%는 원래 실리콘이 있던 자리이고, 나머지 약 56%는 처음 표면 위로 부풀어 오른다. 건식은 느리지만 치밀한 막을, 습식은 두꺼운 막을 빠르게 만든다.' },
+        ],
+        svg(s) {
+          const y0 = 150, t = s.t, top = y0 - t * 0.56, bot = y0 + t * 0.44, X1 = 90, X2 = 270;
+          const gas = [130, 180, 230].map(x => dgArrow(x, 66, x, top - 8)).join('');
+          const inside = s.flow ? [150, 210].map(x => dgFlow(`M${x} ${top + 2} V${bot - 2}`)).join('') : '';
+          const brk = s.brk ? `${dgArrow(284, top + 2, 284, y0)}${dgArrow(284, y0, 284, top + 2)}${dgT(294, (top + y0) / 2 + 4, '위 56%', 'dg-sub', 'start')}${dgArrow(284, y0 + 2, 284, bot)}${dgArrow(284, bot, 284, y0 + 2)}${dgT(294, (y0 + bot) / 2 + 4, '아래 44%', 'dg-sub', 'start')}` : '';
+          return dgSvg('열산화: ' + s.label, `
+            <rect class="dg-si" x="${X1}" y="${bot}" width="${X2 - X1}" height="${250 - bot}"/>
+            <rect class="dg-ox" x="${X1}" y="${top}" width="${X2 - X1}" height="${bot - top}"/>
+            <path class="dg-line" d="M${X1 - 6} ${y0} H${X2 + 6}" style="stroke-dasharray:4 4;opacity:.7;stroke-width:1.6"/>
+            <rect class="dg-heat" x="${X1}" y="254" width="${X2 - X1}" height="10"/>
+            ${dgT(X1 - 6, 262, '고온 가열', 'dg-sub', 'end')}
+            ${dgT(X1 - 8, y0 + 4, '처음 표면', 'dg-sub', 'end')}
+            ${dgT(180, 44, s.id === 'start' ? 'O₂ (건식) · H₂O (습식)' : '산화제 O₂ · H₂O', 'dg-volt')}
+            ${gas}${inside}
+            ${t >= 30 ? dgT(180, top + 15, 'SiO₂', 'dg-sub') : ''}${dgT(180, 232, '실리콘', 'dg-sub')}
+            ${brk}
+            ${dgT(200, 290, s.q, 'dg-volt')}`);
+        }
+      },
+      'process-flow': {
+        title: '반도체 제조 8대 공정 한눈에 보기',
+        states: [
+          { id: 'all', label: '전체 흐름', hl: 0, q: '점선 안의 4단계는 층마다 되풀이된다',
+            desc: '웨이퍼를 만든 뒤 산화막을 입히고, 포토·식각·증착과 이온 주입·배선을 층마다 되풀이해 회로를 쌓는다. 완성된 웨이퍼는 EDS에서 칩별로 검사하고, 잘라서 패키징하면 부품이 된다. 1~6단계가 전공정, 8단계가 후공정이다.' },
+          { id: 's1', label: '1 웨이퍼', hl: 1, q: '단결정 실리콘 원판을 만든다',
+            desc: '정제한 실리콘으로 단결정 잉곳을 키우고, 잘라서 거울처럼 연마한 원판이 웨이퍼이다. 이후 모든 공정이 이 위에서 이뤄진다.' },
+          { id: 's2', label: '2 산화', hl: 2, q: '표면에 절연막(SiO₂)을 입힌다',
+            desc: '고온에서 실리콘 표면을 산화시켜 절연막을 만든다. 표면 보호막과 게이트 절연막으로 쓰이며, 중간에 다시 나오기도 한다.' },
+          { id: 's3', label: '3 포토', hl: 3, q: '회로 모양의 틀을 빛으로 새긴다',
+            desc: '감광막을 바르고 마스크를 거쳐 빛을 쬔 뒤 현상하면, 회로 모양의 틀이 웨이퍼 위에 남는다.' },
+          { id: 's4', label: '4 식각', hl: 4, q: '틀이 가리지 않은 곳을 깎아낸다',
+            desc: '감광막 틀이 덮고 있지 않은 막을 제거해서, 평면에 그린 그림을 입체 구조로 바꾼다.' },
+          { id: 's5', label: '5 증착·주입', hl: 5, q: '막을 쌓고 불순물을 넣는다',
+            desc: 'CVD, PVD, ALD로 얇은 막을 쌓고, 이온 주입으로 n형과 p형 영역을 만들어 트랜지스터를 이룬다.' },
+          { id: 's6', label: '6 배선', hl: 6, q: '소자를 금속선으로 잇는다',
+            desc: '절연막과 구리 배선을 여러 층 쌓아 소자들을 서로 연결한다. 이 단계까지가 전공정이다.' },
+          { id: 's7', label: '7 EDS', hl: 7, q: '자르기 전에 칩을 하나씩 검사한다',
+            desc: '프로브 카드로 웨이퍼 상태의 칩을 검사해 양품과 불량을 가른다. 전공정과 후공정 사이의 검사 단계이다.' },
+          { id: 's8', label: '8 패키징', hl: 8, q: '양품만 잘라 포장한다',
+            desc: '다이싱으로 칩을 자르고 기판에 붙여 연결과 몰딩을 하면, 보드에 실을 수 있는 부품이 된다. 이 단계가 후공정이다.' },
+        ],
+        svg(s) {
+          const NM = ['웨이퍼', '산화', '포토', '식각', '증착·주입', '배선', 'EDS', '패키징'];
+          const C = [62, 154, 246, 338], P = [[0, 40], [1, 40], [0, 130], [1, 130], [2, 130], [3, 130], [2, 226], [3, 226]];
+          const box = (i) => {
+            const [c, y] = P[i], x = C[c] - 38, on = s.hl === i + 1;
+            return `<rect class="dg-fsub" x="${x}" y="${y}" width="76" height="40" rx="8"/>`
+              + `<rect class="${on ? 'dg-hl' : 'dg-line'}" x="${x}" y="${y}" width="76" height="40" rx="8" style="${on ? '' : 'stroke-width:1.4;opacity:.55'}"/>`
+              + dgT(C[c], y + 16, String(i + 1), 'dg-volt') + dgT(C[c], y + 33, NM[i], 'dg-sub');
+          };
+          const lp = s.hl === 0 ? 'stroke:var(--hl-accent);stroke-width:2.2' : 'stroke:currentColor;stroke-width:1.5;opacity:.5';
+          return dgSvg('제조 8대 공정: ' + s.label, `
+            <rect x="6" y="108" width="388" height="92" rx="14" fill="none" style="${lp};stroke-dasharray:5 4"/>
+            ${dgT(388, 123, '층마다 반복 ↻', 'dg-sub', 'end')}
+            ${[0, 1, 2, 3, 4, 5, 6, 7].map(box).join('')}
+            ${dgArrow(102, 60, 114, 60)}
+            <path class="dg-line" d="M154 80 V98 H62 V126" style="stroke-width:1.6"/>${dgArrow(62, 118, 62, 129)}
+            ${dgArrow(102, 150, 114, 150)}${dgArrow(194, 150, 206, 150)}${dgArrow(286, 150, 298, 150)}
+            <path class="dg-line" d="M320 170 V186 H80" style="stroke-dasharray:4 3;stroke-width:1.4;opacity:.7"/>${dgArrow(80, 186, 80, 171)}
+            <path class="dg-line" d="M338 170 V210 H246 V222" style="stroke-width:1.6"/>${dgArrow(246, 214, 246, 225)}
+            ${dgArrow(286, 246, 298, 246)}
+            ${dgT(12, 242, '전공정: 1~6단계', 'dg-sub', 'start')}${dgT(12, 260, '후공정: 8단계', 'dg-sub', 'start')}
+            ${dgT(200, 290, s.q, 'dg-volt')}`);
+        }
+      }
 
     };
     function dgRender(fig, sid) {
