@@ -539,7 +539,7 @@ button.fj-chip { cursor:pointer; transition:border-color .15s,color .15s; } butt
   .fj-base { grid-template-columns:repeat(2,minmax(0,1fr)); }
   .fj-step { flex-basis:4rem; font-size:.68rem; }
   .fj-info h3 { font-size:1.2rem; }
-  .fj-entry { padding:.85rem 1rem; } .fj-entry .go { display:none; }
+  .fj-entry { padding:.5rem .8rem; gap:.65rem; border-radius:.85rem; } .fj-entry svg { width:1.9rem; height:1.9rem; } .fj-entry .t { font-size:.88rem; } .fj-entry .s, .fj-entry .go { display:none; }
 }
 @media (prefers-reduced-motion:reduce) { .fj-ly,.fj-scene,.fj-bar i,.fj-step,.fj-step b { transition:none; } .fj-ly { transform:none; } }
 </style>
@@ -590,10 +590,11 @@ button.fj-chip { cursor:pointer; transition:border-color .15s,color .15s; } butt
   #view-lobby > section:first-of-type h2 { font-size: 22px; }
   #view-lobby > .grid { display: contents; }                 /* 과목 + 웨이퍼 묶음을 풀어서 각각 순서를 준다 */
   #view-lobby > section:nth-of-type(1) { order: 1; }          /* 인사·검색 */
-  #view-lobby > .grid > section:last-child { order: 2; }      /* 웨이퍼 새기기 (맨 위) */
-  #view-lobby > .grid > section:first-child { order: 3; }     /* 과목별 학습 */
-  #view-lobby > section:nth-of-type(3) { order: 4; }          /* 직무 지도 */
-  #view-lobby > section:nth-of-type(2) { order: 5; }          /* 학습 방식 카드 (맨 아래) */
+  #view-lobby > section:nth-of-type(2) { order: 2; }          /* 처음이세요? 입구 (작게, 맨 위) */
+  #view-lobby > .grid > section:last-child { order: 3; }      /* 웨이퍼 새기기 */
+  #view-lobby > .grid > section:first-child { order: 4; }     /* 과목별 학습 */
+  #view-lobby > section:nth-of-type(4) { order: 5; }          /* 직무 지도 */
+  #view-lobby > section:nth-of-type(3) { order: 6; }          /* 학습 방식 카드 (맨 아래) */
   #view-lobby h3 { font-size: 16px; }
   #view-lobby section > .mb-4 > span { display: none; }
   #homeSubjects { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: #e2e8f0; }
