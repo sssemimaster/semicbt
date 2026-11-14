@@ -15,7 +15,7 @@
   <title>PN 접합 정리 — 반도체 물리 | 반도체 새김</title>
   <meta name="description" content="PN 접합은 다이오드, 트랜지스터, 태양전지 등 다양한 전자 소자의 기본 구성 요소로 사용된다. 이러한 소자들은 전류를 일방향으로 흐르게 하거나, 전압을 증폭하는 등 전기적 특성을 조절하는 데 필수적이다."><link rel="canonical" href="https://semicarve.com/theory/th-18535/"><meta property="og:type" content="article"><meta property="og:site_name" content="반도체 새김"><meta property="og:locale" content="ko_KR"><meta property="og:title" content="PN 접합 정리 — 반도체 물리 | 반도체 새김"><meta property="og:description" content="PN 접합은 다이오드, 트랜지스터, 태양전지 등 다양한 전자 소자의 기본 구성 요소로 사용된다. 이러한 소자들은 전류를 일방향으로 흐르게 하거나, 전압을 증폭하는 등 전기적 특성을 조절하는 데 필수적이다."><meta name="twitter:card" content="summary"><meta property="og:url" content="https://semicarve.com/theory/th-18535/">
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Sora:wght@500;600;700;800&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Sora:wght@500;600;700;800&display=swap">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%230f1729' stroke='%2367e8f9' stroke-width='2'/%3E%3Cpath d='M9 18h5v-5h4v8h5' fill='none' stroke='%23a78bfa' stroke-width='2'/%3E%3C/svg%3E">
   
   <script>
@@ -99,9 +99,9 @@
     .stagger > *:nth-child(5), #learningContainer > *:nth-child(5), #noteContainer > *:nth-child(5), #reviewList > *:nth-child(5) { animation-delay: .22s; }
     .stagger > *:nth-child(n+6), #learningContainer > *:nth-child(n+6), #noteContainer > *:nth-child(n+6), #reviewList > *:nth-child(n+6) { animation-delay: .27s; }
     .float-slow { animation: drift 14s ease-in-out infinite; } .float-slower { animation: drift 19s ease-in-out infinite reverse; }
-    .prism-text { background-size: 200% 100% !important; animation: shimmer 7s linear 2; background-image: linear-gradient(90deg, #0891b2, #6366f1 25%, #c026d3 50%, #6366f1 75%, #0891b2) !important; }
+    .prism-text { background-size: 200% 100% !important; animation: shimmer 5s linear 1; background-image: linear-gradient(90deg, #0891b2, #6366f1 25%, #c026d3 50%, #6366f1 75%, #0891b2) !important; }
     html.dark .prism-text { background-image: linear-gradient(90deg, #67e8f9, #a78bfa 25%, #f472b6 50%, #a78bfa 75%, #67e8f9) !important; }
-    .wafer-sheen { transform: translateX(-260px) rotate(24deg); animation: sheen 7s ease-in-out 2 forwards; }
+    .wafer-sheen { display: none; }
     .opt.opt-correct { animation: pop .4s ease; } .opt.opt-wrong { animation: shake .45s ease; }
     .pbtn:active:not(:disabled), .opt:active:not(:disabled), .feature-card:active, .chip:active { transform: scale(.98); }
     .chip { transition: border-color .15s, background-color .15s, transform .12s, box-shadow .15s, color .15s; }
@@ -263,7 +263,7 @@
     .feature-card { transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease; }
     .feature-card:hover { transform: translateY(-2px); box-shadow: 0 10px 30px -12px rgba(99,102,241,.45); }
     @keyframes waferPulse { 0%,100% { opacity: .75 } 50% { opacity: 1 } }
-    .wafer-latest { animation: waferPulse 2.4s ease-in-out 3; }
+    .wafer-latest { animation: waferPulse 1.6s ease-in-out 2; }
     /* ===== 면접 연출: 문 열고 입장 + 면접관 말풍선 ===== */
     .iv-intro { position: absolute; inset: 0; z-index: 20; border-radius: 1rem; overflow: hidden; cursor: pointer; display: flex; align-items: center; justify-content: center; background: linear-gradient(#eef2f8, #d9e2ee); transition: opacity .32s ease; }
     html.dark .iv-intro { background: linear-gradient(#0b1226, #141d38); }
@@ -1099,7 +1099,16 @@ html.dark .cs-frame{
     function toggleSidebar() { document.getElementById('sidebar').classList.toggle('-translate-x-full'); document.getElementById('sidebarOverlay').classList.toggle('hidden'); }
 
     // 수식 렌더링
-    function applyMathRendering() { setTimeout(() => { renderMathInElement(document.body, { delimiters: [ {left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false} ], throwOnError: false }); }, 50); }
+    let mathTimer = 0;
+    function applyMathRendering() {
+      clearTimeout(mathTimer);
+      mathTimer = setTimeout(() => {
+        if (typeof renderMathInElement !== 'function') return;
+        const opt = { delimiters: [ {left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false} ], throwOnError: false };
+        // 숨겨진 화면은 건너뛰고, '$'가 없는 화면은 훑지도 않는다.
+        document.querySelectorAll('[id^="view-"]:not(.hidden)').forEach(el => { if (el.textContent.indexOf('$') !== -1) renderMathInElement(el, opt); });
+      }, 50);
+    }
 
     const SUPABASE_URL = "https://hyqsrajudsymexxuekfb.supabase.co"; 
     const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh5cXNyYWp1ZHN5bWV4eHVla2ZiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQxMzA0MDEsImV4cCI6MjEwOTcwNjQwMX0.6OPx9ClxjCnIfGcCFwYhgbWICcpgBI1cvx1QcAyVvIY"; 
@@ -2814,7 +2823,7 @@ html.dark .cs-frame{
           + `<circle cx="${c.end[0]}" cy="${c.end[1]}" r="${Math.max(1.2, lw * .9).toFixed(1)}" fill="${cl}"/>`;
       }
       if (o.sel != null && cells[o.sel]) { const c = cells[o.sel]; h += `<rect id="wfSel${u}" x="${c.cx - 14}" y="${c.cy - 14}" width="28" height="28" rx="3" fill="none" stroke="${dk ? '#fff' : '#0f172a'}" stroke-width="1.8"/>`; }
-      h += `<circle cx="0" cy="140" r="7" fill="${dk ? '#0b1226' : '#f1f5fb'}"/>${o.lite ? '' : `<g clip-path="url(#wClip${u})" style="pointer-events:none"><rect class="wafer-sheen" x="-30" y="-200" width="60" height="400" fill="url(#sheenG${u})"/></g>`}<g id="waferFx${u}" style="pointer-events:none"></g></svg>`;
+      h += `<circle cx="0" cy="140" r="7" fill="${dk ? '#0b1226' : '#f1f5fb'}"/><g id="waferFx${u}" style="pointer-events:none"></g></svg>`;
       return { svg: h, cells, earned };
     }
     // 눌린 위치에서 가장 가까운 새긴 칸 번호 (칸이 작아도 눌리도록 가까운 칸을 고른다)
@@ -3204,11 +3213,19 @@ html.dark .cs-frame{
         const tpl = document.createElement('template'); tpl.innerHTML = html; par.replaceChild(tpl.content, n);
       });
     }
+    let emoPending = new Set(), emoRaf = 0;
     const emoObserver = new MutationObserver((muts) => {
-      emoObserver.disconnect();
-      muts.forEach(m => { if (m.type === 'characterData') iconize(m.target); else m.addedNodes.forEach(iconize); });
-      emoObserver.observe(document.body, { childList: true, subtree: true, characterData: true });
+      muts.forEach(m => { if (m.type === 'characterData') emoPending.add(m.target); else m.addedNodes.forEach(n => emoPending.add(n)); });
+      if (!emoRaf) emoRaf = requestAnimationFrame(flushEmo);
     });
+    function flushEmo() {
+      emoRaf = 0;
+      const set = emoPending; emoPending = new Set();
+      emoObserver.disconnect();
+      set.forEach(n => { if (!n.isConnected) return; for (let p = n.parentNode; p; p = p.parentNode) if (set.has(p)) return; iconize(n); });
+      emoObserver.takeRecords();
+      emoObserver.observe(document.body, { childList: true, subtree: true, characterData: true });
+    }
     iconize(document.body); emoObserver.observe(document.body, { childList: true, subtree: true, characterData: true });
 
     // ✨ 모션: 숫자 올라가기 / 보기 화면 전환 / 축하 효과
