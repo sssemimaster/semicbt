@@ -248,6 +248,9 @@ def normalize_markdown(text):
     t = re.sub(r"\\\((.+?)\\\)", lambda mo: "$" + mo.group(1) + "$", t, flags=re.DOTALL)
     # 모델이 #, ## 제목을 쓴 경우 ### 로 강등
     t = re.sub(r"^#{1,2}\s", "### ", t, flags=re.M)
+    # 팁 박스 모양 보정: '> 💡 **[실무 코멘트]** 문장' → '> 💡 [실무 코멘트] 문장', 라벨만 있고 문장이 다음 줄 인용으로 이어지면 한 줄로 합침
+    t = re.sub(r"^(>[ \t]*💡[ \t]*)\*\*\[([^\]\n]+)\]\*\*[ \t]*[:：]?", r"\1[\2] ", t, flags=re.M)
+    t = re.sub(r"^(>[ \t]*💡[ \t]*\[[^\]\n]+\])[ \t]*[:：]?[ \t]*\n>[ \t]*(?=\S)", r"\1 ", t, flags=re.M)
     # 내용 없는 빈 인용 줄('> ') 제거 후 과한 빈 줄 정리
     t = re.sub(r"^[ \t]*>[ \t]*$\n?", "", t, flags=re.M)
     t = re.sub(r"\n{3,}", "\n\n", t)
@@ -271,6 +274,37 @@ def cliche_hits(text):
     return sum(len(re.findall(p, text)) for p in CLICHES)
 
 
+TIP_LINE_RE = re.compile(r"^>[ \t]*💡[ \t]*\[([^\]\n]+)\][ \t]*(.*)$")
+
+
+def check_tips(text, need=()):
+    """팁 박스 점검. 팁은 반드시 한 줄 `> 💡 [라벨] 문장` 형식이어야 하고, 문장이 비어 있으면(전구만 보임) 안 된다.
+    need 에 적은 종류(예: '[실무 코멘트]')가 하나도 없으면 안 된다."""
+    labels = []
+    for ln in text.splitlines():
+        if not ln.lstrip().startswith(">"):
+            continue
+        m = TIP_LINE_RE.match(ln.strip())
+        if not m:
+            raise ValueError("팁 박스는 한 줄 `> 💡 [면접 팁] 문장` 형식만 허용 (라벨이 없는 박스나 일반 인용 줄 금지)")
+        if len(m.group(2).strip()) < 12:
+            raise ValueError("팁 박스(> 💡 [...])에 내용이 비어 있거나 너무 짧음 → 라벨 뒤에 한두 문장을 채우기")
+        labels.append(m.group(1).strip())
+    miss = [n for n in need if n.strip("[] ") not in labels]
+    if miss:
+        raise ValueError("필요한 팁 박스가 없음: " + ", ".join(miss) + " → 해당 소제목 아래에 `> 💡 " + miss[0] + " 문장` 한 줄을 추가")
+    if not labels:
+        raise ValueError("팁 박스가 하나도 없음")
+
+
+def tips_ok(text, need=()):
+    try:
+        check_tips(text, need)
+        return True
+    except ValueError:
+        return False
+
+
 def validate_part(text, part):
     if len(text) < part["min_chars"]:
         raise ValueError(f"내용이 너무 짧음 ({len(text)}자)")
@@ -284,8 +318,7 @@ def validate_part(text, part):
     last_badge = part.get("last_badge")
     if last_badge and last_badge not in headings[-1]:
         raise ValueError(f"마지막 소제목이 {last_badge} 가 아님")
-    if re.search(r"^>\s*💡\s*\[[^\]]+\]\s*$", text, re.M):
-        raise ValueError("팁 박스(> 💡 [...])에 내용이 비어 있음 → 문장을 채우기")
+    check_tips(text, part.get("need_tips") or ([part["tip"]] if part.get("tip") else []))
     hits = cliche_hits(text)
     if hits >= 3:
         raise ValueError(f"상투적 표현이 {hits}번 쓰임 (구체적으로 다시 쓰기)")
@@ -330,7 +363,7 @@ def build_part_prompt(part, previous_text, outline=""):
 
 [형식 재확인]
 - 소제목은 `### [뱃지] 제목` 형식이며, 뱃지는 내용에 맞게 다음 중에서 고르세요: {part['badges']}
-- 인라인 팁 `> 💡 {part['tip']} ...` 를 1개 포함하세요.
+- 인라인 팁 `> 💡 {part['tip']} 문장` 을 반드시 한 줄로 포함하세요. 라벨만 쓰고 문장을 비우거나, 라벨 없는 박스·`> ` 로 시작하는 일반 인용 줄을 쓰면 안 됩니다. 문장은 이 글의 내용에 맞는 구체적인 한두 문장입니다.
 - (선택) 아래 '눌러 보는 그림' 중 이 글의 설명에 꼭 맞는 것이 있을 때만, 그 그림이 필요한 소제목의 본문 뒤에 단독 한 줄로 `{{{{diagram:그림id|한 문장 캡션}}}}` 을 넣을 수 있습니다. 맞는 그림이 없으면 아무것도 넣지 않습니다. 같은 그림은 글 전체에서 한 번만 쓰고, 그림이 설명하는 내용을 글에서도 말로 설명해야 합니다.
 {diagram_menu()}
 - (선택) 비전문가가 모를 용어는 그 문장 속에서 `{{{{term:용어|한 문장 풀이}}}}` 로 감싸면 사이트에서 눌러 풀이를 볼 수 있습니다. 이 파트에서 정말 필요한 1~2개만 쓰고, 본문에 직접 쓰기엔 곁가지인 배경지식은 단독 한 줄 `{{{{toggle:제목|두세 문장 설명}}}}` 으로 파트당 최대 1개만 넣으세요. 풀이·설명 안에는 `}}`, `|`, 줄바꿈을 쓰지 마세요.
@@ -466,7 +499,7 @@ def parts_from_plan(plan):
             "min_headings": 2, "min_chars": 400, "last_badge": None,
         },
         {
-            "no": 2, "name": plan["parts"][1]["name"].strip(), "badges": badge(plan["parts"][1]["badges"]), "tip": "[실무 코멘트]",
+            "no": 2, "name": plan["parts"][1]["name"].strip(), "badges": badge(plan["parts"][1]["badges"]), "tip": "[실무 코멘트]", "need_tips": ["[실무 코멘트]"] + (["[흔한 오해]"] if miscs else []),
             "guide": f"""- 이 파트의 역할: 시험과 면접에서 구체적으로 묻는 '세부 내용'입니다. 사실과 인과가 정확해야 합니다.
 - 이 파트에서 다룰 내용 (주제에 맞게 설계됨):
 {focus(1)}
@@ -496,7 +529,7 @@ AUDIT_SYSTEM = """당신은 반도체 공정·소자 전문가이자 까다로�
 2. 구체적이지 않은 빈말 문장(예: '중요한 역할을 한다'), 같은 말을 되풀이하는 문장, 내용 없는 팁 박스
 3. 질문형 소제목, 수사 의문문
 4. 평서체(~한다/~이다/~된다)가 아닌 문장 끝(~해요, ~예요, ~합니다, ~입니다)
-틀리지 않은 문장은 건드리지 않습니다. 고칠 곳이 없으면 빈 배열을 돌려줍니다.
+팁 박스(`> 💡 [라벨] 문장`)는 지우지 말고, 고칠 때는 같은 라벨 뒤에 구체적인 문장으로 바꿉니다. 틀리지 않은 문장은 건드리지 않습니다. 고칠 곳이 없으면 빈 배열을 돌려줍니다.
 
 출력 형식(JSON 객체 하나만):
 {"fixes": [{"find": "원문에 글자 하나 다르지 않게 그대로 있는 구절(원문에서 한 번만 나오는 길이로)", "replace": "고친 구절(삭제하려면 빈 문자열, 평서체 ~한다/~이다로 씀)", "reason": "한 줄 이유"}]}
@@ -520,7 +553,10 @@ def audit_theory(text):
             find, rep_ = str(f.get("find", "")), str(f.get("replace", ""))
             if len(find) < 4 or "\n" in find or "###" in find or "$" in find or "$" in rep_ or out.count(find) != 1:
                 continue
-            out = out.replace(find, rep_)
+            new = out.replace(find, rep_)
+            if tips_ok(out) and not tips_ok(new):   # 팁 박스를 비우거나 망가뜨리는 교정은 적용하지 않는다 (전구만 남는 문제 방지)
+                continue
+            out = new
             applied += 1
         out = re.sub(r"[ \t]{2,}", " ", out)
         out = re.sub(r"^[ \t]*>[ \t]*$\n?", "", out, flags=re.M)   # 교정이 팁 박스 내용을 지우면 빈 '> ' 만 남는다 → 빈 인용 줄 제거
@@ -551,7 +587,15 @@ def generate_theory():
         sections.append(ask_markdown(build_part_prompt(part, previous, outline), part))
     seen = set()
     sections = [sanitize_diagrams(sec, seen) for sec in sections]   # 파트가 달라도 같은 그림은 한 번만
-    return audit_theory("\n\n".join(sections))
+    draft = "\n\n".join(sections)
+    need = [n for pt in parts for n in (pt.get("need_tips") or [pt["tip"]])]
+    final = audit_theory(draft)
+    try:
+        check_tips(final, need)
+    except ValueError as e:
+        print(f"   ⚠️ 교정본의 팁 박스가 어긋나 교정 전 원문을 씁니다: {e}")
+        final = draft
+    return final
 
 
 # ====================================================================
