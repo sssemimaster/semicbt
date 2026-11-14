@@ -2281,6 +2281,35 @@ $$</p>
         }
       }
       ,
+      'oxidation': {
+        title: '열산화: 실리콘 표면이 산화막으로 변하는 과정',
+        states: [
+          { id: 'start', label: '① 산화 시작', t: 8, flow: false, brk: false, q: '고온에서 산소가 실리콘 표면과 만남',
+            desc: '고온(약 800~1,200℃)의 로에 웨이퍼를 넣고 산소(건식)나 수증기(습식)를 흘린다. 실리콘 표면이 산화제와 만나 얇은 SiO₂ 막이 생기기 시작한다.' },
+          { id: 'grow', label: '② 산화제 확산·반응', t: 36, flow: true, brk: false, q: '산화제가 막을 통과해 실리콘 계면에서 반응',
+            desc: '막이 생긴 뒤에는 산화제가 이미 만들어진 SiO₂ 막 속으로 퍼져 들어가 실리콘과의 경계(계면)에서 반응한다. 새 막은 바깥이 아니라 계면 쪽에서 자라며, 막이 두꺼워질수록 산화제가 지나야 할 거리가 늘어 성장 속도가 느려진다.' },
+          { id: 'thick', label: '③ 막 성장·실리콘 소모', t: 72, flow: true, brk: true, q: 'SiO₂ 두께의 약 44%는 실리콘이 소모된 자리',
+            desc: '산화막이 두꺼워지는 만큼 실리콘이 소모되어 표면이 내려간다. 두께의 약 44%는 원래 실리콘이 있던 자리이고, 나머지 약 56%는 처음 표면 위로 부풀어 오른다. 건식은 느리지만 치밀한 막을, 습식은 두꺼운 막을 빠르게 만든다.' },
+        ],
+        svg(s) {
+          const y0 = 150, t = s.t, top = y0 - t * 0.56, bot = y0 + t * 0.44, X1 = 90, X2 = 270;
+          const gas = [130, 180, 230].map(x => dgArrow(x, 66, x, top - 8)).join('');
+          const inside = s.flow ? [150, 210].map(x => dgFlow(`M${x} ${top + 2} V${bot - 2}`)).join('') : '';
+          const brk = s.brk ? `${dgArrow(284, top + 2, 284, y0)}${dgArrow(284, y0, 284, top + 2)}${dgT(294, (top + y0) / 2 + 4, '위 56%', 'dg-sub', 'start')}${dgArrow(284, y0 + 2, 284, bot)}${dgArrow(284, bot, 284, y0 + 2)}${dgT(294, (y0 + bot) / 2 + 4, '아래 44%', 'dg-sub', 'start')}` : '';
+          return dgSvg('열산화: ' + s.label, `
+            <rect class="dg-si" x="${X1}" y="${bot}" width="${X2 - X1}" height="${250 - bot}"/>
+            <rect class="dg-ox" x="${X1}" y="${top}" width="${X2 - X1}" height="${bot - top}"/>
+            <path class="dg-line" d="M${X1 - 6} ${y0} H${X2 + 6}" style="stroke-dasharray:4 4;opacity:.7;stroke-width:1.6"/>
+            <rect class="dg-heat" x="${X1}" y="254" width="${X2 - X1}" height="10"/>
+            ${dgT(X1 - 6, 262, '고온 가열', 'dg-sub', 'end')}
+            ${dgT(X1 - 8, y0 + 4, '처음 표면', 'dg-sub', 'end')}
+            ${dgT(180, 44, s.id === 'start' ? 'O₂ (건식) · H₂O (습식)' : '산화제 O₂ · H₂O', 'dg-volt')}
+            ${gas}${inside}
+            ${t >= 30 ? dgT(180, top + 15, 'SiO₂', 'dg-sub') : ''}${dgT(180, 232, '실리콘', 'dg-sub')}
+            ${brk}
+            ${dgT(200, 290, s.q, 'dg-volt')}`);
+        }
+      },
       'process-flow': {
         title: '반도체 제조 8대 공정 한눈에 보기',
         states: [
