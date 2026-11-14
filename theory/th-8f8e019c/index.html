@@ -187,11 +187,15 @@
     .wl-kpi b { font-family: 'Sora', sans-serif; font-size: 1.05rem; font-weight: 800; } .wl-kpi small { font-size: 10.5px; color: #64748b; margin-left: auto; } html.dark .wl-kpi small { color: #94a3b8; }
     .wl-kpi { gap: 1rem; } .wl-kpi > div { background: none !important; padding: 0 !important; flex: none !important; } .wl-kpi small { margin-left: 0 !important; }
     /* 넓은 화면(PC·태블릿 가로): 왼쪽에 웨이퍼·요약, 오른쪽에 날짜 목록·상세를 나란히 */
+    .wl-dbar { display: none; }
     @media (min-width: 900px) and (min-height: 560px) {
       .wl-card.wl-log { max-width: 1040px; max-height: min(calc(100dvh - 48px), 760px); }
       .wl-log .wl-head { padding: 1.4rem 1.8rem .4rem; } .wl-log .wl-head h3 { font-size: 1.35rem; }
       .wl-log .wl-scroll { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr); gap: 2.2rem; align-items: start; padding: .4rem 1.8rem 1.5rem; }
-      .wl-log .wl-l { position: sticky; top: 0; }
+      .wl-log .wl-scroll { align-items: stretch; } .wl-log .wl-l { position: sticky; top: 0; align-self: start; }
+      .wl-log .wl-r { display: flex; flex-direction: column; } .wl-log .wl-det { flex: 1 1 auto; display: flex; flex-direction: column; } .wl-log .wl-det .wl-chips { margin-top: .7rem; max-height: none; }
+      .wl-log .wl-dbar { display: block; margin-top: .9rem; } .wl-dbar p { font-size: 12px; font-weight: 700; color: #64748b; margin-bottom: -.2rem; } html.dark .wl-dbar p { color: #94a3b8; }
+      .wl-dlg { display: flex; flex-wrap: wrap; gap: .3rem 1rem; margin-top: .45rem; font-size: 12px; color: #64748b; } html.dark .wl-dlg { color: #94a3b8; } .wl-dlg span { display: inline-flex; align-items: center; gap: .3rem; } .wl-dlg i { width: 8px; height: 8px; border-radius: 50%; display: inline-block; } .wl-dlg b { color: #0f172a; } html.dark .wl-dlg b { color: #f1f5f9; }
       .wl-log .wl-w { width: min(100%, 440px, 52dvh); margin: .2rem auto .5rem; }
       .wl-log .wl-stats > div { padding: .65rem .2rem; } .wl-log .wl-stats b { font-size: 1.4rem; } .wl-log .wl-stats small { font-size: 12px; }
       .wl-log .wl-r .wl-grid { margin-top: .3rem; gap: 7px; } .wl-log .wl-t b { font-size: 14.5px; } .wl-log .wl-t small { font-size: 11px; } .wl-log .wl-t em { font-size: 11px; height: 12px; }
@@ -2800,12 +2804,18 @@ html.dark .cs-frame{
       const n = e ? e.th.length * 2 + e.q + e.iv : 0, a = n >= 8 ? '70' : n >= 4 ? '48' : '28', ic = e ? `${e.th.length ? '📖' : ''}${e.q ? '✏️' : ''}${e.iv ? '🎤' : ''}` : '';
       return `<button type="button" class="wl-t${i === wl.sel ? ' on' : ''}${e ? '' : ' old'}" data-i="${i}" ${hex ? `style="background:${hex}${a}"` : ''} aria-label="DAY ${wl.m * 30 + i + 1}, ${md} ${wk}요일"><b>${md}</b><small>${wk}</small><em>${ic}</em></button>`;
     }
+    // 그날 과목 비율 (넓은 화면에서만 보임)
+    function wlDayShare(e) {
+      const w = wlW(e), tot = w.reduce((a, b) => a + b, 0), dk = isDark(); if (!tot) return '';
+      return `<div class="wl-dbar"><p>그날 공부한 과목 비율</p>${wlBar(w, dk)}<div class="wl-dlg">${w.map((v, i) => v ? `<span><i style="background:${CATS[i][dk ? 'd' : 'l']}"></i>${CATS[i].s} <b>${Math.round(v / tot * 100)}%</b></span>` : '').join('')}</div></div>`;
+    }
     function wlDetail() {
       if (wl.sel == null) return `<p class="wl-hint">아직 새긴 날이 없어요. 오늘의 학습을 마치고 첫 회로를 새겨 보세요.</p>`;
       const date = dayOfCell(wl.m, wl.sel), e = date ? dayLog[date] : null, mm = date ? dayMain(date) : null, hasC = mm !== null && mm >= 0, [md, wk] = date ? dayParts(date) : ['', ''];
       let h = `<div class="wl-det-h"><span class="wl-dot ${hasC ? '' : 'prism'}"></span><b>DAY ${wl.m * 30 + wl.sel + 1}</b><span>${md} (${wk})</span>${hasC ? `<em>${CATS[mm].s} 중심</em>` : ''}</div>`;
       if (!e) return h + `<p class="wl-hint">학습 기록 기능이 생기기 전에 새긴 칸이라 자세한 내용이 남아 있지 않아요.</p>`;
       h += `<div class="wl-kpi"><div>📖<b>${e.th.length}</b><small>이론</small></div><div>✏️<b>${e.q}</b><small>문제</small></div><div>🎤<b>${e.iv}</b><small>면접</small></div></div>`;
+      h += wlDayShare(e);
       const qt = Object.entries(e.qt).sort((a, b) => b[1] - a[1]);
       if (e.th.length || qt.length) h += `<div class="wl-chips">${e.th.map(t => `<span class="wl-chip">📖 ${escH(t)}</span>`).join('')}${qt.map(([t, n]) => `<span class="wl-chip">✏️ ${escH(t)}<b>×${n}</b></span>`).join('')}</div>`;
       return h;
