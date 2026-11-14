@@ -941,7 +941,7 @@ html.dark .cs-frame{
       <div class="mb-6"><div class="mb-5"><p class="eyebrow mb-1.5">ENCYCLOPEDIA</p><h2 class="page-title text-slate-900 dark:text-white">이론 백과사전</h2><p class="text-sm text-slate-500 dark:text-slate-400 mt-1.5">소자부터 공정, 첨단 기술까지 폴더별로 정리했어요.</p></div></div>
       <input type="text" id="theorySearchInput" class="hidden" onkeyup="handleTheorySearch()">
       <div id="breadcrumbContainer" class="bg-indigo-50/70 dark:bg-[#0f2233] rounded-xl border border-indigo-100 dark:border-white/10 px-4 py-3 mb-6 flex flex-wrap items-center gap-y-2 text-sm hidden"></div>
-      <div id="learningContainer" class="flex flex-col space-y-4"><div class="bg-white dark:bg-[#0f1729] rounded-2xl shadow-sm border border-slate-200 dark:border-white/10 overflow-hidden"><div class="p-6 md:p-8"><p class="eyebrow mb-2">반도체 8대 공정 <span class="opacity-50">/</span> 1. 웨이퍼 제조 공정 <span class="opacity-50">·</span> 약 4분 읽기</p><h1 class="page-title text-slate-900 dark:text-white mb-3">웨이퍼 연마(CMP)</h1><div class="flex flex-wrap gap-1.5 mb-6 pb-6 border-b border-slate-100 dark:border-white/10"><span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#웨이퍼연마(CMP)</span><span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#핵심이론</span></div><div class="custom-table-container theory-body prose prose-slate dark:prose-invert max-w-none"><div class="custom-badge-heading"><span class="custom-badge">📘 핵심 개념</span>웨이퍼 연마가 필요한 이유</div>
+      <div id="learningContainer" class="flex flex-col space-y-4"><div class="bg-white dark:bg-[#0f1729] rounded-2xl shadow-sm border border-slate-200 dark:border-white/10 overflow-hidden"><div class="p-6 md:p-8"><p class="eyebrow mb-2">반도체 8대 공정 <span class="opacity-50">/</span> 1. 웨이퍼 제조 공정 <span class="opacity-50">·</span> 약 5분 읽기</p><h1 class="page-title text-slate-900 dark:text-white mb-3">웨이퍼 연마(CMP)</h1><div class="flex flex-wrap gap-1.5 mb-6 pb-6 border-b border-slate-100 dark:border-white/10"><span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#웨이퍼연마(CMP)</span><span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#핵심이론</span></div><div class="custom-table-container theory-body prose prose-slate dark:prose-invert max-w-none"><div class="custom-badge-heading"><span class="custom-badge">📘 핵심 개념</span>웨이퍼 연마가 필요한 이유</div>
 
 <p>반도체 제조에서 웨이퍼 표면이 울퉁불퉁하면 문제가 생긴다. 표면이 고르지 않으면 이후 공정에서 패턴이 왜곡될 수 있고, 이는 회로의 성능 저하로 이어진다. 특히, 다층 구조를 가지는 현대 반도체에서는 층간의 불균형이 누적되어 더욱 심각한 문제를 일으킨다. 이를 해결하기 위해 웨이퍼 표면을 평탄하게 만드는 과정이 필요하다. <strong>웨이퍼 연마(CMP, Chemical Mechanical Planarization)</strong>는 이러한 표면 불균형을 해결하기 위한 공정이다.</p>
 <div class="custom-badge-heading"><span class="custom-badge">📘 정의</span>CMP의 본질</div>
@@ -980,6 +980,8 @@ html.dark .cs-frame{
 </tr>
 </tbody>
 </table></div>
+<div class="custom-highlight-box">[실무 코멘트] 금속 CMP에서는 패턴 밀도가 다른 영역마다 제거율이 달라져 디싱과 침식이 생긴다. 이를 줄이려고 설계 단계에서 더미 패턴을 넣어 밀도를 고르게 맞추고, 패드는 컨디셔너로 표면을 정리하며 쓴다.</div>
+
 <div class="custom-badge-heading"><span class="custom-badge">⚙️ 동작 원리</span>CMP의 물리·화학적 작용</div>
 
 <p>CMP는 물리적 연마와 화학적 반응이 결합된 공정이다. 물리적으로는 연마 패드와 슬러리 입자가 웨이퍼 표면을 마모한다. 화학적으로는 슬러리 내 화학 물질이 웨이퍼 표면의 특정 층을 선택적으로 반응시켜 제거를 돕는다. 이러한 작용은 다음 수식으로 나타낼 수 있다:</p>
@@ -1000,6 +1002,8 @@ $$</p>
 <div class="custom-badge-heading"><span class="custom-badge">✏️ 개선 방법</span>CMP 공정의 품질 향상</div>
 
 <p>CMP에서 품질을 향상시키기 위한 방법으로는 여러 가지가 있다. <strong>슬러리 조성</strong>과 <strong>패드</strong>의 조정이 대표적이다. 슬러리 조성은 연마 효율과 제거율($R$)에 직접적으로 영향을 미치므로, 적절한 조성을 유지하는 것이 중요하다. 패드의 경우, 마모가 심하면 균일성이 떨어지므로 주기적인 패드 교체가 필요하다. 또한, <strong>압력</strong>($P$)과 <strong>속도</strong>($V$)를 최적화하여 균일성을 향상시킬 수 있다. 이 두 변수는 제거율과 밀접하게 관련되어 있으므로, 공정 조건에 맞게 조절해야 한다.</p>
+<div class="custom-highlight-box">[면접 팁] CMP를 화학적 작용과 기계적 작용이 함께 일어나는 평탄화로 정의하고, 슬러리는 화학 작용을, 패드와 연마 입자는 기계 작용을 맡는다고 나눠 답한다. 대표 결함인 디싱과 침식(erosion)까지 말하면 좋다.</div>
+
 <div class="custom-badge-heading"><span class="custom-badge">🧠 암기 포인트</span>시험·면접 직전 체크</div>
 
 <ul>

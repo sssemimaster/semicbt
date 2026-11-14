@@ -941,7 +941,7 @@ html.dark .cs-frame{
       <div class="mb-6"><div class="mb-5"><p class="eyebrow mb-1.5">ENCYCLOPEDIA</p><h2 class="page-title text-slate-900 dark:text-white">이론 백과사전</h2><p class="text-sm text-slate-500 dark:text-slate-400 mt-1.5">소자부터 공정, 첨단 기술까지 폴더별로 정리했어요.</p></div></div>
       <input type="text" id="theorySearchInput" class="hidden" onkeyup="handleTheorySearch()">
       <div id="breadcrumbContainer" class="bg-indigo-50/70 dark:bg-[#0f2233] rounded-xl border border-indigo-100 dark:border-white/10 px-4 py-3 mb-6 flex flex-wrap items-center gap-y-2 text-sm hidden"></div>
-      <div id="learningContainer" class="flex flex-col space-y-4"><div class="bg-white dark:bg-[#0f1729] rounded-2xl shadow-sm border border-slate-200 dark:border-white/10 overflow-hidden"><div class="p-6 md:p-8"><p class="eyebrow mb-2">반도체 8대 공정 <span class="opacity-50">/</span> 5. 박막 증착 공정 (Deposition) <span class="opacity-50">·</span> 약 5분 읽기</p><h1 class="page-title text-slate-900 dark:text-white mb-3">ALD 공정</h1><div class="flex flex-wrap gap-1.5 mb-6 pb-6 border-b border-slate-100 dark:border-white/10"><span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#ALD공정</span><span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#핵심이론</span></div><div class="custom-table-container theory-body prose prose-slate dark:prose-invert max-w-none"><div class="custom-badge-heading"><span class="custom-badge">📘 핵심 개념</span>ALD의 필요성</div>
+      <div id="learningContainer" class="flex flex-col space-y-4"><div class="bg-white dark:bg-[#0f1729] rounded-2xl shadow-sm border border-slate-200 dark:border-white/10 overflow-hidden"><div class="p-6 md:p-8"><p class="eyebrow mb-2">반도체 8대 공정 <span class="opacity-50">/</span> 5. 박막 증착 공정 (Deposition) <span class="opacity-50">·</span> 약 6분 읽기</p><h1 class="page-title text-slate-900 dark:text-white mb-3">ALD 공정</h1><div class="flex flex-wrap gap-1.5 mb-6 pb-6 border-b border-slate-100 dark:border-white/10"><span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#ALD공정</span><span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#핵심이론</span></div><div class="custom-table-container theory-body prose prose-slate dark:prose-invert max-w-none"><div class="custom-badge-heading"><span class="custom-badge">📘 핵심 개념</span>ALD의 필요성</div>
 
 <p>반도체 소자의 크기가 점점 줄어들면서, 제조 공정의 정밀도와 균일성이 중요해졌다. 기존의 화학 기상 증착(CVD) 방식은 표면의 복잡한 구조에 따라 두께가 비일관적으로 나타날 수 있다. 이로 인해 소자의 성능이 떨어지거나, 공정 불량이 발생할 수 있다. 이러한 문제를 해결하기 위해 <strong>원자층 증착(Atomic Layer Deposition, ALD)</strong> 공정이 필요하다.</p>
 <div class="custom-badge-heading"><span class="custom-badge">📘 정의</span>ALD 공정의 기본 원리</div>
@@ -987,6 +987,8 @@ html.dark .cs-frame{
 </tr>
 </tbody>
 </table></div>
+<div class="custom-highlight-box">[실무 코멘트] ALD는 속도가 느려서 얇고 정밀해야 하는 층(High-k 게이트 절연막, 구리 배선의 배리어 등)에 주로 쓰고, 두꺼운 막은 CVD로 쌓는다. 전구체 가격과 퍼지 시간이 생산 비용에 직접 영향을 준다.</div>
+
 <div class="custom-badge-heading"><span class="custom-badge">✏️ 비교 분석</span>ALD의 단차 피복성 비교</div>
 
 <p>ALD는 CVD나 PVD(Physical Vapor Deposition)와 비교하여 <strong>단차 피복성</strong>이 우수한 것으로 알려져 있다. 이는 ALD의 자기제한적 특성 덕분에 홈이나 복잡한 구조에서도 균일한 두께의 박막을 형성할 수 있기 때문이다. </p>
@@ -998,6 +1000,8 @@ html.dark .cs-frame{
 <div class="custom-badge-heading"><span class="custom-badge">✏️ 개선 방법</span>ALD 공정의 개선 방향</div>
 
 <p>ALD 공정의 문제점을 개선하기 위해 몇 가지 접근이 가능하다. <strong>고속 ALD</strong> 기술은 반응 주기를 가속화하여 증착 속도를 높인다. 이를 위해 반응가스의 농도와 유량을 조절하거나, 반응 시간을 줄이는 방법이 있다. <strong>전구체 개발</strong>도 중요한 개선 방향이다. 반응성이 높고 휘발성이 적절한 전구체를 찾으면, 공정 효율성을 높일 수 있다. 또한, <strong>공정 자동화</strong>를 통해 변수 제어를 정밀하게 하여, 일관된 증착 결과를 얻을 수 있다.</p>
+<div class="custom-highlight-box">[면접 팁] ALD는 전구체 노출과 퍼지를 번갈아 하는 자기제한 반응으로 한 사이클에 원자층 하나 수준의 막이 쌓인다고 설명한다. 단차 피복성과 두께 정밀도가 장점이고 느린 속도가 단점이라는 장단점 쌍으로 답한다.</div>
+
 <div class="custom-badge-heading"><span class="custom-badge">🧠 암기 포인트</span>시험·면접 직전 체크</div>
 
 <ul>
