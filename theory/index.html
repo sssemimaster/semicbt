@@ -311,7 +311,7 @@
     .iv-pop { animation: ivPopIn .38s ease both; }
     @keyframes ivPopIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
     @media (prefers-reduced-motion: reduce) { .iv-intro, .iv-intro * , .iv-pop, .iv-dots i, .iv-typing::after { animation: none !important; } }
-    @media (prefers-reduced-motion: reduce) { .etch-line { animation: none; stroke-dashoffset: 0; } .wafer-latest { animation: none; } .feature-card { transition: none; } }
+    @media (prefers-reduced-motion: reduce) { .feature-card { transition: none; } }
 
     /* ===== 이론 본문: 읽기 쉽고 가벼운 느낌 ===== */
     .theory-body { font-size: 1.0625rem; line-height: 1.9; color: #334155; word-break: keep-all; }
@@ -2831,7 +2831,8 @@ html.dark .cs-frame{
           <div class="wfc-sum" id="wfcSum"></div>
           <div class="wfc-act"><button type="button" id="wfcOk" class="pbtn wfc-ok" hidden>확인</button></div></div><button type="button" id="wfcSkip" class="wfc-skip">건너뛰기</button>`;
         document.body.appendChild(o); requestAnimationFrame(() => o.classList.add('on'));
-        let skip = REDUCE, finished = false; const $ = (id) => document.getElementById(id);
+        let skip = false, finished = false;   // 'animation reduce' OS 설정과 무관하게 연출을 보여 주고, 건너뛰기 버튼은 그대로 둔다
+        const $ = (id) => document.getElementById(id);
         const tw = (ms2, fn) => new Promise(res => { const t0 = performance.now(); const f = (t) => { const p = skip ? 1 : Math.min(1, (t - t0) / ms2); fn(p); p < 1 ? requestAnimationFrame(f) : res(); }; requestAnimationFrame(f); });
         $('wfcSkip').onclick = () => { skip = true; $('wfcSkip').hidden = true; };
         const close = () => { if (!finished) return; document.removeEventListener('keydown', onKey); o.classList.remove('on'); setTimeout(() => { o.remove(); done(); }, 250); };
