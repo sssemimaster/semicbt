@@ -2437,6 +2437,105 @@ $$</p>
             ${dgT(200, 472, s.q, 'dg-volt')}`, '0 0 400 484');
         }
       }
+      ,
+      'device-map': {
+        title: '반도체 소자 지도',
+        states: [
+          { id: 'all', label: '전체 지도', q: '재료에서 출발해 소자, 회로, 칩으로 쌓인다',
+            desc: '반도체 소자는 하는 일에 따라 나뉜다. 다이오드는 전류를 한 방향으로만 통과시키고, 트랜지스터는 전압으로 전류를 켜고 끄며, 이를 짝지어 논리 회로를 만들고, 전하를 가두어 메모리를 만든다. 모두 도핑한 실리콘의 PN 접합에서 출발한다.' },
+          { id: 'diode', label: '다이오드', q: '전류를 한 방향으로만 통과시킨다',
+            desc: 'p형과 n형을 맞댄 PN 접합이다. p쪽에 (+)를 걸면 전류가 흐르고, 반대로 걸면 막힌다. 교류를 직류로 바꾸는 정류 등에 쓰이며, 이 접합의 원리는 트랜지스터 안에도 그대로 들어 있다.' },
+          { id: 'tr', label: '트랜지스터', q: '게이트 전압으로 전류의 길을 연다',
+            desc: 'MOSFET이 대표적이다. 게이트에 전압을 걸면 소스와 드레인 사이에 전류가 흐르는 길(채널)이 생기고, 전압을 빼면 길이 사라진다. 전압으로 제어하는 스위치이자 신호를 키우는 증폭기이다.' },
+          { id: 'cmos', label: 'CMOS 논리', q: '입력을 뒤집는 스위치 한 쌍',
+            desc: 'NMOS와 PMOS를 한 쌍으로 묶으면 입력을 뒤집는 인버터가 되고, 이를 조합해 NAND, NOR 같은 게이트와 연산 회로를 만든다. 값이 바뀔 때만 전류가 흐르는 구조라서 오늘날 논리 칩의 표준이다.' },
+          { id: 'mem', label: '메모리', q: '전하를 가두어 0과 1을 기억한다',
+            desc: '트랜지스터에 저장 요소를 더하면 메모리가 된다. DRAM은 커패시터에, SRAM은 맞물린 인버터에, NAND 플래시는 게이트 속에 정보를 담는다.' },
+        ],
+        svg(s) {
+          const N = [['diode', 52, '다이오드', '한 방향만'], ['tr', 150, '트랜지스터', '전압 스위치'], ['cmos', 248, 'CMOS 논리', '논리 연산'], ['mem', 346, '메모리', '정보 저장']];
+          const node = ([id, cx, nm, sb]) => {
+            const on = s.id === id;
+            return `<rect class="dg-fsub" x="${cx - 43}" y="88" width="86" height="46" rx="8"/><rect class="${on ? 'dg-hl' : 'dg-line'}" x="${cx - 43}" y="88" width="86" height="46" rx="8" style="${on ? '' : 'stroke-width:1.4;opacity:.55'}"/>${dgT(cx, 108, nm)}${dgT(cx, 125, sb, 'dg-sub')}`;
+          };
+          const tree = `<rect class="dg-fsub" x="140" y="12" width="120" height="34" rx="8"/><rect class="dg-line" x="140" y="12" width="120" height="34" rx="8" style="stroke-width:1.4;opacity:.55"/>${dgT(200, 34, '반도체 소자', 'dg-title')}
+            <path class="dg-line" d="M200 46 V66 M52 66 H346 M52 66 V88 M150 66 V88 M248 66 V88 M346 66 V88" style="stroke-width:1.4;opacity:.55"/>
+            ${dgArrow(193, 111, 205, 111)}${N.map(node).join('')}`;
+          let p = '';
+          if (s.id === 'all') {
+            const B = [['1', '도핑 실리콘'], ['2', 'PN 접합'], ['3', '트랜지스터'], ['4', '논리·메모리']];
+            p = B.map(([n, t], i) => { const x = 8 + i * 100; return `<rect class="dg-fsub" x="${x}" y="186" width="84" height="44" rx="8"/><rect class="dg-line" x="${x}" y="186" width="84" height="44" rx="8" style="stroke-width:1.4;opacity:.55"/>${dgT(x + 42, 204, n, 'dg-volt')}${dgT(x + 42, 221, t, 'dg-sub')}${i < 3 ? dgArrow(x + 86, 208, x + 98, 208) : ''}`; }).join('');
+          } else if (s.id === 'diode') {
+            p = `<path class="dg-line" d="M90 225 H150 M196 225 H256"/><path class="dg-line" d="M150 195 V255 L196 225 Z" style="fill:currentColor;fill-opacity:.15"/><path class="dg-line dg-thick" d="M196 195 V255"/>
+              ${dgT(120, 214, 'p형', 'dg-sub')}${dgT(226, 214, 'n형', 'dg-sub')}
+              ${dgT(173, 172, '순방향: 흐른다', 'dg-on')}${dgFlow('M100 184 H246')}${dgT(173, 284, '역방향: 막힌다', 'dg-off')}`;
+          } else if (s.id === 'tr') {
+            p = `<path class="dg-line" d="M96 225 H150 M150 195 V255 M162 195 V207 M162 217 V233 M162 243 V255 M162 201 H220 V170 M162 249 H220 V280"/>
+              ${dgT(96, 213, '게이트', 'dg-sub', 'start')}${dgT(230, 180, '드레인', 'dg-sub', 'start')}${dgT(230, 290, '소스', 'dg-sub', 'start')}${dgFlow('M220 176 V274')}`;
+          } else if (s.id === 'cmos') {
+            p = `<path class="dg-line" d="M100 225 H150 M218 225 H290"/><path class="dg-line" d="M150 198 V252 L206 225 Z" style="fill:currentColor;fill-opacity:.15"/><circle class="dg-line" cx="212" cy="225" r="6"/>
+              ${dgT(104, 214, 'A', 'dg-volt', 'start')}${dgT(286, 214, 'Y', 'dg-volt', 'end')}
+              ${dgT(200, 176, '= PMOS 1개 + NMOS 1개', 'dg-sub')}${dgT(200, 282, '입력 0 → 출력 1,  입력 1 → 출력 0', 'dg-sub')}`;
+          } else {
+            const cell = (x, nm, sub, ic) => `<rect class="dg-fsub" x="${x}" y="170" width="110" height="82" rx="8"/><rect class="dg-line" x="${x}" y="170" width="110" height="82" rx="8" style="stroke-width:1.4;opacity:.55"/>${ic}${dgT(x + 55, 273, nm)}${dgT(x + 55, 290, sub, 'dg-sub')}`;
+            const dram = `<rect class="dg-line" x="26" y="198" width="26" height="26" rx="4"/>${dgT(39, 216, 'T', 'dg-sub')}<path class="dg-line" d="M52 211 H76 M76 200 V222 M84 200 V222 M84 211 H100"/><rect class="dg-ch" x="77" y="201" width="6" height="20"/>`;
+            const sram = `<path class="dg-line" d="M170 186 V206 L190 196 Z M230 236 V216 L210 226 Z M190 196 H246 V226 H230 M210 226 H154 V196 H170" style="fill:none"/>`;
+            const nand = `<rect class="dg-met" x="290" y="182" width="76" height="10"/><rect class="dg-ox" x="290" y="192" width="76" height="4"/><rect class="dg-ch" x="296" y="198" width="64" height="10" style="fill-opacity:.35"/><rect class="dg-ox" x="290" y="208" width="76" height="4"/><rect class="dg-si" x="284" y="212" width="88" height="30"/><rect class="dg-n" x="284" y="212" width="20" height="14"/><rect class="dg-n" x="352" y="212" width="20" height="14"/>`;
+            p = cell(12, 'DRAM', '커패시터 전하', dram) + cell(145, 'SRAM', '맞물린 인버터', sram) + cell(278, 'NAND', '게이트 속 전하', nand);
+          }
+          const sep = s.id === 'mem' ? '' : '';
+          return dgSvg('반도체 소자 지도: ' + s.label, `${tree}${p}${dgT(200, 316, s.q, 'dg-volt')}`, '0 0 400 326');
+        }
+      },
+      'cmos-inverter': {
+        title: 'CMOS 인버터의 동작',
+        states: [
+          { id: 'low', label: '입력 0 (Low)', a: 0, q: '입력 0 → PMOS 켜짐 → 출력 1',
+            desc: '입력이 0이면 PMOS가 켜지고 NMOS는 꺼진다. 출력이 전원(VDD)에 연결되어 1이 된다. NMOS가 꺼져 있어서 전원에서 접지로 가는 길은 막혀 있다.' },
+          { id: 'high', label: '입력 1 (High)', a: 1, q: '입력 1 → NMOS 켜짐 → 출력 0',
+            desc: '입력이 1이면 NMOS가 켜지고 PMOS는 꺼진다. 출력이 접지에 연결되어 0이 된다. 이번에는 PMOS가 꺼져 있어서 역시 전원에서 접지로 가는 길이 막혀 있다. 값이 바뀌는 순간을 빼면 전류가 거의 흐르지 않아 소비 전력이 작다.' },
+        ],
+        svg(s) {
+          const a = s.a, boxes = [['PMOS', 70, a === 0], ['NMOS', 180, a === 1]].map(([nm, y, on]) =>
+            `<rect class="dg-void" x="160" y="${y}" width="80" height="50" rx="8"/><rect class="dg-fsub" x="160" y="${y}" width="80" height="50" rx="8"/><rect class="${on ? 'dg-hl' : 'dg-line'}" x="160" y="${y}" width="80" height="50" rx="8" style="${on ? '' : 'stroke-width:1.4;opacity:.55'}"/>${dgT(200, y + 22, nm)}${dgT(200, y + 40, on ? 'ON' : 'OFF', on ? 'dg-on' : 'dg-off')}`).join('');
+          return dgSvg('CMOS 인버터: ' + s.label, `
+            <path class="dg-line" d="M170 36 H230 M200 36 V70 M200 120 V180 M200 230 V262 M170 262 H230 M200 150 H300 M60 150 H120 M120 95 V205 M120 95 H160 M120 205 H160"/>
+            <circle cx="200" cy="150" r="3.5" fill="currentColor"/><circle cx="120" cy="150" r="3.5" fill="currentColor"/>
+            ${a === 0 ? dgFlow('M200 40 V150 H296') : dgFlow('M296 150 H200 V258')}${boxes}
+            ${dgT(240, 30, '전원 (VDD)', 'dg-sub', 'start')}${dgT(240, 278, '접지 (0 V)', 'dg-sub', 'start')}
+            ${dgT(20, 138, '입력 A', 'dg-sub', 'start')}${dgT(20, 172, '= ' + a, 'dg-volt', 'start')}${dgT(308, 138, '출력 Y', 'dg-sub', 'start')}${dgT(308, 172, '= ' + (1 - a), 'dg-volt', 'start')}
+            ${dgT(200, 314, s.q, 'dg-volt')}`, '0 0 400 324');
+        }
+      },
+      'memory-compare': {
+        title: '메모리 셀 비교: DRAM · SRAM · NAND',
+        states: [
+          { id: 'dram', label: 'DRAM (1T1C)', q: '커패시터의 전하 유무로 0과 1을 기억',
+            desc: '트랜지스터 한 개와 커패시터 한 개로 셀을 만든다. 워드라인이 트랜지스터를 켜면 비트라인과 커패시터가 이어져 전하를 쓰고 읽는다. 전하가 서서히 새기 때문에 주기적으로 다시 써 주는 리프레시가 필요하고, 전원이 꺼지면 값이 사라진다. 셀이 작아 대용량 주기억장치에 쓴다.' },
+          { id: 'sram', label: 'SRAM (6T)', q: '맞물린 인버터가 값을 붙잡고 있다',
+            desc: '인버터 두 개가 서로의 출력을 입력으로 받아 한 값을 계속 붙잡아 두고, 접근 트랜지스터 두 개로 읽고 쓴다. 모두 6개의 트랜지스터가 든다. 리프레시가 필요 없고 빠르지만 셀이 커서 용량을 키우기 어려워, CPU 캐시처럼 작고 빠른 메모리에 쓴다. 전원이 꺼지면 값이 사라진다.' },
+          { id: 'nand', label: 'NAND 플래시', q: '게이트 속에 가둔 전자가 문턱 전압을 바꾼다',
+            desc: '절연막으로 둘러싸인 플로팅 게이트에 전자를 넣거나 빼서 트랜지스터의 문턱 전압을 바꾸고, 이 차이로 0과 1을 구분한다. 전자가 절연막에 갇혀 있어서 전원이 꺼져도 값이 남는다. 쓰기와 지우기는 느리지만 집적도가 높아 SSD 같은 저장장치에 쓰이며, 셀을 수직으로 쌓은 3D NAND가 주류이다.' },
+        ],
+        svg(s) {
+          let b = '';
+          if (s.id === 'dram') {
+            b = `<path class="dg-line" d="M50 70 H350 M180 70 V120 M90 100 V232 M90 145 H140 M220 145 H280 V170 M262 170 H298 M262 182 H298 M280 182 V212 M266 212 H294 M272 219 H288"/>
+              <circle cx="180" cy="70" r="3.5" fill="currentColor"/><rect class="dg-fsub" x="140" y="120" width="80" height="50" rx="6"/><rect class="dg-line" x="140" y="120" width="80" height="50" rx="6"/>
+              <rect class="dg-ch" x="263" y="171" width="34" height="10"/>
+              ${dgT(180, 150, '트랜지스터', 'dg-sub')}${dgT(50, 58, '워드라인 (WL)', 'dg-sub', 'start')}${dgT(90, 252, '비트라인 (BL)', 'dg-sub')}${dgT(306, 180, '커패시터', 'dg-sub', 'start')}${dgT(306, 196, '(전하 저장)', 'dg-sub', 'start')}`;
+          } else if (s.id === 'sram') {
+            b = `<path class="dg-line" d="M110 100 V140 L160 120 Z M290 200 V160 L240 180 Z M160 120 H320 V180 H290 M240 180 H80 V120 H110" style="fill:none"/>
+              ${dgT(135, 96, '인버터 1', 'dg-sub')}${dgT(265, 224, '인버터 2', 'dg-sub')}${dgT(200, 256, '+ 접근 트랜지스터 2개 = 6T', 'dg-sub')}${dgT(200, 60, '서로의 출력이 서로의 입력', 'dg-volt')}`;
+          } else {
+            b = `<rect class="dg-met" x="60" y="70" width="190" height="22"/><rect class="dg-ox" x="60" y="92" width="190" height="8"/><rect class="dg-ch" x="72" y="100" width="166" height="24" style="fill-opacity:.35"/><rect class="dg-ox" x="60" y="124" width="190" height="10"/><rect class="dg-si" x="60" y="134" width="190" height="46"/><rect class="dg-n" x="60" y="134" width="44" height="22"/><rect class="dg-n" x="206" y="134" width="44" height="22"/>
+              ${[100, 130, 160, 190].map(x => `<circle cx="${x}" cy="112" r="4.5" fill="#60a5fa"/>`).join('')}${dgFlow('M155 170 V138')}
+              ${dgT(262, 86, '컨트롤 게이트', 'dg-sub', 'start')}${dgT(262, 116, '플로팅 게이트', 'dg-sub', 'start')}${dgT(262, 133, '터널 산화막', 'dg-sub', 'start')}${dgT(262, 168, '채널 (Si)', 'dg-sub', 'start')}
+              ${dgT(155, 210, '전자가 터널링으로 들어간다', 'dg-sub')}${dgT(155, 232, '→ 문턱 전압이 올라간다', 'dg-volt')}`;
+          }
+          return dgSvg('메모리 셀: ' + s.label, `${b}${dgT(200, 290, s.q, 'dg-volt')}`);
+        }
+      }
 
     };
     function dgRender(fig, sid) {
