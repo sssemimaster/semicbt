@@ -540,7 +540,7 @@ button.fj-chip { cursor:pointer; transition:border-color .15s,color .15s; } butt
   .fj-base { grid-template-columns:repeat(2,minmax(0,1fr)); }
   .fj-step { flex-basis:4rem; font-size:.68rem; }
   .fj-info h3 { font-size:1.2rem; }
-  .fj-entry { padding:.85rem 1rem; } .fj-entry .go { display:none; }
+  .fj-entry { padding:.5rem .8rem; gap:.65rem; border-radius:.85rem; } .fj-entry svg { width:1.9rem; height:1.9rem; } .fj-entry .t { font-size:.88rem; } .fj-entry .s, .fj-entry .go { display:none; }
 }
 @media (prefers-reduced-motion:reduce) { .fj-ly,.fj-scene,.fj-bar i,.fj-step,.fj-step b { transition:none; } .fj-ly { transform:none; } }
 </style>
@@ -591,10 +591,11 @@ button.fj-chip { cursor:pointer; transition:border-color .15s,color .15s; } butt
   #view-lobby > section:first-of-type h2 { font-size: 22px; }
   #view-lobby > .grid { display: contents; }                 /* 과목 + 웨이퍼 묶음을 풀어서 각각 순서를 준다 */
   #view-lobby > section:nth-of-type(1) { order: 1; }          /* 인사·검색 */
-  #view-lobby > .grid > section:last-child { order: 2; }      /* 웨이퍼 새기기 (맨 위) */
-  #view-lobby > .grid > section:first-child { order: 3; }     /* 과목별 학습 */
-  #view-lobby > section:nth-of-type(3) { order: 4; }          /* 직무 지도 */
-  #view-lobby > section:nth-of-type(2) { order: 5; }          /* 학습 방식 카드 (맨 아래) */
+  #view-lobby > section:nth-of-type(2) { order: 2; }          /* 처음이세요? 입구 (작게, 맨 위) */
+  #view-lobby > .grid > section:last-child { order: 3; }      /* 웨이퍼 새기기 */
+  #view-lobby > .grid > section:first-child { order: 4; }     /* 과목별 학습 */
+  #view-lobby > section:nth-of-type(4) { order: 5; }          /* 직무 지도 */
+  #view-lobby > section:nth-of-type(3) { order: 6; }          /* 학습 방식 카드 (맨 아래) */
   #view-lobby h3 { font-size: 16px; }
   #view-lobby section > .mb-4 > span { display: none; }
   #homeSubjects { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: #e2e8f0; }
@@ -1068,68 +1069,27 @@ button.fj-chip { cursor:pointer; transition:border-color .15s,color .15s; } butt
       <div class="mb-6"><div class="mb-5"><p class="eyebrow mb-1.5">ENCYCLOPEDIA</p><h2 class="page-title text-slate-900 dark:text-white">이론 백과사전</h2><p class="text-sm text-slate-500 dark:text-slate-400 mt-1.5">소자부터 공정, 첨단 기술까지 폴더별로 정리했어요.</p></div></div>
       <input type="text" id="theorySearchInput" class="hidden" onkeyup="handleTheorySearch()">
       <div id="breadcrumbContainer" class="bg-indigo-50/70 dark:bg-[#0f2233] rounded-xl border border-indigo-100 dark:border-white/10 px-4 py-3 mb-6 flex flex-wrap items-center gap-y-2 text-sm hidden"></div>
-      <div id="learningContainer" class="flex flex-col space-y-4"><div class="bg-white dark:bg-[#0f1729] rounded-2xl shadow-sm border border-slate-200 dark:border-white/10 overflow-hidden"><div class="p-6 md:p-8"><p class="eyebrow mb-2">반도체 기초 이론 <span class="opacity-50">/</span> 입문 · 한눈에 보기 <span class="opacity-50">·</span> 약 9분 읽기</p><h1 class="page-title text-slate-900 dark:text-white mb-3">반도체 제조 공정 한눈에 보기</h1><div class="flex flex-wrap gap-1.5 mb-6 pb-6 border-b border-slate-100 dark:border-white/10"><span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#반도체제조공정한눈에보기</span><span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#핵심이론</span></div><div class="custom-table-container theory-body prose prose-slate dark:prose-invert max-w-none"><div class="custom-badge-heading"><span class="custom-badge">📘 핵심 개념</span>칩은 웨이퍼 위에 층을 쌓고 새기기를 되풀이해 만든다</div>
+      <div id="learningContainer" class="flex flex-col space-y-4"><div class="bg-white dark:bg-[#0f1729] rounded-2xl shadow-sm border border-slate-200 dark:border-white/10 overflow-hidden"><div class="p-6 md:p-8"><p class="eyebrow mb-2">반도체 기초 이론 <span class="opacity-50">/</span> 입문 · 한눈에 보기 <span class="opacity-50">·</span> 약 8분 읽기</p><h1 class="page-title text-slate-900 dark:text-white mb-3">반도체 제조 공정 한눈에 보기</h1><div class="flex flex-wrap gap-1.5 mb-6 pb-6 border-b border-slate-100 dark:border-white/10"><span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#반도체제조공정한눈에보기</span><span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#핵심이론</span></div><div class="custom-table-container theory-body prose prose-slate dark:prose-invert max-w-none"><div class="custom-badge-heading"><span class="custom-badge">📘 핵심 개념</span>칩은 웨이퍼 위에 층을 쌓고 새기기를 되풀이해 만든다</div>
 
 <p>반도체 칩은 덩어리를 깎아 만드는 물건이 아니다. 둥근 실리콘 판인 웨이퍼 위에 얇은 막을 한 겹씩 쌓고, 층마다 회로 모양을 새겨 가며 완성한다. 트랜지스터가 나노미터 크기의 구조물이라서 한 번에 모양을 잡을 수 없고, 층마다 모양을 정하고, 깎고, 채우는 일을 되풀이해야 하기 때문이다.</p>
 <p>웨이퍼 한 장에서는 같은 칩(다이, die)이 칩 크기에 따라 수십 개에서 수천 개까지 동시에 만들어진다. 한 번의 공정이 웨이퍼 전체에 같은 효과를 내므로, 칩이 많이 올라갈수록 칩 하나당 드는 비용이 줄어든다.</p>
 <p>회로를 그리는 설계와, 설계도를 유리판에 옮긴 마스크 제작은 웨이퍼가 투입되기 전에 끝나 있다. 이 글이 다루는 여덟 단계는 그 설계도를 실제 물질로 만들어 내는 과정이다.</p>
 <div class="custom-badge-heading"><span class="custom-badge">🔬 구조</span>여덟 단계의 순서와 되풀이되는 구간</div>
 
-<div class="table-wrap"><table>
-<thead>
-<tr>
-<th>단계</th>
-<th>하는 일</th>
-<th>대표 키워드</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1. 웨이퍼 제조</td>
-<td>모래에서 단결정 실리콘 원판을 만든다</td>
-<td>잉곳, 초크랄스키, 연마</td>
-</tr>
-<tr>
-<td>2. 산화</td>
-<td>표면에 절연막(SiO₂)을 입힌다</td>
-<td>건식·습식 산화, 게이트 산화막</td>
-</tr>
-<tr>
-<td>3. 포토</td>
-<td>회로 모양의 틀을 빛으로 새긴다</td>
-<td>감광막, 노광, 현상</td>
-</tr>
-<tr>
-<td>4. 식각</td>
-<td>틀이 가리지 않은 부분을 깎아낸다</td>
-<td>습식·건식, 선택비</td>
-</tr>
-<tr>
-<td>5. 증착·이온 주입</td>
-<td>막을 쌓고 불순물을 넣어 전기적 성질을 만든다</td>
-<td>CVD·PVD·ALD, 도핑</td>
-</tr>
-<tr>
-<td>6. 금속 배선</td>
-<td>소자들을 금속선으로 잇는다</td>
-<td>구리, 다마신, 배리어 메탈</td>
-</tr>
-<tr>
-<td>7. EDS</td>
-<td>웨이퍼째로 칩을 하나씩 검사한다</td>
-<td>프로브, 수율, 리페어</td>
-</tr>
-<tr>
-<td>8. 패키징</td>
-<td>칩을 잘라 포장하고 외부와 연결한다</td>
-<td>다이싱, 본딩, 몰딩</td>
-</tr>
-</tbody>
-</table></div>
+<ol>
+<li><strong>웨이퍼 제조</strong>: 모래에서 단결정 실리콘 원판을 만든다.</li>
+<li><strong>산화</strong>: 표면에 절연막(SiO₂)을 입힌다.</li>
+<li><strong>포토</strong>: 회로 모양의 틀을 빛으로 새긴다.</li>
+<li><strong>식각</strong>: 틀이 가리지 않은 부분을 깎아낸다.</li>
+<li><strong>증착·이온 주입</strong>: 막을 쌓고 불순물을 넣어 전기적 성질을 만든다.</li>
+<li><strong>금속 배선</strong>: 소자들을 금속선으로 잇는다.</li>
+<li><strong>EDS</strong>: 웨이퍼째로 칩을 하나씩 검사한다.</li>
+<li><strong>패키징</strong>: 칩을 잘라 포장하고 외부와 연결한다.</li>
+</ol>
 <p>1단계와 7·8단계는 웨이퍼 한 장이 한 번씩 거치지만, 3~6단계는 층마다 되풀이된다. 순서는 틀 만들기(포토), 깎기(식각), 채우기와 성질 바꾸기(증착·이온 주입), 연결하기(배선)로 이어지며, 앞 단계의 결과가 뒤 단계의 입력이 되기 때문에 바꿀 수 없다. 식각은 포토가 만든 틀이 있어야 깎을 곳이 정해지고, 증착은 식각이 파 놓은 홈이 있어야 채울 곳이 생긴다. 산화는 주로 초반에 하지만 게이트 절연막을 만들 때처럼 중간에 다시 나오기도 한다.</p>
 <figure class="dg" data-dg="process-flow" data-cap="여덟 단계의 순서와, 단계를 누르면 웨이퍼에 층이 쌓여 가는 단면"></figure>
 
-<div class="custom-highlight-box">[흔한 오해] 8대 공정에 설계는 포함되지 않는다. 설계와 마스크 제작은 웨이퍼 투입 전에 끝나고, 8대 공정은 그 설계도를 웨이퍼 위에 구현하는 과정만 가리킨다. 증착과 이온 주입을 한 단계로 묶는 자료도, 따로 세어 단계 수를 달리하는 자료도 있으니 문제에서 어떤 구분을 쓰는지 확인한다.</div>
+<div class="custom-highlight-box">[흔한 오해] 8대 공정에 설계는 포함되지 않는다. 설계와 마스크 제작은 웨이퍼를 투입하기 전에 끝난다.</div>
 
 <div class="custom-badge-heading"><span class="custom-badge">✏️ 1단계</span>웨이퍼 제조: 원자가 끊김 없이 이어진 실리콘 판</div>
 
@@ -1149,7 +1109,7 @@ button.fj-chip { cursor:pointer; transition:border-color .15s,color .15s; } butt
 <p>노광에 쓰는 빛의 파장이 짧을수록 더 가는 선을 만들 수 있어서, 광원은 파장 193 nm인 ArF에서 13.5 nm인 EUV까지 짧아져 왔다. 얼마나 가는 선을 새기느냐가 칩의 집적도를 가르기 때문에, 포토 장비는 라인에서 가장 값비싼 장비 가운데 하나이다.</p>
 <figure class="dg" data-dg="photo-process" data-cap="감광막 도포부터 제거까지의 단면"></figure>
 
-<div class="custom-highlight-box">[실무 코멘트] 웨이퍼는 층마다 같은 노광 장비로 되돌아오기 때문에 노광 장비의 가동 상태가 라인 전체의 속도를 좌우하기 쉽다. 웨이퍼 한 장이 투입에서 완성까지 수 주에서 수 개월이 걸리는 것도 이렇게 같은 단계를 되풀이하는 구조와 관련이 있다.</div>
+<div class="custom-highlight-box">[실무 코멘트] 포토 장비는 층마다 다시 쓰여서, 가동 상태가 라인 전체의 속도를 좌우하기 쉽다.</div>
 
 <div class="custom-badge-heading"><span class="custom-badge">✏️ 4단계</span>식각: 틀이 가리지 않은 곳만 깎는다</div>
 
@@ -1183,26 +1143,12 @@ button.fj-chip { cursor:pointer; transition:border-color .15s,color .15s; } butt
 <div class="custom-badge-heading"><span class="custom-badge">✏️ 수율</span>단계마다 생기는 작은 손실은 곱해진다</div>
 
 <p>공정은 수백 단계에 이르고, 웨이퍼는 그 단계를 모두 정상으로 통과해야 양품이 된다. 각 단계의 정상 비율이 서로 독립이라고 단순화하면 전체 수율은 단계별 비율을 모두 곱한 값이다.</p>
-<div class="table-wrap"><table>
-<thead>
-<tr>
-<th>단계별 정상 비율</th>
-<th>100단계를 거친 뒤의 전체 수율</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>99%</td>
-<td>약 37% ($0.99^{100}$)</td>
-</tr>
-<tr>
-<td>99.9%</td>
-<td>약 90% ($0.999^{100}$)</td>
-</tr>
-</tbody>
-</table></div>
+<ul>
+<li>단계별 정상 비율이 99%이면 100단계 뒤 전체 수율은 약 37%($0.99^{100}$)이다.</li>
+<li>99.9%이면 약 90%($0.999^{100}$)이다.</li>
+</ul>
 <p>단계 하나에서 1%를 잃는 정도로는 사소해 보여도, 단계가 쌓이면 전체의 절반 이상이 사라진다. 이 때문에 공정은 먼지 같은 입자를 극도로 줄인 클린룸에서 진행되고, 단계마다 두께와 선폭을 재서 이상을 일찍 잡아낸다.</p>
-<div class="custom-highlight-box">[면접 팁] 제조 흐름을 설명하라는 질문에는 단계 이름을 나열하기보다 층마다 포토, 식각, 증착을 되풀이한다는 구조와, 앞 단계의 결과가 다음 단계의 입력이 되어 순서가 고정된다는 이유를 먼저 말한다. 이어서 수율이 단계마다 곱해진다는 점을 덧붙이면 왜 모든 단계를 관리하는지까지 이해하고 있다는 인상을 준다.</div>
+<div class="custom-highlight-box">[면접 팁] 제조 흐름은 단계 이름을 나열하기보다 층마다 포토·식각·증착을 되풀이한다는 구조부터 말한다.</div>
 
 <div class="custom-badge-heading"><span class="custom-badge">✏️ 다음 읽기</span>단계별 이론으로 들어가는 순서</div>
 
