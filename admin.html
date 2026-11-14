@@ -24,6 +24,8 @@
     /* 사용자 페이지(index.html)와 같은 모양의 미리보기 (관리자 페이지는 라이트 전용) */
     .custom-highlight-box { background-color: #ecfdf5; border: 1px solid #a7f3d0; border-left: 6px solid #10b981; border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 1.5rem; color: #1f2937; display: flex; gap: 12px; font-size: 0.9rem; line-height: 1.6; }
     .custom-highlight-box::before { content: '💡'; font-size: 1.15rem; }
+    .th-term { color: #4338ca; border-bottom: 1.5px dotted #6366f1; cursor: help; }
+    .th-toggle { margin: .9rem 0; border: 1px solid #cbd5e1; border-radius: .7rem; background: #eef2ff; } .th-toggle > summary { cursor: pointer; padding: .6rem .85rem; font-weight: 700; font-size: .9rem; } .th-tg-body { padding: 0 .85rem .75rem; font-size: .88rem; line-height: 1.75; color: #475569; }
     .custom-highlight-box { display: block; position: relative; padding-left: calc(1.25rem + 1.15rem + 10px); overflow-wrap: anywhere; } .custom-highlight-box::before { position: absolute; left: 1.25rem; top: 1rem; } .custom-highlight-box .katex { overflow-wrap: normal; }
     .custom-badge-heading { display: flex; align-items: center; gap: 10px; margin-top: 2rem; margin-bottom: 1rem; font-size: 1.05rem; font-weight: 800; color: #0f172a; }
     .custom-badge { background-color: #d1fae5; color: #047857; font-size: 0.7rem; padding: 4px 10px; border-radius: 9999px; white-space: nowrap; }
@@ -458,6 +460,9 @@
       let md = math.text;
       // '**용어(영문)**는' 처럼 괄호 뒤에 한글이 바로 붙으면 marked가 굵게 처리를 못 하므로 직접 변환
       md = md.replace(/\*\*([^*\n]+?)\*\*/g, '<strong>$1</strong>');
+      // {{term:용어|풀이}} 는 점선 밑줄 용어(사이트에서는 눌러서 풀이를 봄), {{toggle:제목|내용}} 줄은 접는 설명 상자. 여기서는 풀이를 마우스를 올려 보거나 펼쳐 볼 수 있게 한다.
+      md = md.replace(/\{\{\s*term:([^|}\n]+)\|([^}\n]+)\}\}/g, (m, w, d) => `<span class="th-term" title="${escHtml(d.trim())}">${escHtml(w.trim())}</span>`);
+      md = md.replace(/^[ \t]*\{\{\s*toggle:([^|}\n]+)\|([^}\n]+)\}\}[ \t]*$/gm, (m, ti, body) => `\n\n<details class="th-toggle" open><summary>${escHtml(ti.trim())}</summary><div class="th-tg-body">${marked.parseInline(body.trim())}</div></details>\n\n`);
       // {{diagram:id|캡션}} 줄은 사이트에서 눌러 보는 그림으로 바뀐다. 여기서는 자리를 알아보게 표시만 한다.
       md = md.replace(/^[ \t]*\{\{\s*diagram:([^|}\s]+)(?:\|([^}\n]*))?\}\}[ \t]*$/gm, (m, id, cap) => `\n\n<div class="my-3 rounded-lg border-2 border-dashed border-indigo-300 bg-indigo-50 px-3 py-2 text-xs text-indigo-700">🖼 눌러 보는 그림 자리: <b>${escHtml(id)}</b>${cap ? ' — ' + escHtml(cap) : ''} (사이트에서 그림으로 표시됨)</div>\n\n`);
       md = md.replace(/>\s*💡\s*(.*?)(?=\n\n|\n###|$)/gs, (m, p1) => `<div class="custom-highlight-box">${marked.parseInline(p1.trim())}</div>\n\n`);
