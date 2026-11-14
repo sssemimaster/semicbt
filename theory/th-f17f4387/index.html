@@ -2474,6 +2474,187 @@ button.fj-chip { cursor:pointer; transition:border-color .15s,color .15s; } butt
           return dgSvg('메모리 셀: ' + s.label, `${b}${dgT(200, 290, s.q, 'dg-volt')}`);
         }
       }
+      ,
+      'nextgen-map': {
+        title: '차세대 반도체 기술 지도',
+        states: [
+          { id: 'all', label: '전체 지도', q: '반도체가 마주한 세 개의 벽',
+            desc: '반도체는 더 작게 만들기 어렵고(미세화 한계), 전력과 열이 한계에 부딪히고(전력 벽), 연산 속도를 데이터 공급이 따라가지 못하는(메모리 벽) 세 가지 벽을 만났다. 한 가지 기술로는 풀리지 않아 트랜지스터, 노광·배선, 메모리, 패키징을 함께 바꾸고 있다.' },
+          { id: 'tr', label: '트랜지스터', q: '게이트가 채널을 더 많이 감싸는 쪽으로',
+            desc: '게이트가 채널을 감싸는 면을 늘려 누설을 줄여 왔다. 지금은 GAA 나노시트가 양산 중이고, 다음 후보는 n형과 p형을 위아래로 쌓는 CFET이다. 더 먼 미래에는 실리콘 대신 2차원 소재 채널도 연구된다.',
+            rows: [['GAA 나노시트', '양산'], ['CFET', '연구'], ['2D 소재 채널', '연구']] },
+          { id: 'litho', label: '노광·배선', q: '더 가는 선을 새기고, 전원은 뒤로 보낸다',
+            desc: 'EUV로 가는 선을 새기고, NA를 키운 High-NA EUV가 도입되기 시작했다. 배선에서는 전원선을 웨이퍼 뒷면으로 옮기는 후면 전력이 앞면 배선의 혼잡과 전압 강하를 줄인다.',
+            rows: [['EUV (NA 0.33)', '양산'], ['High-NA EUV', '도입 중'], ['후면 전력', '도입 중']] },
+          { id: 'mem', label: '메모리', q: '쌓고, 가까이 붙이고, 새로 만든다',
+            desc: 'DRAM을 여러 장 쌓은 HBM이 AI 가속기 옆에서 데이터를 공급하고, 3D NAND는 수백 단까지 셀을 쌓는다. 셀 자체를 쌓는 3D DRAM과, 저항으로 기억하는 새 메모리는 연구와 틈새 적용 단계이다.',
+            rows: [['HBM', '양산'], ['3D NAND', '양산'], ['3D DRAM · MRAM 등', '연구']] },
+          { id: 'pkg', label: '패키징', q: '큰 칩 하나 대신 작은 칩을 잇고 쌓는다',
+            desc: '칩을 기능별로 나눠 만든 칩렛을 인터포저 위에 잇는 2.5D 패키징이 이미 양산 중이다. 칩을 위로 쌓고 구리 패드로 직접 접합하는 하이브리드 본딩은 도입이 시작되었다.',
+            rows: [['칩렛 + 2.5D', '양산'], ['하이브리드 본딩 3D', '도입 중'], ['칩렛 표준 (UCIe)', '도입 중']] },
+        ],
+        svg(s) {
+          const N = [['tr', 52, '트랜지스터', '구조 혁신'], ['litho', 150, '노광·배선', '패턴·전력'], ['mem', 248, '메모리', '데이터 공급'], ['pkg', 346, '패키징', '칩 쌓기']];
+          const node = ([id, cx, nm, sb]) => {
+            const on = s.id === id;
+            return `<rect class="dg-fsub" x="${cx - 43}" y="88" width="86" height="46" rx="8"/><rect class="${on ? 'dg-hl' : 'dg-line'}" x="${cx - 43}" y="88" width="86" height="46" rx="8" style="${on ? '' : 'stroke-width:1.4;opacity:.55'}"/>${dgT(cx, 108, nm)}${dgT(cx, 125, sb, 'dg-sub')}`;
+          };
+          const tree = `<rect class="dg-fsub" x="110" y="12" width="180" height="34" rx="8"/><rect class="dg-line" x="110" y="12" width="180" height="34" rx="8" style="stroke-width:1.4;opacity:.55"/>${dgT(200, 34, '차세대 반도체 기술', 'dg-title')}
+            <path class="dg-line" d="M200 46 V66 M52 66 H346 M52 66 V88 M150 66 V88 M248 66 V88 M346 66 V88" style="stroke-width:1.4;opacity:.55"/>${N.map(node).join('')}`;
+          let p = '';
+          if (s.id === 'all') {
+            const W = [['미세화 한계', '줄일수록 어렵다'], ['전력·열 벽', '전력이 곧 한계'], ['메모리 벽', '데이터가 병목']];
+            p = W.map(([t, u], i) => { const x = 8 + i * 133; return `<rect class="dg-fsub" x="${x}" y="170" width="118" height="58" rx="8"/><rect class="dg-line" x="${x}" y="170" width="118" height="58" rx="8" style="stroke-width:1.4;opacity:.55"/>${dgT(x + 59, 194, t)}${dgT(x + 59, 214, u, 'dg-sub')}`; }).join('')
+              + `${dgArrow(200, 236, 200, 262)}${dgT(200, 286, '해결책은 네 갈래', 'dg-volt')}`;
+          } else {
+            const ST = { '양산': ['#10b981', '양산'], '도입 중': ['#f59e0b', '도입 중'], '연구': ['#94a3b8', '연구'] };
+            p = s.rows.map(([nm, st], i) => { const y = 168 + i * 42, c = ST[st][0];
+              return `<rect class="dg-fsub" x="12" y="${y}" width="376" height="34" rx="8"/><rect class="dg-line" x="12" y="${y}" width="376" height="34" rx="8" style="stroke-width:1.2;opacity:.4"/>${dgT(26, y + 22, nm, '', 'start')}<rect x="304" y="${y + 6}" width="72" height="22" rx="11" fill="${c}" fill-opacity=".22" stroke="${c}"/>${dgT(340, y + 21, ST[st][1], 'dg-sub')}`; }).join('');
+          }
+          return dgSvg('차세대 기술 지도: ' + s.label, `${tree}${p}${dgT(200, 318, s.q, 'dg-volt')}`, '0 0 400 330');
+        }
+      },
+      'transistor-roadmap': {
+        title: '트랜지스터 구조의 흐름: 게이트가 감싸는 면',
+        states: [
+          { id: 'planar', label: '평면', n: 1, era: '2010년 무렵까지', q: '게이트가 채널 위쪽 한 면만 감싼다',
+            desc: '게이트가 채널 위쪽 한 면만 감싼다. 소자가 작아지자 게이트가 채널을 충분히 제어하지 못해, 꺼져 있어도 전류가 새는 단채널 효과가 커졌다.' },
+          { id: 'finfet', label: 'FinFET', n: 3, era: '2011년 양산 시작 (인텔 22nm)', q: '채널을 핀으로 세워 세 면을 감싼다',
+            desc: '채널을 얇은 핀 모양으로 세우고 게이트가 위와 양옆 세 면을 감싼다. 제어력이 좋아져 누설이 줄었고, 오랫동안 표준 구조였다.' },
+          { id: 'gaa', label: 'GAA 나노시트', n: 4, era: '2022년~ 삼성 · 2025년~ TSMC·인텔', q: '시트를 게이트가 네 면 모두 감싼다',
+            desc: '채널을 눕힌 얇은 시트 여러 장으로 만들고 게이트가 네 면을 모두 감싼다. 삼성이 3nm에서 먼저 양산했고, TSMC와 인텔도 2025년부터 2nm급 공정에 도입했다. 시트의 폭과 장수로 전류를 조절할 수 있다.' },
+          { id: 'cfet', label: 'CFET', n: 4, era: '연구 단계 · 2030년대 도입 전망', q: 'n형과 p형을 위아래로 쌓는다',
+            desc: 'n형과 p형 트랜지스터를 나란히 놓는 대신 위아래로 쌓아 같은 면적에 두 배의 소자를 넣는다. 연구 기관 imec은 2030년대 초(A7 노드 무렵) 도입을 전망하고, 주요 업체들이 시제품을 선보였다.' },
+        ],
+        svg(s) {
+          let b = '';
+          const sub = (y, h) => `<rect class="dg-si" x="90" y="${y}" width="220" height="${h}"/>`;
+          if (s.id === 'planar') {
+            b = `${sub(212, 52)}<rect class="dg-n" x="90" y="212" width="40" height="16"/><rect class="dg-n" x="270" y="212" width="40" height="16"/><rect class="dg-ch" x="130" y="212" width="140" height="7"/><rect class="dg-ox" x="130" y="205" width="140" height="7"/><rect class="dg-met" x="130" y="140" width="140" height="65"/>
+              ${dgArrow(200, 112, 200, 136)}${dgT(200, 104, '게이트 1면', 'dg-volt')}`;
+          } else if (s.id === 'finfet') {
+            b = `${sub(240, 26)}<rect class="dg-si" x="184" y="140" width="32" height="100"/><path class="dg-met" fill-rule="evenodd" d="M148 120 H252 V240 H148 Z M180 140 H220 V240 H180 Z"/><path class="dg-line dg-hlp" d="M184 238 V144 H216 V238" style="stroke-width:3"/>
+              ${dgT(200, 104, '게이트 3면', 'dg-volt')}`;
+          } else if (s.id === 'gaa') {
+            b = `${sub(262, 22)}<rect class="dg-met" x="140" y="112" width="120" height="150"/>${[136, 174, 212].map(y => `<rect class="dg-ox" x="164" y="${y - 3}" width="72" height="20"/><rect class="dg-si" x="168" y="${y}" width="64" height="14"/><rect class="dg-hl" x="166" y="${y - 2}" width="68" height="18" rx="2"/>`).join('')}
+              ${dgT(200, 96, '게이트 4면', 'dg-volt')}`;
+          } else {
+            b = `${sub(262, 22)}<rect class="dg-met" x="140" y="76" width="120" height="186"/>${[104, 132].map(y => `<rect class="dg-n" x="168" y="${y}" width="64" height="14" style="fill-opacity:.7"/><rect class="dg-hl" x="166" y="${y - 2}" width="68" height="18" rx="2"/>`).join('')}
+              <rect class="dg-ox" x="150" y="160" width="100" height="14"/>${[188, 216].map(y => `<rect class="dg-p" x="168" y="${y}" width="64" height="14" style="fill-opacity:.7"/><rect class="dg-hl" x="166" y="${y - 2}" width="68" height="18" rx="2"/>`).join('')}
+              ${dgT(272, 124, 'n형 (위)', 'dg-sub', 'start')}${dgT(272, 232, 'p형 (아래)', 'dg-sub', 'start')}${dgT(272, 172, '분리막', 'dg-sub', 'start')}${dgT(200, 60, '게이트 공유 · 두 종류를 수직으로', 'dg-volt')}`;
+          }
+          return dgSvg('트랜지스터 구조: ' + s.label, `${dgT(200, 28, s.era, 'dg-sub')}${b}${dgT(200, 312, s.q, 'dg-volt')}`, '0 0 400 322');
+        }
+      },
+      'litho-roadmap': {
+        title: '노광의 진화: 파장은 짧게, NA는 크게',
+        states: [
+          { id: 'arfi', label: 'ArF 액침 (193nm)', lam: '파장 193 nm (ArF)', wl: 58, hw: 128, na: 'NA 1.35', size: 43, water: true, q: '물을 채운 렌즈로 193nm 빛을 모은다',
+            desc: '파장 193nm의 심자외선을 렌즈와 웨이퍼 사이를 물로 채워 모은다(NA 약 1.35). 이 방식으로 한 번에 새길 수 있는 선폭에는 한계가 있어, 더 가는 패턴은 여러 번 나눠 새기는 멀티 패터닝으로 만들었다.' },
+          { id: 'euv', label: 'EUV (13.5nm)', lam: '파장 13.5 nm (EUV)', wl: 16, hw: 28, na: 'NA 0.33', size: 12, water: false, q: '파장을 크게 줄여 한 번에 더 가는 선을',
+            desc: '파장 13.5nm의 극자외선을 쓴다. 이 파장은 거의 모든 물질에 흡수되어 렌즈 대신 거울을 쓰고 진공 속에서 노광한다. 파장이 크게 줄어 한 번에 새기는 선이 훨씬 가늘어지고, 멀티 패터닝 횟수가 줄었다.' },
+          { id: 'hna', label: 'High-NA EUV', lam: '파장 13.5 nm (EUV)', wl: 16, hw: 52, na: 'NA 0.55', size: 7, water: false, q: 'NA를 키워 더 가는 선을 한 번에',
+            desc: '같은 EUV 파장에서 NA를 0.33에서 0.55로 키워 더 가는 선을 새긴다. 인텔이 14A 공정에 먼저 쓸 계획이고 SK hynix도 DRAM용으로 장비를 들였다. 장비가 매우 비싸서 TSMC처럼 기존 EUV를 더 쓰는 쪽을 택한 회사도 있어, 도입 시점은 회사마다 다르다.' },
+        ],
+        svg(s) {
+          const w = s.wl, pts = []; let d = 'M60 62';
+          for (let x = 60, up = true; x < 340; x += w / 2, up = !up) d += ` q${w / 4} ${up ? -9 : 9} ${w / 2} 0`;
+          const cone = `<path class="dg-fsub" d="M200 214 L${200 - s.hw} 128 H${200 + s.hw} Z" style="fill-opacity:.14"/><path class="dg-line" d="M200 214 L${200 - s.hw} 128 M200 214 L${200 + s.hw} 128" style="stroke-width:1.6"/>`;
+          const feat = [0, 1, 2, 3, 4].map(i => `<rect class="dg-met" x="${160 + i * 20}" y="206" width="${Math.max(3, Math.min(10, s.size / 4.5))}" height="8"/>`).join('');
+          return dgSvg('노광: ' + s.label, `
+            ${dgT(200, 30, s.lam, 'dg-volt')}<path class="dg-line" d="${d}" style="stroke:var(--hl-accent);stroke-width:2"/>${dgArrow(200, 84, 200, 124)}
+            ${cone}${s.hw >= 100 ? dgT(200, 150, s.na, 'dg-sub') : dgT(200 + s.hw + 8, 146, s.na, 'dg-sub', 'start')}
+            ${s.water ? '<rect class="dg-hk" x="176" y="204" width="48" height="10"/>' + dgT(236, 204, '(물)', 'dg-sub', 'start') : ''}
+            <rect class="dg-si" x="110" y="214" width="180" height="12"/>${feat}
+            ${dgT(60, 250, '최소 선폭 ≈ k₁·λ/NA  (k₁ = 0.3 가정)', 'dg-sub', 'start')}
+            <rect class="dg-ch" x="60" y="260" width="${s.size * 4}" height="16" rx="3" style="fill-opacity:.7"/>${dgT(60 + s.size * 4 + 8, 273, '약 ' + s.size + ' nm', 'dg-volt', 'start')}
+            ${dgT(200, 304, s.q, 'dg-volt')}`, '0 0 400 316');
+        }
+      },
+      'power-delivery': {
+        title: '전원을 어디로 보낼까: 전면 vs 후면',
+        states: [
+          { id: 'front', label: '전면 전력 (기존)', back: false, q: '신호선과 전원선이 위쪽 배선층을 함께 쓴다',
+            desc: '기존에는 전원선과 신호선이 모두 트랜지스터 위쪽 배선층에 있다. 같은 공간을 나눠 쓰다 보니 배선이 복잡해지고, 전원이 여러 층을 내려오는 동안 전압이 떨어진다.' },
+          { id: 'back', label: '후면 전력 (BSPDN)', back: true, q: '전원선은 뒷면에서, 신호선은 앞면에서',
+            desc: '전원선을 웨이퍼 뒷면으로 옮기고 앞면은 신호선만 쓴다. 전원이 뒷면에서 짧게 트랜지스터로 연결되어 전압 강하가 줄고 앞면 배선에 여유가 생긴다. 대신 웨이퍼를 뒤집어 얇게 갈고 뒷면에 배선을 만드는 공정이 추가된다. 인텔은 18A에 PowerVia로 도입했고, TSMC는 A16(Super Power Rail)에서 2026년 하반기 양산을 목표로 한다.' },
+        ],
+        svg(s) {
+          const pw = (x1, x2, y) => `<rect x="${x1}" y="${y}" width="${x2 - x1}" height="7" rx="2" fill="#f59e0b" fill-opacity=".8"/>`;
+          const sg = (segs, y) => segs.map(([a, b]) => `<path class="dg-line" d="M${a} ${y} H${b}" style="stroke-width:2"/>`).join('');
+          const tr = `<rect class="dg-si" x="40" y="204" width="320" height="22"/>${[70, 150, 230, 310].map(x => `<rect class="dg-n" x="${x - 18}" y="204" width="14" height="10"/><rect class="dg-n" x="${x + 6}" y="204" width="14" height="10"/><rect class="dg-met" x="${x - 4}" y="194" width="10" height="10"/>`).join('')}`;
+          let stack = `<rect class="dg-fsub" x="40" y="62" width="320" height="124" rx="6" style="fill-opacity:.06"/>`, extra = '';
+          if (!s.back) {
+            stack += pw(50, 350, 70) + sg([[60, 150], [180, 260], [290, 340]], 100) + pw(50, 170, 124) + sg([[200, 340]], 128) + sg([[60, 120], [150, 230]], 160) + pw(260, 350, 156);
+            extra = `<path d="M110 74 V204 M290 74 V204" stroke="#f59e0b" stroke-width="3" fill="none"/><path class="dg-line" d="M160 128 V194 M240 160 V194" style="stroke-width:1.6"/>
+              ${dgArrow(110, 40, 110, 66)}${dgArrow(290, 40, 290, 66)}${dgT(200, 48, '전원 공급 (위에서)', 'dg-volt')}`;
+          } else {
+            stack += sg([[60, 150], [180, 260], [290, 340]], 90) + sg([[70, 130], [160, 230], [260, 340]], 124) + sg([[60, 120], [150, 250], [280, 340]], 158);
+            extra = `<path class="dg-line" d="M160 124 V194 M240 158 V194 M110 90 V124" style="stroke-width:1.6"/>
+              <rect class="dg-si" x="40" y="226" width="320" height="14" style="fill-opacity:.2"/>${pw(50, 350, 248)}<path d="M110 204 V252 M290 204 V252" stroke="#f59e0b" stroke-width="3" fill="none"/>
+              ${dgArrow(110, 296, 110, 262)}${dgArrow(290, 296, 290, 262)}${dgT(200, 290, '전원 공급 (뒤에서)', 'dg-volt')}`;
+          }
+          return dgSvg('전원 공급: ' + s.label, `${stack}${tr}${extra}
+            <rect x="110" y="317" width="16" height="7" rx="2" fill="#f59e0b" fill-opacity=".8"/>${dgT(132, 324, '전원선', 'dg-sub', 'start')}<path class="dg-line" d="M200 320 H222" style="stroke-width:2"/>${dgT(228, 324, '신호선', 'dg-sub', 'start')}
+            ${dgT(200, 348, s.q, 'dg-volt')}`, '0 0 400 358');
+        }
+      },
+      'memory-future': {
+        title: '메모리의 다음 단계: 쌓거나, 새로 만들거나',
+        states: [
+          { id: 'nand', label: '3D NAND', q: '셀을 위로 쌓아 용량을 키운다',
+            desc: '평면에서 셀을 더 줄이기 어려워지자 셀을 수직으로 쌓는다. 워드라인 층과 절연층을 번갈아 쌓고 구멍을 수직으로 뚫어 채널을 만든 뒤, 층마다 셀이 생긴다. 층수를 계속 늘려 지금은 수백 단까지 나온다.' },
+          { id: 'dram', label: '3D DRAM (연구)', q: '같은 면적에 셀을 층층이 더 넣는다',
+            desc: 'DRAM 셀은 지금 한 층에 나란히 놓인다. 셀 자체를 여러 층으로 쌓아 같은 면적에 더 많이 넣으려는 3D DRAM이 연구되고 있다. 3D NAND보다 구조가 까다로워 아직 양산에 이르지 못했다.' },
+          { id: 'new', label: '새 메모리', q: '전하 대신 저항으로 기억한다',
+            desc: '정보를 전하가 아니라 저항의 높고 낮음으로 저장한다. MRAM은 자석의 방향, ReRAM은 산화물 속 전도 통로, PCM은 물질의 결정·비정질 상태를 쓴다. 전원이 꺼져도 남고 빠르지만, DRAM이나 NAND를 대체할 만큼 집적도와 비용을 맞추지 못해 틈새 용도가 중심이다.' },
+        ],
+        svg(s) {
+          let b = '';
+          if (s.id === 'nand') {
+            b = [0, 1, 2, 3, 4, 5, 6, 7].map(i => `<rect class="dg-met" x="80" y="${74 + i * 18}" width="220" height="9"/><rect class="dg-ch" x="170" y="${72 + i * 18}" width="40" height="13" style="fill-opacity:.4"/>`).join('')
+              + `<rect class="dg-si" x="182" y="64" width="16" height="164"/><rect class="dg-si" x="60" y="228" width="260" height="14"/>`
+              + `${dgT(190, 46, '층수를 계속 늘린다 ↑', 'dg-volt')}${dgT(312, 96, '워드라인', 'dg-sub', 'start')}${dgT(312, 114, '(층마다 셀)', 'dg-sub', 'start')}${dgT(312, 190, '수직 채널', 'dg-sub', 'start')}`;
+          } else if (s.id === 'dram') {
+            const cell = (x, y) => `<rect class="dg-fsub" x="${x}" y="${y}" width="22" height="26" rx="3"/><rect class="dg-line" x="${x}" y="${y}" width="22" height="26" rx="3" style="stroke-width:1.2"/><rect class="dg-ch" x="${x + 6}" y="${y + 3}" width="10" height="10"/>`;
+            b = `${dgT(100, 62, '지금: 한 층', 'dg-sub')}${[0, 1, 2, 3].map(i => cell(44 + i * 28, 150)).join('')}<rect class="dg-si" x="36" y="180" width="124" height="8"/>`
+              + `${dgArrow(172, 160, 212, 160)}${dgT(290, 62, '3D DRAM: 층층이', 'dg-sub')}${[0, 1, 2].map(r => [0, 1, 2, 3].map(i => cell(232 + i * 28, 90 + r * 36)).join('')).join('')}<rect class="dg-si" x="224" y="200" width="124" height="8"/>`;
+          } else {
+            const box = (x, nm, sb, ic) => `<rect class="dg-fsub" x="${x}" y="70" width="116" height="136" rx="8"/><rect class="dg-line" x="${x}" y="70" width="116" height="136" rx="8" style="stroke-width:1.4;opacity:.55"/>${ic}${dgT(x + 58, 232, nm)}${dgT(x + 58, 250, sb, 'dg-sub')}`;
+            const mram = `<rect class="dg-met" x="30" y="100" width="80" height="14"/>${dgArrow(50, 107, 90, 107)}<rect class="dg-ox" x="30" y="114" width="80" height="8"/><rect class="dg-met" x="30" y="122" width="80" height="14"/>${dgArrow(50, 129, 90, 129)}${dgT(70, 166, '자화 방향', 'dg-sub')}`;
+            const reram = `<rect class="dg-met" x="162" y="92" width="80" height="10"/><rect class="dg-ox" x="162" y="102" width="80" height="48"/><rect class="dg-met" x="162" y="150" width="80" height="10"/><path d="M202 102 V150" stroke="#f59e0b" stroke-width="4"/>${dgT(202, 184, '전도 통로', 'dg-sub')}`;
+            const pcm = `<rect class="dg-met" x="294" y="92" width="80" height="10"/><rect class="dg-film" x="294" y="102" width="80" height="50"/>${[0, 1, 2, 3].map(i => [0, 1, 2].map(j => `<circle cx="${304 + i * 8}" cy="${112 + j * 12}" r="2.5" fill="currentColor"/>`).join('')).join('')}${[0, 1, 2, 3].map(i => [0, 1, 2].map(j => `<circle cx="${342 + i * 8 + ((j + i) % 2) * 3}" cy="${110 + j * 12 + (i % 2) * 4}" r="2.5" fill="currentColor"/>`).join('')).join('')}${dgT(334, 170, '결정 | 비정질', 'dg-sub')}`;
+            b = box(12, 'MRAM', '자석의 방향', mram) + box(142, 'ReRAM', '산화물 속 길', reram) + box(272, 'PCM', '상 변화', pcm);
+          }
+          return dgSvg('메모리 미래: ' + s.label, `${b}${dgT(200, 284, s.q, 'dg-volt')}`, '0 0 400 296');
+        }
+      },
+      'packaging-evolution': {
+        title: '패키징의 진화: 큰 칩 하나에서 쌓는 칩으로',
+        states: [
+          { id: 'mono', label: '큰 칩 하나', q: '한 칩에 모든 기능을 담는다',
+            desc: '프로세서, 캐시, 입출력을 한 칩에 모두 담는다. 칩이 커질수록 불량이 한 곳에만 생겨도 칩 전체를 버려야 해서 수율이 떨어지고 비용이 오른다.' },
+          { id: 'chiplet', label: '칩렛 + 2.5D', q: '작은 칩을 인터포저 위에 나란히 잇는다',
+            desc: '기능별로 작은 칩(칩렛)을 따로 만들어 인터포저 위에 나란히 붙인다. 필요한 칩만 최신 공정으로 만들 수 있고, HBM도 이 방식으로 프로세서 옆에 붙는다. UCIe 같은 표준으로 칩렛을 잇는 시도도 늘고 있다.' },
+          { id: 'stack', label: '3D 적층', q: '칩을 위로 쌓아 거리를 줄인다',
+            desc: '칩을 위로 쌓고 칩 사이를 구리 패드로 직접 접합하는 하이브리드 본딩과 TSV로 잇는다. 연결 거리가 짧아지고 연결 수가 크게 늘어난다. 대신 안쪽 칩의 열이 빠져나가기 어렵고 접합 공정이 까다롭다.' },
+        ],
+        svg(s) {
+          const balls = [90, 130, 170, 210, 250, 290, 330].map(x => `<circle cx="${x}" cy="272" r="6" fill="#94a3b8"/>`).join('');
+          const base = (y0) => `<rect class="dg-fsub" x="60" y="${y0}" width="280" height="16" style="fill-opacity:.3"/><rect class="dg-line" x="60" y="${y0}" width="280" height="16" style="stroke-width:1.2"/>${dgT(200, y0 + 12, '패키지 기판', 'dg-sub')}`;
+          let b = '';
+          if (s.id === 'mono') {
+            b = `${base(240)}<rect class="dg-si dg-hlp" x="100" y="168" width="200" height="64"/>${dgT(200, 206, '큰 칩 하나', '')}${dgT(200, 150, '프로세서 · 캐시 · 입출력 전부', 'dg-sub')}`;
+          } else if (s.id === 'chiplet') {
+            const hbm = (x) => [0, 1, 2, 3].map(i => `<rect class="dg-si" x="${x}" y="${176 + i * 10}" width="34" height="8"/>`).join('') + `<rect class="dg-met" x="${x}" y="216" width="34" height="6"/>` + dgT(x + 17, 170, 'HBM', 'dg-sub');
+            b = `${base(244)}<rect class="dg-ox" x="64" y="224" width="272" height="20"/>${dgT(200, 238, '인터포저', 'dg-sub')}${hbm(70)}${hbm(250)}<rect class="dg-si dg-hlp" x="116" y="168" width="82" height="54"/>${dgT(157, 200, 'GPU', '')}<rect class="dg-si dg-hlp" x="208" y="190" width="34" height="32"/>${dgT(225, 210, 'I/O', 'dg-sub')}<rect class="dg-si dg-hlp" x="296" y="196" width="34" height="26"/>`;
+          } else {
+            b = `${base(244)}<rect class="dg-si" x="110" y="196" width="180" height="40"/>${dgT(200, 222, '아래 칩 (로직)', 'dg-sub')}${Array.from({ length: 16 }, (_, i) => `<rect class="dg-met" x="${126 + i * 10}" y="191" width="5" height="5"/>`).join('')}<rect class="dg-si dg-hlp" x="126" y="150" width="148" height="41"/>${dgT(200, 176, '위 칩 (캐시 · 메모리)', 'dg-sub')}
+              ${dgT(200, 134, '구리 패드로 직접 접합 (하이브리드 본딩)', 'dg-sub')}<path class="dg-line" d="M150 196 V238 M200 196 V238 M250 196 V238" style="stroke:#f59e0b;stroke-width:2.2"/>`;
+          }
+          return dgSvg('패키징: ' + s.label, `${b}${balls}${dgT(200, 304, s.q, 'dg-volt')}`, '0 104 400 212');
+        }
+      }
 
     };
     function dgRender(fig, sid) {
