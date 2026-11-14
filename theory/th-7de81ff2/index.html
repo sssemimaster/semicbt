@@ -114,10 +114,8 @@
     input:checked + .sw { background: #6366f1; } html.dark input:checked + .sw { background: #67e8f9; }
     input:checked + .sw::after { transform: translateX(20px); } html.dark input:checked + .sw::after { background: #0a1020; }
     .confetti-piece { position: fixed; top: -12px; width: 8px; height: 14px; border-radius: 2px; z-index: 80; pointer-events: none; animation: confetti 2.3s cubic-bezier(.2,.6,.3,1) forwards; }
-    @media (prefers-reduced-motion: reduce) { .view-enter, .stagger > *, #learningContainer > *, #qOptions > *, #noteContainer > *, #globalSearchResults > *, #reviewList > *, .float-slow, .float-slower, .prism-text, .wafer-sheen, .opt.opt-correct, .opt.opt-wrong { animation: none !important; } .confetti-piece { display: none; }
-      /* 움직임은 끄되, 화면이 바뀔 때의 부드러운 페이드(투명도만)는 남긴다 */
-      .view-enter { animation: viewFade .28s ease both !important; } .stagger > *, #learningContainer > *, #noteContainer > *, #reviewList > * { animation: viewFade .3s ease both !important; } }
-    @keyframes viewFade { from { opacity: 0; } to { opacity: 1; } }
+    /* 화면 전환·목록 등장 효과는 OS의 '애니메이션 줄이기' 설정과 상관없이 항상 보여 준다(작은 이동뿐). 빠르게 번쩍이거나 크게 움직이는 것만 끈다. */
+    @media (prefers-reduced-motion: reduce) { .float-slow, .float-slower, .prism-text, .wafer-sheen, .opt.opt-correct, .opt.opt-wrong { animation: none !important; } .confetti-piece { display: none; } }
     select { appearance: none; -webkit-appearance: none; padding-right: 2.5rem !important; background-repeat: no-repeat; background-position: right .9rem center; background-size: 1rem;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 8l5 5 5-5'/%3E%3C/svg%3E"); }
     input[type=checkbox] { accent-color: #6366f1; }
