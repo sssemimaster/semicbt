@@ -186,6 +186,17 @@
     .wl-kpi { display: flex; gap: .4rem; margin-top: .4rem; } .wl-kpi > div { flex: 1; display: flex; align-items: center; gap: .35rem; padding: .2rem .5rem; border-radius: .7rem; background: rgba(100,116,139,.1); font-size: 13px; }
     .wl-kpi b { font-family: 'Sora', sans-serif; font-size: 1.05rem; font-weight: 800; } .wl-kpi small { font-size: 10.5px; color: #64748b; margin-left: auto; } html.dark .wl-kpi small { color: #94a3b8; }
     .wl-kpi { gap: 1rem; } .wl-kpi > div { background: none !important; padding: 0 !important; flex: none !important; } .wl-kpi small { margin-left: 0 !important; }
+    /* 넓은 화면(PC·태블릿 가로): 왼쪽에 웨이퍼·요약, 오른쪽에 날짜 목록·상세를 나란히 */
+    @media (min-width: 900px) and (min-height: 560px) {
+      .wl-card.wl-log { max-width: 1040px; max-height: min(calc(100dvh - 48px), 760px); }
+      .wl-log .wl-head { padding: 1.4rem 1.8rem .4rem; } .wl-log .wl-head h3 { font-size: 1.35rem; }
+      .wl-log .wl-scroll { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr); gap: 2.2rem; align-items: start; padding: .4rem 1.8rem 1.5rem; }
+      .wl-log .wl-l { position: sticky; top: 0; }
+      .wl-log .wl-w { width: min(100%, 440px, 52dvh); margin: .2rem auto .5rem; }
+      .wl-log .wl-stats > div { padding: .65rem .2rem; } .wl-log .wl-stats b { font-size: 1.4rem; } .wl-log .wl-stats small { font-size: 12px; }
+      .wl-log .wl-r .wl-grid { margin-top: .3rem; gap: 7px; } .wl-log .wl-t b { font-size: 14.5px; } .wl-log .wl-t small { font-size: 11px; } .wl-log .wl-t em { font-size: 11px; height: 12px; }
+      .wl-log .wl-det { margin-top: 1.1rem; padding: .9rem 1.1rem 1rem; } .wl-log .wl-det-h { font-size: 15px; } .wl-log .wl-kpi b { font-size: 1.2rem; } .wl-log .wl-chip { font-size: 12.5px; } .wl-log .wl-chips { max-height: 6.5rem; }
+    }
     .wl-chips { display: flex; flex-wrap: wrap; gap: .3rem; margin-top: .4rem; max-height: 3.3rem; overflow-y: auto; overscroll-behavior: contain; }
     .wl-chip { font-size: 11.5px; padding: .2rem .55rem; border-radius: 999px; background: rgba(100,116,139,.13); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .wl-chip b { margin-left: .3rem; color: var(--c, #6366f1); } .wl-chip.more { opacity: .65; }
     /* 해설 카드: 정답 해설 / 오답 체크 / 기억 포인트 */
@@ -2869,11 +2880,11 @@ html.dark .cs-frame{
       const legend = CATS.map((c, i) => cnt[i] ? `<span class="wl-lg"><i style="background:${c[dk ? 'd' : 'l']}"></i>${c.s} <b>${cnt[i]}</b></span>` : '').join('') + (other ? `<span class="wl-lg"><i class="prism"></i>기록 이전 <b>${other}</b></span>` : '');
       const nav = cur.m > 0 ? `<div class="wl-nav"><button type="button" onclick="wlCycle(-1)" ${wl.m <= 0 ? 'disabled' : ''} aria-label="이전 달 웨이퍼">‹</button><span>${isCur ? '이번 달 웨이퍼' : `${wl.m + 1}번째 달 웨이퍼 · 완성`}</span><button type="button" onclick="wlCycle(1)" ${isCur ? 'disabled' : ''} aria-label="다음 달 웨이퍼">›</button></div>` : `<div class="wl-nav"><span>이번 달 웨이퍼</span></div>`;
       o.innerHTML = `<div class="wl-card wl-log"><div class="wl-head"><div class="wl-top"><div><p class="eyebrow">MY WAFER LOG</p><h3>날짜별 학습 기록</h3></div><button type="button" class="wl-x" onclick="closeWaferLog()" aria-label="닫기">✕</button></div>${nav}</div>
-        <div class="wl-scroll"><div class="wl-w" id="wlW">${svg}</div>
+        <div class="wl-scroll"><div class="wl-l"><div class="wl-w" id="wlW">${svg}</div>
         <div class="wl-stats"><div><b>${earned}</b><small>새긴 날</small></div><div><b>${tot.th}</b><small>📖 이론</small></div><div><b>${tot.q}</b><small>✏️ 문제</small></div><div><b>${tot.iv}</b><small>🎤 면접</small></div></div>
-        ${wlBar(cnt, dk)}<div class="wl-legend">${legend}</div>${cur.collected ? `<p class="wl-lgs">지금까지 수집한 웨이퍼 ${cur.collected}장</p>` : ''}
-        ${earned ? `<div class="wl-grid">${days.slice(0, earned).map((d, i) => wlTile(i, d, dk)).join('')}</div>` : ''}
-        <div class="wl-det" id="wlDet" style="--c:${wlColor() || '#a78bfa'}">${wlDetail()}</div></div></div>`;
+        ${wlBar(cnt, dk)}<div class="wl-legend">${legend}</div>${cur.collected ? `<p class="wl-lgs">지금까지 수집한 웨이퍼 ${cur.collected}장</p>` : ''}</div>
+        <div class="wl-r">${earned ? `<div class="wl-grid">${days.slice(0, earned).map((d, i) => wlTile(i, d, dk)).join('')}</div>` : ''}
+        <div class="wl-det" id="wlDet" style="--c:${wlColor() || '#a78bfa'}">${wlDetail()}</div></div></div></div>`;
     }
     document.addEventListener('keydown', (e) => { if (e.key !== 'Escape') return; if (document.getElementById('wfLog')) closeWaferLog(); });
 
