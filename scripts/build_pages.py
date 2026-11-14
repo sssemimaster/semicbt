@@ -81,6 +81,9 @@ def render_markdown(src):
     t = re.sub(r"\$\$[\s\S]+?\$\$", hold, src)
     t = re.sub(r"\$[^$\n]+?\$", hold, t)
     t = re.sub(r"\*\*([^*\n]+?)\*\*", r"<strong>\1</strong>", t)
+    t = re.sub(r"\{\{\s*term:([^|}\n]+)\|([^}\n]+)\}\}", lambda m: f'<button type="button" class="th-term" data-def="{esc(m.group(2).strip())}">{esc(m.group(1).strip())}</button>', t)
+    t = re.sub(r"^[ \t]*\{\{\s*toggle:([^|}\n]+)\|([^}\n]+)\}\}[ \t]*$",
+               lambda m: f'\n\n<details class="th-toggle"><summary>{esc(m.group(1).strip())}</summary><div class="th-tg-body">{inline_md(m.group(2))}</div></details>\n\n', t, flags=re.M)
     t = re.sub(r"^[ \t]*\{\{\s*diagram:([a-z0-9-]+)(?:\|([^}\n]*))?\}\}[ \t]*$",
                lambda m: f'\n\n<figure class="dg" data-dg="{m.group(1)}" data-cap="{esc((m.group(2) or "").strip())}"></figure>\n\n', t, flags=re.M)
     t = re.sub(r">\s*💡\s*(.*?)(?=\n\n|\n###|$)", lambda m: f'\n\n<div class="custom-highlight-box">{inline_md(m.group(1))}</div>\n\n', t, flags=re.S)
@@ -92,7 +95,7 @@ def render_markdown(src):
 
 def plain_description(content, limit=118):
     keep = []
-    for ln in content.splitlines():
+    for ln in re.sub(r"\{\{\s*term:([^|}\n]+)\|[^}\n]+\}\}", r"\1", content).splitlines():
         s = ln.strip()
         if not s or s.startswith(("#", ">", "|", "-", "*", "$", "!", "{{")) or re.match(r"^\d+\.", s):
             continue
