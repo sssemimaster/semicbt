@@ -322,6 +322,15 @@
     .theory-body li { margin: .45rem 0; padding-left: .2rem; }
     .theory-body li::marker { color: #818cf8; font-weight: 700; }
     .theory-body .custom-highlight-box { font-size: .98rem; line-height: 1.75; border-radius: 16px; border-left-width: 5px; margin: 1.6rem 0; }
+    /* ===== 이론 속 용어 풀이 {{term:용어|풀이}} · 접는 설명 {{toggle:제목|내용}} ===== */
+    .th-term { background: none; border: 0; padding: 0; margin: 0; font: inherit; color: #4338ca; cursor: help; border-bottom: 1.5px dotted #6366f1; text-align: inherit; } html.dark .th-term { color: #a5f3fc; border-bottom-color: #67e8f9; }
+    .th-term:hover, .th-term[aria-expanded="true"] { background: rgba(99,102,241,.12); border-radius: 3px; } html.dark .th-term:hover, html.dark .th-term[aria-expanded="true"] { background: rgba(103,232,249,.14); }
+    .th-tip { position: fixed; z-index: 120; max-width: min(300px, calc(100vw - 16px)); padding: .65rem .85rem; border-radius: .8rem; font-size: 13px; line-height: 1.65; background: #0f172a; color: #f1f5f9; box-shadow: 0 10px 28px rgba(15,23,42,.35); border: 1px solid rgba(255,255,255,.08); } html.dark .th-tip { background: #1e293b; border-color: rgba(103,232,249,.3); }
+    .th-tip b { display: block; font-size: 11.5px; color: #a5b4fc; margin-bottom: .15rem; } html.dark .th-tip b { color: #67e8f9; }
+    .th-toggle { margin: 1rem 0; border: 1px solid rgba(100,116,139,.28); border-radius: .85rem; background: rgba(99,102,241,.05); overflow: hidden; } html.dark .th-toggle { background: rgba(103,232,249,.05); border-color: rgba(103,232,249,.22); }
+    .th-toggle > summary { cursor: pointer; padding: .7rem .95rem; font-weight: 700; font-size: .93rem; list-style: none; display: flex; align-items: center; gap: .55rem; -webkit-tap-highlight-color: transparent; } .th-toggle > summary::-webkit-details-marker { display: none; }
+    .th-toggle > summary::before { content: '▸'; color: #6366f1; transition: transform .15s; flex: none; } html.dark .th-toggle > summary::before { color: #67e8f9; } .th-toggle[open] > summary::before { transform: rotate(90deg); }
+    .th-tg-body { padding: 0 .95rem .85rem 2.05rem; font-size: .92rem; line-height: 1.8; color: #475569; } html.dark .th-tg-body { color: #cbd5e1; }
     /* ===== 이론 속 인터랙티브 그림 ({{diagram:id}}) ===== */
     figure.dg { margin: 1.8rem 0; padding: 1rem 1rem .9rem; border-radius: 16px; border: 1px solid var(--tbl-border); background: var(--tbl-bg); color: var(--tbl-text); }
     figure.dg .dg-head { display: flex; align-items: center; gap: .6rem; margin-bottom: .7rem; font-size: .95rem; color: var(--heading); }
@@ -931,10 +940,12 @@ html.dark .cs-frame{
       <div id="breadcrumbContainer" class="bg-indigo-50/70 dark:bg-[#0f2233] rounded-xl border border-indigo-100 dark:border-white/10 px-4 py-3 mb-6 flex flex-wrap items-center gap-y-2 text-sm hidden"></div>
       <div id="learningContainer" class="flex flex-col space-y-4"><div class="bg-white dark:bg-[#0f1729] rounded-2xl shadow-sm border border-slate-200 dark:border-white/10 overflow-hidden"><div class="p-6 md:p-8"><p class="eyebrow mb-2">반도체 기초 이론 <span class="opacity-50">/</span> 반도체 물리 <span class="opacity-50">·</span> 약 5분 읽기</p><h1 class="page-title text-slate-900 dark:text-white mb-3">유효 질량</h1><div class="flex flex-wrap gap-1.5 mb-6 pb-6 border-b border-slate-100 dark:border-white/10"><span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#유효질량</span><span class="bg-indigo-50 dark:bg-white/5 text-indigo-700 dark:text-cyan-300 text-[11px] px-2.5 py-1 rounded-full font-bold">#핵심이론</span></div><div class="custom-table-container theory-body prose prose-slate dark:prose-invert max-w-none"><div class="custom-badge-heading"><span class="custom-badge">📘 핵심 개념</span>유효 질량의 의미</div>
 
-<p>반도체에서 전자가 이동할 때, 실제 질량과는 다른 <strong>유효 질량</strong>이라는 개념이 필요하다. 이는 전자가 결정 구조 내에서 전기적 특성을 나타내는 방식 때문이다. 전자는 진공 상태에서와 다르게 반도체의 주기적인 포텐셜 속에서 이동하며, 이 과정에서 전자의 운동은 복잡한 상호작용을 겪게 된다. 그래서 전자의 실제 질량과는 다른, 전자의 이동에 영향을 미치는 가상의 질량이 정의된다. 이를 유효 질량이라고 한다.</p>
+<p>반도체에서 전자가 이동할 때, 실제 질량과는 다른 <strong>유효 질량</strong>이라는 개념이 필요하다. 이는 전자가 결정 구조 내에서 전기적 특성을 나타내는 방식 때문이다. 전자는 진공 상태에서와 다르게 반도체의 <button type="button" class="th-term" data-def="결정 안에서 원자들이 일정한 간격으로 늘어서 있어서, 전자가 느끼는 전기적인 힘의 크기가 같은 모양으로 되풀이되는 것을 말한다.">주기적인 포텐셜</button> 속에서 이동하며, 이 과정에서 전자의 운동은 복잡한 상호작용을 겪게 된다. 그래서 전자의 실제 질량과는 다른, 전자의 이동에 영향을 미치는 가상의 질량이 정의된다. 이를 유효 질량이라고 한다.</p>
 <div class="custom-badge-heading"><span class="custom-badge">📘 정의</span>유효 질량의 필요성</div>
 
 <p>유효 질량은 전자의 운동 방정식을 수정하여 반도체 내에서 전자의 거동을 보다 현실적으로 설명한다. 전자는 결정 격자 내에서 전기장에 의해 가속될 때, 유효 질량이 없다면 실제 물리적 질량만으로는 전자 이동의 속도와 경로를 정확히 설명하기 어렵다. 유효 질량을 고려하면 전자가 결정 구조와 상호작용하면서 나타나는 효과를 반영할 수 있다. 따라서 유효 질량은 반도체의 전기적 특성을 이해하고 설계할 때 반드시 확인하는 값이다.</p>
+<details class="th-toggle"><summary>에너지 밴드가 뭔가요?</summary><div class="th-tg-body">결정 속 전자가 가질 수 있는 에너지를 전자의 운동 상태($k$)에 따라 곡선으로 그린 그래프이다. 이 곡선이 얼마나 휘어 있는지가 유효 질량을 정한다. 자세한 내용은 '에너지 밴드 구조' 이론에서 다룬다.</div></details>
+
 <div class="custom-highlight-box">[면접 팁] 유효 질량은 진짜 질량이 아니라 에너지 밴드의 곡률로 정해지는 값이라고 답하면 정확하다. 밴드가 많이 휘어 있을수록 유효 질량이 작다고 덧붙이면 좋다.</div>
 
 <div class="custom-badge-heading"><span class="custom-badge">📘 핵심 개념</span>전도성에 미치는 영향</div>
@@ -1555,6 +1566,24 @@ $$</p>
     // 이론 글에 한 줄로 {{diagram:그림id|캡션}} 을 쓰면 아래 부품이 그 자리에 들어간다. (모르는 id 는 조용히 사라진다)
     // 그림은 사람이 만든 SVG 라서 AI 가 쓰는 글과 달리 틀릴 일이 없다. 새 그림은 DIAGRAMS 에 항목을 추가하고, scripts/generate_all.py 의 DIAGRAMS 목록에도 같은 id 를 적는다.
     const DG_RE = /^[ \t]*\{\{\s*diagram:([a-z0-9-]+)(?:\|([^}\n]*))?\}\}[ \t]*$/gm;
+    // 용어 풀이·접는 설명: 비전문가가 모를 말이나 본문에 넣기엔 애매한 곁가지 설명을 눌러서 보게 한다.
+    //   문장 속 어디서나  {{term:용어|풀이}}   /   한 줄로  {{toggle:제목|내용}}
+    const TERM_RE = /\{\{\s*term:([^|}\n]+)\|([^}\n]+)\}\}/g, TOGGLE_RE = /^[ \t]*\{\{\s*toggle:([^|}\n]+)\|([^}\n]+)\}\}[ \t]*$/gm;
+    function thTip(btn) {
+      let tip = document.getElementById('thTip');
+      if (tip && tip._for === btn) return hideThTip();
+      hideThTip();
+      tip = document.createElement('div'); tip.id = 'thTip'; tip.className = 'th-tip'; tip.setAttribute('role', 'tooltip'); tip._for = btn;
+      const h = document.createElement('b'); h.textContent = btn.textContent; const p = document.createElement('span'); p.textContent = btn.dataset.def || '';
+      tip.append(h, p); document.body.appendChild(tip); btn.setAttribute('aria-expanded', 'true');
+      const r = btn.getBoundingClientRect(), w = tip.offsetWidth, hgt = tip.offsetHeight;
+      let top = r.bottom + 8; if (top + hgt > innerHeight - 8 && r.top - hgt - 8 > 8) top = r.top - hgt - 8;
+      tip.style.top = Math.max(8, top) + 'px'; tip.style.left = Math.max(8, Math.min(r.left, innerWidth - w - 8)) + 'px';
+    }
+    function hideThTip() { const t = document.getElementById('thTip'); if (t) { if (t._for) t._for.removeAttribute('aria-expanded'); t.remove(); } }
+    document.addEventListener('click', (e) => { const b = e.target.closest && e.target.closest('.th-term'); if (b) { e.preventDefault(); thTip(b); } else if (!(e.target.closest && e.target.closest('#thTip'))) hideThTip(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') hideThTip(); });
+    window.addEventListener('scroll', hideThTip, { passive: true, capture: true }); window.addEventListener('resize', hideThTip);
     // 공통 도우미
     const dgT = (x, y, str, cls = '', anchor = 'middle') => `<text class="dg-t ${cls}" x="${x}" y="${y}" text-anchor="${anchor}">${escH(str)}</text>`;
     const dgSvg = (label, body, vb = '0 0 400 300') => `<svg viewBox="${vb}" role="img" aria-label="${escH(label)}">${body}</svg>`;
@@ -2145,6 +2174,8 @@ $$</p>
       const math = stashMath(t.content); let rawMarkdown = math.text;
       // '**용어(영문)**는' 처럼 괄호 뒤에 한글이 바로 붙으면 marked가 굵게 처리를 못 해서 ** 가 그대로 보임 -> 직접 변환
       rawMarkdown = rawMarkdown.replace(/\*\*([^*\n]+?)\*\*/g, '<strong>$1</strong>');
+      rawMarkdown = rawMarkdown.replace(TERM_RE, (m, w, d) => `<button type="button" class="th-term" data-def="${escH(d.trim())}">${escH(w.trim())}</button>`);
+      rawMarkdown = rawMarkdown.replace(TOGGLE_RE, (m, ti, body) => `\n\n<details class="th-toggle"><summary>${escH(ti.trim())}</summary><div class="th-tg-body">${safeHtml(marked.parseInline(body.trim()))}</div></details>\n\n`);
       rawMarkdown = rawMarkdown.replace(DG_RE, (m, id, cap) => `\n\n<figure class="dg" data-dg="${id}" data-cap="${escH((cap || '').trim())}"></figure>\n\n`);
       rawMarkdown = rawMarkdown.replace(/>\s*💡\s*(.*?)(?=\n\n|\n###|$)/gs, (match, p1) => `<div class="custom-highlight-box">${safeHtml(marked.parseInline(p1.trim()))}</div>\n\n`);
       rawMarkdown = rawMarkdown.replace(/###\s*\[(.*?)\]\s*(.*)/g, (match, badgeText, titleText) => `<div class="custom-badge-heading"><span class="custom-badge">${badgeEmoji(badgeText)} ${badgeText}</span>${titleText}</div>`);
